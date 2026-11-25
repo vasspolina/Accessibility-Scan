@@ -775,7 +775,10 @@ export function FindingDetails({
         </div>
       ) : (
         <p className="a11y-finding-todo" data-size={tileSize(whatToDo)}>
-          <strong className="a11y-fd-title">{t("What to do")}</strong> <CodeText text={whatToDo} />
+          {/* One body span, so the row lays out as label and words, the
+              way every other part does (TileBody's span). */}
+          <strong className="a11y-fd-title">{t("What to do")}</strong>{" "}
+          <span className="a11y-fd-body"><CodeText text={whatToDo} /></span>
         </p>
       )}
       {/* The WCAG and Level columns fold in here at phone width, the same

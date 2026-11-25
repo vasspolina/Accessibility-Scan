@@ -5889,3 +5889,75 @@
 @container a11y-ftable (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > [data-size="s"][class][class] { flex-basis: 100%; }
 }
+
+/* ═══ THE OPENED FINDING'S PARTS AS ROUND ROWS (user's reference, 25 Nov
+   2026, "design these like this": a type foundry's script list, white rows
+   with round ends on a tinted panel, two to a line, a small outlined pill
+   at the row's far end) ═══════════════════════════════════════════════════
+   Each part is a row with round ends on the --bubble-pill ground. The words
+   start on one left edge in every row, set left, not centred under a
+   centred capital line; the part's label is a small outlined pill (15px,
+   sentence case, a 1px solid edge in the row's ink, never dotted, which
+   says button) at the far end, on the first line's baseline. A grid places
+   it there, so the markup keeps the label first and a screen reader still
+   hears "Who fixes this" before the answer. A label at the start was tried
+   first: the labels differ in width, so the words began at a different
+   place on every row. The steps and the affected elements are the same
+   grid, their list in the first column. Rows stand 10px apart both ways,
+   the panel 22px in from them, and the corners are concentric: a 34px row
+   (half a one-line row, so a full round end) in the 56px panel. Under
+   480px of table the pill sits over the words, so the words keep the
+   width. Short parts still pair two to a line (the block above). */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col[class] { gap: 10px; margin-bottom: 10px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col:last-of-type[class] { margin-bottom: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps, .a11y-affected)[class][class] {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 20px; row-gap: 0; align-items: baseline;
+  padding: 18px 18px 18px 40px; border-radius: 34px; text-align: start;
+}
+/* Everything in the first column, a row each in markup order; the label
+   alone in the second column, on the first row. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps, .a11y-affected)[class][class] > * {
+  grid-column: 1; min-width: 0; margin: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo)[class][class] > strong:first-child,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class][class] > p:first-child,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class] > .a11y-affected-label {
+  grid-column: 2; grid-row: 1; justify-self: end; margin: 0; text-align: end;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class] > :not(.a11y-affected-label, .a11y-occurrence-list) { margin-top: 14px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo)[class][class] > strong:first-child,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class][class] > p:first-child > strong,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class] > .a11y-affected-label > strong {
+  display: inline-block; box-sizing: border-box; padding: 6px 12px 5px;
+  border: 1px solid currentColor; border-radius: 999px;
+  font-size: 15px; line-height: 1; letter-spacing: 0.01em; text-transform: none; white-space: nowrap;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-fd-meta[class] { padding-inline: 40px; }
+@container a11y-ftable (min-width: 641px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class] { padding: 28px 22px 22px; }
+  /* A list's en dash hangs in the row's 40px start, so its words share the
+     left edge of a sentence in the row above. Phones keep the list's own
+     indent: their 18px start is narrower than the dash. */
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > * > :is(.a11y-fd-points, ul:not(.a11y-occurrence-list))[class],
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class] > ul { padding-inline-start: 0; }
+}
+@container a11y-ftable (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps, .a11y-affected)[class][class] {
+    column-gap: 12px; padding: 14px 12px 14px 18px; border-radius: 20px;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-fd-meta[class] { padding-inline: 18px; }
+}
+@container a11y-ftable (max-width: 480px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps, .a11y-affected)[class][class] {
+    grid-template-columns: minmax(0, 1fr); row-gap: 10px;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo)[class][class] > strong:first-child,
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class][class] > p:first-child,
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class] > .a11y-affected-label {
+    grid-column: 1; justify-self: start; text-align: start;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class] > :not(.a11y-affected-label, .a11y-occurrence-list) { margin-top: 0; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps, .a11y-affected)[class][class] { border: 1px solid CanvasText; }
+}
