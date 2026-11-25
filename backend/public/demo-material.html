@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Accessibility scan&nbsp;– demo, Material</title>
+    <link rel="stylesheet" href="./demo-material.css" data-demo-material />
+  </head>
+  <body>
+    <!-- demo.html with the widget's CSS stripped and Google's Material
+         Design 3 laid over the same markup: demo-material.js removes the
+         stylesheets and style attributes the widget adds and links
+         demo-material.css (M3 tokens, Roboto) in their place, here and
+         inside the widget. -->
+    <main>
+      <h1>Accessibility scan</h1>
+      <div
+        id="a11y-widget-business-root"
+        data-api-base="https://a11y-checker-v2-production.up.railway.app"
+      ></div>
+    </main>
+
+    <script src="./demo-material.js" defer></script>
+    <script src="./widget-business.js" defer></script>
+  </body>
+</html>
