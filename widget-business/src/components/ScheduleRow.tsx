@@ -158,7 +158,7 @@ export function ScheduleRow({ apiBase, url }: { apiBase: string; url: string }) 
           </div>
         </>
       ) : all !== null ? (
-        <form className="a11y-manual-form" onSubmit={create} aria-labelledby={`${id}-label`}>
+        <form className="a11y-manual-form a11y-schedule-form" onSubmit={create} aria-labelledby={`${id}-label`}>
           <span className="a11y-settings-state">{t("Scan this page on a schedule. We flag it if the score drops or a new finding appears.")}</span>
           <Select id={`${id}-every`} label={t("How often")} options={everyOptions()} value={every} onChange={(e) => setEvery(e.target.value)} />
           <Input
