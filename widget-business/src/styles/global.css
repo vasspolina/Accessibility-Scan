@@ -7292,8 +7292,10 @@
    Each card's words stand centred in one column, set close like the
    reference, in PP Lettra Mono (the widget's mono face, declared in
    index.tsx): the group's name at 18px, the question under it at 24px
-   (18px on a phone), and the criterion at the foot at 18px in its white
-   pill. The face has only an upright Ultralight, so the reference's italic
+   (22px on a phone), and the criterion at the foot at 18px in its white
+   pill. Two sizes, never one (user's instruction, 25 Nov 2026, "make it
+   back to two type sizes", after the labels-to-18px pass had set the
+   question at 18px beside the label). The face has only an upright Ultralight, so the reference's italic
    runs are told by size, never by a synthesized slope. No tracking: a
    monospace is already spaced. The plates, the hover, the pills' places
    and Report a barrier's mint are unchanged. The two columns of the block
@@ -7307,13 +7309,13 @@
   font-style: normal; font-weight: 200; font-synthesis: none; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q[class][class] > .a11y-prompt-label { font-size: 18px; line-height: 1.2; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q[class][class] > .a11y-prompt-ask { font-size: 18px; line-height: 1.2; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q[class][class] > .a11y-prompt-ask { font-size: 24px; line-height: 1.15; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt > .a11y-prompt-wcag[class][class] {
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
   font-style: normal; font-weight: 200; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em;
 }
 @media (max-width: 671px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt .a11y-prompt-q[class][class] > .a11y-prompt-ask { font-size: 18px; line-height: 1.2; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt .a11y-prompt-q[class][class] > .a11y-prompt-ask { font-size: 22px; line-height: 1.15; }
 }
 
 /* ═══ THE RECENT CONVERSATIONS IN LETTRA (user's instruction, 25 Nov 2026,
