@@ -6445,3 +6445,61 @@
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz a.a11y-learn-more.a11y-learn-prompt[class] { min-height: 0; padding: 0; border: 0; background: none; color: #000; text-decoration: underline; }
 }
+
+/* ═══ THE DESIGN NOTES AS WHITE CARDS ON A GREEN PANEL (user's reference,
+   25 Nov 2026, "design this like this", a type foundry's list of white
+   cards on a green ground) ══════════════════════════════════════════════
+   The notes stand on one green panel, #3c8828 measured off the reference,
+   in both themes, 28px corners (20px on a phone), 20px inside (12px on a
+   phone). No words sit on the green itself. Each note is a card on
+   --tile-fill (white, dark #2c2c2e), 20px corners (14px on a phone), 10px
+   apart: the solid triangle, the title at 24px (the phone's prose size too), and how
+   many places at its far end at 18px, where the reference sets its price.
+   Focus stays the green line inside the card's own edge, on the white
+   (5.0:1), never on the panel. Opened, the card holds the note under its
+   title; the note's inner cards take the --bubble grey, since the card
+   under them is already the white. Every selector carries .a11y-dn-panel,
+   one class over THE DESIGN NOTES AS CARETS and the plain-row rules. */
+.a11y-widget-biz { --dn-ground: #3c8828; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn > .a11y-dn-panel {
+  --caret-col: 26px;
+  margin: 0; padding: 20px; border-radius: 28px; background: var(--dn-ground);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-panel > .a11y-dn-carets[class] { gap: 10px; margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-panel > .a11y-dn-carets > .a11y-dn-caret[class] {
+  padding: 0; border-radius: 20px; background: var(--tile-fill); color: var(--ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-panel > .a11y-dn-carets > .a11y-dn-caret[data-open][class] { padding: 0 24px 24px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-panel .a11y-dn-caret-head > .a11y-dn-bar[class] {
+  align-items: baseline; width: 100%; min-height: 64px; margin: 0; padding: 18px 24px; border-radius: 20px;
+  font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-panel .a11y-dn-caret[data-open] .a11y-dn-caret-head > .a11y-dn-bar[class] {
+  width: calc(100% + 48px); margin: 0 -24px;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-panel .a11y-dn-bar > .a11y-dn-bar-title { flex: 1 1 auto; min-width: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-panel .a11y-dn-bar > .a11y-dn-bar-count {
+  flex: none; margin-inline-start: auto; padding-inline-start: 16px; white-space: nowrap;
+  font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; text-decoration: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-panel .a11y-dn-caret > .a11y-dn-detail[class] {
+  --paper: var(--tile-fill); --tile: var(--bubble); --bubble-pill: var(--bubble);
+  margin: 4px 0 0 var(--caret-col); padding: 0; border-radius: 0; background: none;
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn > .a11y-dn-panel { --caret-col: 20px; padding: 12px; border-radius: 20px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-panel > .a11y-dn-carets > .a11y-dn-caret[class] { border-radius: 14px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-panel > .a11y-dn-carets > .a11y-dn-caret[data-open][class] { padding: 0 14px 14px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-panel .a11y-dn-caret-head > .a11y-dn-bar[class] {
+    min-height: 52px; padding: 14px; border-radius: 14px;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-panel .a11y-dn-caret[data-open] .a11y-dn-caret-head > .a11y-dn-bar[class] { width: calc(100% + 28px); margin: 0 -14px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-panel .a11y-dn-bar > .a11y-dn-bar-count { padding-inline-start: 12px; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn > .a11y-dn-panel { border: 1px solid CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-panel > .a11y-dn-carets > .a11y-dn-caret[class] { border: 1px solid CanvasText; }
+}
+@media print {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn > .a11y-dn-panel { display: none; }
+}

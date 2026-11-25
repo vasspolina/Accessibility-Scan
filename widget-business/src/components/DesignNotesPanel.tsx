@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { t } from "../lib/strings";
+import { t, tf } from "../lib/strings";
 import type { AccessibilityFinding } from "../api/scanClient";
 import { FindingGroup, FindingDetails } from "./FindingGroup";
 import { groupFindings } from "./FindingsList";
@@ -91,6 +91,16 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
                       onClick={() => toggle(id)}
                     >
                       <span className="a11y-dn-bar-title">{noteTitle(group)}</span>
+                      {/* How many places, at the card's far end (user's
+                          reference, 25 Nov 2026, a list of white cards
+                          with a figure at the end of each line). Only
+                          past one, as the professional table counts; the
+                          opened note does not say it again. */}
+                      {group.length > 1 && (
+                        <span className="a11y-dn-bar-count">
+                          {tf("{count} places", { count: group.length })}
+                        </span>
+                      )}
                     </button>
                   </h3>
                   <div
