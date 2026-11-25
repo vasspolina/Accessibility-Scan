@@ -5655,3 +5655,49 @@
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card > .a11y-stmt-code[hidden] { display: block; }
 }
+
+/* ═══ THE SCORE'S ISSUES FIT THEIR ROW (user's instruction, 24 Nov 2026,
+   "redesign so it properly fits") ════════════════════════════════════════
+   The severity word wrapped onto a line of its own whenever a title and
+   its places filled the row, and the criterion's column was 150px for a
+   five-character number. The criterion takes 72px; the severity, first in
+   the issue cell's markup, floats to the far end of the title's first line,
+   so the title and its places wrap beside it and never push it down. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr[class] { grid-template-columns: 72px minmax(0, 1fr); column-gap: 16px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr:not(:has(> .a11y-sum-table-wcag))[class] { grid-template-columns: minmax(0, 1fr); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr > .a11y-sum-table-issue[class][class] { display: block; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue[class] > .a11y-sum-table-badge[class][class] { float: right; margin: 0; padding-left: 24px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue[class] > .a11y-sum-table-count[class] { margin-left: 0.35em; }
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr[class] { grid-template-columns: minmax(0, 1fr); }
+  /* A phone keeps the flex line, the severity under the title. */
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr > .a11y-sum-table-issue[class][class] { display: flex; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue[class] > .a11y-sum-table-badge[class][class] { float: none; flex-basis: 100%; margin: 2px 0 0; padding-left: 0; }
+}
+
+/* ═══ EVERY PART OF AN OPENED FINDING AS ONE WHITE ROW (user's instruction,
+   24 Nov 2026, "make all same white full row") ═══════════════════════════
+   Who fixes this and What we found were white full-width cards; What to do
+   sat on the grey and the affected elements were half-width cards. Now
+   every part is the same card, white (--bubble-pill), 28px corners, 20px
+   26px 24px inside, the full width of the panel, 16px from the next: What
+   to do (or its steps) and the affected elements, whose elements stand one
+   under another inside their card, 16px apart, with no card of their own. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-finding-todo, .a11y-finding-steps, .a11y-affected) {
+  --tile: var(--bubble-pill); --paper: var(--bubble-pill); background: var(--bubble-pill);
+  box-sizing: border-box; padding: 20px 26px 24px; border-radius: 28px;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > *[class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :not([class]) { margin: 0 0 16px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col:last-of-type > :last-child { margin-bottom: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd :is(.a11y-finding-steps > p:first-child, .a11y-finding-todo > strong.a11y-fd-title, .a11y-affected-label)[class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-finding-steps > p:first-child { margin-bottom: 12px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-affected > .a11y-occurrence-list {
+  grid-template-columns: minmax(0, 1fr); gap: 16px; margin: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-affected > .a11y-occurrence-list > .a11y-occurrence[class] {
+  padding: 0; border-radius: 0; background: none;
+}
+@container a11y-ftable (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-finding-todo, .a11y-finding-steps, .a11y-affected) { padding: 16px 16px 18px; border-radius: 20px; }
+}
