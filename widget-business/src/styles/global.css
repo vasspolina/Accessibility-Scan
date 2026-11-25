@@ -737,7 +737,6 @@
    placeholder is ink at Light, never grey. The focus ring goes round the
    whole field. */
 .a11y-widget-biz .a11y-stmt-step-head { margin: 0; font-size: 29px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em; }
-.a11y-widget-biz .a11y-stmt-step-num { margin-inline-end: var(--cds-spacing-04); font-weight: 200; }
 .a11y-widget-biz .a11y-stmt .a11y-stmt-step + * { margin-top: var(--cds-spacing-06); }
 .a11y-widget-biz .a11y-stmt-fields {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: var(--cds-spacing-05) var(--cds-grid-gutter-narrow); margin: 0 0 var(--cds-spacing-07);
@@ -5067,19 +5066,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt-step-head {
   display: flex; align-items: center; gap: var(--cds-spacing-05);
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt-step-num {
-  display: inline-grid; place-items: center; flex: none; box-sizing: content-box;
-  width: 40px; height: 40px; margin: 0; padding: var(--cds-spacing-01); border-radius: 50%;
-  background: var(--ink); color: var(--paper);
-  font-size: 22px; font-weight: 200; line-height: 1; letter-spacing: 0; font-variant-numeric: tabular-nums;
-}
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt > .a11y-stmt-step { margin-top: var(--cds-spacing-10); }
-@media (max-width: 671px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt-step-num { width: 32px; height: 32px; font-size: 16px; letter-spacing: 0.025em; }
-}
-@media (forced-colors: active) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt-step-num { border: 1px solid CanvasText; }
-}
 
 /* THE DESIGN NOTES AS CARETS (user's instruction, 24 Nov 2026, "make these
    into carrets like this", on the notes' crossed list and their cards,
@@ -6097,7 +6084,11 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-research[class][class] > :not(strong:first-child) { text-align: start; }
 /* The points take the hung en dash again now the words are set left
    (user's instruction, 25 Nov 2026, "add back en dashes, and left margin
-   that was bigger"), 12px apart. */
+   that was bigger"), 12px apart. The dash hangs in the row's 40px start at
+   every width, phones included ("make margin like this", the same day), so
+   a list's words share the left edge of a sentence in the row above. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > * > :is(.a11y-fd-points, ul:not(.a11y-occurrence-list))[class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class] > ul { padding-inline-start: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > * > :is(.a11y-fd-points, ul:not(.a11y-occurrence-list))[class] > li + li,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class] > ul > li + li { margin-top: var(--cds-spacing-04); }
 /* The dash is drawn, not the list's outside marker (user's "fix", 25 Nov
@@ -6115,16 +6106,11 @@
 }
 @container a11y-ftable (min-width: 641px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class] { padding: var(--cds-spacing-06) var(--cds-spacing-06) var(--cds-spacing-06); }
-  /* A list's en dash hangs in the row's 40px start, so its words share the
-     left edge of a sentence in the row above. Phones keep the list's own
-     indent: their 18px start is narrower than the dash. */
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > * > :is(.a11y-fd-points, ul:not(.a11y-occurrence-list))[class],
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class] > ul { padding-inline-start: 0; }
 }
 @container a11y-ftable (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps, .a11y-affected)[class][class] {
-    column-gap: var(--cds-spacing-04); padding: var(--cds-spacing-05) var(--cds-spacing-04) var(--cds-spacing-05) var(--cds-spacing-05); border-radius: var(--r-card);
-    --fd-label-shift: calc((var(--cds-spacing-04) - var(--cds-spacing-05)) / 2);
+    column-gap: var(--cds-spacing-04); padding: var(--cds-spacing-05) var(--cds-spacing-04) var(--cds-spacing-05) var(--cds-spacing-08); border-radius: var(--r-card);
+    --fd-label-shift: calc((var(--cds-spacing-04) - var(--cds-spacing-08)) / 2);
   }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-fd-meta[class] { padding-inline: var(--cds-spacing-05); }
 }
@@ -7039,7 +7025,7 @@
    line's height, not from 1lh, which inside the ring is its own 18px line.
    The section titles' count dots are counts, not item numbers, and keep
    their round. Forced colours draw the ring in CanvasText. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-q > .a11y-undecided-no, .a11y-legal-q > .a11y-legal-qnum, .a11y-stmt-step-head .a11y-stmt-step-num)[class][class] {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-q > .a11y-undecided-no, .a11y-legal-q > .a11y-legal-qnum)[class][class] {
   display: inline-grid; place-items: center; flex: none; box-sizing: border-box;
   min-width: 44px; width: auto; height: 44px; padding: 0 var(--cds-spacing-03);
   border: 1px solid currentColor; border-radius: 22px; background: none; color: inherit;
@@ -7047,7 +7033,6 @@
   line-height: 1; letter-spacing: 0; font-variant-numeric: tabular-nums;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-no[class][class] { margin-top: 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt-step-head .a11y-stmt-step-num[class][class] { margin: 0; }
 /* The legal questions: a 44px column for the ring, 12px to the words; the
    cards' 24px/1.35 line (18px/1.4 on a phone) gives the ring's offset. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-q[class][class] { grid-template-columns: 44px minmax(0, 1fr); column-gap: var(--cds-spacing-04); align-items: start; }
@@ -7067,7 +7052,7 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-q > .a11y-legal-qnum[class][class] { margin-top: calc((18px * 1.4 - 44px) / 2); }
 }
 @media (forced-colors: active) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-q > .a11y-undecided-no, .a11y-legal-q > .a11y-legal-qnum, .a11y-stmt-step-head .a11y-stmt-step-num)[class][class] { border-color: CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-q > .a11y-undecided-no, .a11y-legal-q > .a11y-legal-qnum)[class][class] { border-color: CanvasText; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-text ol:not(.a11y-chat-plan)[class] > li::before { border-color: CanvasText; }
 }
 
@@ -7680,8 +7665,7 @@
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
   letter-spacing: 0;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-step-head[class][class][class],
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-step-head > .a11y-stmt-step-num[class][class][class] {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-step-head[class][class][class] {
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
   letter-spacing: 0;
 }
@@ -7760,4 +7744,36 @@
 @media (min-width: 672px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-layout > .a11y-chat[class] { padding-inline: 30px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-chat-box[class][class] { padding: 30px; }
+}
+
+/* ═══ THE STATEMENT'S FORM AND FACTS AS ONE PANEL (user's instruction,
+   25 Nov 2026, "combine these two in one design, no need to number it",
+   on the grey "1 Tell us who this is for" form over the blue facts) ═══
+   One panel in the facts' blue (#2848c8, white words 7.4:1): the title in
+   white capitals with no round number, the two fields beside each other
+   above 672px (the facts' own two columns, so Organisation name stands
+   over Prepared for), still the grey fill with black words (#e6e6e6,
+   18.4:1), then a 1px white rule and the facts under it, no ground of
+   their own. One column of each under 672px. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] {
+  --ink: #fff; --paper: #2848c8;
+  background: #2848c8; color: #fff;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] .a11y-stmt-step-head[class] { color: #fff; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] > .a11y-spec-grid[class][class] {
+  width: 100%; margin: 0; padding: var(--cds-spacing-07) 0 0; border: 0; border-top: 1px solid #fff; border-radius: 0; background: none;
+}
+@media (min-width: 672px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] > .a11y-stmt-fields[class] { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--grid-gap); }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] > .a11y-spec-grid[class][class] { border: 0; border-top: 1px solid CanvasText; }
+}
+/* The facts' labels (Prepared for, Website, Checked against, Position,
+   Problems disclosed) in PP Lettra Mono Ultralight, as the panel's title
+   above them (user's instruction, 25 Nov 2026, "use letra for bottom part
+   titles"), no tracking, white on the blue (7.4:1). */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] .a11y-spec-card > .a11y-spec-label[class][class] {
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
+  letter-spacing: 0; color: #fff;
 }
