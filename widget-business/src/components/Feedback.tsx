@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { Pin, type PinMark, type PinTone } from "./Pin";
 import { t } from "../lib/strings";
 
 /**
@@ -64,17 +63,6 @@ export function ProgressBar({
 
 export type NotificationKind = "error" | "success" | "warning" | "info";
 
-/* Each kind's pin: the plate colour and the mark it holds, a serif letter
-   for warning, error and info (user's instruction, 23 Nov 2026, "use serif
-   font exclamation"), Carbon's checkmark for success. Error and warning
-   share the exclamation; the colour and the title tell them apart. */
-const PIN: Record<NotificationKind, { tone: PinTone; mark: PinMark }> = {
-  error: { tone: "pink", mark: { glyph: "!" } },
-  success: { tone: "mint", mark: { icon: "checkmark" } },
-  warning: { tone: "yellow", mark: { glyph: "!" } },
-  info: { tone: "sky", mark: { glyph: "i" } },
-};
-
 export function Notification({
   kind = "info",
   title,
@@ -86,20 +74,11 @@ export function Notification({
 }) {
   return (
     <div className={`a11y-note a11y-note-${kind}`} role={kind === "error" ? "alert" : "status"}>
-      {/* The glyph repeats the kind, which the colour also carries and the
-          title states. Hidden, so it is the sighted reader's second channel
-          rather than a third thing announced. */}
-      {/* A warning takes the report's small badge with its word, "Warning",
-          in place of the pin (user's instruction, 23 Nov 2026, "just make
-          badge with text as other badges"). The word is read out: it names
-          the kind, which the pin left to the colour. */}
-      {kind === "warning" ? (
-        <span className="a11y-note-badge">{t("Warning")}</span>
-      ) : (
-        <span className="a11y-note-glyph" aria-hidden="true">
-          <Pin tone={(PIN[kind] ?? PIN.info).tone} mark={(PIN[kind] ?? PIN.info).mark} />
-        </span>
-      )}
+      {/* No icon before the words (user's instruction, 25 Nov 2026, "delete
+          these icons", on the enamel pins that marked info, error and
+          success): the title says the kind. A warning keeps its small badge
+          with the word "Warning" (23 Nov 2026), which is read out. */}
+      {kind === "warning" && <span className="a11y-note-badge">{t("Warning")}</span>}
       <div className="a11y-note-body">
         <div className="a11y-note-title">{title}</div>
         {subtitle && <div className="a11y-note-sub">{subtitle}</div>}

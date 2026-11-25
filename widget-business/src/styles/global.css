@@ -43,7 +43,7 @@
    is ink on paper, which swap in dark. */
 .a11y-widget-biz {
   --ink: #000; --paper: #fff; --focus: #198038; --chats-current: #14532d;
-  --hl-orange: #ff6430; --urgent: #ff6430; --hl-blue: #6fa8ff; --hl-green: #4fe0a8;
+  --hl-orange: #f08c5a; --urgent: #f08c5a; --hl-blue: #48a0da; --hl-green: #6ee597;
   --hl-cap-a: #ffe14d; --hl-cap-b: #ff9ad5;
   /* The Report a barrier card's mint (user's swatch, 21 Nov 2026): black
      on #c6ffcc is 18.7:1; dark takes #30d158, black on it 7.4:1+. */
@@ -71,9 +71,9 @@
    widget on a black page. index.tsx stamps data-theme on this element when
    the embedder pins one; otherwise the visitor's system setting decides. */
 @media (prefers-color-scheme: dark) {
-  .a11y-widget-biz:not([data-theme="light"]) { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #ff9f0a; --urgent: #ff9f0a; --hl-blue: #409cff; --hl-green: #30d158; --hl-cap-a: #ffd60a; --hl-cap-b: #ff375f; --focus: #6fdc8c; --chats-current: #30d158; --barrier: #30d158; }
+  .a11y-widget-biz:not([data-theme="light"]) { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #f08c5a; --urgent: #f08c5a; --hl-blue: #48a0da; --hl-green: #6ee597; --hl-cap-a: #ffd60a; --hl-cap-b: #ff375f; --focus: #6fdc8c; --chats-current: #30d158; --barrier: #30d158; }
 }
-.a11y-widget-biz[data-theme="dark"] { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #ff9f0a; --urgent: #ff9f0a; --hl-blue: #409cff; --hl-green: #30d158; --hl-cap-a: #ffd60a; --hl-cap-b: #ff375f; --focus: #6fdc8c; --chats-current: #30d158; --barrier: #30d158; }
+.a11y-widget-biz[data-theme="dark"] { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #f08c5a; --urgent: #f08c5a; --hl-blue: #48a0da; --hl-green: #6ee597; --hl-cap-a: #ffd60a; --hl-cap-b: #ff375f; --focus: #6fdc8c; --chats-current: #30d158; --barrier: #30d158; }
 
 .a11y-widget-biz {
   font-family: "PP Telegraf", "DejaVu Sans", sans-serif;
@@ -1176,8 +1176,7 @@
 .a11y-widget-biz .a11y-accordion-title .a11y-accordion-head > span:first-child { flex: 0 1 auto; }
 
 /* A notice: its mark hangs, its title and the line under it beside it. */
-.a11y-widget-biz .a11y-note { display: grid; grid-template-columns: 1.6em minmax(0, 1fr); align-items: baseline; margin: 0 0 1lh; }
-.a11y-widget-biz .a11y-note-glyph { font-weight: 200; }
+.a11y-widget-biz .a11y-note { display: grid; grid-template-columns: minmax(0, 1fr); align-items: baseline; margin: 0 0 1lh; }
 .a11y-widget-biz .a11y-note-title { font-weight: 200; }
 .a11y-widget-biz .a11y-note-sub { font-size: 24px; letter-spacing: 0.015em; }
 
@@ -3560,7 +3559,7 @@
    The markup order (words, level split, status, count) is unchanged for
    screen readers; only the eye takes them as status, count, words. */
 .a11y-widget-biz {
-  --plate-1: #6fa8ff; --plate-2: #4fe0a8; --plate-3: #ff9ad5; --plate-4: #ffe14d; --plate-text: #000;
+  --plate-1: #48a0da; --plate-2: #6ee597; --plate-3: #ff9ad5; --plate-4: #ffe14d; --plate-text: #000;
 }
 .a11y-widget-biz[data-theme="dark"] {
   --plate-1: #2e3350; --plate-2: #0f3a2a; --plate-3: #2e3814; --plate-4: #36310c; --plate-text: #fff;
@@ -3819,51 +3818,12 @@
   background: var(--barrier); color: #000; border-color: #000;
 }
 
-/* ═══ ENAMEL PINS (user's instruction, 23 Nov 2026, "add this pins for some
-   badges when it makes sense", "like for warning icon on this bubble", with
-   a photo of enamel pins on a knit as the reference) ═══════════════════════
-   A notice's icon is a pin (Pin.tsx): a round body in a plate colour,
-   leaning 8 degrees, with a black plated line, a silver rim and a soft
-   shine at the upper left where the light falls. No cast shadow (user's
-   instruction, the same day, "no drop shadow"). The mark inside is a
-   Serrif letter, "!" or "i" ("use serif font exclamation"); success keeps
-   Carbon's checkmark. The fills are the light plates pinned in both
-   themes, as the opening questions' badge is: warning yellow, error pink,
-   info sky, success mint, black marks on each at 11:1 or better; the shine
-   sits beside the mark, never under it. Only a pin's metal uses greys: it
-   is the object, not a tint on words. Aria-hidden: the notice's title says
-   what the pin shows. In forced colours the fill and rim drop and the
-   line stays. */
-.a11y-widget-biz .a11y-pin {
-  --pin-fill: #ffe14d;
-  display: inline-grid; place-items: center; flex: none; box-sizing: border-box;
-  width: 1.15em; height: 1.15em; border-radius: 50%;
-  border: 0.07em solid #000; color: #000;
-  background:
-    radial-gradient(circle at 26% 22%, rgb(255 255 255 / 0.7) 0 9%, rgb(255 255 255 / 0) 24%),
-    var(--pin-fill);
-  box-shadow: 0 0 0 0.045em #d6d6d6, 0 0 0 0.07em #7d7d7d;
-  rotate: -8deg;
-}
-/* Carbon's marks are drawn for a 1px line at 16px; at pin size they read as
-   hairlines, so the paths take a stroke in their own colour. */
-.a11y-widget-biz .a11y-pin > svg { width: 0.8em; height: 0.8em; overflow: visible; }
-.a11y-widget-biz .a11y-pin > svg path { stroke: currentColor; stroke-width: 1.6px; stroke-linejoin: round; }
-/* The serif letter: Serrif's only cut (Light), at most of the pin's height,
-   set solid so the grid centres the glyph and not a tall line box. */
-.a11y-widget-biz .a11y-pin > .a11y-pin-glyph {
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
-  font-size: 18px; line-height: 1; letter-spacing: 0;
-}
-.a11y-widget-biz .a11y-pin-yellow { --pin-fill: #ffe14d; }
-.a11y-widget-biz .a11y-pin-pink { --pin-fill: #ff9ad5; }
-.a11y-widget-biz .a11y-pin-sky { --pin-fill: #6fa8ff; }
-.a11y-widget-biz .a11y-pin-mint { --pin-fill: #4fe0a8; }
-/* In a plain notice the pin sits on the middle of the title's first line. */
-.a11y-widget-biz.a11y-widget-biz .a11y-note .a11y-note-glyph {
-  display: flex; align-self: start; padding: 0; margin-top: calc((1lh - 1.15em) / 2);
-}
-.a11y-widget-biz.a11y-widget-biz .a11y-note { grid-template-columns: auto minmax(0, 1fr); column-gap: 16px; }
+/* ═══ THE NOTICES' ICONS: deleted (user's instruction, 25 Nov 2026, "delete
+   these icons") ═══════════════════════════════════════════════════════════
+   The enamel pins of 23 Nov 2026 (a leaning round body with a silver rim
+   holding "i", "!" or a tick) are gone with Pin.tsx: a notice is its words
+   in one column, and a warning keeps its "Warning" badge. */
+.a11y-widget-biz.a11y-widget-biz .a11y-note { grid-template-columns: minmax(0, 1fr); }
 /* On the warning bubble the kind is a badge pinned through its edge (user's
    instructions, 23 Nov 2026, "add it in border of buble as other badges",
    then "just make badge with text as other badges and make font this
@@ -3893,7 +3853,6 @@
   .a11y-widget-biz.a11y-widget-biz .a11y-note.a11y-note-warning .a11y-note-badge { border: 1px solid CanvasText; }
 }
 @media print {
-  .a11y-widget-biz .a11y-pin { rotate: none; }
   .a11y-widget-biz.a11y-widget-biz .a11y-note.a11y-note-warning .a11y-note-badge { rotate: none; }
 }
 /* The warning bubble full width in two columns (user's instruction, 23 Nov
@@ -4463,14 +4422,14 @@
   .a11y-widget-biz:not([data-theme="light"]) { --bubble: #1c1c1e; --bubble-pill: #2c2c2e; }
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-findings-table {
-  --sev-critical: #b42800; --sev-serious: #0f53c7; --sev-moderate: #0b6e45; --sev-minor: #7a5c00;
+  --sev-critical: #80262a; --sev-serious: #1c4673; --sev-moderate: #20524d; --sev-minor: #ae5c44;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz[data-theme="dark"] .a11y-findings-table {
-  --sev-critical: #ff6430; --sev-serious: #6fa8ff; --sev-moderate: #4fe0a8; --sev-minor: #ffe14d;
+  --sev-critical: #f08c5a; --sev-serious: #48a0da; --sev-moderate: #6ee597; --sev-minor: #e5dbb2;
 }
 @media (prefers-color-scheme: dark) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz:not([data-theme="light"]) .a11y-findings-table {
-    --sev-critical: #ff6430; --sev-serious: #6fa8ff; --sev-moderate: #4fe0a8; --sev-minor: #ffe14d;
+    --sev-critical: #f08c5a; --sev-serious: #48a0da; --sev-moderate: #6ee597; --sev-minor: #e5dbb2;
   }
 }
 /* The header row is kept in the table, since a fixed table takes its
@@ -4724,14 +4683,14 @@
    7.1:1 and up on black (purple #be95ff 8.9:1). The word, not its colour,
    carries the meaning. */
 .a11y-widget-biz {
-  --word-red: #b42800; --word-blue: #0f53c7; --word-green: #0b6e45; --word-ochre: #7a5c00; --word-purple: #6929c4;
+  --word-red: #80262a; --word-blue: #1c4673; --word-green: #20524d; --word-ochre: #ae5c44; --word-purple: #6929c4;
 }
 .a11y-widget-biz[data-theme="dark"] {
-  --word-red: #ff6430; --word-blue: #6fa8ff; --word-green: #4fe0a8; --word-ochre: #ffe14d; --word-purple: #be95ff;
+  --word-red: #f08c5a; --word-blue: #48a0da; --word-green: #6ee597; --word-ochre: #e5dbb2; --word-purple: #be95ff;
 }
 @media (prefers-color-scheme: dark) {
   .a11y-widget-biz:not([data-theme="light"]) {
-    --word-red: #ff6430; --word-blue: #6fa8ff; --word-green: #4fe0a8; --word-ochre: #ffe14d; --word-purple: #be95ff;
+    --word-red: #f08c5a; --word-blue: #48a0da; --word-green: #6ee597; --word-ochre: #e5dbb2; --word-purple: #be95ff;
   }
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list, .a11y-w22-list) {
@@ -5508,7 +5467,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret[data-open][class][class] { padding: 14px 28px 28px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret-failed { --row-plate: var(--hl-orange); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret-clean { --row-plate: var(--hl-green); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret-human { --row-plate: var(--hl-cap-a); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret-human { --row-plate: #e5dbb2; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret-not-measured { --row-plate: var(--hl-blue); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row[class][class][class][class] {
   align-items: baseline; width: 100%; min-height: 0; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; color: #000;
@@ -5551,6 +5510,70 @@
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret[class][class] { border: 1px solid CanvasText; }
 }
+/* One size and one grid (user's instruction, 25 Nov 2026, "all this content
+   can be same size font, put top row on grid"). Every word in a result and
+   its checklist is the row's size: the criterion, its official name and the
+   places are no longer 18px under 32px titles. The list is the grid and each
+   result, its title line, its group and every criterion row are subgrids of
+   it, so the columns are the same down all four results: the triangle; the
+   sentence over the criteria; the count over the titles; the status at the
+   end over the places. The sentence's column is as wide as the widest
+   sentence up to 34% of the row, then the sentence wraps. The title's small
+   print spans the count's column too, set to the end, and stands 3em clear
+   of the count. Above 640px only: a phone keeps its stacked rows.
+   The one size scales with the screen (user's instruction, the same day,
+   "scale text proportionally on screens smaller sizes"): 32px from 1000px
+   of window up, 2px less for every 100px below it, never under 20px (at
+   375px it is 20px, at 800px 28px), so a narrower window sets the same
+   lines smaller instead of breaking them, and there is no step at 640px. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets :is(.a11y-legal-row, .a11y-conf-row) :is(.a11y-legal-row-label, .a11y-legal-count, .a11y-legal-mark, .a11y-legal-row-meaning, .a11y-conf-id, .a11y-conf-plain, .a11y-conf-status)[class][class][class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-row > .a11y-conf-body > strong:not(#x) {
+  font-size: clamp(20px, calc(12px + 2vw), 32px); line-height: 1.1; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-row > .a11y-conf-id[class][class] { padding-top: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-row .a11y-conf-plain[class][class] { margin-top: 0; }
+@media (min-width: 641px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles.a11y-legal-carets[class][class] {
+    display: grid; grid-template-columns: 28px var(--caret-col) fit-content(34%) minmax(0, 1fr) auto 28px; column-gap: 0; row-gap: 12px;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret[class][class][class] {
+    display: grid; grid-column: 1 / -1; grid-template-columns: subgrid; align-content: start; padding-inline: 0;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row[class][class][class][class][class] {
+    grid-column: 1 / -1; grid-template-columns: subgrid;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row[class][class][class][class]::before { grid-column: 2; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row .a11y-legal-row-label[class][class][class] { grid-column: 3; padding-inline-end: 24px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row .a11y-legal-count[class][class][class] { grid-column: 4; justify-self: start; padding: 0; text-align: start; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row > .a11y-legal-row-desc[class] { grid-column: 4 / 6; margin-inline-start: 3em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-group[class][class] {
+    display: grid; grid-column: 3 / 6; grid-template-columns: subgrid; width: auto; margin-inline-start: 0;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-group[hidden][class][class] { display: none; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-group > :is(.a11y-conf-list, .a11y-conf-caveat)[class] { grid-column: 1 / -1; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-group > .a11y-conf-list[class] {
+    display: grid; grid-template-columns: subgrid; container-type: normal;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-list > .a11y-conf-row[class][class] {
+    grid-column: 1 / -1; grid-template-columns: subgrid; column-gap: 0;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-list > .a11y-conf-row > .a11y-conf-id[class][class] { grid-column: 1; padding-inline-end: 24px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-list > .a11y-conf-row > .a11y-conf-body { grid-column: 2; min-width: 0; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-list > .a11y-conf-row > .a11y-conf-status[class][class] { grid-column: 3; padding-inline-start: 24px; }
+}
+
+
+/* THE FOUR COLOUR PAIRS (user's swatches, 25 Nov 2026, "use these
+   colors"): each status colour is a pair, a dark and a bright. The bright
+   is the plate behind black words in both themes: orange #f08c5a 8.6:1,
+   blue #48a0da 7.3:1, green #6ee597 13.3:1, cream #e5dbb2 15.1:1 (the
+   check results' Needs a person row). The dark is the status word on
+   white: red #80262a 9.4:1, blue #1c4673 9.7:1, green #20524d 8.8:1,
+   terracotta #ae5c44 4.8:1 (AA; the one under 7:1); on black the word
+   takes the bright of its pair. Inside a coloured check result the places
+   are black, since the dark red on the orange plate is 3.9:1. The marker
+   yellow (--hl-cap-a) and pink stay. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-row > .a11y-conf-status[class][class][class] { color: #000; }
 
 /* The design notes. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-carets > .a11y-dn-caret[class] {
@@ -5579,6 +5602,23 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-stepfold[open][class] > summary { margin: 0 0 16px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details[open][class] > :not(summary),
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-stepfold[open][class] > :not(summary) { margin-inline-start: var(--caret-col); }
+/* The technical version's line is a yellow pill across the full width
+   (user's instruction, 25 Nov 2026, "make this a yellow pill stretched"):
+   the marker yellow, black words and triangle in both themes (#000 on
+   #ffe14d 17:1, on dark's #ffd60a 15:1), the triangle in the caret column
+   inside the pill's padding. It stays a pill opened; the code opens under
+   it on the page. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details[class][class] > summary {
+  --ink: #000; align-items: center; box-sizing: border-box; width: 100%; min-height: 56px;
+  padding: 10px 28px; border-radius: 999px; background: var(--hl-cap-a); color: #000;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details[class][class] > summary::before { align-self: center; margin-top: 0; margin-bottom: 0; }
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details[class][class] > summary { min-height: 48px; padding: 8px 18px; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-tech-details[class][class] > summary { border: 1px solid CanvasText; }
+}
 
 /* Hover underlines the title, where a pointer can hover. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dn-caret-head > .a11y-dn-bar, .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row, .a11y-fd .a11y-tech-details > summary, .a11y-chat-stepfold > summary)[class]:hover { text-decoration: none; }
@@ -5654,6 +5694,18 @@
 }
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card > .a11y-stmt-code[hidden] { display: block; }
+}
+/* One caret (user's instruction, 25 Nov 2026, "combine in one carret"):
+   "Take the statement" is the toggle, the triangle in the caret column,
+   then the step's round number and the words; Copy keeps the line's far
+   end. The draft opens under it on the triangle's edge. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-step > .a11y-stmt-step-head { flex: 1 1 auto; min-width: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-step-head > .a11y-stmt-toggle { align-items: center; gap: 16px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-step-head > .a11y-stmt-toggle::before { align-self: center; margin: 0 calc(var(--caret-col) - 0.42em - 16px) 0 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-step-head > .a11y-stmt-toggle > .a11y-stmt-toggle-words { min-width: 0; }
+@media (hover: hover) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-step-head > .a11y-stmt-toggle:hover { text-decoration: none; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-step-head > .a11y-stmt-toggle:hover > .a11y-stmt-toggle-words { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.14em; }
 }
 
 /* ═══ THE SCORE'S ISSUES FIT THEIR ROW (user's instruction, 24 Nov 2026,
@@ -5800,6 +5852,38 @@
 }
 /* The note after the WCAG 2.2 items is its own group: 70px under the list. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-panel > .a11y-w22-list + * { margin-top: 70px; }
+
+/* Ready for WCAG 2.2? as one caret (user's instruction, 25 Nov 2026, "this
+   whole content needs to be a caret"): the title is the toggle, the
+   triangle in the caret column before it; the when and the fail count stay
+   under it shut, and the sentence and the six items open under them, all on
+   the title's left edge. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22 > .a11y-w22-title > .a11y-w22-head {
+  display: flex; align-items: baseline; width: 100%; min-height: 0; margin: 0; padding: 0; border: 0; border-radius: 0;
+  background: none; color: var(--ink); text-align: start; cursor: pointer;
+  font: inherit; letter-spacing: inherit;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22 > .a11y-w22-title > .a11y-w22-head:enabled:hover { background: none; color: var(--ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22 > .a11y-w22-title > .a11y-w22-head::before {
+  content: ""; flex: none; align-self: flex-start; width: 0.42em; height: 0.68em; background: currentColor;
+  margin: calc((1lh - 0.68em) / 2) calc(var(--caret-col) - 0.42em) 0 0; transition: transform 120ms ease;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='12 8 10 16'%3E%3Cpath d='M12 8 22 16 12 24z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='12 8 10 16'%3E%3Cpath d='M12 8 22 16 12 24z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22 > .a11y-w22-title > .a11y-w22-head[aria-expanded="true"]::before { transform: rotate(90deg); }
+@media (hover: hover) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22 > .a11y-w22-title > .a11y-w22-head:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.14em; }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22 > :is(.a11y-next, .a11y-w22-panel) { margin-inline-start: var(--caret-col); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22 > .a11y-w22-panel[hidden],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-desc[hidden] { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22 > .a11y-w22-title > .a11y-w22-head::before { transition: none; }
+}
+@media print {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22 > .a11y-w22-panel[hidden] { display: block; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-desc[hidden] { display: block; }
+}
 
 /* ═══ THE STATEMENT'S STEP 1 AS A FORM (user's instruction, 24 Nov 2026,
    "design this as form", with a reference of a coloured login panel) ═══
