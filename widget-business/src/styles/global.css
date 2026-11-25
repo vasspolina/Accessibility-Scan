@@ -7489,14 +7489,17 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable > tbody > tr:has(> td > .a11y-dt-toggle:focus-visible) { outline-color: Highlight; }
 }
 
-/* THE CHECKLIST'S CALL-OUTS IN LETTRA (user's instruction, 25 Nov 2026,
-   "use letra here for call outs", on the checklist's first column): the
-   criterion's number and level ("1.2.1 A") are PP Lettra Mono Ultralight
-   at the key's own size, no tracking (the monospace is already spaced),
-   as the settings labels and the score's lines are; the official name
-   under them stays PP Telegraf, so the call-out reads apart from the name
-   it labels. */
+/* THE CHECKLIST'S CALL-OUTS IN ITALIC (user's instruction, 25 Nov 2026,
+   "you added strange extra text, clean it up, use italicks", with the
+   poster whose small italic runs, "Live", "au", "avec", label the names
+   beside them): the criterion's number and level ("1.2.1 A") are EB
+   Garamond italic at the key's own 18px, no tracking, over the official
+   name in PP Telegraf. They replace the PP Lettra Mono of the same
+   morning. The level's em inherits the italic (the key's em is set
+   upright elsewhere), 0.25em further from the number, since the
+   Garamond's word space alone set "2.4.7 AA" almost touching. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-row > .a11y-conf-id > .a11y-conf-key {
-  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-synthesis: none;
-  font-weight: 200; letter-spacing: 0;
+  font-family: "EB Garamond", Georgia, serif; font-style: italic; font-synthesis: none;
+  font-weight: 400; letter-spacing: 0; font-variant-numeric: lining-nums;
 }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-row > .a11y-conf-id > .a11y-conf-key > em { font-style: inherit; margin-inline-start: 0.25em; }
