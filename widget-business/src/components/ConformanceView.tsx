@@ -1,4 +1,4 @@
-import { useId, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useId, useMemo, useState, type CSSProperties } from "react";
 import { t, tf } from "../lib/strings";
 import type { ConformanceSummary, CriterionResult, RecordedVerdict } from "../api/scanClient";
 import { statusWord } from "./ManualChecks";
@@ -115,6 +115,55 @@ function DecidedLine({ verdict }: { verdict: RecordedVerdict }) {
   );
 }
 
+/* One criterion of the checklist, under its result's caret. */
+function CriterionRow({ c, verdict }: { c: CriterionResult; verdict?: RecordedVerdict }) {
+  return (
+    <li
+      className={`a11y-conf-row a11y-conf-${c.status}`}
+    >
+      <span className="a11y-conf-id">
+        {c.id} <em>{c.level}</em>
+      </span>
+      <span className="a11y-conf-body">
+        {/* A failing row states the problem; the rest ask the
+            question, because for those we have no problem to
+            report — only something we didn't find, or couldn't
+            check. */}
+        <strong>{c.status === "failed" ? c.failing : c.plain}</strong>
+        <span className="a11y-conf-plain">
+          {c.name}
+        </span>
+        {/* Say which check broke, or "not measured" is just a
+            shrug. The names are the report's own, the same ones
+            the warning banner above uses. */}
+        {c.status === "not-measured" && c.notMeasured && c.notMeasured.length > 0 && (
+          <span className="a11y-conf-plain">{unfinishedChecks(c.notMeasured)}</span>
+        )}
+        {/* Only where the scan left the question open. A measured
+            failure is not overruled by an opinion. */}
+        {c.status !== "failed" && verdict && (
+          <DecidedLine verdict={verdict} />
+        )}
+      </span>
+      {/* A small bubble that sits on its row at a place and tilt
+          of its own (user's instruction, 23 Nov 2026, "design
+          these badges randomly sit on related content in small
+          bubles", "it need to say fails in 2 places"). The
+          place comes from the criterion's id, so it stays put
+          across renders and differs from row to row. Still last
+          in the row's markup, so a screen reader meets it after
+          the line it qualifies. */}
+      <span className="a11y-conf-status" data-status={c.status} style={bubblePlace(c.id)}>
+        {c.status === "failed" && c.findingCount > 0
+          ? c.findingCount === 1
+            ? t("Fails in 1 place")
+            : tf("Fails in {count} places", { count: c.findingCount })
+          : t(STATUS_LABEL[c.status])}
+      </span>
+    </li>
+  );
+}
+
 export function ConformanceView({
   conformance,
   showBfsgNote = false,
@@ -131,49 +180,19 @@ export function ConformanceView({
   showBfsgNote?: boolean;
 }) {
   const verdictFor = useMemo(() => new Map(verdicts.map((v) => [v.criterion, v])), [verdicts]);
-  const [expanded, setExpanded] = useState(false);
-  // The result tiles are the checklist's only filter (user's instruction,
-  // 22 Nov 2026, "do not double the tabs"): a row of Failures, Needs a
-  // person, Nothing found, Not measured and Everything sat under them and
-  // said the same thing twice. Show the checklist opens on everything, a
-  // tile on its own group, and the pressed tile again on everything.
-  const [filter, setFilter] = useState<Filter>("all");
+  // The result groups that are open. More than one may be open at once:
+  // a reader comparing the failures with the items needing a person should
+  // not have to shut one to open the other.
+  const [openGroups, setOpenGroups] = useState<ReadonlySet<Filter>>(() => new Set());
   const panelId = useId();
-  // The toggle stays mounted whichever state we're in, so keyboard focus
-  // never evaporates when the panel opens or closes. The convenience "hide"
-  // at the bottom of a long checklist hands focus back up here.
-  const toggleRef = useRef<HTMLButtonElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
-  // A result tile opens the checklist on its own group; the tile already
-  // pressed goes back to everything. Focus stays on the tile, since it is
-  // now the control that changes the list, and the list is brought into
-  // view only when its first line is below the window (stacked on a phone),
-  // never pulled up over the tiles.
-  const openOn = (f: Filter) => {
-    const pressed = expanded && filter === f;
-    setFilter(pressed ? "all" : f);
-    setExpanded(true);
-    requestAnimationFrame(() => {
-      const panel = panelRef.current;
-      if (!panel || panel.getBoundingClientRect().top < window.innerHeight - 80) return;
-      const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-      panel.scrollIntoView({ block: "start", behavior: reduce ? "auto" : "smooth" });
+  const toggleGroup = (f: Filter) =>
+    setOpenGroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(f)) next.delete(f);
+      else next.add(f);
+      return next;
     });
-  };
 
-  const failing = useMemo(
-    () => conformance.criteria.filter((c) => c.status === "failed"),
-    [conformance.criteria]
-  );
-  // Every criterion is rendered; the filter hides rather than removes. On
-  // screen that is identical. On paper it is the difference between a record
-  // of what was checked and a list of what went wrong — a printed compliance
-  // document that omits the 22 criteria needing a person is hiding the most
-  // honest part of the report. Filtering by not rendering put those rows
-  // beyond the reach of the print stylesheet entirely.
-  const shown = conformance.criteria;
-  const isFilteredOut = (status: CriterionResult["status"]) =>
-    filter !== "all" && status !== filter;
   // One sentence with the filter's name set into it in bold, split where
   // the name goes rather than stitched from fragments.
   const [otherBefore, otherAfter] = tf(
@@ -261,25 +280,50 @@ export function ConformanceView({
             <span className="a11y-legal-col-result">{t("Result")}</span>
             <span className="a11y-legal-col-items">{t("Items")}</span>
           </div>
-          <div className="a11y-legal-tiles">
-          {RESULT_ROWS(conformance).map((r) => (
-            <button
-              key={r.key}
-              type="button"
-              className={`a11y-legal-row a11y-legal-row-${r.key}`}
-              aria-controls={panelId}
-              aria-pressed={expanded && filter === r.filter}
-              onClick={() => openOn(r.filter)}
-            >
-              <span className="a11y-legal-col-result">
-                <span className="a11y-legal-row-label">{r.label}</span>
-                {r.meaning &&<span className="a11y-legal-row-meaning">{r.meaning}</span>}
-                <span className={`a11y-legal-mark a11y-legal-mark-${r.severity}`}>{r.mark}</span>
-              </span>
-              <span className="a11y-legal-count">{r.n}</span>
-            </button>
-          ))}
-          </div>
+          {/* Each result is a caret (user's instruction, 24 Nov 2026, "this
+              can be carrets as well"): the line opens its own group of the
+              checklist in place, under it inside the panel, and shuts again.
+              That replaces the lines as a filter and the Show the checklist
+              button under them, so every criterion is listed once, under
+              its result. Every group stays in the DOM, hidden when shut: a
+              printed report is compliance evidence, and the print
+              stylesheet can reveal a hidden element but not one React never
+              rendered. */}
+          <ul className="a11y-legal-tiles a11y-legal-carets" role="list">
+          {RESULT_ROWS(conformance).map((r) => {
+            const open = openGroups.has(r.filter);
+            const rows = conformance.criteria.filter((c) => c.status === r.filter);
+            return (
+              <li key={r.key} className={`a11y-legal-caret a11y-legal-caret-${r.key}`} data-open={open || undefined}>
+                <button
+                  type="button"
+                  className={`a11y-legal-row a11y-legal-row-${r.key}`}
+                  aria-controls={`${panelId}-${r.key}`}
+                  aria-expanded={open}
+                  onClick={() => toggleGroup(r.filter)}
+                >
+                  <span className="a11y-legal-col-result">
+                    <span className="a11y-legal-row-label">{r.label}</span>
+                    {r.meaning &&<span className="a11y-legal-row-meaning">{r.meaning}</span>}
+                    <span className={`a11y-legal-mark a11y-legal-mark-${r.severity}`}>{r.mark}</span>
+                  </span>
+                  <span className="a11y-legal-count">{r.n}</span>
+                </button>
+                <div id={`${panelId}-${r.key}`} className="a11y-conf-panel a11y-legal-group" hidden={!open}>
+                  {rows.length === 0 ? (
+                    r.filter === "failed" && <p className="a11y-conf-caveat">{t("Nothing on this page fails.")}</p>
+                  ) : (
+                    <ul className="a11y-conf-list">
+                      {rows.map((c) => (
+                        <CriterionRow key={c.id} c={c} verdict={verdictFor.get(c.id)} />
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+          </ul>
           {/* No footer restating the standard and the item count: the chip and
               the line under the title above already say both. */}
         </div>
@@ -290,92 +334,6 @@ export function ConformanceView({
           seven sentences, twice each, in both audiences. The panels are
           already text; a screen reader read them twice. */}
 
-      <button
-        ref={toggleRef}
-        type="button"
-        className="a11y-show-all a11y-show-checklist"
-        aria-expanded={expanded}
-        aria-controls={panelId}
-        onClick={() => {
-          if (!expanded) setFilter("all");
-          setExpanded((v) => !v);
-        }}
-      >
-        {expanded ? t("Hide the checklist") : t("Show the checklist")}
-      </button>
-
-      {/* Always in the DOM, hidden when collapsed. A printed report is
-          compliance evidence, and behind a conditional this checklist — the
-          substance of it — appeared on paper only if the reader happened to
-          expand it first. The print stylesheet can reveal a hidden element;
-          it cannot reveal one React never rendered. */}
-      <div id={panelId} ref={panelRef} className="a11y-conf-panel" hidden={!expanded}>
-          {failing.length === 0 && filter === "failed" ? (
-            <p className="a11y-conf-caveat">{t("Nothing on this page fails.")}</p>
-          ) : (
-            <ul className="a11y-conf-list">
-              {shown.map((c) => (
-                <li
-                  key={c.id}
-                  className={`a11y-conf-row a11y-conf-${c.status}`}
-                  hidden={isFilteredOut(c.status)}
-                >
-                  <span className="a11y-conf-id">
-                    {c.id} <em>{c.level}</em>
-                  </span>
-                  <span className="a11y-conf-body">
-                    {/* A failing row states the problem; the rest ask the
-                        question, because for those we have no problem to
-                        report — only something we didn't find, or couldn't
-                        check. */}
-                    <strong>{c.status === "failed" ? c.failing : c.plain}</strong>
-                    <span className="a11y-conf-plain">
-                      {c.name}
-                    </span>
-                    {/* Say which check broke, or "not measured" is just a
-                        shrug. The names are the report's own, the same ones
-                        the warning banner above uses. */}
-                    {c.status === "not-measured" && c.notMeasured && c.notMeasured.length > 0 && (
-                      <span className="a11y-conf-plain">{unfinishedChecks(c.notMeasured)}</span>
-                    )}
-                    {/* Only where the scan left the question open. A measured
-                        failure is not overruled by an opinion. */}
-                    {c.status !== "failed" && verdictFor.get(c.id) && (
-                      <DecidedLine verdict={verdictFor.get(c.id)!} />
-                    )}
-                  </span>
-                  {/* A small bubble that sits on its row at a place and tilt
-                      of its own (user's instruction, 23 Nov 2026, "design
-                      these badges randomly sit on related content in small
-                      bubles", "it need to say fails in 2 places"). The
-                      place comes from the criterion's id, so it stays put
-                      across renders and differs from row to row. Still last
-                      in the row's markup, so a screen reader meets it after
-                      the line it qualifies. */}
-                  <span className="a11y-conf-status" data-status={c.status} style={bubblePlace(c.id)}>
-                    {c.status === "failed" && c.findingCount > 0
-                      ? c.findingCount === 1
-                        ? t("Fails in 1 place")
-                        : tf("Fails in {count} places", { count: c.findingCount })
-                      : t(STATUS_LABEL[c.status])}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-          <button
-            type="button"
-            className="a11y-show-all a11y-show-checklist"
-            onClick={() => {
-              setExpanded(false);
-              // This button is about to hide with the panel it lives in —
-              // hand focus back to the toggle rather than dropping it.
-              toggleRef.current?.focus();
-            }}
-          >
-            {t("Hide the checklist")}
-          </button>
-      </div>
     </section>
   );
 }

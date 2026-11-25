@@ -407,8 +407,8 @@ export function evaluateMobile(m: MobileSignals): AccessibilityFinding[] {
           c.selector,
           c.snippet,
           failed320
-            ? `At 320px wide this element runs about ${c.overflowPx}px past the edge${both ? `, and at ${m.viewportWidth}px the page is still ${m.documentScrollWidth}px wide` : ""}.`
-            : `At ${width}px wide this element runs about ${c.overflowPx}px past the edge (the page is ${m.documentScrollWidth}px wide), though it fits at 320px.`,
+            ? `At the 320px width WCAG defines for reflow, this element extends about ${c.overflowPx}px past the edge. The whole page scrolls sideways${both ? `, and it still scrolls at a typical ${m.viewportWidth}px phone width (${m.documentScrollWidth}px wide)` : ""}.`
+            : `On a ${width}px-wide phone screen this element extends about ${c.overflowPx}px past the edge. The whole page scrolls sideways (it renders ${m.documentScrollWidth}px wide). It does fit at the 320px width WCAG measures reflow at. So this is a real-phone problem rather than a conformance failure.`,
           FIX_HSCROLL,
           "https://www.w3.org/WAI/WCAG21/Understanding/reflow.html",
           failed320 ? "accessibility" : "design-clarity"
@@ -440,7 +440,7 @@ export function evaluateMobile(m: MobileSignals): AccessibilityFinding[] {
         "AAA",
         t.selector,
         t.snippet,
-        `Tap target ${t.width}×${t.height}px on a phone, under the 24×24px of WCAG 2.2.`,
+        `On a phone this tap target is only ${t.width}×${t.height}px, so it is easy to miss or to tap the wrong thing. That is under the 24×24px WCAG 2.2 asks for, and target size is Level AAA in the WCAG 2.1 version this report measures.`,
         FIX_TAP,
         "https://www.w3.org/WAI/WCAG21/Understanding/target-size.html"
       )
@@ -460,7 +460,7 @@ export function evaluateMobile(m: MobileSignals): AccessibilityFinding[] {
       category: "design-clarity",
       selector: pair.selector,
       elementSnippet: pair.snippet,
-      description: `Two tap targets ${pair.gapPx}px apart on a phone.`,
+      description: `Two tap targets sit only ${pair.gapPx}px apart on a phone. Each is big enough on its own. Together they leave no room to miss: a thumb aiming for one lands on the other.`,
       suggestedFix:
         "Put at least 8px between neighbouring tap targets. Margin between them, or padding inside each. The controls can stay the same visual size.",
       ruleId: "mobile-target-spacing",
@@ -481,7 +481,7 @@ export function evaluateMobile(m: MobileSignals): AccessibilityFinding[] {
       category: "design-clarity",
       selector: sc.elements[0].selector,
       elementSnippet: sc.elements[0].snippet,
-      description: `Pinned bars cover about ${pct}% of a phone screen, ${sc.totalPx}px of ${sc.viewportHeight}px across ${sc.elements.length} element${sc.elements.length === 1 ? "" : "s"}.`,
+      description: `Bars pinned to the screen take up about ${pct}% of a phone display (${sc.totalPx}px of ${sc.viewportHeight}px, across ${sc.elements.length} element${sc.elements.length === 1 ? "" : "s"}). Every pinned pixel is one the visitor can't read the page through. Anything the keyboard focuses can end up hidden behind them. WCAG 2.2 makes keeping focus visible a requirement (2.4.11 Focus Not Obscured).`,
       suggestedFix:
         "Slim the pinned bars on phone widths, or let them scroll away and return. Keep their combined height well under a third of the screen. Set scroll-margin-top on content so focused elements land clear of them.",
       ruleId: "mobile-sticky-coverage",

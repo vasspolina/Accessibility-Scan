@@ -53,7 +53,7 @@ export const FIX_KINDS: Record<FixOwner, FixKind> = {
       return t("Content fix");
     },
     get hint() {
-      return t("Whoever writes your pages.");
+      return t("Whoever writes your pages. No developer needed.");
     },
   },
   design: {
@@ -67,7 +67,7 @@ export const FIX_KINDS: Record<FixOwner, FixKind> = {
     // not their decision to make. The decision comes first and belongs to
     // whoever owns how the page looks.
     get hint() {
-      return t("Your designer, then your developer.");
+      return t("Your designer picks the size, colour or spacing. Your developer applies it.");
     },
   },
   document: {
@@ -76,7 +76,7 @@ export const FIX_KINDS: Record<FixOwner, FixKind> = {
       return t("Document fix");
     },
     get hint() {
-      return t("Whoever made the PDF.");
+      return t("Whoever made the PDF. They fix the original file and upload it again.");
     },
   },
 };
@@ -153,34 +153,73 @@ export function fixKindForRule(ruleId: string | undefined): FixKind {
 }
 
 /**
- * The "Who fixes this" answer for one rule, where its desk's answer names
- * the wrong person: captions are added where the video is hosted, a consent
- * banner is run by whoever set it up. The person only, never the change:
- * What to do says the change, and saying it twice was the over-explaining
- * the user cut on 24 Nov 2026. English keys, translated through t() at
- * render time like the desk sentences.
+ * The "Who fixes this" sentence for one rule, where the desk's own sentence
+ * would be too general to act on.
+ *
+ * The four desk sentences above answer "which kind of person". Read on a
+ * card about a vague link, "whoever writes the page" left the owner asking
+ * who that is and what they should change; on a video it named the wrong
+ * person outright, since captions are added where the video is hosted. So a
+ * rule whose answer is narrower than its desk names the person and the
+ * change. Everything not listed keeps its desk's sentence. English keys,
+ * translated through t() at render time like the desk sentences.
  */
-const DESIGN_THEN_CODE = "Your designer, then your developer.";
-const VIDEO_CAPTIONS = "Whoever runs your video account, such as YouTube or Vimeo.";
-const CONSENT_BANNER = "Whoever runs your cookie banner.";
-const PRESSURE_WARNING = "Whoever runs your offers.";
-const MARKETING_DECISION = "Your marketing or sales team.";
+const LINK_WORDS =
+  "Whoever writes the page. Each link says where it goes: ‘Opening hours’, not ‘Read more’.";
+const VIDEO_CAPTIONS =
+  "Whoever runs the video account, such as YouTube or Vimeo. Captions go there, not in your site.";
+const CONSENT_BANNER_SETTINGS =
+  "Whoever runs your cookie banner. Refusing should be as easy as accepting.";
+const PRESSURE_WARNING =
+  "Whoever runs your offers. Remove the stock or time warning, or make it true.";
+const FOCUS_OUTLINE =
+  "Your designer draws the keyboard outline. Your developer adds it.";
+const TARGET_SIZE =
+  "Your designer makes these bigger on phones, or spaces them out. Your developer applies it.";
+const TYPE_SETTINGS =
+  "Your designer sets the type size, weight and line spacing. Your developer applies it.";
+const MARKETING_DECISION =
+  "Your marketing or sales team. It is their call, not the developer's.";
 
 export const RULE_HINTS: Record<string, string> = {
-  "sr-filename-alt": "Whoever adds your images.",
+  "link-text-vague": LINK_WORDS,
+  "sr-vague-link-name": LINK_WORDS,
+  "sr-vague-button-name":
+    "Whoever writes the page. The button says what it does, such as ‘Book a table’.",
+  "sr-filename-alt":
+    "Whoever adds images. Replace the file name in the alt text with what the picture shows.",
   "video-caption": VIDEO_CAPTIONS,
   "media-video-captions": VIDEO_CAPTIONS,
   "media-embedded-player": VIDEO_CAPTIONS,
-  "media-audio-transcript": "Whoever made the recording.",
-  "media-video-descriptions": "Whoever made the video.",
-  "dark-consent-no-reject": CONSENT_BANNER,
-  "dark-consent-asymmetry": CONSENT_BANNER,
-  "dark-preselected-optin": "Whoever owns the form.",
-  "dark-confirmshaming": "Your marketing team.",
+  "media-audio-transcript":
+    "Whoever made the recording writes out what is said. Put that text beside the audio.",
+  "media-video-descriptions":
+    "Whoever made the video. Add a spoken description, or a text version beside it.",
+  "component-submit-clarity":
+    "Whoever writes the form. The button says what it does, such as ‘Send my booking’.",
+  "readability-dense-prose":
+    "Whoever writes the page. Shorter sentences, shorter paragraphs, no code change.",
+  "dark-consent-no-reject":
+    "Whoever runs your cookie banner. Add a ‘Reject all’ button as plain as ‘Accept all’.",
+  "dark-consent-asymmetry": CONSENT_BANNER_SETTINGS,
+  "dark-preselected-optin":
+    "Whoever owns the form. Untick the sign-up boxes so each visitor chooses.",
+  "dark-confirmshaming":
+    "Whoever writes your marketing. Let people decline plainly, such as ‘No thanks’.",
   "dark-fake-scarcity": PRESSURE_WARNING,
   "dark-fake-urgency": PRESSURE_WARNING,
-  "keyboard-faint-focus": DESIGN_THEN_CODE,
-  "keyboard-no-visible-focus": DESIGN_THEN_CODE,
+  "color-contrast":
+    "Your designer picks a stronger colour. Your developer swaps it in.",
+  "link-in-text-block":
+    "Your designer marks links without relying on colour, such as an underline. Your developer adds it.",
+  "keyboard-faint-focus": FOCUS_OUTLINE,
+  "keyboard-no-visible-focus": FOCUS_OUTLINE,
+  "mobile-tap-target": TARGET_SIZE,
+  "mobile-target-spacing": TARGET_SIZE,
+  "mobile-sticky-coverage":
+    "Your designer decides how much of the screen the fixed bar may cover. Your developer shrinks it.",
+  "component-required-cue":
+    "Your designer marks required fields, such as with the word ‘required’. Your developer adds it.",
 };
 
 /** The "Who fixes this" sentence for a finding, in the reader's language:
@@ -190,13 +229,13 @@ export const RULE_HINTS: Record<string, string> = {
 export function fixHint(finding: AccessibilityFinding): string {
   const id = finding.ruleId ?? "";
   if (RULE_HINTS[id]) return t(RULE_HINTS[id]);
-  if (id.startsWith("typo-")) return t(DESIGN_THEN_CODE);
+  if (id.startsWith("typo-")) return t(TYPE_SETTINGS);
   if (finding.category === "dark-pattern") return t(MARKETING_DECISION);
   return fixKindForFinding(finding).hint;
 }
 
 /** Every rule-specific sentence, for the voice tests. */
-export const ALL_RULE_HINTS: string[] = [...new Set([...Object.values(RULE_HINTS), MARKETING_DECISION])];
+export const ALL_RULE_HINTS: string[] = [...new Set([...Object.values(RULE_HINTS), TYPE_SETTINGS, MARKETING_DECISION])];
 
 export function fixKindForFinding(finding: AccessibilityFinding): FixKind {
   // Category before rule id. A dark pattern is a marketing decision whatever

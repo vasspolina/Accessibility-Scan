@@ -76,8 +76,9 @@ export function evaluateConsentA11y(signals: DarkPatternSignals): AccessibilityF
       selector: banner.selector,
       elementSnippet: banner.snippet || undefined,
       description:
-        `While the cookie banner is up, ${a.bgHiddenPct}% of the page's text is hidden from assistive technology ` +
-        `and keyboard focus never lands inside the banner.`,
+        `While the cookie banner is up, ${a.bgHiddenPct}% of the page's text is marked hidden for assistive technology, ` +
+        `and keyboard focus never lands inside the banner. A screen reader user hears silence where the page should be, ` +
+        `and can't find the banner to clear it.`,
       suggestedFix:
         'Move focus into the banner when it opens and keep it there until a choice is made, then the hiding is a correct modal. ' +
         'Or stop hiding the page: a non-modal banner needs no aria-hidden at all.',

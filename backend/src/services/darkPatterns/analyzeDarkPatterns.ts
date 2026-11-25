@@ -629,8 +629,8 @@ export function evaluateDarkPatterns(signals: DarkPatternSignals): Accessibility
           banner.selector,
           banner.snippet,
           viaManage
-            ? "The cookie banner accepts in one click, but refusing goes through a settings screen."
-            : "The cookie banner offers a way to accept and no visible way to refuse.",
+            ? "Your cookie banner lets people accept in one click. Refusing means going into a settings screen first. Making refusal slower than acceptance is the most-cited consent dark pattern. Regulators in the EU and UK treat it as invalid consent."
+            : "Your cookie banner offers a way to accept, but no visible way to refuse at all. Consent that can't be declined as easily as it's given isn't valid under GDPR or the UK's cookie rules. To visitors, it reads as a trick.",
           'Put a "Reject all" (or "Only necessary") control directly on the banner. Give it the same level and visual weight as "Accept all". One click each way.',
           HELP.consent
         )
@@ -646,7 +646,7 @@ export function evaluateDarkPatterns(signals: DarkPatternSignals): Accessibility
             "moderate",
             banner.rejectControls[0].selector,
             banner.snippet,
-            `The cookie banner styles "accept" as a solid button and the refuse option (“${banner.rejectControls[0].text}”) as plain text.`,
+            `Your cookie banner styles "accept" as a solid button while the refuse option (“${banner.rejectControls[0].text}”) stays plain text. Weighting one choice visually is a recognised nudge. People click the prominent option without really choosing.`,
             "Give the accept and reject controls equal visual weight, the same size and button style, sitting side by side. The choice is then genuinely free.",
             HELP.consent
           )
@@ -664,7 +664,7 @@ export function evaluateDarkPatterns(signals: DarkPatternSignals): Accessibility
           "serious",
           optIn.selector,
           optIn.snippet,
-          `A marketing opt-in is ticked before the visitor chooses (“${optIn.label.slice(0, 80)}”)${n > 1 ? `, one of ${n} on this page` : ""}.`,
+          `This page ticks a marketing opt-in for the visitor before they choose (“${optIn.label.slice(0, 80)}”). Pre-ticked consent boxes are explicitly invalid under GDPR, and people who miss them feel signed up without agreeing.${n > 1 ? ` This page has ${n} pre-ticked opt-ins.` : ""}`,
           "Ship these checkboxes unticked and let people opt in deliberately. Consent has to be an active choice, not the default.",
           HELP.preselection
         )
@@ -679,7 +679,7 @@ export function evaluateDarkPatterns(signals: DarkPatternSignals): Accessibility
         "moderate",
         shame.selector,
         shame.snippet,
-        `The decline option is worded to shame the visitor: “${shame.text.slice(0, 100)}”.`,
+        `This page words its decline option to make the visitor feel bad for choosing it: “${shame.text.slice(0, 100)}”. This is confirmshaming. The decline reads as an admission rather than a neutral choice.`,
         'Word the decline neutrally ("No thanks", "Not now") with the same tone as the accept option. Let people say no without the page making them feel foolish.',
         HELP.confirmshaming
       )
@@ -695,8 +695,8 @@ export function evaluateDarkPatterns(signals: DarkPatternSignals): Accessibility
         claim.selector,
         claim.snippet,
         isScarcity
-          ? `A scarcity claim, not verified: “${claim.text.slice(0, 100)}”.`
-          : `A deadline, not verified: “${claim.text.slice(0, 100)}”.`,
+          ? `This page shows a scarcity claim: “${claim.text.slice(0, 100)}”. Worth checking it reflects real stock or real activity. Invented scarcity is a deceptive practice regulators in the US and EU pursue. Shoppers increasingly distrust it.`
+          : `This page applies time pressure: “${claim.text.slice(0, 100)}”. Worth checking the deadline is real. Countdowns that reset on reload, or offers that never actually expire, are a deceptive practice. They erode trust when noticed.`,
         isScarcity
           ? "Only show stock or activity counts that come from real data, and drop them where they don't. If the number is real, say where it comes from."
           : "Only show a deadline that genuinely applies, and let the offer actually end when it does. Remove countdowns that restart on every visit.",

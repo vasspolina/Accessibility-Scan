@@ -115,57 +115,61 @@ export interface PlainRule {
 export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "reflow-height-unreachable": {
     plain: "Pinned panel hides its buttons",
-    impact: "Someone who zooms in to read cannot reach these buttons at all.",
+    impact: "Someone who zooms in to read cannot reach these buttons at all. Scrolling does not help, because the panel does not move.",
   },
   "reflow-height-pinned": {
     plain: "Pinned bars leave no reading room",
-    impact: "Someone who zooms in sees the bars and almost nothing else.",
+    impact: "Someone who zooms in to read sees the bars and almost nothing else. Not one line of the page fits between them.",
   },
   "reflow-height-pinned-advisory": {
     plain: "Pinned bars squeeze the zoomed page",
-    impact: "Someone who zooms in sees a few lines at a time and loses their place.",
+    impact: "Someone who zooms in sees a few lines at a time. They lose their place with each scroll.",
   },
   "contrast-over-image": {
     plain: "Text too faint on a picture",
-    impact: "Readers with low vision lose words set on a busy or pale picture.",
+    impact: "People with low vision, and anyone reading in sunlight, lose words that sit on a busy or pale background.",
   },
   "form-error-silent": {
     plain: "Form refuses without saying why",
-    impact: "Someone who misses a field can't tell what went wrong, so many give up.",
+    impact: "Someone who misses a field presses the button and nothing happens. They cannot tell what went wrong, so many give up.",
   },
   "timing-meta-refresh": {
     plain: "The page reloads on a timer",
-    impact: "Anyone still reading or filling in the form is thrown back to the start.",
+    impact:
+      "Anyone still reading, or part way through the form, is thrown back to the start with no warning. Reading slowly is not a fault, and this punishes it.",
   },
   "aria-allowed-role": {
     plain: "A role the element can't have",
     found: (n) =>
-      `${n} ${n === 1 ? "element is" : "elements are"} labelled in the code as something ${n === 1 ? "it" : "they"} can't be.`,
-    impact: "Screen readers announce a link as a button, or a list as a heading.",
+      `${n} ${n === 1 ? "element is" : "elements are"} labelled in the code as something ${n === 1 ? "it" : "they"} can't be. The role does not belong on that kind of tag.`,
+    impact:
+      "Screen readers announce the wrong thing. People are told they reached a button when it is a link, or a heading when it is a list.",
   },
   "aria-allowed-attr": {
     plain: "Screen-reader setting on the wrong element",
     found: (n) =>
-      `${n} ${n === 1 ? "element carries settings its" : "elements carry settings their"} kind of tag is not allowed to have.`,
+      `${n} ${n === 1 ? "element carries settings its" : "elements carry settings their"} kind of tag is not allowed to have. The browser and the screen reader disagree about what ${n === 1 ? "it is" : "they are"}.`,
     impact: "Screen readers can announce nonsense, or skip the element entirely.",
   },
   "aria-prohibited-attr": {
     plain: "A label screen readers must ignore",
     found: (n) =>
       `${n} ${n === 1 ? "element carries" : "elements carry"} a label the code does not allow on that kind of tag.`,
-    impact: "Screen readers ignore the label and announce whatever text is inside, often nothing.",
+    impact:
+      "The element looks named in the source code, so nobody notices anything wrong. Screen readers ignore the label and announce whatever text sits inside, often nothing.",
   },
   "aria-required-children": {
     plain: "Menus or lists missing their items",
     found: (n) =>
-      `${n} ${n === 1 ? "control is labelled in the code as a menu or a list, but contains" : "controls are labelled in the code as menus or lists, but contain"} none of the items ${n === 1 ? "it needs" : "they need"}.`,
+      `${n} ${n === 1 ? "control is labelled in the code as a menu or a list, but contains" : "controls are labelled in the code as menus or lists, but contain"} none of the items ${n === 1 ? "it needs" : "they need"}. ${n === 1 ? "It is" : "Each is"} announced as having nothing in it.`,
     impact: "Screen readers can't work out its structure, so people can't navigate it.",
   },
   "aria-required-parent": {
     plain: "List item outside its list",
     found: (n) =>
-      `${n} ${n === 1 ? "element is labelled as part of a larger control, such as a tab, but sits" : "elements are labelled as parts of a larger control, such as a tab, but sit"} outside it.`,
-    impact: "Screen readers can't say which one of how many it is.",
+      `${n} ${n === 1 ? "element is labelled as a piece" : "elements are labelled as pieces"} of a larger control: a tab, a menu item, an option, a row. ${n === 1 ? "It does not sit" : "None sits"} inside the control ${n === 1 ? "it belongs" : "they belong"} to.`,
+    impact:
+      "A tab outside its tab strip is not a tab to anything. Screen readers can't say which one of how many it is. The arrow keys people use to move through these controls have nothing to move through.",
   },
   "landmark-unique": {
     plain: "Two page areas share one name",
@@ -182,14 +186,14 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "landmark-no-duplicate-contentinfo": {
     plain: "More than one page footer",
     found: () =>
-      `The page marks more than one area as its footer.`,
+      `The page marks more than one area as its footer. There is then no single place to jump to for contact details or terms.`,
     impact: "Screen readers list several footers, and people can't tell which is which.",
   },
   "landmark-no-duplicate-main": {
     plain: "More than one main content area",
     found: () =>
-      `More than one area is marked as the main content.`,
-    impact: "\"Skip to main content\" can land people in the wrong part of the page.",
+      `More than one area is marked as the main content. "Skip to main content" has to pick one, and can't know which you meant.`,
+    impact: "People land in the wrong half of the page.",
   },
   "landmark-banner-is-top-level": {
     plain: "Header nested inside another area",
@@ -207,99 +211,108 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     plain: "Skip link goes nowhere",
     found: (n) =>
       `${n} skip ${n === 1 ? "link points" : "links point"} at something that is not on the page.`,
-    impact: "Keyboard users press it and still tab through the whole menu.",
+    impact:
+      "Keyboard users press it and stay exactly where they were, then tab through the whole menu anyway.",
   },
   "component-skip-link-dead": {
     plain: "Skip link goes nowhere",
     found: (n) =>
       `${n} skip ${n === 1 ? "link points" : "links point"} at something that is not on the page.`,
-    impact: "Keyboard users press it and still tab through the whole menu.",
+    impact:
+      "Keyboard users press it and stay exactly where they were, then tab through the whole menu anyway.",
   },
   "image-redundant-alt": {
     plain: "Image description repeats nearby text",
     found: (n) =>
       `${n} ${n === 1 ? "image repeats, in its alt text, the words already printed beside it" : "images repeat, in their alt text, the words already printed beside them"}.`,
-    impact: "Screen reader users hear the same words twice.",
+    impact: "Screen reader users hear the same thing twice, which slows them down for nothing.",
   },
   "color-contrast": {
     research:
-      "WebAIM checks a million homepages every year. Low-contrast text is the most common failure it finds, year after year.",
+      "WebAIM checks a million homepages every year. Low-contrast text is the most common failure it finds, year after year. Far more people see less sharply than a design team's monitors assume.",
     plain: "Text too faint to read",
     found: (n) =>
-      `${n} ${n === 1 ? "piece" : "pieces"} of text on this page ${n === 1 ? "sits" : "sit"} too close in colour to the background behind ${n === 1 ? "it" : "them"}.`,
-    impact: "Readers with weak eyesight, or in bright light, can't make out the words.",
+      `${n} ${n === 1 ? "piece" : "pieces"} of text on this page ${n === 1 ? "sits" : "sit"} too close in colour to the background behind ${n === 1 ? "it" : "them"}. The technical version gives the measured ratio.`,
+    impact:
+      "Hard to read in bright light, on a cheap screen, in a dim room, or with imperfect eyesight. The message doesn't land.",
   },
   "image-alt": {
     research:
-      "WebAIM checks a million homepages every year. Images with no description sit among its most common failures, year after year.",
+      "WebAIM checks a million homepages every year. Images with no description sit among its most common failures, year after year. It is also one of the simplest to resolve.",
     plain: "Images have no description",
     found: (n) =>
-      `${n} ${n === 1 ? "image has" : "images have"} no alt text at all.`,
-    impact: "Screen reader users can't tell what these images show.",
+      `${n} ${n === 1 ? "image has" : "images have"} no alt text at all, not even an empty one to mark ${n === 1 ? "it" : "them"} decorative. A screen reader falls back to reading the filename aloud, or skips ${n === 1 ? "it" : "them"} in silence.`,
+    impact:
+      "Screen reader users hear nothing for these images, and search engines can't tell what they show. It costs the site both accessibility and SEO.",
   },
   "svg-img-alt": {
     plain: "Icons have no description",
     found: (n) =>
       `${n} ${n === 1 ? "icon is" : "icons are"} marked in the code as ${n === 1 ? "a picture" : "pictures"} but ${n === 1 ? "carries" : "carry"} no words saying what ${n === 1 ? "it shows" : "they show"}.`,
-    impact: "Where the icon is the only label, screen readers have nothing to announce.",
+    impact:
+      "Often the icon is the only label on a control: a magnifying glass for search, a basket for the cart. A screen reader reaches it and has nothing to announce.",
   },
   "input-image-alt": {
     plain: "Image button has no description",
     found: (n) =>
-      `${n} ${n === 1 ? "image used as a button has" : "images used as buttons have"} no alt text.`,
-    impact: "Screen reader users can't tell what the button does.",
+      `${n} ${n === 1 ? "image used as a button has" : "images used as buttons have"} no alt text, so there is nothing to announce and nothing to read.`,
+    impact: "Screen reader users can't tell what the button does, so they can't finish.",
   },
   "link-name": {
     research:
       "Empty links are among the most common failures in WebAIM's annual survey of a million homepages.",
     plain: "Links have no readable text",
     found: (n) =>
-      `${n} ${n === 1 ? "link has" : "links have"} no words and no label inside.`,
-    impact: "Screen reader users hear only \"link\", with no clue where it goes.",
+      `${n} ${n === 1 ? "link has" : "links have"} no readable text inside. No words and no label, so nothing to announce. ${n === 1 ? "Usually this is an icon or an image used as a link." : "Usually these are icons or images used as links."} The picture carries the meaning and the code carries none of it.`,
+    impact:
+      "Screen reader users often pull up a list of every link and pick from it. A link with no text appears there as the single word \"link\". Several of them turn the list into \"link, link, link\".",
   },
   "link-text-vague": {
     plain: "Links say only \"read more\"",
-    impact: "In a screen reader's list of links, they all read the same.",
+    impact:
+      "Screen reader users can pull up a list of every link on the page. When they all read the same, the list is no help at all.",
   },
   // A finding of its own since axe-core 4.14.0 made the rule stable; before
   // that it reached the report only as an open question.
   "label-content-name-mismatch": {
     plain: "Spoken name differs from label",
     found: (n) =>
-      `${n} ${n === 1 ? "control shows" : "controls show"} one set of words and ${n === 1 ? "carries" : "carry"} a different name in the code.`,
-    impact: "People using voice control say the words they see, and nothing happens.",
+      `${n} ${n === 1 ? "control shows" : "controls show"} one set of words and ${n === 1 ? "carries" : "carry"} a different name in the code. The name a screen reader speaks leaves out the words printed on ${n === 1 ? "it" : "them"}.`,
+    impact:
+      "People who work a site by voice say the words they see. \"Click Send message\" does nothing when the code calls the button something else. Screen reader users who can see the page hear one thing and read another.",
   },
   "button-name": {
     research:
       "Unlabelled buttons sit near the top of WebAIM's annual survey of a million homepages, year after year. Usually they are icon-only controls that were obvious to whoever designed them.",
     plain: "Buttons have no label",
     found: (n) =>
-      `${n} ${n === 1 ? "button has" : "buttons have"} no words inside and no name in the code.`,
-    impact: "Screen reader users can't tell what it does before pressing it.",
+      `${n} ${n === 1 ? "button has" : "buttons have"} no label of any kind: no words inside and no name in the code. Nearly always an icon button, where the symbol carries the meaning and the code carries none of it.`,
+    impact: "Screen reader users can't tell what it does before pressing it. A common reason people give up.",
   },
   label: {
     research:
-      "Missing form labels sit near the top of WebAIM's annual survey of a million homepages. In the UK's Click-Away Pound research, most shoppers who met such a barrier left without a word.",
+      "Missing form labels sit near the top of WebAIM's annual survey of a million homepages. In the UK's Click-Away Pound research, most shoppers who met such a barrier left without a word. They took their spending elsewhere.",
     plain: "Form fields have no label",
     found: (n) =>
-      `${n} form ${n === 1 ? "field is" : "fields are"} not joined to a label in the code.`,
-    impact: "Screen reader users don't know what goes in each box, so forms get abandoned.",
+      `${n} form ${n === 1 ? "field is" : "fields are"} not joined to a label in the code. The words may sit right beside the field on screen, but nothing connects the two.`,
+    impact:
+      "Screen reader users don't know what goes in each box, so forms get abandoned, checkout included.",
   },
   "select-name": {
     plain: "A dropdown has no label",
     found: (n) =>
       `${n} ${n === 1 ? "dropdown has" : "dropdowns have"} no label in the code.`,
-    impact: "People can't tell what they're choosing.",
+    impact: "People can't tell what they're choosing. Errors and dropped forms follow.",
   },
   "document-title": {
     plain: "The page has no title",
     found: () =>
-      `The page has no title, so the browser tab shows only the address.`,
-    impact: "Tabs, bookmarks and search results show nothing useful.",
+      `The page has no title, so a browser tab and a screen reader both fall back to the address.`,
+    impact: "Tabs, bookmarks, history and search results show nothing useful.",
   },
   "html-has-lang": {
     research:
-      "A missing document language is one of the few failures WebAIM finds on a majority of the web. It stays common because the failure is silent.",
+      "A missing document language is one of the few failures WebAIM finds on a majority of the web. It stays common because the failure is silent. The page looks right, and only someone hearing it in the wrong voice meets the fault.",
     plain: "The page declares no language",
     found: () => `The page does not declare what language it is written in.`,
     impact: "People hear the content in the wrong accent, which is hard to follow.",
@@ -312,8 +325,8 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "heading-order": {
     plain: "Headings skip levels",
     found: (n) =>
-      `In ${n} ${n === 1 ? "place" : "places"} a heading level is skipped, such as an h2 followed by an h4.`,
-    impact: "Screen reader users who navigate by headings lose the thread.",
+      `The heading levels jump instead of stepping. In ${n} ${n === 1 ? "place" : "places"} a level is skipped. An h2 followed straight by an h4, or similar.`,
+    impact: "Most screen reader users navigate by headings. They lose the thread.",
   },
   "page-has-heading-one": {
     plain: "No main heading",
@@ -335,75 +348,78 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "meta-viewport": {
     plain: "Zooming is blocked",
-    found: () =>
-      `The page stops anyone enlarging it on a phone.`,
-    impact: "Anyone who needs bigger text can't get it.",
+    found: () => `The page blocks zooming, so anyone who needs to enlarge it on a phone can't.`,
+    impact: "Anyone who needs bigger text can't get it. On a phone, they just leave.",
   },
   "meta-viewport-large": {
     plain: "Zoom limited to a fixed level",
     found: () =>
       `Zooming works, but the page caps it below 500%.`,
-    impact: "Anyone who needs very large text hits the cap and gets no further.",
+    impact:
+      "Milder than blocking zoom outright, and it fails the same people. Anyone who needs very large text gets to the cap and no further.",
   },
   "frame-title": {
     plain: "An embedded frame has no title",
     found: (n) =>
       `${n} embedded ${n === 1 ? "frame has" : "frames have"} no title, so ${n === 1 ? "it is" : "they are"} announced only as "frame".`,
-    impact: "Screen reader users can't tell what's in it.",
+    impact: "Screen reader users can't tell what's in it, or whether it's worth their time.",
   },
   "duplicate-id-active": {
     plain: "Two controls share one code id",
     found: (n) =>
-      `${n} ${n === 1 ? "id is" : "ids are"} used more than once on controls.`,
-    impact: "Screen readers can read out the wrong control's label.",
+      `${n} ${n === 1 ? "id is" : "ids are"} used more than once on controls, so labels and references can point at the wrong element.`,
+    impact: "Screen readers get confused and the wrong thing responds when someone clicks.",
   },
   list: {
     plain: "A list not coded as one",
     found: (n) =>
-      `${n} ${n === 1 ? "list is" : "lists are"} built with something other than list items inside.`,
-    impact: "Screen reader users aren't told how many items there are.",
+      `${n} ${n === 1 ? "list is" : "lists are"} built with something other than list items inside. The grouping exists on screen and not in the code.`,
+    impact: "Screen reader users aren't told how many items there are, and can't skip through them.",
   },
   listitem: {
     plain: "List items outside any list",
     found: (n) =>
-      `${n} list ${n === 1 ? "item sits" : "items sit"} outside any list.`,
-    impact: "Screen reader users lose the grouping.",
+      `${n} list ${n === 1 ? "item sits" : "items sit"} outside any list. A screen reader never announces how many there are, or where the group starts.`,
+    impact: "Screen reader users lose the grouping, so the content stops making sense.",
   },
   "aria-required-attr": {
     plain: "A control missing a required state",
     found: (n) =>
-      `${n} ${n === 1 ? "control is labelled as having a state, such as checked or expanded, but never says" : "controls are labelled as having a state, such as checked or expanded, but never say"} what it is.`,
-    impact: "Screen reader users can't tell what state it's in.",
+      `${n} ${n === 1 ? "control is" : "controls are"} labelled as something with a state: checked, expanded, selected, a value on a scale. ${n === 1 ? "It never says" : "None of them says"} what that state is.`,
+    impact: "Screen reader users can't tell what state it's in, or how to work it.",
   },
   "aria-hidden-focus": {
     plain: "Hidden items still catch keyboard focus",
     found: (n) =>
       `${n} ${n === 1 ? "element is" : "elements are"} hidden from screen readers while still reachable by keyboard.`,
-    impact: "Keyboard users land on something their screen reader won't read.",
+    impact: "Someone tabbing through lands on something their screen reader won't read. The page feels broken.",
   },
   "aria-dialog-name": {
     plain: "A pop-up with no name",
     found: (n) =>
       `${n} ${n === 1 ? "pop-up has" : "pop-ups have"} nothing naming ${n === 1 ? "it" : "them"}, so ${n === 1 ? "it is" : "they are"} announced as "dialog" and nothing else.`,
-    impact: "Screen reader users can't hear what has taken over the screen.",
+    impact:
+      "Something has taken over the screen and there is no way to hear what it is.",
   },
   "nested-interactive": {
     plain: "A control nested inside another",
     found: (n) =>
-      `${n} ${n === 1 ? "control contains another control" : "controls each contain another control"}.`,
-    impact: "The inner control is hidden from screen readers and can't be reached.",
+      `${n} ${n === 1 ? "control contains another control" : "controls each contain another control"}. What looks like one thing to click is two wrapped around each other.`,
+    impact:
+      "Screen readers announce the outer one and hide what is inside it, so the inner control is unreachable. Which of the two a click or a keypress activates is anyone's guess.",
   },
   "presentation-role-conflict": {
     plain: "A working control marked as decoration",
     found: (n) =>
       `${n} ${n === 1 ? "element is" : "elements are"} marked to be ignored while still being reachable and usable.`,
-    impact: "Some screen readers ignore it, so their users never find it.",
+    impact:
+      "The code says to ignore it and the element says to use it. Screen readers resolve that inconsistently, so some people never find it.",
   },
   region: {
     plain: "Page areas unnamed in the code",
     found: (n) =>
       `${n} ${n === 1 ? "block of content has" : "blocks of content have"} no header, nav, main or footer around ${n === 1 ? "it" : "them"}.`,
-    impact: "Screen reader users can't skip ahead, so they hear everything every time.",
+    impact: "Screen reader users can't skip ahead. They hear everything, every time.",
   },
   "landmark-one-main": {
     plain: "Nothing marks the main content",
@@ -414,8 +430,8 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   tabindex: {
     plain: "Tab order jumps around",
     found: (n) =>
-      `${n} ${n === 1 ? "element uses" : "elements use"} a positive tabindex, which pulls ${n === 1 ? "it" : "them"} to the front of the tab order.`,
-    impact: "Keyboard users get thrown around the page.",
+      `${n} ${n === 1 ? "element uses" : "elements use"} a positive tabindex. It forces ${n === 1 ? "the element" : "them"} to the front of the tab order, wherever ${n === 1 ? "it sits" : "they sit"} on the page.`,
+    impact: "People who can't use a mouse get thrown around the page.",
   },
   "scrollable-region-focusable": {
     plain: "Scrollable area unreachable by keyboard",
@@ -434,15 +450,18 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     // never reach it, so it is a control — that is what a control is — and
     // saying so is both more accurate and more confident than "something".
     plain: "A control the keyboard can't reach",
-    impact: "Anyone who can't use a mouse can't use this control at all.",
+    impact:
+      "There is no workaround for this one. Anyone who can't use a mouse can't do whatever this control does. If it's a Buy button or a form step, that's the end of the visit.",
   },
   "keyboard-no-visible-focus": {
     plain: "You can't see which item has keyboard focus",
-    impact: "Keyboard users can't see where they are, and give up.",
+    impact:
+      "Plenty of people never touch a mouse. Without a visible highlight they're navigating blind, and they give up.",
   },
   "readability-dense-prose": {
     plain: "The writing needs university-level reading",
-    impact: "Readers with cognitive disabilities, or in a second language, can't follow it.",
+    impact:
+      "The change with the widest reach in this report. It helps people with cognitive disabilities and anyone reading in a second language. GOV.UK writes for a reading age of about nine, and it is not a simple site.",
   },
   "typo-leading-for-measure": {
     plain: "Lines set too close together",
@@ -452,33 +471,39 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     // computed per block by analyzeTypography.ts. A generic line said less
     // than the number already sitting in the finding, so whatWeFound()
     // falls through to it instead.
-    impact: "Readers jumping back to the start of each line land on the wrong one.",
+    impact:
+      "The eye does not glide along a line, it jumps. The hardest jump is back to the start of the next one. The longer the line, the easier it is to land on the wrong one.",
   },
   "reading-order-mismatch": {
     plain: "Tab order differs from the order on screen",
-    impact: "Keyboard users can end up on Submit when they meant Cancel.",
+    impact:
+      "The page moved things on screen without moving them in its own code, and the Tab key follows the code. On a pair like Cancel and Submit, the button under the pointer is not the one the keyboard is on.",
   },
 
   // Forced Colors Mode — Windows High Contrast. Checked by switching the mode
   // on and seeing what disappears.
   "forced-colors-focus-lost": {
     plain: "Focus marker vanishes in High Contrast",
-    impact: "People using High Contrast mode can't see where the keyboard is.",
+    impact:
+      "High Contrast mode strips away the shadows and colours most focus highlights are drawn with. The people who most need to see where they are see nothing. The page looks perfect until that mode is on.",
   },
   "forced-colors-icon-lost": {
     plain: "Icon button vanishes in High Contrast",
-    impact: "In High Contrast mode the button shows as an empty box.",
+    impact:
+      "The icon is drawn as a background image, and that mode removes background images. The button still works, but renders as an empty box. Nothing left to say it is a button.",
   },
   "keyboard-faint-focus": {
     // "The outline" assumed the reader already knew which outline was meant.
     // "Keyboard marker" introduces the thing and names it in one phrase; the
     // paragraph below is where it gets explained.
     plain: "Keyboard marker too faint to see",
-    impact: "Keyboard users can't tell what they are about to activate.",
+    impact:
+      "Tab moves an invisible cursor, and the outline is the only thing showing where it has reached. Too faint, and a keyboard user can't tell what they are about to activate. It slips through testing because there genuinely is an outline there.",
   },
   "keyboard-focus-trap": {
     plain: "Keyboard focus gets stuck",
-    impact: "A keyboard user who reaches this point can't go any further.",
+    impact:
+      "A keyboard user who reaches this point can't go further. One of the worst failures a site can have.",
   },
 
   // Component design suggestions (forms, menus) — from the ARIA Authoring
@@ -488,31 +513,38 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   // fallback shows that description verbatim.
   "sr-filename-alt": {
     plain: "Image descriptions are filenames",
-    impact: "Screen reader users hear a filename where the image's meaning should be.",
+    impact:
+      "A screen reader reads the filename aloud, digits and punctuation included. The visitor hears noise where the image's meaning should be.",
   },
   "sr-vague-link-name": {
     plain: "Links named \"click here\"",
-    impact: "Screen reader users listing the links have nothing to choose by.",
+    impact:
+      "Screen reader users pull up all links as a list. A list of \"click here\" and \"read more\" gives them nothing to choose by.",
   },
   "sr-symbol-button-name": {
     plain: "Buttons named only with a symbol",
-    impact: "Screen reader users can't tell what pressing the button does.",
+    impact:
+      "A screen reader announces the symbol or nothing at all. The listener can't tell what pressing the button does.",
   },
   "sr-vague-button-name": {
     plain: "Button names that say nothing",
-    impact: "Screen reader users hear \"times, button\" where others see a close cross.",
+    impact:
+      "A sighted visitor sees the × in the corner and knows. A listener hears \"times, button\" with no corner to lean on.",
   },
   "form-field-placeholder-label": {
     plain: "Fields labelled only by placeholders",
-    impact: "The hint vanishes as people type, so they can't check what went where.",
+    impact:
+      "The hint vanishes the moment someone types. Anyone who pauses mid-form returns to a row of filled boxes with no way to check what went where.",
   },
   "component-form-autocomplete": {
     plain: "Form fields block autofill",
-    impact: "Everyone retypes their details by hand, a real barrier for some.",
+    impact:
+      "Everyone retypes their name, email, address and phone number by hand. Slow for all, a real barrier for some.",
   },
   "component-input-type": {
     plain: "Email fields typed as plain text",
-    impact: "Phone users get the wrong keyboard, so typing takes longer.",
+    impact:
+      "On phones, visitors get the generic keyboard instead of one with \"@\" or a number pad. More taps, more mistakes.",
   },
   "component-required-cue": {
     plain: "Required fields not visibly marked",
@@ -521,237 +553,275 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "component-submit-clarity": {
     plain: "No clearly labelled submit button",
-    impact: "People aren't sure how to finish the form, so they don't.",
+    impact:
+      "A button that just says \"Go\" or shows only an icon leaves people unsure how to finish. Some forms have no button at all. Either way, people don't finish.",
   },
   "component-table-no-headers": {
     plain: "A table with no header cells",
-    impact: "Screen reader users hear bare values with no column or row names.",
+    impact:
+      "A screen reader reads every cell as a bare value with no column or row name attached. The numbers and words in the table lose their meaning for a listener.",
   },
   "component-nav-labels": {
     plain: "Navigation menus with no names",
-    impact: "Screen reader users can't tell the main menu from the footer links.",
+    impact:
+      "Screen reader users hear \"navigation… navigation…\" with no way to tell the main menu from the footer links. Getting around the site becomes guesswork.",
   },
   "component-skip-link": {
     plain: "No \"skip to content\" link",
-    impact: "Keyboard users tab through the whole menu on every page.",
+    impact:
+      "Keyboard users tab through the entire menu on every page. Dozens of extra presses each visit.",
   },
 
   // Mobile-only issues from the phone-width render pass.
   "mobile-target-spacing": {
     plain: "Tap targets sit too close",
     found: (n) =>
-      `${n} pair${n === 1 ? "" : "s"} of controls ${n === 1 ? "sits" : "sit"} less than 8px apart at phone width.`,
-    impact: "People with tremors or larger fingers tap the wrong thing.",
+      `${n} pair${n === 1 ? "" : "s"} of controls sit less than 8px apart at phone width. Each is big enough on its own; together they leave no room to miss.`,
+    impact:
+      "A thumb is not a cursor. A finger that aims for one control and lands on its neighbour taps or buys the wrong thing. People with tremors or larger fingers meet it first.",
   },
   "consent-blocks-reader": {
     plain: "The cookie banner blocks screen readers",
     found: () =>
-      `The cookie banner hides the whole page from screen readers, and keyboard focus never reaches the banner.`,
-    impact: "Screen reader users hear silence and can't find the banner to clear it.",
+      `The consent layer marks the whole page behind it as hidden for screen readers. Keyboard focus never lands in the layer itself.`,
+    impact:
+      "A screen reader user hears silence where the page should be. They can't read the page, and they can't find the banner to clear it.",
   },
   "mobile-sticky-coverage": {
     plain: "Pinned bars crowd the phone screen",
     found: () =>
       `Pinned headers, banners or toolbars hold more than a third of the screen at phone width.`,
-    impact: "Phone visitors read the page through a narrow gap.",
+    impact:
+      "Every pinned pixel is one the visitor can't read the page through. Anything the keyboard focuses can end up hidden behind the bars. WCAG 2.2 already makes exactly that a requirement; the law just does not point at it yet.",
   },
   "mobile-horizontal-scroll": {
     plain: "The page scrolls sideways on phones",
-    impact: "Phone visitors swipe sideways for every line, and many leave.",
+    impact:
+      "Most visitors are on phones. Swiping sideways to read each line makes them leave.",
   },
   "mobile-tap-target": {
     plain: "Tap targets too small",
-    impact: "People with bigger fingers or shaky hands miss them.",
+    impact:
+      "Taps that miss, and frustration. Worst for bigger fingers or shaky hands. It costs sales.",
   },
 
   // Text resizing — WCAG 1.4.4 / 1.4.12, measured by actually applying the
   // reader's overrides and looking at what breaks.
   "text-spacing-clipped": {
     plain: "Text clipped at wider spacing",
-    impact: "Dyslexic readers who widen spacing lose words behind a fixed box.",
+    impact:
+      "Many dyslexic readers widen spacing just to read. Here the words don't reflow. They disappear behind a fixed box.",
   },
   "text-zoom-clipped": {
     plain: "Text clipped at larger sizes",
-    impact: "People who enlarge text for weak eyesight lose the words.",
+    impact:
+      "A bigger font size is the commonest fix for weak eyesight, far more common than screen readers. The boxes stay put, so the words vanish.",
   },
   "text-zoom-horizontal-scroll": {
     plain: "Enlarged text scrolls sideways",
-    impact: "People who enlarge text scroll sideways on every line, and most give up.",
+    impact:
+      "Every line forces the reader sideways. That's exhausting, and most people give up.",
   },
 
   // Dark patterns — manipulative marketing/UX. These don't affect the
   // accessibility score; they're trust and (for consent) legal red flags.
   "dark-consent-no-reject": {
     plain: "Cookie banner without a refuse option",
-    impact: "Under GDPR, consent collected without an easy refusal can be invalid.",
+    impact:
+      "Under GDPR, refusing has to be as easy as accepting. Consent collected this way can be invalid. Visitors read a missing \"Reject\" button as a trick.",
   },
   "dark-consent-asymmetry": {
     plain: "Cookie banner plays down \"reject\"",
-    impact: "Making refusal plain text nudges people to agree, and regulators look for it.",
+    impact:
+      "One option as a button and the other as plain text nudges people to agree. Regulators look for this.",
   },
   "dark-preselected-optin": {
     plain: "Marketing opt-in ticked in advance",
-    impact: "Under GDPR, a pre-ticked box isn't consent.",
+    impact:
+      "GDPR says a pre-ticked box isn't consent. People who miss it feel signed up without agreeing.",
   },
   "dark-confirmshaming": {
     plain: "\"No thanks\" worded to shame",
-    impact: "Visitors read the wording as manipulation.",
+    impact:
+      "\"No thanks, I don't want to save money\" is memorable for the wrong reasons. It reads as manipulation.",
   },
   "dark-fake-scarcity": {
     plain: "Low-stock claims used as pressure",
-    impact: "Regulators pursue fake scarcity, and shoppers have learned to distrust it.",
+    impact:
+      "Regulators pursue fake scarcity. Shoppers have learned to distrust it. Invented numbers cost more sales than they win.",
   },
   "dark-fake-urgency": {
     plain: "Deadlines used as pressure",
-    impact: "Once a fake countdown is noticed, nothing else the site claims is believed.",
+    impact:
+      "Countdowns that reset on reload are a deceptive practice. Once noticed, nothing else the site claims is believed.",
   },
 
   // Modal / pop-up dialogs — ARIA dialog pattern.
   "dialog-close-unlabeled": {
     plain: "Close button with no label",
-    impact: "Screen reader users hear only \"button\" and can't tell how to close it.",
+    impact:
+      "Screen reader users hear only \"button\" and can't tell how to close the pop-up. It traps them, and many simply leave.",
   },
   "dialog-keyboard-trap": {
     plain: "Keyboard users can't leave a pop-up",
-    impact: "Keyboard users are stuck, and closing the tab is the only way out.",
+    impact:
+      "Someone using only a keyboard reaches this pop-up and stops. Escape does not close it, and Tab only cycles around inside it. Closing the tab is the only way out. On a cookie banner, that happens before they have seen anything at all.",
   },
   "dialog-no-escape": {
     plain: "Pop-up ignores the Escape key",
-    impact: "Every keyboard user tries Escape first, and nothing happens.",
+    impact:
+      "Escape is the key everyone reaches for first. Nobody is stuck here, since Tab still moves focus away. But every keyboard user tries it, and nothing happens.",
   },
   "dialog-focus-not-moved": {
     plain: "Pop-up opens without taking focus",
-    impact: "Screen reader users are never told it opened.",
+    impact:
+      "Someone using a screen reader is never told it opened. A keyboard user has to tab through the entire page underneath before reaching the thing now covering their screen.",
   },
   "dialog-focus-lost-on-close": {
     plain: "Closing a pop-up loses your place",
-    impact: "Keyboard users have to start again from the top.",
+    impact:
+      "Anyone who had tabbed halfway down has to start again from the beginning.",
   },
   "dialog-no-close": {
     plain: "No obvious close button",
-    impact: "If clicking outside is the only way out, keyboard users get stuck.",
+    impact:
+      "If clicking outside is the only way out, keyboard users get stuck behind it.",
   },
   "dialog-missing-role": {
     plain: "Overlay not marked as a dialog",
-    impact: "Screen readers don't announce it, and people tab into the page behind.",
+    impact:
+      "Screen readers don't announce it opened, and people tab straight off into the hidden page behind.",
   },
   "dialog-missing-name": {
     plain: "Pop-up doesn't say what it's for",
-    impact: "Screen reader users hear only \"dialog\", with no idea what it asks.",
+    impact:
+      "When it opens, a screen reader just says \"dialog\". The visitor has no idea what it's asking or why.",
   },
 
   // Raw-HTML markup validation.
   "markup-validation": {
     plain: "Invalid HTML in the page",
-    impact: "Each browser guesses at the fix differently, so the page may break.",
+    impact:
+      "Browsers quietly guess how to fix it, and each one guesses differently. The page may not work the way it was designed to.",
   },
 
   // Motion/animation checks (WCAG 2.2.2 Pause, Stop, Hide).
   "motion-marquee": {
     plain: "Scrolling text that can't be paused",
-    impact: "Moving text is unreadable for people with attention or balance problems.",
+    impact:
+      "Text that moves is hard for everyone to read. For anyone with attention or balance problems it's unusable.",
   },
   "motion-autoplay-media": {
     plain: "Media plays by itself",
-    impact: "Nobody can stop it, and it drowns out screen readers.",
+    impact:
+      "Nobody can stop it. It's disorienting, and it drowns out screen readers.",
   },
   "motion-infinite-no-reduced-motion": {
     plain: "Animation ignores reduced-motion settings",
-    impact: "Constant movement can make people with balance disorders dizzy or sick.",
+    impact:
+      "Perpetual movement pulls attention away from the content. For people with balance disorders it can bring on dizziness or nausea.",
   },
 
   // Micro-typography checks, grounded in Jost Hochuli's "Detail in
   // Typography" (Hyphen Press) — reported as design-clarity notes.
   "typo-caps-letterspacing": {
     plain: "Capitals set without letter spacing",
-    impact: "Headings in tight capitals are hard to scan.",
+    impact:
+      "Capital letters form uniform blocks; without a little extra space between them, headings and labels become hard to scan.",
   },
   "typo-lowercase-letterspaced": {
     plain: "Extra space forced between letters",
-    impact: "Spaced-out letters break up word shapes and slow everyone down.",
+    impact:
+      "Extra space between lowercase letters breaks up the word shapes people recognise, and that slows everyone down.",
   },
   "typo-negative-letterspacing": {
     plain: "Letters squeezed until they touch",
-    impact: "Cramped letters blur together for readers with low vision.",
+    impact: "Cramped letters blur into one another, especially at small sizes or for readers with low vision.",
   },
   "typo-line-length-long": {
     plain: "Lines run too long",
-    impact: "Past about 75 characters, the eye loses its place on the way back.",
+    impact:
+      "Past about 75 characters a line, the eye loses its place jumping back.",
   },
   "typo-line-length-short": {
     plain: "Lines chopped too short",
-    impact: "Reading rhythm falls apart when nearly every phrase starts a new line.",
+    impact: "When almost every phrase breaks onto a new line, reading rhythm falls apart. The content feels harder than it is.",
   },
   "typo-justified-no-hyphens": {
     plain: "Justified text without hyphenation",
-    impact: "Uneven word gaps form distracting rivers of white space.",
+    impact:
+      "Justified text stretches the spaces between words to fill each line. The uneven gaps form distracting \"rivers\" of white space down the page.",
   },
   "typo-font-size-small": {
     plain: "Body text set very small",
-    impact: "Small text is hard to read on a phone or with weak eyesight.",
+    impact: "Small text pushes away anyone reading on a phone, in poor light, at arm's length, or with imperfect eyesight.",
   },
   "typo-typeface-count": {
     plain: "Too many typefaces",
-    impact: "The page looks cluttered and less trustworthy.",
+    impact: "More than two or three typefaces looks cluttered and makes the page feel less trustworthy.",
   },
 
   // Readability / neurodiversity checks — grounded in GOV.UK's accessibility
   // dos-and-don'ts and the Neurodiversity Design System (dyslexia, ADHD).
   "typo-underline-nonlink": {
     plain: "Underlined text that isn't a link",
-    impact: "People click underlined text that goes nowhere.",
+    impact:
+      "Underlines read as links, so people click text that goes nowhere.",
   },
   "typo-italic-body": {
     plain: "Whole passages in italics",
-    impact: "Slanted letters tire readers with dyslexia or weak eyesight.",
+    impact:
+      "Slanted letters get hard past a few words. A real barrier with dyslexia or weak eyesight.",
   },
   "typo-allcaps-block": {
     plain: "Long passages in ALL CAPITALS",
-    impact: "Capitals strip out word shapes, which slows dyslexic readers most.",
+    impact:
+      "Capitals strip out the word shapes people read by. Slow and tiring, worst for dyslexic readers.",
   },
   "typo-thin-weight": {
     plain: "Body text in hairline weight",
-    impact: "Thin strokes fade on cheap screens and for weak eyesight, even when contrast passes.",
+    impact:
+      "Thin strokes fade on cheap screens and in sunlight, and weak eyesight loses them first, even when contrast passes.",
   },
   "activation-stale-state": {
     plain: "A control announces its old state",
     // No found line on purpose: English keeps the backend's own description,
     // which names the specific element. The other languages carry one.
-    impact: "A screen reader user hears “collapsed” while the section is open.",
+    impact: "A screen reader user hears “collapsed” while the section is open, or “off” while the switch is on. They hear the opposite of what is on screen.",
   },
   "control-faint-boundary": {
     plain: "Control edges too faint",
     // No found line on purpose: English keeps the backend's own description,
     // which names the specific element. The other languages carry one.
-    impact: "People with low vision can't see where fields begin and end.",
+    impact: "People with low vision, or reading in bright light, can't see where fields begin and end. It is unclear where to click and type.",
   },
   "keyboard-positive-tabindex-advisory": {
     plain: "Tab order set by number",
     // No found line on purpose: English keeps the backend's own description,
     // which names the specific element. The other languages carry one.
-    impact: "Keyboard users jump across the page in an order that makes no sense.",
+    impact: "Every element added to the page later queues behind the numbered ones. Keyboard users then jump across the page in an order that makes no sense.",
   },
   "nav-name-inconsistent": {
     plain: "The same link under different names",
     // No found line on purpose: English keeps the backend's own description,
     // which names the specific element. The other languages carry one.
-    impact: "Screen reader users searching for the familiar name don't find it.",
+    impact: "Someone who learned one name has to work out that the other means the same. A screen reader user searching the link list for the familiar word does not find it.",
   },
   "color-contrast-mobile": {
     plain: "Text too faint at phone width",
     // No found line on purpose: English keeps the backend's own description,
     // which carries the count. The other languages carry one without it.
-    impact: "On a phone in daylight, the text is hard to read even with good eyesight.",
+    impact: "On a phone in daylight, faint text is hard to read even with good eyesight. A desktop check can't see this, because the colours change only at the narrow width.",
   },
   "color-contrast-dark": {
     plain: "Text too faint in dark mode",
-    impact: "People who use dark mode against glare or tired eyes get the faint version.",
+    impact: "People who set their device to dark mode, often against glare or tired eyes, get the faint version. The light theme passing says nothing about this one.",
   },
   "nav-order-inconsistent": {
     plain: "The menu changes its order",
     // No found line on purpose: English keeps the backend's own description,
     // which names the specific element. The other languages carry one.
-    impact: "Someone who remembers a link's position lands on the wrong item.",
+    impact: "Someone who remembers a position or a Tab count lands on the wrong item on the next page. With a magnifier, the menu has to be searched again.",
   },
 };
 
