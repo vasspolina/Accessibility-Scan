@@ -253,7 +253,7 @@ export const CHROME_KEYS: string[] = [
   "A designer's view, not rule failures.",
   // The conversational front (ScanChat).
   "Ask anything, or name a site to check",
-  "Ask about the report, or anything else",
+  "Scan your website",
   "Send",
   "You",
   "Conversation",

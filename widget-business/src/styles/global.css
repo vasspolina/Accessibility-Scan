@@ -6025,11 +6025,15 @@
    the panel 22px in from them, and the corners are concentric: a 34px row
    (half a one-line row, so a full round end) in the 56px panel. Under
    480px of table the pill sits over the words, so the words keep the
-   width. Short parts still pair two to a line (the block above). */
+   width. Short parts still pair two to a line (the block above).
+   Since later the same day the label stands above the words at every
+   width, in PP Lettra Mono (user's instruction, "who fixes this need to
+   be above in letra"), still the outlined pill and still first in the
+   markup; the row is one column, the label 12px over the words. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col[class] { gap: var(--cds-spacing-03); margin-bottom: var(--cds-spacing-03); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col:last-of-type[class] { margin-bottom: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps, .a11y-affected)[class][class] {
-  display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--cds-spacing-05); row-gap: 0; align-items: baseline;
+  display: grid; grid-template-columns: minmax(0, 1fr); column-gap: var(--cds-spacing-05); row-gap: var(--cds-spacing-04); align-items: baseline;
   padding: var(--cds-spacing-05) var(--cds-spacing-05) var(--cds-spacing-05) var(--cds-spacing-08); border-radius: var(--r-card); text-align: start;
 }
 /* Everything in the first column, a row each in markup order; the label
@@ -6040,15 +6044,15 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo)[class][class] > strong:first-child,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class][class] > p:first-child,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class] > .a11y-affected-label {
-  grid-column: 2; grid-row: 1; justify-self: end; margin: 0; text-align: end;
+  grid-column: 1; grid-row: 1; justify-self: start; margin: 0; text-align: start;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class] > :not(.a11y-affected-label, .a11y-occurrence-list) { margin-top: var(--cds-spacing-05); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo)[class][class] > strong:first-child,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class][class] > p:first-child > strong,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class] > .a11y-affected-label > strong {
   display: inline-block; box-sizing: border-box; padding: var(--cds-spacing-03) var(--cds-spacing-04) var(--cds-spacing-02);
   border: 1px solid currentColor; border-radius: 999px;
-  font-size: 18px; line-height: 1; letter-spacing: 0.025em; text-transform: none; white-space: nowrap;
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-size: 18px; line-height: 1; letter-spacing: 0; text-transform: none; white-space: nowrap;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-fd-meta[class] { padding-inline: var(--cds-spacing-08); }
 @container a11y-ftable (min-width: 641px) {
@@ -6064,17 +6068,6 @@
     column-gap: var(--cds-spacing-04); padding: var(--cds-spacing-05) var(--cds-spacing-04) var(--cds-spacing-05) var(--cds-spacing-05); border-radius: var(--r-card);
   }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-fd-meta[class] { padding-inline: var(--cds-spacing-05); }
-}
-@container a11y-ftable (max-width: 480px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps, .a11y-affected)[class][class] {
-    grid-template-columns: minmax(0, 1fr); row-gap: var(--cds-spacing-03);
-  }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo)[class][class] > strong:first-child,
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class][class] > p:first-child,
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class] > .a11y-affected-label {
-    grid-column: 1; justify-self: start; text-align: start;
-  }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class] > :not(.a11y-affected-label, .a11y-occurrence-list) { margin-top: 0; }
 }
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps, .a11y-affected)[class][class] { border: 1px solid CanvasText; }
@@ -6824,18 +6817,21 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards > * { break-inside: avoid; }
 }
 
-/* ===== THE PRINCIPLE GROUPS' TITLES AT THE PROSE SIZE =====
-   "Can people use it?" and its siblings under "What people can't use"
-   (user's instruction, 25 Nov 2026, "make this title 120% larger"): they
-   were the prose size, 32px, the same as the section title over them.
-   They were 38px (29px on a phone) until the user's "make sure only 4
-   font sizes used" and "fold them in", the same day: they are the prose
-   size again, 32px (24px on a phone), and stand out by place. */
+/* ===== THE PRINCIPLE GROUPS' TITLES IN LETTRA MONO MEDIUM =====
+   "Can people use it?", "Best practice" and their siblings under "What
+   people can't use" (user's instruction, 25 Nov 2026, "make this title
+   120% larger"): 38px, then the prose size, 32px, for "make sure only 4
+   font sizes used". Later the same day, "make title font 10 px larger and
+   use letra font", "also use letra medium mono": 48px, the scale's display
+   step, in PP Lettra Mono Medium (500, the user's exception to Ultralight
+   only), at 1.1 leading and no tracking, since a mono face is spaced by its
+   own fixed widths; on a phone 32px, the step above the phone's 24px. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-principle-group .a11y-principle-title {
-  font-size: 32px; line-height: 1.1; letter-spacing: 0.01em;
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-size: 48px; font-weight: 500; line-height: 1.1; letter-spacing: 0;
 }
 @media (max-width: 671px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-principle-group .a11y-principle-title { font-size: 24px; letter-spacing: 0.015em; line-height: 1.15; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-principle-group .a11y-principle-title { font-size: 32px; line-height: 1.1; }
 }
 
 /* ═══ THE CHAT BOX AS A ROUND BAR OF GREY PILLS (user's reference, 25 Nov
@@ -7115,4 +7111,53 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score .a11y-sum-specimen > .a11y-sum-issues > .a11y-sum-label[class][class] { font-size: 24px; }
 @media (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-verdict[class][class] { font-size: 24px; }
+}
+
+/* ═══ EVERY BUTTON AS A GREY PILL, THE CHAT BOX WHITE WITH A GREY EDGE
+   (user's reference, 25 Nov 2026, "make all buttons like this", a row of
+   grey filter pills; then "make this white with grey outline", on the
+   chat box) ═══════════════════════════════════════════════════════════
+   Every ordinary button (the BUTTONS block's list, the language menu's
+   toggle and the chat box's own buttons) is a filled pill with no edge
+   to see: 999px corners, the --bubble grey (#e6e6e6, black words 16.5:1;
+   dark #1c1c1e, white words 17:1), 34px tall, 18px words, as New chat
+   and the section pills already were. The 1px edge stays, in the fill's
+   own colour, so a pill is the same size as before and forced colours
+   still draw it. The main action and a chosen button stay the solid
+   pill; hover stays the pale yellow; disabled stays dashed on paper.
+   Start the scan keeps its large size, now round-ended. The chat box is
+   the paper with a 1px #8e8e93 edge (3.3:1 on white, 5.9:1 on black, so
+   it reads as the field's boundary), 32px corners; its buttons are the
+   grey pills on it and Send the solid one. Left as they are: buttons
+   that sit on a coloured panel (Send this report and Download in PDF on
+   the forest panel, the screen reader panel's pills, the AI fix's Copy,
+   the opening cards' Ask this and Learn more's black pill on the grey
+   bubble, where a grey pill would vanish). The pill's words are its own
+   --bubble-ink, black on the light grey and white on the dark, since some
+   pills sit in a block that sets --ink black for its own ground (Behind a
+   login in the scan form drew black on #1c1c1e in dark). */
+.a11y-widget-biz { --bubble-ink: #000; }
+.a11y-widget-biz[data-theme="dark"] { --bubble-ink: #fff; }
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz:not([data-theme="light"]) { --bubble-ink: #fff; }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-show-all, .a11y-blockflag-jump, .a11y-findings-csv, .a11y-undecided-export, .a11y-login-toggle, .a11y-sim-btn, .a11y-sr-play, .a11y-skip-link, .a11y-pro-jump, .a11y-mode-btn, .a11y-tab, .a11y-lang-toggle):not(.a11y-ra-send, .a11y-switch-track)[class][class] {
+  border: 1px solid var(--bubble); border-radius: 999px; background: var(--bubble); color: var(--bubble-ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn.a11y-btn-primary, .a11y-sim-btn-active, .a11y-mode-btn-active, .a11y-tab[aria-selected="true"], .a11y-btn[aria-pressed="true"], .a11y-btn[aria-current], .a11y-chat-box .a11y-btn[type="submit"]):enabled:not(:hover)[class][class] {
+  border-color: var(--solid); background: var(--solid); color: var(--solid-ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-show-all, .a11y-blockflag-jump, .a11y-findings-csv, .a11y-undecided-export, .a11y-login-toggle, .a11y-sim-btn, .a11y-sr-play, .a11y-skip-link, .a11y-pro-jump, .a11y-mode-btn, .a11y-tab, .a11y-lang-toggle):not(.a11y-ra-send, .a11y-switch-track)[class][class]:enabled:hover {
+  border-color: var(--hover); background: var(--hover); color: var(--hover-ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-show-all, .a11y-findings-csv, .a11y-sim-btn, .a11y-sr-play, .a11y-lang-toggle):not(.a11y-ra-send, .a11y-switch-track)[class][class]:disabled {
+  border: 1px dashed var(--ink); background: transparent; color: var(--ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-chat-box[class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box[class] {
+  border: 1px solid #8e8e93; background: var(--paper); color: var(--ink);
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-show-all, .a11y-blockflag-jump, .a11y-findings-csv, .a11y-undecided-export, .a11y-login-toggle, .a11y-sim-btn, .a11y-sr-play, .a11y-skip-link, .a11y-pro-jump, .a11y-mode-btn, .a11y-tab, .a11y-lang-toggle):not(.a11y-ra-send, .a11y-switch-track)[class][class] { border-color: ButtonText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box[class] { border-color: CanvasText; }
 }
