@@ -269,6 +269,17 @@ export const CHROME_KEYS: string[] = [
   "Check {url}",
   "Press Tab to use this suggestion:",
   "Scan a page behind a login",
+  // Pictures attached to a message (ScanChat, lib/chatImages.ts).
+  "Add an image",
+  "Attached images",
+  "Remove {name}",
+  "Image added: {name}",
+  "{count} images added",
+  "Image removed: {name}",
+  "Four images at most in one message.",
+  "Only PNG, JPEG, GIF or WebP images.",
+  "That image is too large. Use one under 10 MB.",
+  "Couldn't read that image.",
   "Open the sign-in form",
   "Back to the chat",
   // The conversation's folds and its way back (ScanChat).
