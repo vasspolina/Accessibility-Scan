@@ -5269,25 +5269,25 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] :is(.a11y-input, .a11y-select2, .a11y-textarea) {
   box-sizing: border-box; display: flex; flex-direction: column; align-items: stretch; gap: var(--cds-spacing-03);
   width: 100%; min-width: 0; margin: 0; padding: var(--cds-spacing-05) var(--cds-spacing-06) var(--cds-spacing-05);
-  border: 0; border-radius: var(--r-card); background: var(--tile-fill); color: var(--tile-ink); text-align: start;
+  border: 0; border-radius: var(--r-card); background: var(--form-field); color: var(--form-field-ink); text-align: start;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] .a11y-tester-rows {
   display: grid; gap: var(--cds-spacing-05); width: 100%; margin: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] :is(.a11y-input-label, .a11y-select2-label, .a11y-textarea-label) {
-  color: var(--tile-ink); font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
+  color: var(--form-field-ink); font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] :is(.a11y-input-shell > input:not([type="radio"]), .a11y-select2-field.a11y-select2-field, .a11y-textarea > textarea) {
   box-sizing: border-box; width: 100%; min-width: 0; min-height: 32px; margin: 0; padding-block: var(--cds-spacing-01); padding-inline: 0;
-  border: 0; border-radius: 0; box-shadow: none; background-color: transparent; color: var(--tile-ink);
+  border: 0; border-radius: 0; box-shadow: none; background-color: transparent; color: var(--form-field-ink);
   font-size: 24px; font-weight: 400; line-height: 1.2; letter-spacing: 0.015em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] .a11y-select2-field.a11y-select2-field { padding-inline-end: var(--cds-spacing-11); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] :is(input, textarea)::placeholder { color: var(--tile-ink); opacity: 1; font-weight: 200; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] :is(input, textarea)::placeholder { color: var(--form-field-ink); opacity: 1; font-weight: 200; }
 /* The field is the box, so the focus ring goes round the field. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] :is(.a11y-input, .a11y-select2, .a11y-textarea):focus-within { outline: 2px solid var(--focus); outline-offset: -2px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] :is(.a11y-input-shell > input, .a11y-select2-field, .a11y-textarea > textarea):focus-visible { outline: none; box-shadow: none; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] :is(.a11y-input-help, .a11y-select2-help, .a11y-textarea-help) { color: var(--tile-ink); font-size: 18px; letter-spacing: 0.01em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] :is(.a11y-input-help, .a11y-select2-help, .a11y-textarea-help) { color: var(--form-field-ink); font-size: 18px; letter-spacing: 0.01em; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] > .a11y-settings-state { font-size: 18px; letter-spacing: 0.01em; }
 
 /* Choices: small --tile pills in a centred row, the chosen one black. */
@@ -5385,17 +5385,17 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login .a11y-stmt-field {
   box-sizing: border-box; display: flex; flex-direction: column; gap: var(--cds-spacing-03); width: 100%; min-width: 0; margin: 0; padding: var(--cds-spacing-05) var(--cds-spacing-06) var(--cds-spacing-05);
-  border: 0; border-radius: var(--r-card); background: var(--tile-fill); color: var(--tile-ink); text-align: start;
+  border: 0; border-radius: var(--r-card); background: var(--form-field); color: var(--form-field-ink); text-align: start;
   font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login .a11y-stmt-field:focus-within { outline: 2px solid var(--focus); outline-offset: -2px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login .a11y-stmt-field > input {
   box-sizing: border-box; width: 100%; min-width: 0; min-height: 32px; margin: 0; padding: var(--cds-spacing-01) 0;
-  border: 0; border-radius: 0; box-shadow: none; background: transparent; color: var(--tile-ink);
+  border: 0; border-radius: 0; box-shadow: none; background: transparent; color: var(--form-field-ink);
   font-size: 24px; font-weight: 400; line-height: 1.2; letter-spacing: 0.015em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login .a11y-stmt-field > input:focus-visible { outline: none; box-shadow: none; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login .a11y-stmt-field > input::placeholder { color: var(--tile-ink); opacity: 1; font-weight: 200; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login .a11y-stmt-field > input::placeholder { color: var(--form-field-ink); opacity: 1; font-weight: 200; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login-ready { margin: 0; color: #000; font-size: 18px; letter-spacing: 0.01em; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login-ready:empty {
   position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
@@ -5950,11 +5950,11 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form .a11y-stmt-fields > .a11y-stmt-field {
   display: flex; flex-direction: column; align-items: stretch; gap: var(--cds-spacing-03); margin: 0; padding: var(--cds-spacing-05) var(--cds-spacing-06) var(--cds-spacing-05);
-  border: 0; border-radius: var(--r-card); background: var(--tile-fill); color: var(--tile-ink); text-align: start;
+  border: 0; border-radius: var(--r-card); background: var(--form-field); color: var(--form-field-ink); text-align: start;
   font-size: 18px; line-height: 1.4; letter-spacing: 0.025em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form .a11y-stmt-fields > .a11y-stmt-field > input {
-  color: var(--tile-ink); font-size: 24px; line-height: 1.2; letter-spacing: 0.015em;
+  color: var(--form-field-ink); font-size: 24px; line-height: 1.2; letter-spacing: 0.015em;
 }
 @media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form { gap: var(--cds-spacing-06); padding: var(--cds-spacing-07) var(--cds-spacing-05) var(--cds-spacing-06); border-radius: var(--r-panel); }
@@ -7067,7 +7067,14 @@
    tracking (the face is fitted; 32px takes -0.005em), set solid at 1.05 as
    the programme is, lining figures as its times and dates are. The lesser
    line takes the italic: the form's note and each scan step's number. Sizes are the widget's three. Controls, pills and labels
-   stay in Telegraf. */
+   stay in Telegraf.
+   Since the same day they are PP Lettra Mono in place of the Garamond
+   (user's instruction, "use letra for serif"): Ultralight, no tracking (a
+   monospace is already spaced), 1.15 leading as the score's Lettra lines.
+   The face has no italic and a sloped roman is not one, so the lesser
+   lines are upright and told by size (the note at 24px) and, for the
+   step numbers, by the red of the block CENTRED CALLOUTS IN THE POSTER'S
+   COLOURS. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(
   .a11y-url-form[class] > .a11y-tester-name,
   .a11y-url-form[class] .a11y-login-legend,
@@ -7076,18 +7083,18 @@
   .a11y-score:has(> .a11y-sum-specimen) > h2.a11y-section-title,
   .a11y-report-actions .a11y-ra-head
 )[class] {
-  font-family: "EB Garamond", Garamond, "Times New Roman", serif; font-weight: 200; font-style: normal; font-synthesis: none;
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
   font-variant-numeric: lining-nums; font-kerning: normal; font-feature-settings: "kern", "liga";
-  text-transform: none; text-align: center; line-height: 1.05; letter-spacing: 0;
+  text-transform: none; text-align: center; line-height: 1.15; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(
   .a11y-url-form[class] > .a11y-tester-name,
   .a11y-url-form[class] .a11y-login-legend,
   .a11y-score:has(> .a11y-sum-specimen) > h2.a11y-section-title,
   .a11y-report-actions .a11y-ra-head
-)[class][class] { font-size: 32px; letter-spacing: -0.005em; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] > .a11y-url-submit > .a11y-url-submit-note[class][class][class] { font-size: 24px; font-style: italic; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-scan-itinerary[class][class] > .a11y-scan-step > .a11y-scan-step-num { font-family: inherit; font-style: italic; font-variant-numeric: lining-nums; }
+)[class][class] { font-size: 32px; letter-spacing: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] > .a11y-url-submit > .a11y-url-submit-note[class][class][class] { font-size: 24px; font-style: normal; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-scan-itinerary[class][class] > .a11y-scan-step > .a11y-scan-step-num { font-family: inherit; font-style: normal; font-variant-numeric: lining-nums; }
 @media (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(
     .a11y-url-form[class] > .a11y-tester-name,
@@ -7206,3 +7213,61 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-row[class] > .a11y-chats-item[class][class] .a11y-chats-open {
   font-family: "PP Telegraf", "DejaVu Sans", sans-serif; letter-spacing: 0.025em;
 }
+
+/* ═══ CENTRED CALLOUTS IN THE POSTER'S COLOURS (user's reference, 25 Nov
+   2026, "color call outs like this": a programme line with its title in
+   blue, the date and time in plain ink and the place in red) ══════════
+   The callouts set in EB Garamond above take the colours by the same
+   roles: a callout's title is the blue ("New scan", "Sign the scanner
+   in", "Your score"), a number is the red (each scan step's "01"), and
+   the step that is running takes the blue for its words. Everything else
+   stays ink, as the reference's "on" and "at 17:00 – 18:00" do.
+   Measured: on white the blue #2848c8 is 7.4:1 and the red #b81c1c 6.5:1;
+   on the scan form's grey paper #dcdbd5 (both themes, black words) 5.3:1
+   and 4.7:1, so the form keeps the light pair in dark too. On black, dark
+   takes the status words' #7d95ff (7.6:1) and #ff6b66 (7.6:1). The
+   poster's own red #f03c38 is 3.9:1 on white and 2.8:1 on the grey, so the
+   deeper red stands in. "Email me this report" keeps its white: it sits
+   on the green panel, where the blue and the red are both 1.1:1. */
+.a11y-widget-biz { --callout-blue: #2848c8; --callout-red: #b81c1c; }
+.a11y-widget-biz[data-theme="dark"] { --callout-blue: #7d95ff; --callout-red: #ff6b66; }
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz:not([data-theme="light"]) { --callout-blue: #7d95ff; --callout-red: #ff6b66; }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class][class] { --callout-blue: #2848c8; --callout-red: #b81c1c; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(
+  .a11y-url-form[class] > .a11y-tester-name,
+  .a11y-url-form[class] .a11y-login-legend,
+  .a11y-score:has(> .a11y-sum-specimen) > h2.a11y-section-title,
+  .a11y-scan-itinerary[class] > .a11y-scan-step-now
+)[class][class][class] { color: var(--callout-blue); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-scan-itinerary[class][class] > .a11y-scan-step > .a11y-scan-step-num[class] { color: var(--callout-red); }
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(
+    .a11y-url-form[class] > .a11y-tester-name,
+    .a11y-url-form[class] .a11y-login-legend,
+    .a11y-score:has(> .a11y-sum-specimen) > h2.a11y-section-title,
+    .a11y-scan-itinerary[class] > .a11y-scan-step-now
+  )[class][class][class],
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-scan-itinerary[class][class] > .a11y-scan-step > .a11y-scan-step-num[class] { color: CanvasText; }
+}
+
+/* ═══ THE FORMS' FIELDS FILLED GREY (user's instruction, 25 Nov 2026, "add
+   grey color for fill in forms", on the scan form's white fields) ═════
+   Every filled field in a form panel (the scan form's address and
+   language, the login's three, a manual check's answer, the statement's
+   step 1) takes the app's grey, #e6e6e6, the grey pills' own, with black
+   words (16.8:1), in both themes, since the panels under them keep their
+   light grounds in dark. The darker #c8c7c0 was measured and left: the
+   focus line #198038 is 3.0:1 on it, 4.0:1 on #e6e6e6. The field's label,
+   typed words, placeholder and help read --form-field-ink, never
+   --tile-ink, which turns white in dark. The email panel's field is an
+   outline on the green, not a fill, and keeps its look. */
+.a11y-widget-biz { --form-field: #e6e6e6; --form-field-ink: #000; }
+/* The fields keep the light theme's focus green in dark too: dark's
+   #6fdc8c is 1.4:1 on the grey, #198038 4.0:1. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(
+  :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] :is(.a11y-input, .a11y-select2, .a11y-textarea),
+  .a11y-url-form[class] .a11y-login .a11y-stmt-field,
+  .a11y-stmt .a11y-stmt-form .a11y-stmt-fields > .a11y-stmt-field
+)[class][class] { --focus: #198038; }
