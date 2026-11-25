@@ -6454,7 +6454,8 @@
      mono 18px). Every word on the card is black in both themes, so the
      severity drops its coloured word here: the dark theme's bright word
      tones measure under 2:1 on the yellow. The whole card is the link
-     (the title's ::after), underlining on hover; focus is drawn round
+     (the title's ::after), blue on hover with "See the finding"
+     (below); focus is drawn round
      the card in #0a3d1a (the dark theme's light focus green is 1.3:1 on
      the yellow).
    How the score works and the warning keep their rows. */
@@ -6526,13 +6527,37 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title::after {
   content: ""; position: absolute; inset: 0; border-radius: 20px;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec:hover .a11y-sum-spec-title { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.14em; }
+/* Hover and keyboard focus (user's instruction, 25 Nov 2026, "do hover
+   with blue state and action button on hover and do not underline"): the
+   card turns the poster's blue (--hl-blue #2848c8, white words 7.4:1, both
+   themes), its pills' edges white, no underline, and "See the finding"
+   shows at the foot as a white pill with black words, as the opening
+   cards show "Ask this". The pill is aria-hidden (the title is the link's
+   name) and takes no pointer, so the click lands on the card's link. Its
+   room at the foot is kept while hidden, so the card does not grow on
+   hover. Focus inside the blue is white (the yellow's #0a3d1a is 1.6:1 on
+   the blue). */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec[class] { padding-bottom: calc(var(--cds-spacing-06) + 34px + var(--cds-spacing-05)); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-go {
+  position: absolute; left: var(--cds-spacing-06); bottom: var(--cds-spacing-06); visibility: hidden; pointer-events: none;
+  display: inline-flex; align-items: center; box-sizing: border-box; min-height: 34px; padding: 0 var(--cds-spacing-04);
+  border-radius: 999px; background: #fff; color: #000; white-space: nowrap;
+  font-size: 18px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec:is(:hover, :has(.a11y-sum-spec-title:focus-visible))[class] {
+  --ink: #fff; --paper: var(--hl-blue); --focus: #fff;
+  background: var(--hl-blue); color: var(--hl-blue-ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec:is(:hover, :has(.a11y-sum-spec-title:focus-visible)) :is(.a11y-sum-spec-title, .a11y-sum-spec-pill) { color: var(--hl-blue-ink); border-color: var(--hl-blue-ink); text-decoration: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec:is(:hover, :has(.a11y-sum-spec-title:focus-visible)) .a11y-sum-spec-go { visibility: visible; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title:focus-visible { outline: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title:focus-visible::after { outline: 2px solid var(--focus); outline-offset: -2px; }
 @media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-dial-card { --dial: 240px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-issues { margin-top: var(--cds-spacing-10); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec { gap: var(--cds-spacing-05); padding: var(--cds-spacing-05); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec[class] { padding-bottom: calc(var(--cds-spacing-05) + 34px + var(--cds-spacing-05)); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-go { left: var(--cds-spacing-05); bottom: var(--cds-spacing-05); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title { font-size: 18px; line-height: 1.4; }
 }
 @container a11y-sum-issues (max-width: 760px) {
@@ -6544,6 +6569,7 @@
 }
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec { border: 1px solid CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-go { border: 1px solid CanvasText; }
 }
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec { break-inside: avoid; }
@@ -7063,7 +7089,8 @@
    lesser words: "by", "Dj Set", the date) ═══
    The centred passages that are words, not controls, are EB Garamond:
    "New scan" and "Sign the scanner in" over the form, the note under Start
-   the scan, the scan's steps, "Your score" and "Email me this report". Mixed case, no
+   the scan, the scan's steps and "Email me this report" ("Your score" is Lettra,
+   below). Mixed case, no
    tracking (the face is fitted; 32px takes -0.005em), set solid at 1.05 as
    the programme is, lining figures as its times and dates are. The lesser
    line takes the italic: the form's note and each scan step's number. Sizes are the widget's three. Controls, pills and labels
@@ -7080,7 +7107,6 @@
   .a11y-url-form[class] .a11y-login-legend,
   .a11y-url-form[class] > .a11y-url-submit > .a11y-url-submit-note,
   .a11y-scan-itinerary[class],
-  .a11y-score:has(> .a11y-sum-specimen) > h2.a11y-section-title,
   .a11y-report-actions .a11y-ra-head
 )[class] {
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
@@ -7090,7 +7116,6 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(
   .a11y-url-form[class] > .a11y-tester-name,
   .a11y-url-form[class] .a11y-login-legend,
-  .a11y-score:has(> .a11y-sum-specimen) > h2.a11y-section-title,
   .a11y-report-actions .a11y-ra-head
 )[class][class] { font-size: 32px; letter-spacing: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] > .a11y-url-submit > .a11y-url-submit-note[class][class][class] { font-size: 24px; font-style: normal; }
@@ -7099,8 +7124,7 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(
     .a11y-url-form[class] > .a11y-tester-name,
     .a11y-url-form[class] .a11y-login-legend,
-    .a11y-score:has(> .a11y-sum-specimen) > h2.a11y-section-title,
-      .a11y-report-actions .a11y-ra-head
+        .a11y-report-actions .a11y-ra-head
   )[class][class] { font-size: 24px; letter-spacing: 0; }
 }
 
@@ -7109,15 +7133,20 @@
    found"): PP Lettra Mono Ultralight, centred, the sentence at 32px (24px
    on a phone) and the count at 24px, no italic (the face has none), no
    tracking, 1.15 leading (a mono line needs a little more than the
-   Garamond's 1.05). */
+   Garamond's 1.05). "Your score" over them joined the same day ("needs to
+   be letra", then "dont change size"): it keeps the 32px (24px on a
+   phone) it had in the Garamond. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score:has(> .a11y-sum-specimen) > h2.a11y-section-title[class][class],
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score .a11y-sum-specimen :is(.a11y-sum-run > .a11y-sum-verdict, .a11y-sum-issues > .a11y-sum-label)[class][class] {
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
   text-transform: none; text-align: center; line-height: 1.15; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-verdict[class][class] { font-size: 32px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score .a11y-sum-specimen > .a11y-sum-issues > .a11y-sum-label[class][class] { font-size: 24px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score:has(> .a11y-sum-specimen) > h2.a11y-section-title[class][class][class] { font-size: 32px; }
 @media (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-verdict[class][class] { font-size: 24px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score:has(> .a11y-sum-specimen) > h2.a11y-section-title[class][class][class] { font-size: 24px; }
 }
 
 /* ═══ EVERY BUTTON AS A GREY PILL, THE CHAT BOX WHITE WITH A GREY EDGE
