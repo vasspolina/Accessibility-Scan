@@ -726,13 +726,10 @@
 }
 .a11y-widget-biz .a11y-stmt .a11y-stmt-fields > .a11y-stmt-field > input::placeholder { color: var(--tile-ink); opacity: 1; font-weight: 200; }
 .a11y-widget-biz .a11y-stmt .a11y-stmt-fields > .a11y-stmt-field > input:focus-visible { outline: none; }
-/* In the conversation the block's own summary line already says
-   "Accessibility statement", so the section's title is kept for screen
-   readers and clipped for the eye: one name, not two. */
-.a11y-widget-biz .a11y-chat-block .a11y-stmt > .a11y-section-head {
-  position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
-}
-.a11y-widget-biz .a11y-chat-block .a11y-stmt > .a11y-section-desc { margin-top: 0; }
+/* The section's title shows in the conversation too (user's word, 25 Nov
+   2026, "lost its title"): it was clipped there while a block carried its own
+   summary line, and that line went on 22 Nov 2026, which left the statement
+   with no title on screen. */
 
 /* The findings schedules (one per section: "Can people use it?", "Will it keep
    working?"). Auto layout sized each table's columns to its own rows, so the
