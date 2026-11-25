@@ -83,7 +83,14 @@ function RESULT_ROWS(c: ConformanceSummary): Array<{
    joined by a key of its own, so "and" is never English inside a German
    sentence. */
 function unfinishedChecks(names: string[]): string {
-  const local = names.map((n) => t(n));
+  /* The backend's stand-in for an axe rule that returned "incomplete" is a
+     phrase, not a check's name, and set into "The {check} check" it read
+     "The an automated check that couldn't decide check didn't finish this
+     scan" (user's screenshot, 25 Nov 2026). It is said in a sentence of its
+     own, and left out of a list beside named checks. */
+  const UNDECIDED = "an automated check that couldn't decide";
+  const local = names.filter((n) => n !== UNDECIDED).map((n) => t(n));
+  if (local.length === 0) return t("The scan couldn't decide this one.");
   return local.length === 1
     ? tf("The {check} check didn’t finish this scan", { check: local[0] })
     : tf("The {checks} checks didn’t finish this scan", {
