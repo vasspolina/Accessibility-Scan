@@ -5161,3 +5161,22 @@
   }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz [id="a11y-pro-findings"] .a11y-pro-fold-line { display: block; overflow-wrap: break-word; }
 }
+
+/* THE CHAT BOX ROW (user's instruction, 24 Nov 2026, "fix the chat
+   design"). The box's buttons are one line: Back, Voice control and Scan a
+   page behind a login at the start, Send at the end of the same line. What
+   voice control heard is a line of its own under the buttons. Before this
+   the note was a 100%-wide item placed between Voice control and the login
+   button, so the login button dropped to a line of its own under it, and
+   the group grew to the box's width and pushed Send onto a fourth line at
+   the left (or into the middle, beside the note). The row is now two
+   tracks: the group takes the rest and wraps inside itself, the note last
+   (order), and Send keeps its own track at the top of the row. The same
+   row serves Report a barrier's box. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box-row {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; column-gap: 0.5em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box-row > [type="submit"] { align-self: start; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box-start .a11y-voice-note:not(:empty) {
+  order: 99; flex: 1 0 100%; margin-top: 2px;
+}

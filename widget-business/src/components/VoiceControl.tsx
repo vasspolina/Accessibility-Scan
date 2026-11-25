@@ -110,6 +110,39 @@ export function VoiceControl() {
         say(cmd.kind === "scan" ? tf("Scanning {url}.", { url: cmd.url }) : t("Sent."));
         return;
       }
+      case "send": {
+        // The chat box's own submit button, whatever its name or language,
+        // so a send never depends on matching a spoken word to a label.
+        const box = chatBox(root);
+        if (!box) {
+          const res = findTarget(cmd.target, collectControls(root, wrap), 55);
+          if (res.status === "match") {
+            press(res.target.el);
+            say(tf("Pressed {name}.", { name: res.target.name }));
+          } else say(tf("I can't find a button called {name}.", { name: cmd.target }));
+          return;
+        }
+        if (cmd.text) {
+          const now = box.value;
+          setFieldValue(box, now && !/\s$/.test(now) ? `${now} ${cmd.text}` : now + cmd.text);
+        }
+        if (!box.value.trim()) {
+          say(t("Nothing to send yet. Say your message first."));
+          return;
+        }
+        // React re-renders the Send button enabled before it is pressed.
+        requestAnimationFrame(() => {
+          const submit = box.form?.querySelector<HTMLButtonElement>('button[type="submit"]');
+          if (submit && submit.disabled) {
+            say(t('Wait for the answer to finish, then say "send" again.'));
+            return;
+          }
+          if (submit) submit.click();
+          else box.form?.requestSubmit();
+          say(t("Sent."));
+        });
+        return;
+      }
       case "type":
       case "clear": {
         let field =

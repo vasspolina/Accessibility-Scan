@@ -933,6 +933,8 @@ export const CHROME_KEYS: string[] = [
   "Scan {url}",
   "Scanning {url}.",
   "Sent.",
+  "Nothing to send yet. Say your message first.",
+  "Wait for the answer to finish, then say \"send\" again.",
   "Pressed {name}.",
   "Ready to type in {name}.",
   "Nothing is selected. Say the name of the button.",

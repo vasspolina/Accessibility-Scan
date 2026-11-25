@@ -892,6 +892,8 @@ export const STRINGS_FR: Record<string, string> = {
   "Scan {url}": "Analyse {url}",
   "Scanning {url}.": "Analyse de {url} en cours.",
   "Sent.": "Envoyé.",
+  "Nothing to send yet. Say your message first.": "Rien à envoyer pour l’instant. Dites d’abord votre message.",
+  "Wait for the answer to finish, then say \"send\" again.": "Attendez la fin de la réponse, puis redites « envoyer ».",
   "Pressed {name}.": "{name} activé.",
   "Ready to type in {name}.": "Prêt à écrire dans {name}.",
   "Nothing is selected. Say the name of the button.": "Rien n'est sélectionné. Dites le nom du bouton.",

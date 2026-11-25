@@ -28,6 +28,12 @@ export type VoiceCommand =
    */
   | { kind: "phrase"; target: string; text: string }
   | { kind: "click-focused" }
+  /**
+   * Send the chat box's message. `text` is any words said before the send
+   * ("… accessible, press send"), written in first; `target` is the Send
+   * button's spoken name in this language, for a page with no chat box.
+   */
+  | { kind: "send"; text: string; target: string }
   | { kind: "type"; text: string }
   /** Scan a page: the address goes into the chat box and is sent. */
   | { kind: "scan"; url: string }
@@ -70,6 +76,15 @@ interface Words {
   here: string[];
   /** Words that carry no name: "the", "button", "please". */
   filler: string[];
+  /**
+   * Send, said on its own: "send", "submit", and what recognisers write
+   * for a quick "press send" ("present"). These count only when nothing
+   * else was said, since "how do I send" is a question, not a command.
+   * The first is the Send button's name in that language.
+   */
+  sendBare: string[];
+  /** Send, said so plainly that it ends a longer sentence: "… press send". */
+  send: string[];
 }
 
 const WORDS: Record<Lang, Words> = {
@@ -89,6 +104,8 @@ const WORDS: Record<Lang, Words> = {
     scroll: ["scroll", "page"],
     here: ["it", "that", "this", "that one", "this one"],
     filler: ["the", "a", "an", "that", "this", "button", "link", "tab", "please", "on", "for", "me"],
+    sendBare: ["send", "submit", "send it", "present", "presend", "pre send", "press end"],
+    send: ["send it", "send that", "send this", "send the message", "send message", "send now", "now send", "and send", "then send", "press send", "click send", "hit send", "tap send", "push send", "press the send button", "click the send button"],
   },
   de: {
     click: ["drücke", "drücken", "klicke", "klick", "klicke auf", "klick auf", "tippe auf", "tippe", "wähle", "öffne", "aktiviere", "gehe zu", "geh zu"],
@@ -106,6 +123,8 @@ const WORDS: Record<Lang, Words> = {
     scroll: ["scrolle", "scroll", "blättere"],
     here: ["es", "das", "diesen", "das hier", "dieses"],
     filler: ["den", "die", "das", "dem", "der", "auf", "knopf", "button", "schaltfläche", "link", "bitte", "mal"],
+    sendBare: ["senden", "sende", "absenden", "abschicken", "schick ab", "schicke ab"],
+    send: ["drücke senden", "drück senden", "drücken senden", "klicke senden", "klick senden", "klicke auf senden", "klick auf senden", "tippe auf senden", "jetzt senden", "und senden", "und abschicken", "schick es ab", "schicke es ab"],
   },
   es: {
     click: ["pulsa", "pulsar", "presiona", "presionar", "haz clic en", "haz clic", "clic en", "toca", "elige", "selecciona", "abre", "activa", "ve a"],
@@ -123,6 +142,8 @@ const WORDS: Record<Lang, Words> = {
     scroll: ["desplázate", "desplaza", "baja", "sube"],
     here: ["eso", "esto", "ese", "este", "lo"],
     filler: ["el", "la", "los", "las", "un", "una", "en", "botón", "boton", "enlace", "pestaña", "por favor", "de"],
+    sendBare: ["enviar", "envía", "envia", "envíalo", "envialo", "mandar", "manda", "mándalo", "mandalo"],
+    send: ["pulsa enviar", "presiona enviar", "haz clic en enviar", "toca enviar", "y enviar", "y envía", "y envia", "ahora envía", "ahora envia"],
   },
   fr: {
     click: ["appuie sur", "appuyer sur", "clique sur", "cliquer sur", "touche", "choisis", "sélectionne", "selectionne", "ouvre", "active", "va à", "va a"],
@@ -140,6 +161,8 @@ const WORDS: Record<Lang, Words> = {
     scroll: ["défile", "fais défiler", "descends", "monte"],
     here: ["ça", "ca", "cela", "celui-ci", "celui ci"],
     filler: ["le", "la", "les", "un", "une", "sur", "bouton", "lien", "onglet", "s'il te plaît", "s il te plait", "stp", "le bouton", "du"],
+    sendBare: ["envoyer", "envoie", "envoyez", "envoie le", "envoie-le"],
+    send: ["appuie sur envoyer", "appuyer sur envoyer", "clique sur envoyer", "cliquer sur envoyer", "et envoyer", "et envoie", "envoie maintenant", "envoie le message"],
   },
 };
 
@@ -199,6 +222,48 @@ export function addressInSpeech(raw: string): string | null {
   return /^https?:\/\//i.test(url) ? url : `https://${url.toLowerCase()}`;
 }
 
+/**
+ * A send at the end of what was heard, and the words before it, or null.
+ *
+ * The recogniser runs on between pauses, so a quick "Send … press send"
+ * comes back as one result, "Send press send", and a sentence and its send
+ * as "why should I make my website accessible press send". Until 24 Nov 2026
+ * only a result that was exactly a button's name pressed it, so both were
+ * written into the chat box instead of sending it. Now every send word is
+ * taken off the end: if nothing is left, it is a send; if words are left, it
+ * is a send only when the last one taken was a plain command ("press send",
+ * "send it"), not a bare "send" that a question can end on.
+ */
+function sendAtEnd(raw: string, text: string, w: Words): { before: string } | null {
+  const bare = w.sendBare.map(normalize);
+  const plain = w.send.map(normalize);
+  const all = [...new Set([...bare, ...plain])].sort((a, b) => b.length - a.length);
+  let rest = text;
+  let taken = 0;
+  let lastPlain = false;
+  for (;;) {
+    const hit = all.find((p) => rest === p || rest.endsWith(" " + p));
+    if (!hit) break;
+    if (taken === 0) lastPlain = plain.includes(hit);
+    rest = rest.slice(0, rest.length - hit.length).trim();
+    taken += hit.split(" ").length;
+  }
+  if (taken === 0) return null;
+  if (!rest) return { before: "" };
+  if (!lastPlain) return null;
+  // Cut the same number of words off the raw text, keeping its case and
+  // punctuation for the chat, then the punctuation that led into the send.
+  const words = raw.trim().split(/\s+/);
+  let cut = 0;
+  let i = words.length;
+  while (i > 0 && cut < taken) {
+    i--;
+    const n = normalize(words[i]);
+    if (n) cut += n.split(" ").length;
+  }
+  return { before: words.slice(0, i).join(" ").replace(/[\s,;:–-]+$/u, "").trim() };
+}
+
 /** What was said, as a command. `heard` is the recogniser's raw words. */
 export function parseCommand(heard: string, lang: Lang): VoiceCommand {
   const w = WORDS[lang] ?? WORDS.en;
@@ -208,6 +273,16 @@ export function parseCommand(heard: string, lang: Lang): VoiceCommand {
 
   if (w.stop.map(normalize).includes(text)) return { kind: "stop" };
   if (w.help.map(normalize).includes(text)) return { kind: "help" };
+  const sent = sendAtEnd(heard, text, w);
+  if (sent) {
+    const target = w.sendBare[0];
+    if (!sent.before) return { kind: "send", text: "", target };
+    // "type hello, press send": the words to write are the type command's.
+    const inner = parseCommand(sent.before, lang);
+    if (inner.kind === "scan") return inner;
+    const words = inner.kind === "type" || inner.kind === "ask" || inner.kind === "phrase" ? inner.text : sent.before;
+    return { kind: "send", text: words, target };
+  }
 
   // Dictation keeps the speaker's own words, so it is cut from the raw text
   // (case and punctuation as the recogniser wrote them), not the normalised.
