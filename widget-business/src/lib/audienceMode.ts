@@ -62,7 +62,7 @@ export function enClauseFor(wcagCriterion: string | undefined, wcagLevel?: strin
   if (!wcagCriterion || wcagLevel === "AAA") return null;
   const m = wcagCriterion.match(/^(\d\.\d+\.\d+)/);
   if (!m) return null;
-  return `EN 301 549 · 9.${m[1]}`;
+  return `EN 301 549 9.${m[1]}`;
 }
 
 /** The professional-mode view filter. "code" absorbs the rare document kind. */

@@ -52,12 +52,12 @@ describe("audience mode persistence", () => {
 describe("EN 301 549 clause derivation", () => {
   // Chapter 9 maps one-to-one onto WCAG 2.1 A/AA: 9.1.4.3 is 1.4.3.
   it("derives the clause mechanically from the criterion number", () => {
-    expect(enClauseFor("1.4.3", "AA")).toBe("EN 301 549 · 9.1.4.3");
-    expect(enClauseFor("2.1.1", "A")).toBe("EN 301 549 · 9.2.1.1");
+    expect(enClauseFor("1.4.3", "AA")).toBe("EN 301 549 9.1.4.3");
+    expect(enClauseFor("2.1.1", "A")).toBe("EN 301 549 9.2.1.1");
   });
 
   it("reads the number out of a full criterion string", () => {
-    expect(enClauseFor("1.1.1 Non-text Content (A)", "A")).toBe("EN 301 549 · 9.1.1.1");
+    expect(enClauseFor("1.1.1 Non-text Content (A)", "A")).toBe("EN 301 549 9.1.1.1");
   });
 
   // The honesty half: no clause where the standard provides no anchor.

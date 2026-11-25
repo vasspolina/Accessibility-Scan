@@ -415,7 +415,7 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
       <dl className="a11y-spec-grid" aria-label={t("What this statement declares")}>
         <SpecCard field={t("Prepared for")} value={organisation.trim() || t("[Your organisation]")} lead />
         <SpecCard field={t("Website")} value={report.url} />
-        <SpecCard field={t("Checked against")} value="EN 301 549 · WCAG 2.1 AA" />
+        <SpecCard field={t("Checked against")} value="EN 301 549 — WCAG 2.1 AA" />
         <SpecCard
           field={t("Position")}
           value={position === "partially" ? t("Partially conformant") : t("Non-conformant")}

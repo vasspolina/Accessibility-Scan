@@ -56,7 +56,7 @@ export function ProfessionalTable({
     const known = criterionNames[num];
     const name = known ? `${num} ${known.name} (${known.level})` : (rep.wcagCriterion ?? num);
     const en = enClauseFor(rep.wcagCriterion, rep.wcagLevel);
-    return en ? `${name} · ${en}` : name;
+    return en ? `${name} — ${en}` : name;
   };
 
   const rows = grouped.map((group) => {
