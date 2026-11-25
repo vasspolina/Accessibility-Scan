@@ -87,6 +87,30 @@ export function historyFromTurns(turns: ArchivableTurn[]): ChatMessage[] {
   return out;
 }
 
+/** The thread without the reply that used to follow a finished scan. A
+ *  finished scan gets no reply since 25 Nov 2026 (the user's instruction,
+ *  "do not produce this content on app", on the paragraph that retold the
+ *  score and the first findings), but conversations saved before that kept
+ *  theirs, so reopening one from Recent drew the paragraph again, and its
+ *  words went back to the model as history for it to copy. Dropped: an
+ *  assistant turn after a scan that finished, with only blocks and notices
+ *  between, before the reader says anything. A failed scan's reply stays. */
+export function dropScanReplies<T extends ArchivableTurn>(turns: T[]): T[] {
+  let afterScan = false;
+  return turns.filter((turn) => {
+    if (turn.who === "scan") {
+      afterScan = turn.state === "done";
+      return true;
+    }
+    if (turn.who === "you") afterScan = false;
+    if (turn.who === "checker" && afterScan) {
+      afterScan = false;
+      return false;
+    }
+    return true;
+  });
+}
+
 function storage(): Storage | null {
   try {
     return typeof window === "undefined" ? null : window.localStorage;
@@ -106,6 +130,7 @@ export function loadChats(): SavedChat[] {
         (c): c is SavedChat =>
           !!c && typeof c.id === "string" && typeof c.title === "string" && typeof c.updatedAt === "string" && Array.isArray(c.turns)
       )
+      .map((c) => ({ ...c, turns: dropScanReplies(c.turns) }))
       .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   } catch {
     return [];
