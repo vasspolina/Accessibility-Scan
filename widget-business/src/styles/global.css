@@ -3003,7 +3003,7 @@
    16px it measured 36px) until the one 40px margin below. */
 @media (min-width: 672px) {
   /* 24px with the widget's own 16px is 40px: see ONE 40PX MARGIN below. */
-  .a11y-widget-biz .a11y-chat-layout { padding-inline: var(--cds-spacing-06); padding-top: var(--cds-spacing-08); box-sizing: border-box; }
+  .a11y-widget-biz .a11y-chat-layout { padding-inline: var(--cds-spacing-06); padding-top: var(--cds-spacing-09); box-sizing: border-box; }
   .a11y-widget-biz .a11y-chat-layout > .a11y-chat { padding-inline-end: 0; }
 }
 /* Where the panel is folded (641 to 960px) there is no panel edge to keep
@@ -3035,7 +3035,7 @@
    tall scroll by 32px. Phones keep their 10px gutter. */
 @media (min-width: 672px) {
   .a11y-widget-biz:has(> .a11y-widget-inner .a11y-chat-layout) { padding-block: 0; }
-  .a11y-widget-biz .a11y-chat-layout .a11y-chat-dock { padding-bottom: var(--cds-spacing-08); }
+  .a11y-widget-biz .a11y-chat-layout .a11y-chat-dock { padding-bottom: var(--cds-spacing-09); }
 }
 @media (min-width: 1056px) {
   .a11y-widget-biz .a11y-chat-layout {
@@ -3046,7 +3046,7 @@
     padding-top: 0; padding-inline-start: var(--cds-spacing-02);
   }
   .a11y-widget-biz .a11y-chat-layout > .a11y-chats { padding: var(--cds-spacing-08) var(--cds-spacing-08) var(--cds-spacing-08) 0; }
-  .a11y-widget-biz .a11y-chat-layout > .a11y-chat { padding-inline: 0; padding-top: var(--cds-spacing-08); }
+  .a11y-widget-biz .a11y-chat-layout > .a11y-chat { padding-inline: 0; padding-top: var(--cds-spacing-09); }
 }
 
 /* ═══ FORM FIELDS AS THE CHAT BOX (user's instruction, 21 Nov 2026) ═════════
@@ -7779,8 +7779,15 @@
    where it was two (it still grows as you type, up to 40vh), and 8px
    between the field and the row of buttons where it was 16. Empty, the
    box is about 110px. */
+/* 30% more margin round the chat (user's instruction, 25 Nov 2026, "add
+   30% more to chat margin"): the conversation stood 72px off the panel's
+   rule and the window's right (40 and 32 here, 16, 24 and 32 folded);
+   30% more is 94px, and the nearest Carbon step for its padding is 48px,
+   so it stands 88px. The window's top to its first line and the box you
+   type in to the window's foot go from 40px to 48px (52px, snapped).
+   The conversations panel keeps its 40px and 20px. */
 @media (min-width: 672px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-layout > .a11y-chat[class] { padding-inline: var(--cds-spacing-07); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-layout > .a11y-chat[class] { padding-inline: var(--cds-spacing-09); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-chat-box[class][class] { padding: var(--cds-spacing-03) var(--cds-spacing-07); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-dock .a11y-chat-composer .a11y-chat-box textarea { min-height: 1lh; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-chat-box-row[class] { margin-top: var(--cds-spacing-03); }
