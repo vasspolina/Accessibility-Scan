@@ -424,7 +424,6 @@ export const STRINGS_FR: Record<string, string> = {
   "{count} of {total} say nothing useful": "{count} sur {total} ne disent rien d’utile",
   "Stop": "Arrêter",
   "Play the page aloud": "Lire la page à voix haute",
-  "Built from the page’s code. Real screen readers word things differently.": "Tirée du code de la page. Les vrais lecteurs le formulent autrement.",
   "On line {line} of {total}": "Ligne {line} sur {total}",
   "Previous line": "Ligne précédente",
   "Next line": "Ligne suivante",

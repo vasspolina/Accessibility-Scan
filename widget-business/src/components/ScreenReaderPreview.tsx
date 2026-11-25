@@ -371,16 +371,6 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
         )}
       </div>
 
-      {/* How the simulation was made, as small print under Play (user's
-          choice, 24 Nov 2026): it qualifies the transcript, so it is not set
-          at the prose size between the head and the control. It stays
-          outside the panel, visible while the section is closed. */}
-      <p className="a11y-sr-caveat">
-        {t(
-          "Built from the page’s code. Real screen readers word things differently."
-        )}
-      </p>
-
       {showTools && active && <div className="a11y-sr-bar a11y-sr-tools">{tools}</div>}
 
       {/* Hidden rather than unrendered: the accordion button's aria-controls
