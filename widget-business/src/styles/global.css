@@ -4527,7 +4527,7 @@
    between pairs, never inside one. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd-meta {
   display: flex; flex-wrap: wrap; column-gap: 2.6em; row-gap: 0.3em; grid-column: 1 / -1; margin: 0 0 36px;
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
   font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd-meta > span { white-space: nowrap; }
@@ -4995,18 +4995,10 @@
    Nov 2026, "yes, build it") ═════════════════════════════════════════════
    The screen reader head says its count once: the badge carries the total
    ("3 of 16 say nothing useful") and the bracketed count stays only when
-   nothing is wrong. How the simulation was made is small print under Play,
-   18px, not prose between the head and the control. The statement's steps
+   nothing is wrong. The statement's steps
    number themselves in the list numbers' solid round, one line of the
    heading tall, instead of the word "Step 1:", and stand 65px from what
    comes before so each step starts a part of the section. */
-/* .a11y-sr > p.a11y-sr-caveat out-ranks the report's section paragraph
-   rule (.a11y-report :is(.a11y-section-desc, .a11y-section > p), 32px). */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report .a11y-sr > p.a11y-sr-caveat,
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr > p.a11y-sr-caveat {
-  margin: -18px 0 30px; font-size: 18px; font-weight: 200; line-height: 1.4; letter-spacing: 0.025em;
-}
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr > .a11y-sr-bar[data-active] + p.a11y-sr-caveat { margin-top: 0; }
 /* The badge with the total is longer ("3 von 16 sagen nichts Brauchbares"
    ran 65px past a 320px screen held on one line), so in the head it may
    wrap inside itself. */
@@ -5194,7 +5186,7 @@
    wide and its lowercase tall, so 0.8em of the card's text reads at the
    same size beside it. Code elsewhere keeps the one face. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd-body code {
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
   font-size: 18px; font-weight: 400; letter-spacing: 0;
 }
 
@@ -6166,10 +6158,6 @@
   flex-basis: 100%; margin: 0; color: #000; font-size: 18px; line-height: 1.4; letter-spacing: 0.025em; text-align: start;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] span.a11y-sr-status:empty { display: none; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report .a11y-sr[class] > p.a11y-sr-caveat[class],
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] > p.a11y-sr-caveat[class] {
-  margin: 4px 0 0; color: #000; font-size: 18px; line-height: 1.4; letter-spacing: 0.025em; text-align: start;
-}
 
 /* The filter: a grey pill, black with its check mark when on. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar.a11y-sr-tools[class] { justify-content: flex-start; gap: 6px; margin: 32px 0 0; }
@@ -6484,7 +6472,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-pill {
   display: inline-block; box-sizing: border-box; max-width: 100%; padding: 1px 12px; border: 1px solid #000; border-radius: 999px; color: #000;
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
   font-size: 18px; font-weight: 400; line-height: 1.3; letter-spacing: 0; white-space: normal;
 }
 /* The pills held to one line ran past a 320px screen in French and Spanish
@@ -6498,7 +6486,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-pill > .a11y-sev[class][class][class]::after { content: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title {
   display: block; color: #000; text-decoration: none; overflow-wrap: anywhere;
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
   font-size: 24px; font-weight: 400; line-height: 1.35; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title::after {
@@ -6532,19 +6520,19 @@
    "organise, left allign", on the centred controls under the bar) ═══════
    The rules above now set everything left (they were centred): the
    conversation's capital title, the transport row (Play first), the
-   status, the keys and the method line, the filter and Skip the
-   transcript, and "What you'd hear". The three notes are one group at
+   status, the keys, the filter and Skip the
+   transcript, and "What you'd hear". The notes are one group at
    18px, 4px apart, 8px under the transport; the filter row stands 32px
    under them. The bar's own 36px inset is the edge for words and
    controls; the line pills stay full width, like the bar. On a phone the
    panel's padding is the edge. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-status:not(:empty) { margin-top: 8px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-keys { margin-top: -4px; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] > :is(.a11y-sr-bar, .a11y-sr-caveat, h2.a11y-section-title),
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] .a11y-accordion-panel > :is(.a11y-sr-bar, .a11y-sr-caveat) { padding-inline: 36px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] > :is(.a11y-sr-bar, h2.a11y-section-title),
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] .a11y-accordion-panel > .a11y-sr-bar { padding-inline: 36px; }
 @media (max-width: 640px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] > :is(.a11y-sr-bar, .a11y-sr-caveat, h2.a11y-section-title),
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] .a11y-accordion-panel > :is(.a11y-sr-bar, .a11y-sr-caveat) { padding-inline: 0; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] > :is(.a11y-sr-bar, h2.a11y-section-title),
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] .a11y-accordion-panel > .a11y-sr-bar { padding-inline: 0; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-log > .a11y-sr-log-heads[class] { padding-inline-start: 0; }
 }
 
@@ -6703,7 +6691,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body {
   display: flex; flex: 1 1 auto; flex-direction: column; align-items: flex-start; gap: 1.3em; min-width: 0;
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
   font-size: 24px; font-weight: 400; line-height: 1.35; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-point[class] {
@@ -6764,7 +6752,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-standard, .a11y-legal-eyebrow) {
   display: block; margin: 0 0 12px; padding: 0; border: 0; background: none; color: #000;
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
   font-size: 24px; font-weight: 400; line-height: 1.35; letter-spacing: 0; text-transform: none;
   overflow-wrap: anywhere;
 }
@@ -6784,4 +6772,50 @@
 }
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards > * { break-inside: avoid; }
+}
+
+/* ═══ EVERY LIST NUMBER IN A RING (user's reference, 25 Nov 2026, "design
+   all numbered items like this", on the screen reader simulation's line
+   number) ═══════════════════════════════════════════════════════════════
+   Every number that counts the items of a list takes the screen reader
+   line's mark: a 1px ring in the words' own colour (currentColor), no
+   fill, the figure in the body face at 18px, 44px across, a circle up to
+   three figures and a pill past that (6px inside). It replaces the solid
+   ink rounds of 24 Nov 2026 for the designer and developer list, the
+   legal questions, the statement's steps and a numbered list in the
+   conversation. The ring is taller than most of these lines, so it is
+   centred on the first line by a negative top margin worked from that
+   line's height, not from 1lh, which inside the ring is its own 18px line.
+   The section titles' count dots are counts, not item numbers, and keep
+   their round. Forced colours draw the ring in CanvasText. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-q > .a11y-undecided-no, .a11y-legal-q > .a11y-legal-qnum, .a11y-stmt-step-head .a11y-stmt-step-num)[class][class] {
+  display: inline-grid; place-items: center; flex: none; box-sizing: border-box;
+  min-width: 44px; width: auto; height: 44px; padding: 0 6px;
+  border: 1px solid currentColor; border-radius: 22px; background: none; color: inherit;
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 18px; font-weight: 200; font-synthesis: none;
+  line-height: 1; letter-spacing: 0; font-variant-numeric: tabular-nums;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-no[class][class] { margin-top: calc((var(--row-line) - 44px) / 2); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt-step-head .a11y-stmt-step-num[class][class] { margin: 0; }
+/* The legal questions: a 44px column for the ring, 12px to the words; the
+   cards' 24px/1.35 line (18px/1.4 on a phone) gives the ring's offset. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-q[class][class] { grid-template-columns: 44px minmax(0, 1fr); column-gap: 12px; align-items: start; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-q > .a11y-legal-qnum[class][class] { margin-top: calc((24px * 1.35 - 44px) / 2); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards .a11y-legal-q + .a11y-legal-q[class][class] { margin-top: 16px; }
+/* The conversation's numbered list: the ring hung 56px out, its middle on
+   the first line (the item's line-height is a length, so the ::before
+   inherits it as 1lh). */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-text ol:not(.a11y-chat-plan)[class] { padding-inline-start: 56px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-text ol:not(.a11y-chat-plan)[class] > li::before {
+  inset-inline-start: -56px; top: calc((1lh - 44px) / 2); box-sizing: border-box;
+  min-width: 44px; width: auto; height: 44px; margin: 0; padding: 0 6px;
+  border: 1px solid currentColor; border-radius: 22px; background: none; color: inherit;
+  font-size: 18px; letter-spacing: 0;
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-q > .a11y-legal-qnum[class][class] { margin-top: calc((18px * 1.4 - 44px) / 2); }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-q > .a11y-undecided-no, .a11y-legal-q > .a11y-legal-qnum, .a11y-stmt-step-head .a11y-stmt-step-num)[class][class] { border-color: CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-text ol:not(.a11y-chat-plan)[class] > li::before { border-color: CanvasText; }
 }

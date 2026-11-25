@@ -399,7 +399,6 @@ export const CHROME_KEYS: string[] = [
   "{count} of {total} say nothing useful",
   "Stop",
   "Play the page aloud",
-  "Built from the page’s code. Real screen readers word things differently.",
   "On line {line} of {total}",
   "Previous line",
   "Next line",
