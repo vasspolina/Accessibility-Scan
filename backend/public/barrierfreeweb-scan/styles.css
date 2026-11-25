@@ -535,17 +535,16 @@ footer.wrap { margin-top: var(--s12); padding-bottom: var(--s07); }
   .card:has(> .offer) { border: 1px solid CanvasText; }
 }
 
-/* ---------- The other cream side cards in Lettra, set centred as a
-   programme (user's reference, 25 Nov 2026, "this need to go in letra", on
-   "The four principles behind it" beside a centred event programme). PP
-   Lettra Mono Ultralight, no tracking, 1.15 leading, every line centred,
-   the link and the button under it centred with them. The card's cream,
-   corners and 24px size stay. ---------- */
+/* ---------- The other cream side cards in Lettra (user's reference, 25 Nov
+   2026, "this need to go in letra", on "The four principles behind it").
+   PP Lettra Mono Ultralight, no tracking, 1.15 leading. Set left, the
+   button with it (user's instruction, the same day, "left align", on the
+   exemption card of services.html; they were centred as a programme that
+   morning). The card's cream, corners and 24px size stay. ---------- */
 .card:not(:has(> .offer)) {
-  font-family: var(--mono); letter-spacing: 0; line-height: 1.15; text-align: center; text-wrap: balance;
+  font-family: var(--mono); letter-spacing: 0; line-height: 1.15;
 }
 .card:not(:has(> .offer)) h2 { font-family: var(--mono); letter-spacing: 0; }
-.card:not(:has(> .offer)) .action { display: flex; justify-content: center; }
 /* Buttons stay in the body face, as every pill in the scan. */
 .card:not(:has(> .offer)) .btn { font-family: "PP Telegraf", "DejaVu Sans", sans-serif; letter-spacing: 0.025em; line-height: 1.2; text-wrap: nowrap; }
 @media (max-width: 671px) {
