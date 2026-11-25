@@ -3813,14 +3813,12 @@
    its card in the opening questions: black words on --barrier in both
    themes (18.7:1 on light's #c6ffcc, 7.4:1 or better on dark's #30d158), the
    edge the ground's colour. Hover and keyboard focus add a 1px black edge,
-   as the card does, instead of New chat's solid ink. Disabled (a reply or a
+   as the card does, instead of New chat's solid ink (since 25 Nov 2026 it
+   turns solid black with mint words, in the grey pills block). Disabled (a reply or a
    scan running) keeps New chat's dashed ink edge on paper. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-new.a11y-chats-barrier[type="button"]:enabled {
   --ink: #000; --paper: var(--barrier);
   background: var(--barrier); color: #000; border-color: var(--barrier);
-}
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-new.a11y-chats-barrier[type="button"]:enabled:is(:hover, :focus-visible) {
-  background: var(--barrier); color: #000; border-color: #000;
 }
 
 /* ═══ THE NOTICES' ICONS: deleted (user's instruction, 25 Nov 2026, "delete
@@ -6503,3 +6501,28 @@
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn > .a11y-dn-panel { display: none; }
 }
+
+/* ═══ NEW CHAT AND REPORT A BARRIER AS GREY PILLS (user's reference, 25 Nov
+   2026, "design these like these", a type foundry's header pills) ═════════
+   The conversations panel's two buttons are filled pills with no edge:
+   999px corners, 34px tall, 4px 12px inside, 18px words, 4px apart (the
+   reference's gap). New chat is the --bubble grey (#efefef, black words
+   18:1; dark #1c1c1e, white words 17:1), Report a barrier keeps its mint.
+   Hover and keyboard focus turn the pill solid ink with paper words, the
+   reference's one black pill (Report a barrier black with its mint for
+   words, 19:1, since its block above sets --ink black and --paper mint); disabled keeps a dashed ink edge on paper.
+   "Recent" is clipped (screen readers only, "delete recent"), so the list
+   keeps 28px of air under the pills itself. Overrides the 14px-cornered
+   word buttons and the mint block above. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-new[type="button"] {
+  min-height: 34px; margin: 0 0 4px; padding: 4px 12px; border: 1px solid var(--bubble); border-radius: 999px;
+  background: var(--bubble); color: var(--ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-new[type="button"]:has(+ .a11y-chats-new) { margin-inline-end: 4px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-new[type="button"][class]:enabled:is(:hover, :focus-visible) {
+  background: var(--ink); color: var(--paper); border-color: var(--ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-new[type="button"]:disabled {
+  border: 1px dashed var(--ink); background: transparent; color: var(--ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-head + .a11y-chats-list { margin-top: 28px; }

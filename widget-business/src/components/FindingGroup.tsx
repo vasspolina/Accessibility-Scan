@@ -643,8 +643,10 @@ export function FindingDetails({
           {[
             !asNotes && criterion ? `${t("WCAG:")} ${criterion}` : "",
             !asNotes && rep.wcagLevel ? levelFraming(rep.wcagLevel) : "",
+            // The fix kind alone ("Content fix"): a "Fix:" key before it said
+            // fix twice (user's instruction, 25 Nov 2026).
+            !asNotes ? fix.label : "",
             // French sets a space before the colon, as its "WCAG :" key does.
-            !asNotes ? `${t("Fix")}${getLang() === "fr" ? " :" : ":"} ${fix.label}` : "",
             count > 1 ? `${t("Instances")}${getLang() === "fr" ? " :" : ":"} ${count}` : "",
           ]
             .filter(Boolean)

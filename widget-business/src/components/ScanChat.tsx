@@ -1432,7 +1432,9 @@ export function ScanChat({
         )}
         {chats.length > 0 && (
           <>
-            <h2 className="a11y-chats-head" id="a11y-chats-head">
+            {/* The label is for screen readers only (user's instruction, 25
+                Nov 2026, "delete recent"): it still names the list. */}
+            <h2 className="a11y-chats-head a11y-sr-only" id="a11y-chats-head">
               {t("Recent")}
             </h2>
             {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
