@@ -462,8 +462,11 @@ footer.wrap { margin-top: var(--s12); padding-bottom: var(--s07); }
   font-size: 24px; letter-spacing: 0.015em;
 }
 .news__input::placeholder { color: inherit; opacity: 1; }
+/* Flex, not grid (user's instruction, 25 Nov 2026, "center"): as a grid the
+   hidden arrow character made a second row (39px and 15px) and the drawn
+   arrow sat in the upper one. */
 .news__btn {
-  display: inline-grid; place-items: center; flex: none; width: 56px; height: 56px; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center; line-height: 0; flex: none; width: 56px; height: 56px; padding: 0;
   border: 1px solid currentColor; border-radius: 50%; background: transparent; color: inherit; font-size: 0; cursor: pointer;
 }
 .news__btn::before { width: 24px; height: 24px; }
