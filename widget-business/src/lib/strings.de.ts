@@ -187,7 +187,7 @@ export const STRINGS_DE: Record<string, string> = {
   "Writing the report": "Der Bericht wird geschrieben",
   "A designer's view, not rule failures.": "Gestalterische Hinweise, keine Regelverstöße.",
   "Ask anything, or name a site to check": "Fragen Sie etwas, oder nennen Sie eine Website zum Prüfen",
-  "Ask about the report, or anything else": "Fragen Sie zum Bericht oder zu etwas anderem",
+  "Scan your website": "Scannen Sie Ihre Website",
   "Send": "Senden",
   "You": "Sie",
   "Conversation": "Gespräch",

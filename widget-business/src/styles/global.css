@@ -42,18 +42,24 @@
    better against #000 (orange 10:1, blue 9:1, green 12:1). Everything else
    is ink on paper, which swap in dark. */
 .a11y-widget-biz {
-  --ink: #000; --paper: #fff; --focus: #198038; --chats-current: #1e361f;
-  --hl-orange: #ffa0ff; --urgent: #ffa0ff; --hl-blue: #48a0da; --hl-green: #beffbd;
-  --hl-cap-a: #f8ff58; --hl-cap-b: #e4f5a4;
+  --ink: #000; --paper: #fff; --focus: #198038; --chats-current: #486048;
+  /* The poster's colours (user's reference, 25 Nov 2026, "for the rest
+     use these colors"): red #f03c38 (black words 5.4:1), blue #2848c8 (white
+     words 7.4:1), dark green #486048 (white words 6.9:1), the grey paper
+     #dcdbd5, the cream #f4efe2, and the hover's yellow #fff5c2. One set in
+     both themes; blue and green carry white words, the rest black. */
+  --hl-orange: #f03c38; --urgent: #f03c38; --hl-blue: #2848c8; --hl-green: #486048;
+  --hl-cap-a: #fff5c2; --hl-cap-b: #dcdbd5;
+  --hl-blue-ink: #fff; --hl-green-ink: #fff; --barrier-ink: #fff;
   /* The Report a barrier card's mint (user's swatch, 21 Nov 2026): black
      on #c6ffcc is 18.7:1; dark takes #30d158, black on it 7.4:1+. */
-  --barrier: #beffbd;
+  --barrier: #282828;
   /* Surfaces that were pinned light in both themes, as tokens so dark mode
      can take its own dark system greys (user's instruction, 18 Nov 2026,
      "do a proper dark mode, no white or light buttons"). Light keeps the
      values it had. */
-  --tile: #f2f0e6; --tile-ink: #000; --tile-fill: #fff;
-  --strong: #000; --strong-ink: #f2f0e6;
+  --tile: #f4efe2; --tile-ink: #000; --tile-fill: #fff;
+  --strong: #000; --strong-ink: #f4efe2;
   /* Hover is mint since 21 Nov 2026 (user's instruction, "make mint green
      on hover", on a pill button turned yellow): the Report a barrier
      card's and Send this report's #c6ffcc, black words 18.7:1. Dark keeps
@@ -95,9 +101,9 @@
    widget on a black page. index.tsx stamps data-theme on this element when
    the embedder pins one; otherwise the visitor's system setting decides. */
 @media (prefers-color-scheme: dark) {
-  .a11y-widget-biz:not([data-theme="light"]) { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #fff5c2; --hover-ink: #000; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #ffa0ff; --urgent: #ffa0ff; --hl-blue: #48a0da; --hl-green: #beffbd; --hl-cap-a: #f8ff58; --hl-cap-b: #e4f5a4; --focus: #6fdc8c; --chats-current: #beffbd; --barrier: #beffbd; }
+  .a11y-widget-biz:not([data-theme="light"]) { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #fff5c2; --hover-ink: #000; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #f03c38; --urgent: #f03c38; --hl-blue: #2848c8; --hl-green: #486048; --hl-cap-a: #fff5c2; --hl-cap-b: #dcdbd5; --focus: #6fdc8c; --chats-current: #fff5c2; --barrier: #486048; }
 }
-.a11y-widget-biz[data-theme="dark"] { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #fff5c2; --hover-ink: #000; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #ffa0ff; --urgent: #ffa0ff; --hl-blue: #48a0da; --hl-green: #beffbd; --hl-cap-a: #f8ff58; --hl-cap-b: #e4f5a4; --focus: #6fdc8c; --chats-current: #beffbd; --barrier: #beffbd; }
+.a11y-widget-biz[data-theme="dark"] { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #fff5c2; --hover-ink: #000; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #f03c38; --urgent: #f03c38; --hl-blue: #2848c8; --hl-green: #486048; --hl-cap-a: #fff5c2; --hl-cap-b: #dcdbd5; --focus: #6fdc8c; --chats-current: #fff5c2; --barrier: #486048; }
 
 .a11y-widget-biz {
   font-family: "PP Telegraf", "DejaVu Sans", sans-serif;
@@ -219,17 +225,17 @@
 
 /* The highlight. Black text, always; cap colours are decoration. */
 .a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-pro-chip, .a11y-conf-status, .a11y-principle-count, .a11y-status-chip) {
-  color: #000; background: var(--hl-green);
+  color: var(--hl-green-ink); background: var(--hl-green);
   padding: 0 var(--cds-spacing-03); margin-inline: var(--cds-spacing-02);
   border-radius: 0.9em 0.45em 0.9em 0.55em / 0.7em 0.5em 0.7em 0.5em;
   box-shadow: 0.14em 0 0 var(--hl-cap-a), -0.14em 0 0 var(--hl-cap-b);
   -webkit-box-decoration-break: clone; box-decoration-break: clone;
 }
 .a11y-widget-biz .a11y-sev-critical { background: var(--hl-orange); }
-.a11y-widget-biz .a11y-sev-serious { background: var(--hl-blue); }
-.a11y-widget-biz .a11y-sev-moderate { background: var(--hl-green); }
+.a11y-widget-biz .a11y-sev-serious { background: var(--hl-blue); color: var(--hl-blue-ink); }
+.a11y-widget-biz .a11y-sev-moderate { background: var(--hl-green); color: var(--hl-green-ink); }
 .a11y-widget-biz .a11y-sev-minor { background: var(--hl-cap-a); box-shadow: 0.14em 0 0 var(--hl-cap-b), -0.14em 0 0 var(--hl-blue); }
-.a11y-widget-biz .a11y-conf-status { background: var(--hl-blue); }
+.a11y-widget-biz .a11y-conf-status { background: var(--hl-blue); color: var(--hl-blue-ink); }
 .a11y-widget-biz :is(.a11y-rule-chip, .a11y-level-badge) { background: var(--hl-orange); }
 
 /* Inline neighbours need air: the check for welded siblings reads this. */
@@ -1207,12 +1213,12 @@
 
 /* The legal result marks are the severity highlight, same words, same colours. */
 .a11y-widget-biz .a11y-legal-mark {
-  display: inline-block; margin-top: var(--cds-spacing-02); font-size: 24px; letter-spacing: 0.015em; color: #000; background: var(--hl-green);
+  display: inline-block; margin-top: var(--cds-spacing-02); font-size: 24px; letter-spacing: 0.015em; color: var(--hl-green-ink); background: var(--hl-green);
   padding: 0 var(--cds-spacing-02); border-radius: 0.9em 0.45em 0.9em 0.55em / 0.7em 0.5em 0.7em 0.5em;
   box-shadow: 0.14em 0 0 var(--hl-cap-a), -0.14em 0 0 var(--hl-cap-b);
 }
 .a11y-widget-biz .a11y-legal-mark-critical { background: var(--hl-orange); }
-.a11y-widget-biz .a11y-legal-mark-serious { background: var(--hl-blue); }
+.a11y-widget-biz .a11y-legal-mark-serious { background: var(--hl-blue); color: var(--hl-blue-ink); }
 .a11y-widget-biz .a11y-legal-mark-minor { background: var(--hl-cap-a); box-shadow: 0.14em 0 0 var(--hl-cap-b), -0.14em 0 0 var(--hl-blue); }
 .a11y-widget-biz .a11y-show-checklist { margin: 0 0 var(--cds-spacing-07); }
 
@@ -1852,7 +1858,7 @@
    "move buble to the right"), its tail and its lean mirrored: it covered
    the left of the picture, where the faulty element usually begins. */
 .a11y-widget-biz .a11y-shot.a11y-shot-has-bubble { width: fit-content; padding-top: var(--cds-spacing-03); }
-.a11y-widget-biz .a11y-shot-bubble { --tile: #e4f5a4; --tile-ink: #000; }
+.a11y-widget-biz .a11y-shot-bubble { --tile: var(--hl-cap-b); --tile-ink: #000; }
 .a11y-widget-biz .a11y-shot-bubble {
   --ink: var(--tile-ink); --paper: var(--tile);
   position: relative; z-index: 1; display: block; width: fit-content; max-width: 85%;
@@ -2336,9 +2342,9 @@
    keeps 24px off the row (user's instruction, same day: it sat flush against
    the tiles). */
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row-failed { --paper: var(--hl-orange); background: var(--hl-orange); }
-.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row-clean { --paper: var(--hl-green); background: var(--hl-green); }
+.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row-clean { --ink: var(--hl-green-ink); --paper: var(--hl-green); background: var(--hl-green); color: var(--hl-green-ink); }
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row-human { --paper: var(--hl-cap-a); background: var(--hl-cap-a); }
-.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row-not-measured { --paper: var(--hl-blue); background: var(--hl-blue); }
+.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row-not-measured { --ink: var(--hl-blue-ink); --paper: var(--hl-blue); background: var(--hl-blue); color: var(--hl-blue-ink); }
 .a11y-widget-biz .a11y-legal-results + .a11y-show-checklist,
 .a11y-widget-biz .a11y-legal-grid + .a11y-show-checklist { margin-top: var(--cds-spacing-06); }
 @media (max-width: 671px) {
@@ -2681,7 +2687,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row[data-issue] { border-top-style: dashed; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row .a11y-sr-line-text { font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row .a11y-sr-num { font-variant-numeric: tabular-nums; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row:is(button):enabled:hover { background: var(--hl-cap-a, #f8ff58); color: #000; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row:is(button):enabled:hover { background: var(--hl-cap-a); color: #000; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row[aria-current="true"] {
   background: var(--ink); color: var(--paper); text-decoration: none;
 }
@@ -2842,8 +2848,8 @@
    barrier can be green with no outline"): the edge is the ground's own
    colour, black words in both themes. Hover keeps its solid black turn. */
 .a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt-barrier {
-  --ink: #000; --paper: var(--barrier);
-  background: var(--barrier); color: #000; border: 1px solid var(--barrier);
+  --ink: var(--barrier-ink); --paper: var(--barrier);
+  background: var(--barrier); color: var(--barrier-ink); border: 1px solid var(--barrier);
 }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-barrier .a11y-prompt-q { flex: 1 1 auto; }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-barrier .a11y-prompt-go {
@@ -3403,12 +3409,12 @@
   font-size: 18px; line-height: 1.2; letter-spacing: 0.025em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt-barrier {
-  --ink: #000; --paper: var(--barrier);
-  background: var(--barrier); color: #000; border: 0;
+  --ink: var(--barrier-ink); --paper: var(--barrier);
+  background: var(--barrier); color: var(--barrier-ink); border: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt-barrier:has(> .a11y-prompt-q:enabled:is(:hover, :focus-visible)) {
-  --ink: #000; --paper: var(--barrier);
-  background: var(--barrier); color: #000; box-shadow: inset 0 0 0 1px #000;
+  --ink: var(--barrier-ink); --paper: var(--barrier);
+  background: var(--barrier); color: var(--barrier-ink); box-shadow: inset 0 0 0 1px var(--barrier-ink);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-barrier .a11y-prompt-go,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-barrier .a11y-prompt-q:enabled:is(:hover, :focus-visible) .a11y-prompt-go { background: #000; color: #fff; }
@@ -3488,9 +3494,9 @@
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-row > .a11y-conf-status[data-status="failed"] { background: var(--hl-orange); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-row > .a11y-conf-status[data-status="no-issues-found"] { background: var(--hl-green); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-row > .a11y-conf-status[data-status="no-issues-found"] { background: var(--hl-green); color: var(--hl-green-ink); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-row > .a11y-conf-status[data-status="needs-review"] { background: var(--hl-cap-a); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-row > .a11y-conf-status[data-status="not-measured"] { background: var(--hl-blue); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-row > .a11y-conf-status[data-status="not-measured"] { background: var(--hl-blue); color: var(--hl-blue-ink); }
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-row > .a11y-conf-status { transform: translate(-50%, -50%); }
 }
@@ -3556,14 +3562,15 @@
    The markup order (words, level split, status, count) is unchanged for
    screen readers; only the eye takes them as status, count, words. */
 .a11y-widget-biz {
-  --plate-1: #a2e3ff; --plate-2: #beffbd; --plate-3: #ffa0ff; --plate-4: #f8ff58; --plate-text: #000;
+  --plate-1: #2848c8; --plate-2: #486048; --plate-3: #f03c38; --plate-4: #fff5c2; --plate-text: #000;
+  --plate-1-ink: #fff; --plate-2-ink: #fff; --plate-3-ink: #000; --plate-4-ink: #000;
 }
 .a11y-widget-biz[data-theme="dark"] {
-  --plate-1: #2e3350; --plate-2: #0f3a2a; --plate-3: #3d1440; --plate-4: #36310c; --plate-text: #fff;
+  --plate-1: #2848c8; --plate-2: #486048; --plate-3: #f03c38; --plate-4: #fff5c2; --plate-text: #000;
 }
 @media (prefers-color-scheme: dark) {
   .a11y-widget-biz:not([data-theme="light"]) {
-    --plate-1: #2e3350; --plate-2: #0f3a2a; --plate-3: #3d1440; --plate-4: #36310c; --plate-text: #fff;
+    --plate-1: #2848c8; --plate-2: #486048; --plate-3: #f03c38; --plate-4: #fff5c2; --plate-text: #000;
   }
 }
 .a11y-widget-biz .a11y-legal-results { container: a11y-legal-cards / inline-size; }
@@ -3577,9 +3584,9 @@
   color: var(--plate-text); text-align: left;
 }
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row-failed { --ink: #000; --plate-text: #000; --paper: var(--urgent); background: var(--urgent); color: #000; }
-.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row-clean { --paper: var(--plate-2); background: var(--plate-2); }
-.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row-human { --paper: var(--plate-4); background: var(--plate-4); }
-.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row-not-measured { --paper: var(--plate-1); background: var(--plate-1); }
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row-clean { --plate-text: var(--plate-2-ink); --paper: var(--plate-2); background: var(--plate-2); }
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row-human { --plate-text: var(--plate-4-ink); --paper: var(--plate-4); background: var(--plate-4); }
+.a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row-not-measured { --plate-text: var(--plate-1-ink); --paper: var(--plate-1); background: var(--plate-1); }
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-mark {
   align-self: flex-start; color: inherit; background: none;
   font-size: 18px; font-weight: 200; line-height: 24px; letter-spacing: 0.025em; white-space: normal; text-align: left;
@@ -3640,9 +3647,9 @@
   background: var(--plate-2); color: var(--plate-text);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-finding-sev-fold > .a11y-sev-critical.a11y-sev { background: var(--urgent); color: #000; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-finding-sev-fold > .a11y-sev-serious.a11y-sev { background: var(--plate-1); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-finding-sev-fold > .a11y-sev-moderate.a11y-sev { background: var(--plate-2); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-finding-sev-fold > .a11y-sev-minor.a11y-sev { background: var(--plate-4); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-finding-sev-fold > .a11y-sev-serious.a11y-sev { --plate-text: var(--plate-1-ink); background: var(--plate-1); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-finding-sev-fold > .a11y-sev-moderate.a11y-sev { --plate-text: var(--plate-2-ink); background: var(--plate-2); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-finding-sev-fold > .a11y-sev-minor.a11y-sev { --plate-text: var(--plate-4-ink); background: var(--plate-4); }
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-finding-sev-fold > .a11y-sev.a11y-sev { rotate: none; }
 }
@@ -3699,8 +3706,8 @@
   rotate: var(--bubble-tilt, -2deg);
 }
 .a11y-widget-biz .a11y-w22-call > .a11y-next-status[data-status="failed"] { background: var(--urgent); color: #000; }
-.a11y-widget-biz .a11y-w22-call > .a11y-next-status[data-status="no-issues-found"] { background: var(--plate-2); }
-.a11y-widget-biz .a11y-w22-call > .a11y-next-status[data-status="not-measured"] { background: var(--plate-1); }
+.a11y-widget-biz .a11y-w22-call > .a11y-next-status[data-status="no-issues-found"] { --plate-text: var(--plate-2-ink); background: var(--plate-2); }
+.a11y-widget-biz .a11y-w22-call > .a11y-next-status[data-status="not-measured"] { --plate-text: var(--plate-1-ink); background: var(--plate-1); }
 @media print {
   .a11y-widget-biz .a11y-w22-call > .a11y-next-status[data-status] { rotate: none; }
 }
@@ -3726,9 +3733,9 @@
   justify-content: flex-end; gap: var(--cds-spacing-06); min-height: 220px; padding: var(--cds-spacing-06) var(--cds-spacing-05) var(--cds-spacing-06);
   border: 0; border-radius: 20px; background: var(--plate-1); color: var(--plate-text);
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:nth-child(4n+2) { --paper: var(--plate-2); background: var(--plate-2); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:nth-child(4n+3) { --paper: var(--plate-3); background: var(--plate-3); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:nth-child(4n) { --paper: var(--plate-4); background: var(--plate-4); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:nth-child(4n+2) { --plate-text: var(--plate-2-ink); --paper: var(--plate-2); background: var(--plate-2); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:nth-child(4n+3) { --plate-text: var(--plate-3-ink); --paper: var(--plate-3); background: var(--plate-3); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link:nth-child(4n) { --plate-text: var(--plate-4-ink); --paper: var(--plate-4); background: var(--plate-4); }
 /* Hover and keyboard focus turn the card the beige tile ground, words in its
    ink, no underline, as the check-result cards do (user's instruction,
    23 Nov 2026, "and add proper hovers"; the hover only underlined the
@@ -3788,8 +3795,8 @@
   font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
   font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; white-space: normal; rotate: none;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n+2) { --card-plate: var(--plate-3); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n) { --card-plate: var(--plate-4); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n+2) { --plate-text: var(--plate-3-ink); --card-plate: var(--plate-3); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n) { --plate-text: var(--plate-4-ink); --card-plate: var(--plate-4); }
 /* With its title clipped the head holds nothing to see, so it gives up the
    48px it kept for the title's line and the space under it. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-newscan-head { min-height: 0; margin-bottom: 0; }
@@ -3808,8 +3815,8 @@
    turns solid black with mint words, in the grey pills block). Disabled (a reply or a
    scan running) keeps New chat's dashed ink edge on paper. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-new.a11y-chats-barrier[type="button"]:enabled {
-  --ink: #000; --paper: var(--barrier);
-  background: var(--barrier); color: #000; border-color: var(--barrier);
+  --ink: var(--barrier-ink); --paper: var(--barrier);
+  background: var(--barrier); color: var(--barrier-ink); border-color: var(--barrier);
 }
 
 /* ═══ THE NOTICES' ICONS: deleted (user's instruction, 25 Nov 2026, "delete
@@ -3832,7 +3839,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz .a11y-note.a11y-note-warning .a11y-note-badge {
   position: absolute; top: 0; left: 22px; margin: 0; padding: var(--cds-spacing-02) var(--cds-spacing-03) var(--cds-spacing-02); border-radius: 8px;
-  background: #f8ff58; color: #000;
+  background: var(--hl-cap-a); color: #000;
   font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
   font-size: 18px; line-height: 1.2; letter-spacing: 0.08em; white-space: nowrap;
   translate: 0 -50%; rotate: -2deg;
@@ -3905,11 +3912,11 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > :nth-child(3n+2):not(.a11y-learn-more) { rotate: 1.5deg; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > :nth-child(3n):not(.a11y-learn-more) { rotate: -1deg; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-method-badge { background: var(--plate-1); color: var(--plate-text); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-method-badge.a11y-fix-content { background: var(--plate-2); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-method-badge.a11y-fix-design { background: var(--plate-3); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-method-badge.a11y-fix-document { background: var(--plate-4); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-undecided-most { background: var(--plate-4); color: var(--plate-text); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-method-badge { --plate-text: var(--plate-1-ink); background: var(--plate-1); color: var(--plate-text); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-method-badge.a11y-fix-content { --plate-text: var(--plate-2-ink); background: var(--plate-2); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-method-badge.a11y-fix-design { --plate-text: var(--plate-3-ink); background: var(--plate-3); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-method-badge.a11y-fix-document { --plate-text: var(--plate-4-ink); background: var(--plate-4); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-undecided-most { --plate-text: var(--plate-4-ink); background: var(--plate-4); color: var(--plate-text); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-learn-more { margin: 0; font-size: 18px; letter-spacing: 0.025em; }
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > * { rotate: none; }
@@ -4133,7 +4140,7 @@
    focus line the pale lime #e3f1bd (11.0:1). The field, the send and the
    PDF pill are 1px lime outlines on the forest, as the studio's Email and
    Send request; hover fills the send and the PDF pill lime, forest words. */
-.a11y-widget-biz { --forest: #1e361f; --forest-ink: #e3f1bd; }
+.a11y-widget-biz { --forest: #486048; --forest-ink: #fff; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions { container: a11y-ra / inline-size; margin-top: var(--cds-spacing-10); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions > .a11y-ra-panel {
   --ink: var(--forest-ink); --paper: var(--forest); --focus: var(--forest-ink); --tile-ink: var(--forest-ink);
@@ -4365,7 +4372,7 @@
   margin: 0; font-size: 24px; font-weight: 200; line-height: 1.15; letter-spacing: 0.015em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-warning-badge {
-  display: inline-block; padding: var(--cds-spacing-02) var(--cds-spacing-03) var(--cds-spacing-02); border-radius: 8px; background: #f8ff58; color: #000;
+  display: inline-block; padding: var(--cds-spacing-02) var(--cds-spacing-03) var(--cds-spacing-02); border-radius: 8px; background: var(--hl-cap-a); color: #000;
   font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
   font-size: 18px; line-height: 1.2; letter-spacing: 0.08em; white-space: nowrap; rotate: -2deg;
 }
@@ -4420,20 +4427,20 @@
    panel's white cards. A caret has no ground, is a pill, or is that card.
    Buttons, badges and chat bubbles keep their own corners. */
 .a11y-widget-biz { --r-panel: 28px; --r-card: 20px; }
-.a11y-widget-biz { --bubble: #e6e6e6; --bubble-pill: #fff; }
+.a11y-widget-biz { --bubble: #dcdbd5; --bubble-pill: #fff; }
 .a11y-widget-biz[data-theme="dark"] { --bubble: #1c1c1e; --bubble-pill: #2c2c2e; }
 @media (prefers-color-scheme: dark) {
   .a11y-widget-biz:not([data-theme="light"]) { --bubble: #1c1c1e; --bubble-pill: #2c2c2e; }
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-findings-table {
-  --sev-critical: #80262a; --sev-serious: #1c4673; --sev-moderate: #20524d; --sev-minor: #ae5c44;
+  --sev-critical: #b81c1c; --sev-serious: #2848c8; --sev-moderate: #486048; --sev-minor: #ae5c44;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz[data-theme="dark"] .a11y-findings-table {
-  --sev-critical: #ffa0ff; --sev-serious: #48a0da; --sev-moderate: #beffbd; --sev-minor: #f8ff58;
+  --sev-critical: #ff6b66; --sev-serious: #7d95ff; --sev-moderate: #8fb08f; --sev-minor: #fff5c2;
 }
 @media (prefers-color-scheme: dark) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz:not([data-theme="light"]) .a11y-findings-table {
-    --sev-critical: #ffa0ff; --sev-serious: #48a0da; --sev-moderate: #beffbd; --sev-minor: #f8ff58;
+    --sev-critical: #ff6b66; --sev-serious: #7d95ff; --sev-moderate: #8fb08f; --sev-minor: #fff5c2;
   }
 }
 /* The header row is kept in the table, since a fixed table takes its
@@ -4687,14 +4694,14 @@
    7.1:1 and up on black (purple #be95ff 8.9:1). The word, not its colour,
    carries the meaning. */
 .a11y-widget-biz {
-  --word-red: #80262a; --word-blue: #1c4673; --word-green: #20524d; --word-ochre: #ae5c44; --word-purple: #6929c4;
+  --word-red: #b81c1c; --word-blue: #2848c8; --word-green: #486048; --word-ochre: #ae5c44; --word-purple: #6929c4;
 }
 .a11y-widget-biz[data-theme="dark"] {
-  --word-red: #ffa0ff; --word-blue: #48a0da; --word-green: #beffbd; --word-ochre: #f8ff58; --word-purple: #be95ff;
+  --word-red: #ff6b66; --word-blue: #7d95ff; --word-green: #8fb08f; --word-ochre: #fff5c2; --word-purple: #be95ff;
 }
 @media (prefers-color-scheme: dark) {
   .a11y-widget-biz:not([data-theme="light"]) {
-    --word-red: #ffa0ff; --word-blue: #48a0da; --word-green: #beffbd; --word-ochre: #f8ff58; --word-purple: #be95ff;
+    --word-red: #ff6b66; --word-blue: #7d95ff; --word-green: #8fb08f; --word-ochre: #fff5c2; --word-purple: #be95ff;
   }
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list, .a11y-w22-list) {
@@ -4878,9 +4885,9 @@
   text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.12em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row-failed .a11y-legal-row-label[class] { background: var(--hl-orange); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row-clean .a11y-legal-row-label[class] { background: var(--hl-green); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row-clean .a11y-legal-row-label[class] { background: var(--hl-green); color: var(--hl-green-ink); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row-human .a11y-legal-row-label[class] { background: var(--hl-cap-a); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row-not-measured .a11y-legal-row-label[class] { background: var(--hl-blue); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row-not-measured .a11y-legal-row-label[class] { background: var(--hl-blue); color: var(--hl-blue-ink); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row :is(.a11y-legal-mark, .a11y-legal-row-meaning)[class] {
   position: static; display: inline; align-self: baseline; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; rotate: none; transform: none;
   color: var(--ink); font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 18px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em; text-transform: none;
@@ -5238,13 +5245,13 @@
    clipped for the eye and kept for screen readers: the field's own label
    says it. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] {
-  --ink: #000; --paper: var(--form-brand);
+  --ink: var(--form-ink, #000); --paper: var(--form-brand);
   position: relative; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: var(--cds-spacing-06);
   width: 100%; max-width: none; min-width: 0; margin: 0; padding: var(--cds-spacing-09) var(--cds-spacing-10) var(--cds-spacing-09); border: 0; border-radius: var(--r-panel);
-  background: var(--form-brand); color: #000; text-align: center;
+  background: var(--form-brand); color: var(--form-ink, #000); text-align: center;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] { --form-brand: var(--hl-blue); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-manual-form[class] { --form-brand: var(--hl-green); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] { --form-brand: var(--hl-cap-b); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-manual-form[class] { --form-brand: var(--hl-green); --form-ink: var(--hl-green-ink); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-manual-form.a11y-schedule-form[class] { --form-brand: var(--hl-cap-b); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-triage-form[class] { --form-brand: var(--hl-cap-a); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] > * { box-sizing: border-box; max-width: 100%; margin: 0; }
@@ -5457,14 +5464,14 @@
   display: flex; flex-direction: column; gap: var(--cds-spacing-04); padding: 0; border: 0; border-radius: 0; background: none;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret[class][class] {
-  --ink: #000; --paper: var(--row-plate); --tile: var(--row-plate);
-  box-sizing: border-box; padding: var(--cds-spacing-05) var(--cds-spacing-06); border-radius: var(--r-card); background: var(--row-plate); color: #000;
+  --ink: var(--row-ink, #000); --paper: var(--row-plate); --tile: var(--row-plate);
+  box-sizing: border-box; padding: var(--cds-spacing-05) var(--cds-spacing-06); border-radius: var(--r-card); background: var(--row-plate); color: var(--row-ink, #000);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret[data-open][class][class] { padding: var(--cds-spacing-05) var(--cds-spacing-06) var(--cds-spacing-06); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret-failed { --row-plate: var(--hl-orange); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret-clean { --row-plate: var(--hl-green); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret-human { --row-plate: #f8ff58; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret-not-measured { --row-plate: var(--hl-blue); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret-clean { --row-plate: var(--hl-green); --row-ink: var(--hl-green-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret-human { --row-plate: var(--hl-cap-a); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret-not-measured { --row-plate: var(--hl-blue); --row-ink: var(--hl-blue-ink); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row[class][class][class][class] {
   align-items: baseline; width: 100%; min-height: 0; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; color: #000;
   font-size: 32px; line-height: 1.1; letter-spacing: 0.01em;
@@ -5921,10 +5928,10 @@
    lavender, not yet taken by another form: #cdb8ff (black words 12.6:1),
    dark #be95ff (9.6:1). No submit: the statement follows the fields as
    they are typed. 70px stands above the panel, as above every group. */
-.a11y-widget-biz { --form-stmt: #b8fbff; }
-.a11y-widget-biz[data-theme="dark"] { --form-stmt: #be95ff; }
+.a11y-widget-biz { --form-stmt: #dcdbd5; }
+.a11y-widget-biz[data-theme="dark"] { --form-stmt: #dcdbd5; }
 @media (prefers-color-scheme: dark) {
-  .a11y-widget-biz:not([data-theme="light"]) { --form-stmt: #be95ff; }
+  .a11y-widget-biz:not([data-theme="light"]) { --form-stmt: #dcdbd5; }
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form {
   --ink: #000; --paper: var(--form-stmt);
@@ -6018,11 +6025,15 @@
    the panel 22px in from them, and the corners are concentric: a 34px row
    (half a one-line row, so a full round end) in the 56px panel. Under
    480px of table the pill sits over the words, so the words keep the
-   width. Short parts still pair two to a line (the block above). */
+   width. Short parts still pair two to a line (the block above).
+   Since later the same day the label stands above the words at every
+   width, in PP Lettra Mono (user's instruction, "who fixes this need to
+   be above in letra"), still the outlined pill and still first in the
+   markup; the row is one column, the label 12px over the words. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col[class] { gap: var(--cds-spacing-03); margin-bottom: var(--cds-spacing-03); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col:last-of-type[class] { margin-bottom: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps, .a11y-affected)[class][class] {
-  display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--cds-spacing-05); row-gap: 0; align-items: baseline;
+  display: grid; grid-template-columns: minmax(0, 1fr); column-gap: var(--cds-spacing-05); row-gap: var(--cds-spacing-04); align-items: baseline;
   padding: var(--cds-spacing-05) var(--cds-spacing-05) var(--cds-spacing-05) var(--cds-spacing-08); border-radius: var(--r-card); text-align: start;
 }
 /* Everything in the first column, a row each in markup order; the label
@@ -6033,15 +6044,15 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo)[class][class] > strong:first-child,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class][class] > p:first-child,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class] > .a11y-affected-label {
-  grid-column: 2; grid-row: 1; justify-self: end; margin: 0; text-align: end;
+  grid-column: 1; grid-row: 1; justify-self: start; margin: 0; text-align: start;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class] > :not(.a11y-affected-label, .a11y-occurrence-list) { margin-top: var(--cds-spacing-05); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo)[class][class] > strong:first-child,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class][class] > p:first-child > strong,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class] > .a11y-affected-label > strong {
   display: inline-block; box-sizing: border-box; padding: var(--cds-spacing-03) var(--cds-spacing-04) var(--cds-spacing-02);
   border: 1px solid currentColor; border-radius: 999px;
-  font-size: 18px; line-height: 1; letter-spacing: 0.025em; text-transform: none; white-space: nowrap;
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-size: 18px; line-height: 1; letter-spacing: 0; text-transform: none; white-space: nowrap;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-fd-meta[class] { padding-inline: var(--cds-spacing-08); }
 @container a11y-ftable (min-width: 641px) {
@@ -6057,17 +6068,6 @@
     column-gap: var(--cds-spacing-04); padding: var(--cds-spacing-05) var(--cds-spacing-04) var(--cds-spacing-05) var(--cds-spacing-05); border-radius: var(--r-card);
   }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-fd-meta[class] { padding-inline: var(--cds-spacing-05); }
-}
-@container a11y-ftable (max-width: 480px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps, .a11y-affected)[class][class] {
-    grid-template-columns: minmax(0, 1fr); row-gap: var(--cds-spacing-03);
-  }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo)[class][class] > strong:first-child,
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class][class] > p:first-child,
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class] > .a11y-affected-label {
-    grid-column: 1; justify-self: start; text-align: start;
-  }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class] > :not(.a11y-affected-label, .a11y-occurrence-list) { margin-top: 0; }
 }
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps, .a11y-affected)[class][class] { border: 1px solid CanvasText; }
@@ -6118,7 +6118,7 @@
    the bar, 12:1 on white); on the black line being read, and on the dark
    pills in dark, the light focus green, #6fdc8c. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] {
-  --sr-brand: #a2e3ff; --sr-bar: #48a0da; --sr-pill: #e6e6e6; --sr-pill-hover: #fff5c2;
+  --sr-brand: #dcdbd5; --sr-bar: #2848c8; --sr-pill: #fff; --sr-pill-hover: #fff5c2;
   --ink: #000; --paper: var(--sr-brand); --tile: var(--tile-fill); --focus: #0a3d1a;
   box-sizing: border-box; padding: var(--cds-spacing-08) var(--cds-spacing-10) var(--cds-spacing-09); border: 0; border-radius: var(--r-panel);
   background: var(--sr-brand); color: #000; text-align: start;
@@ -6131,13 +6131,13 @@
 /* The bar: the fold's toggle, shut or open. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-accordion-title .a11y-accordion-head[class][class] {
   display: flex; flex-wrap: wrap; align-items: center; gap: var(--cds-spacing-02) 0; box-sizing: border-box; width: 100%; min-height: 80px;
-  margin: 0; padding: var(--cds-spacing-05) var(--cds-spacing-07); border: 0; border-radius: 999px; background: var(--sr-bar); color: #000; text-align: start;
+  margin: 0; padding: var(--cds-spacing-05) var(--cds-spacing-07); border: 0; border-radius: 999px; background: var(--sr-bar); color: #fff; text-align: start;
   font-size: 32px; line-height: 1.1; letter-spacing: 0.01em;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-accordion-title .a11y-accordion-head[class][class]:enabled:hover { background: var(--sr-bar); color: #000; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-accordion-title .a11y-accordion-head[class][class]:enabled:hover { background: var(--sr-bar); color: #fff; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-accordion-title .a11y-accordion-head[class][class]::before { align-self: center; margin-top: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-accordion-title .a11y-accordion-head[class][class] > .a11y-status-chip[class] {
-  margin: 0 0 0 auto; padding: 0 0 0 var(--cds-spacing-06); color: #000; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; text-align: end;
+  margin: 0 0 0 auto; padding: 0 0 0 var(--cds-spacing-06); color: #fff; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; text-align: end;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-accordion-title .a11y-accordion-head[class][class]:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
 
@@ -6289,11 +6289,11 @@
    rounded as far as the text allows, generous inside, no rules under the
    labels. Two to a row as before, one under 640px. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-spec-grid[class] {
-  --ink: #000; --paper: #48a0da;
+  --ink: #fff; --paper: #2848c8;
   box-sizing: border-box; gap: var(--cds-spacing-06) var(--grid-gap); padding: var(--cds-spacing-09) var(--cds-spacing-11); border-radius: var(--r-panel);
-  background: #48a0da; color: #000;
+  background: #2848c8; color: #fff;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-spec-grid > .a11y-spec-card[class] { color: #000; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-spec-grid > .a11y-spec-card[class] { color: #fff; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-spec-card > .a11y-spec-label[class] {
   margin: 0 0 var(--cds-spacing-02); padding: 0; border: 0; color: #000;
 }
@@ -6338,11 +6338,11 @@
    Hover and focus keep the plate and draw a 1px edge in its words' colour
    inside the card, with "Ask this" at the foot. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt.a11y-prompt:not(.a11y-prompt-barrier) {
-  --ink: var(--plate-text); --paper: var(--note);
-  background: var(--note); color: var(--plate-text);
+  --ink: var(--note-ink, var(--plate-1-ink)); --paper: var(--note);
+  background: var(--note); color: var(--note-ink, var(--plate-1-ink));
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n + 2 of :not(.a11y-prompt-barrier)) { --note: var(--plate-2); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt[class]:nth-child(3n of :not(.a11y-prompt-barrier)) { --note: var(--plate-3); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n + 2 of :not(.a11y-prompt-barrier)) { --note-ink: var(--plate-2-ink); --note: var(--plate-2); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt[class]:nth-child(3n of :not(.a11y-prompt-barrier)) { --note-ink: var(--plate-3-ink); --note: var(--plate-3); }
 /* Hover and focus are the beige since later the same day; see THE OPENING
    QUESTIONS TWO TO A ROW at the end of the file. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt.a11y-prompt:has(> .a11y-prompt-q:enabled):is(:hover, :has(> .a11y-prompt-q:focus-visible)) {
@@ -6366,10 +6366,10 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-wcag):has(> .a11y-prompt-q:enabled):is(:hover, :has(> .a11y-prompt-q:focus-visible)) .a11y-prompt-go { left: calc(50% + 4px); translate: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:enabled):is(:hover, :has(> .a11y-prompt-q:focus-visible)) > .a11y-prompt-wcag { left: auto; right: calc(50% + 4px); translate: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt-barrier.a11y-prompt-barrier {
-  --ink: #000; --paper: var(--barrier); background: var(--barrier); color: #000; box-shadow: none;
+  --ink: var(--barrier-ink); --paper: var(--barrier); background: var(--barrier); color: var(--barrier-ink); box-shadow: none;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt-barrier .a11y-prompt-go[class] {
-  position: absolute; visibility: visible; margin: 0; background: #000; color: #fff;
+  position: absolute; visibility: visible; margin: 0; background: var(--barrier-ink); color: var(--barrier);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompt-more .a11y-btn[class][class] {
   min-height: 48px; padding: 0 var(--cds-spacing-06); border: 0; border-radius: 999px; background: var(--bubble); color: var(--ink);
@@ -6433,8 +6433,10 @@
    instruction, 25 Nov 2026, "delete lines, make moon 20% larger, and big
    number inside, do not say out of 100": the guide lines are gone and the
    C is 20% over its 280px and 200px). The score alone sits in its bowl at
-   120px (88px on a phone), a display size outside the four by the user's
-   word; "out of 100" is said only to screen readers, in the dial's name.
+   48px on every screen, the display size of the four (it was 120px, 88px
+   on a phone, until the user's "make sure only 4 font sizes used" and
+   "fold them in", the same day); "out of 100" is said only to screen
+   readers, in the dial's name.
    - What the range means under it, centred, 32px (24px on a phone).
    - "N issues found" as a caption, 18px, centred, then the issues three
      to a row (user's instruction, 25 Nov 2026, "fold this in 3 rows": each
@@ -6474,7 +6476,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen .a11y-sum-dial-card > .a11y-sum-dial {
   width: var(--dial); height: var(--dial); margin: 0 auto;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen .a11y-sum-dial-num { font-size: 120px; line-height: 1; letter-spacing: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen .a11y-sum-dial-num { font-size: 48px; line-height: 1; letter-spacing: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-verdict {
   max-width: 24em; margin: var(--cds-spacing-07) auto 0; text-align: center;
 }
@@ -6529,7 +6531,6 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title:focus-visible::after { outline: 2px solid var(--focus); outline-offset: -2px; }
 @media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-dial-card { --dial: 240px; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen .a11y-sum-dial-num { font-size: 88px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-issues { margin-top: var(--cds-spacing-10); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec { gap: var(--cds-spacing-05); padding: var(--cds-spacing-05); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title { font-size: 18px; line-height: 1.4; }
@@ -6616,7 +6617,7 @@
    title; the note's inner cards take the --bubble grey, since the card
    under them is already the white. Every selector carries .a11y-dn-panel,
    one class over THE DESIGN NOTES AS CARETS and the plain-row rules. */
-.a11y-widget-biz { --dn-ground: #3c8828; }
+.a11y-widget-biz { --dn-ground: #486048; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn > .a11y-dn-panel {
   --caret-col: 24px;
   margin: 0; padding: var(--cds-spacing-05); border-radius: var(--r-panel); background: var(--dn-ground);
@@ -6816,18 +6817,21 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards > * { break-inside: avoid; }
 }
 
-/* ===== THE PRINCIPLE GROUPS' TITLES 120% OF THE PROSE =====
-   "Can people use it?" and its siblings under "What people can't use"
-   (user's instruction, 25 Nov 2026, "make this title 120% larger"): they
-   were the prose size, 32px, the same as the section title over them.
-   120% of 32 is 38.4, set as 38px at the 32px step's 1.1 leading and
-   0.01em tracking; on a phone 120% of the 24px headings, 29px. The one
-   exception to three sizes only, at the user's word. */
+/* ===== THE PRINCIPLE GROUPS' TITLES IN LETTRA MONO MEDIUM =====
+   "Can people use it?", "Best practice" and their siblings under "What
+   people can't use" (user's instruction, 25 Nov 2026, "make this title
+   120% larger"): 38px, then the prose size, 32px, for "make sure only 4
+   font sizes used". Later the same day, "make title font 10 px larger and
+   use letra font", "also use letra medium mono": 48px, the scale's display
+   step, in PP Lettra Mono Medium (500, the user's exception to Ultralight
+   only), at 1.1 leading and no tracking, since a mono face is spaced by its
+   own fixed widths; on a phone 32px, the step above the phone's 24px. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-principle-group .a11y-principle-title {
-  font-size: 38px; line-height: 1.1; letter-spacing: 0.01em;
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-size: 48px; font-weight: 500; line-height: 1.1; letter-spacing: 0;
 }
 @media (max-width: 671px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-principle-group .a11y-principle-title { font-size: 29px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-principle-group .a11y-principle-title { font-size: 32px; line-height: 1.1; }
 }
 
 /* ═══ THE CHAT BOX AS A ROUND BAR OF GREY PILLS (user's reference, 25 Nov
@@ -7039,15 +7043,134 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] > .a11y-copy-btn[class] { display: none; }
 }
 
+/* ═══ THE POSTER'S COLOURS (user's reference, 25 Nov 2026, "for the rest
+   use these colors", with an event poster: red, blue and dark green
+   strokes and black on a grey paper, and its cream programme sheet,
+   "these also") ═══
+   Red #f03c38 takes black words (5.4:1); blue #2848c8 and green #486048
+   take white words (7.4:1 and 6.9:1), so every ground of theirs that holds
+   words carries an ink token beside it (--hl-blue-ink, --hl-green-ink,
+   --barrier-ink, --plate-N-ink, --row-ink). The legal rows on blue and
+   green hold the checklist's own rows, whose parts set black words of
+   their own; these turn every word in them white, the status words with
+   them (red on blue is 1.9:1). */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > :is(.a11y-legal-caret-clean, .a11y-legal-caret-not-measured)[class][class][class][class][class] * { color: var(--row-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-spec-grid[class][class][class][class][class] * { color: #fff; }
+
+/* ═══ CENTRED CALLOUTS SET AS THE POSTER'S PROGRAMME (user's reference,
+   25 Nov 2026, "also this typesetting for centered call outs", a cream
+   programme sheet set centred in an old-style roman with italic for the
+   lesser words: "by", "Dj Set", the date) ═══
+   The centred passages that are words, not controls, are EB Garamond:
+   "New scan" and "Sign the scanner in" over the form, the note under Start
+   the scan, the scan's steps, "Your score" and "Email me this report". Mixed case, no
+   tracking (the face is fitted; 32px takes -0.005em), set solid at 1.05 as
+   the programme is, lining figures as its times and dates are. The lesser
+   line takes the italic: the form's note and each scan step's number. Sizes are the widget's three. Controls, pills and labels
+   stay in Telegraf. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(
+  .a11y-url-form[class] > .a11y-tester-name,
+  .a11y-url-form[class] .a11y-login-legend,
+  .a11y-url-form[class] > .a11y-url-submit > .a11y-url-submit-note,
+  .a11y-scan-itinerary[class],
+  .a11y-score:has(> .a11y-sum-specimen) > h2.a11y-section-title,
+  .a11y-report-actions .a11y-ra-head
+)[class] {
+  font-family: "EB Garamond", Garamond, "Times New Roman", serif; font-weight: 200; font-style: normal; font-synthesis: none;
+  font-variant-numeric: lining-nums; font-kerning: normal; font-feature-settings: "kern", "liga";
+  text-transform: none; text-align: center; line-height: 1.05; letter-spacing: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(
+  .a11y-url-form[class] > .a11y-tester-name,
+  .a11y-url-form[class] .a11y-login-legend,
+  .a11y-score:has(> .a11y-sum-specimen) > h2.a11y-section-title,
+  .a11y-report-actions .a11y-ra-head
+)[class][class] { font-size: 32px; letter-spacing: -0.005em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] > .a11y-url-submit > .a11y-url-submit-note[class][class][class] { font-size: 24px; font-style: italic; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-scan-itinerary[class][class] > .a11y-scan-step > .a11y-scan-step-num { font-family: inherit; font-style: italic; font-variant-numeric: lining-nums; }
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(
+    .a11y-url-form[class] > .a11y-tester-name,
+    .a11y-url-form[class] .a11y-login-legend,
+    .a11y-score:has(> .a11y-sum-specimen) > h2.a11y-section-title,
+      .a11y-report-actions .a11y-ra-head
+  )[class][class] { font-size: 24px; letter-spacing: 0; }
+}
+
+/* THE SCORE'S RANGE AND ITS COUNT IN LETTRA (user's instruction, 25 Nov
+   2026, "use letra here too", on the sentence under the dial and "8 issues
+   found"): PP Lettra Mono Ultralight, centred, the sentence at 32px (24px
+   on a phone) and the count at 24px, no italic (the face has none), no
+   tracking, 1.15 leading (a mono line needs a little more than the
+   Garamond's 1.05). */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score .a11y-sum-specimen :is(.a11y-sum-run > .a11y-sum-verdict, .a11y-sum-issues > .a11y-sum-label)[class][class] {
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
+  text-transform: none; text-align: center; line-height: 1.15; letter-spacing: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-verdict[class][class] { font-size: 32px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score .a11y-sum-specimen > .a11y-sum-issues > .a11y-sum-label[class][class] { font-size: 24px; }
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-verdict[class][class] { font-size: 24px; }
+}
+
+/* ═══ EVERY BUTTON AS A GREY PILL, THE CHAT BOX WHITE WITH A GREY EDGE
+   (user's reference, 25 Nov 2026, "make all buttons like this", a row of
+   grey filter pills; then "make this white with grey outline", on the
+   chat box) ═══════════════════════════════════════════════════════════
+   Every ordinary button (the BUTTONS block's list, the language menu's
+   toggle and the chat box's own buttons) is a filled pill with no edge
+   to see: 999px corners, the --bubble grey (#e6e6e6, black words 16.5:1;
+   dark #1c1c1e, white words 17:1), 34px tall, 18px words, as New chat
+   and the section pills already were. The 1px edge stays, in the fill's
+   own colour, so a pill is the same size as before and forced colours
+   still draw it. The main action and a chosen button stay the solid
+   pill; hover stays the pale yellow; disabled stays dashed on paper.
+   Start the scan keeps its large size, now round-ended. The chat box is
+   the paper with a 1px #8e8e93 edge (3.3:1 on white, 5.9:1 on black, so
+   it reads as the field's boundary), 32px corners; its buttons are the
+   grey pills on it and Send the solid one. Left as they are: buttons
+   that sit on a coloured panel (Send this report and Download in PDF on
+   the forest panel, the screen reader panel's pills, the AI fix's Copy,
+   the opening cards' Ask this and Learn more's black pill on the grey
+   bubble, where a grey pill would vanish). The pill's words are its own
+   --bubble-ink, black on the light grey and white on the dark, since some
+   pills sit in a block that sets --ink black for its own ground (Behind a
+   login in the scan form drew black on #1c1c1e in dark). */
+.a11y-widget-biz { --bubble-ink: #000; }
+.a11y-widget-biz[data-theme="dark"] { --bubble-ink: #fff; }
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz:not([data-theme="light"]) { --bubble-ink: #fff; }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-show-all, .a11y-blockflag-jump, .a11y-findings-csv, .a11y-undecided-export, .a11y-login-toggle, .a11y-sim-btn, .a11y-sr-play, .a11y-skip-link, .a11y-pro-jump, .a11y-mode-btn, .a11y-tab, .a11y-lang-toggle):not(.a11y-ra-send, .a11y-switch-track)[class][class] {
+  border: 1px solid var(--bubble); border-radius: 999px; background: var(--bubble); color: var(--bubble-ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn.a11y-btn-primary, .a11y-sim-btn-active, .a11y-mode-btn-active, .a11y-tab[aria-selected="true"], .a11y-btn[aria-pressed="true"], .a11y-btn[aria-current], .a11y-chat-box .a11y-btn[type="submit"]):enabled:not(:hover)[class][class] {
+  border-color: var(--solid); background: var(--solid); color: var(--solid-ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-show-all, .a11y-blockflag-jump, .a11y-findings-csv, .a11y-undecided-export, .a11y-login-toggle, .a11y-sim-btn, .a11y-sr-play, .a11y-skip-link, .a11y-pro-jump, .a11y-mode-btn, .a11y-tab, .a11y-lang-toggle):not(.a11y-ra-send, .a11y-switch-track)[class][class]:enabled:hover {
+  border-color: var(--hover); background: var(--hover); color: var(--hover-ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-show-all, .a11y-findings-csv, .a11y-sim-btn, .a11y-sr-play, .a11y-lang-toggle):not(.a11y-ra-send, .a11y-switch-track)[class][class]:disabled {
+  border: 1px dashed var(--ink); background: transparent; color: var(--ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-chat-box[class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box[class] {
+  border: 1px solid #8e8e93; background: var(--paper); color: var(--ink);
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-show-all, .a11y-blockflag-jump, .a11y-findings-csv, .a11y-undecided-export, .a11y-login-toggle, .a11y-sim-btn, .a11y-sr-play, .a11y-skip-link, .a11y-pro-jump, .a11y-mode-btn, .a11y-tab, .a11y-lang-toggle):not(.a11y-ra-send, .a11y-switch-track)[class][class] { border-color: ButtonText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box[class] { border-color: CanvasText; }
+}
+
 /* ═══ THE SCAN'S SETTINGS AS A FORM PANEL OF PILLS (user's reference,
    25 Nov 2026, "design this like this", a type foundry's trial-font
    picker: a coloured panel, a centred sentence at the top, white pill rows
    two to a line, a ring at the start of each, a small outlined badge at
    the end of some) ════════════════════════════════════════════════════
    This scan (ScanSettings, with the account rows inside it) is one panel
-   in the studio blue #48a0da, black words in both themes (7.3:1), as the
-   statement's facts are; the reference's violet has no place in the
-   studio palette, and this is its nearest. "This scan" is the panel's
+   in the poster's blue (--hl-blue, #2848c8) with its white words
+   (--hl-blue-ink, 7.4:1), both themes; the reference's violet is not in
+   the palette, and this is its nearest. "This scan" is the panel's
    centred line at 32px. Each row is a centred capital label at 18px over
    its pills; Report style, AI review and Scope are two pills to a line,
    one under 560px of panel. A pill is the field fill (white, dark
@@ -7059,17 +7182,17 @@
    badge at the end, 1px outlined, 18px. Hover is the --hover yellow,
    black words; disabled is dashed. The Language select is a white pill
    across the panel with its helper under it; the account field is a white
-   pill, its buttons black pills. Focus on the blue is #0a3d1a (4.3:1),
-   inside a white pill the same (12:1), and the light green on dark pills. */
+   pill, its buttons white pills with blue words. Focus is drawn inside
+   the pills: #0a3d1a in a white one (12:1), the light green in a dark one. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] {
-  --ink: #000; --paper: #48a0da; --focus: #0a3d1a;
+  --ink: var(--hl-blue-ink); --paper: var(--hl-blue); --focus: #0a3d1a;
   container: a11y-settings-panel / inline-size;
   display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--cds-spacing-07); box-sizing: border-box; min-width: 0;
   padding: var(--cds-spacing-08) var(--cds-spacing-08) var(--cds-spacing-09); border: 0; border-radius: var(--r-panel);
-  background: #48a0da; color: #000;
+  background: var(--hl-blue); color: var(--hl-blue-ink);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-heading[class] {
-  margin: 0 0 var(--cds-spacing-03); padding: 0; border: 0; color: #000; text-align: center;
+  margin: 0 0 var(--cds-spacing-03); padding: 0; border: 0; color: inherit; text-align: center;
   font-size: 32px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] {
@@ -7078,7 +7201,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] > * { width: auto; max-width: none; justify-self: stretch; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] > .a11y-select2 > .a11y-select2-label[class],
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] > .a11y-settings-label[class] {
-  display: block; justify-self: stretch; width: auto; margin: 0 0 var(--cds-spacing-04); color: #000; text-align: center;
+  display: block; justify-self: stretch; width: auto; margin: 0 0 var(--cds-spacing-04); color: inherit; text-align: center;
   font-size: 18px; font-weight: 200; line-height: 1.4; letter-spacing: 0.04em; text-transform: uppercase; font-feature-settings: "case";
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] > :is(.a11y-select2, .a11y-input) { display: block; max-width: none; }
@@ -7122,13 +7245,14 @@
 
 /* The language: a white pill across the panel. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-select2 .a11y-select2-field.a11y-select2-field {
+  --ink: var(--tile-ink); /* the arrow is drawn in --ink: the pill's words, not the panel's */
   box-sizing: border-box; width: 100%; min-width: 0; max-width: none; min-height: 64px; margin: 0;
   padding: 0 var(--cds-spacing-11) 0 var(--cds-spacing-06); border: 1px solid var(--tile-fill); border-radius: 999px;
   background-color: var(--tile-fill); color: var(--tile-ink); font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-select2 .a11y-select2-field.a11y-select2-field:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; box-shadow: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] :is(.a11y-select2-help, .a11y-input-help, .a11y-settings-state)[class][class] {
-  display: block; justify-self: stretch; width: auto; margin: var(--cds-spacing-04) 0 0; color: #000; text-align: center; font-size: 18px; line-height: 1.4; letter-spacing: 0.025em;
+  display: block; justify-self: stretch; width: auto; margin: var(--cds-spacing-04) 0 0; color: inherit; text-align: center; font-size: 18px; line-height: 1.4; letter-spacing: 0.025em;
 }
 
 /* The account rows: the field a white pill, the buttons black pills. */
@@ -7141,11 +7265,11 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-input-shell[class] > input:focus-visible { outline: none; box-shadow: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] :is(.a11y-settings-row, .a11y-manual-form-actions) > .a11y-btn[class][class] {
   display: flex; justify-content: center; width: fit-content; margin-inline: auto; padding: var(--cds-spacing-02) var(--cds-spacing-05);
-  border: 1px solid #000; border-radius: 999px; background: #000; color: #fff;
+  border: 1px solid var(--hl-blue-ink); border-radius: 999px; background: var(--hl-blue-ink); color: var(--hl-blue);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] :is(.a11y-settings-row, .a11y-manual-form-actions) > .a11y-btn[class][class]:enabled:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] :is(.a11y-settings-row, .a11y-manual-form-actions) > .a11y-btn[class][class]:disabled { border: 1px dashed #000; background: none; color: #000; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] :is(.a11y-settings-row, .a11y-manual-form-actions) > .a11y-btn[class][class]:focus-visible { outline: 2px solid #6fdc8c; outline-offset: -4px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] :is(.a11y-settings-row, .a11y-manual-form-actions) > .a11y-btn[class][class]:disabled { border: 1px dashed var(--hl-blue-ink); background: none; color: var(--hl-blue-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] :is(.a11y-settings-row, .a11y-manual-form-actions) > .a11y-btn[class][class]:focus-visible { outline: 2px solid #0a3d1a; outline-offset: -4px; }
 
 /* Dark: the pills are the dark field fill, so their focus is the light green. */
 @media (prefers-color-scheme: dark) {
