@@ -8085,3 +8085,7 @@
   font-weight: 200; font-style: normal; font-synthesis: none; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr:has(h2#a11y-sr-heading:not(.a11y-accordion-title))[class][class][class] .a11y-sr-log > .a11y-sr-log-heads[class] { padding-inline-start: 0; }
+
+/* Other questions stands centred under the opening cards (user's
+   instruction, 25 Nov 2026, "centre"). */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompt-more[class][class] { display: flex; justify-content: center; text-align: center; }
