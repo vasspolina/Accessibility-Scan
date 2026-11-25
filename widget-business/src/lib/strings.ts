@@ -902,6 +902,11 @@ export const CHROME_KEYS: string[] = [
   "No picture: this element couldn't be located again on the return visit. Pages that rebuild themselves on every load do this.",
   "The technical details for this finding identify the exact element.",
   "This element lives inside the consent frame from {host}, so the selector in the technical details is a path within that frame rather than within your own page.",
+  // Under a picture that is not simply the element (pictureShows).
+  "Hidden when we scanned. This is the part of the page it is folded into.",
+  "Shown with the keyboard on it, the only time it appears.",
+  "The top of the region this covers.",
+  "Something lay over it when we photographed it. The outline marks where it is.",
   // The word beside a switch.
   "On",
   "Off",
