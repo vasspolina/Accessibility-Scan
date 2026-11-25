@@ -6806,47 +6806,57 @@
    lands here.
    Merged after the same day's two passes: the sizes are the ten-percent-
    smaller ones (24 to 22, 32 to 29, 18 to 16, the icon 48 to 43 and 32 to
-   29), and the panel stays centred as the one block exception to
-   EVERYTHING SET LEFT, since the reference the user asked for is a centred
-   bill. */
+   29).
+   TWO COLUMNS (user's instruction, 25 Nov 2026, "turn into two columns",
+   on both panels): no longer centred. The panel is a grid of two equal
+   columns 48px apart; the body is display: contents so its children are
+   the grid's items. Left: the caption on the first row, the first point
+   on the second, the icon at the foot of the third (bottom left). Right:
+   a11y-sum-card-rest, the other points one under another, from the second
+   row, so its first line stands level with the first point's. Under 672px
+   one column, in reading order: caption, first point, the rest, icon. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-card[class][class] {
-  display: flex; flex-direction: column; align-items: center; gap: var(--cds-spacing-07);
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto auto 1fr;
+  column-gap: var(--cds-spacing-09); row-gap: var(--cds-spacing-06); align-items: start;
   margin: var(--cds-spacing-05) 0 0; padding: var(--cds-spacing-09) var(--cds-spacing-07); border: 0; border-radius: 20px;
-  background: var(--bubble); color: var(--ink); text-align: center;
+  background: var(--bubble); color: var(--ink); text-align: left;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > :not(.a11y-sum-card) + .a11y-sum-card[class][class] { margin-top: var(--cds-spacing-12); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-pic {
-  display: flex; flex: none; order: 1; align-items: center; justify-content: center;
+  display: flex; grid-column: 1; grid-row: 3; align-self: end; justify-self: start;
   width: auto; height: auto; border-radius: 0; background: none; color: inherit;
   font-size: 43px; line-height: 1;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body {
-  display: flex; flex: none; flex-direction: column; align-items: center; gap: var(--cds-spacing-06);
-  width: 100%; max-width: 28em; min-width: 0;
+  display: contents;
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
   font-size: 22px; font-weight: 200; font-synthesis: none; line-height: 1.15; letter-spacing: 0;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-point[class] {
-  /* Stretched to the body's width: at its min-content, the longest word,
-     the German "Gestaltungshinweise" in the mono face, ran past a 320px
-     window. */
-  align-self: stretch; max-width: none; margin: 0; padding: 0; color: inherit;
-  font: inherit; letter-spacing: inherit; text-align: center; overflow-wrap: break-word;
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-rest {
+  display: flex; flex-direction: column; gap: var(--cds-spacing-06); grid-column: 2; grid-row: 2 / 4; min-width: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body .a11y-sum-point[class] {
+  /* min-width 0 and break-word: the longest word, the German
+     "Gestaltungshinweise" in the mono face, ran past a 320px window. */
+  min-width: 0; max-width: none; margin: 0; padding: 0; color: inherit;
+  font: inherit; letter-spacing: inherit; text-align: left; overflow-wrap: break-word;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-pill + .a11y-sum-point[class][class] {
+  grid-column: 1; grid-row: 2;
   font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 29px; font-weight: 400;
   line-height: 1; letter-spacing: 0.01em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-pill[class] {
-  order: 0; margin: 0; padding: 0; border: 0; border-radius: 0;
+  grid-column: 1; grid-row: 1; justify-self: start; margin: 0; padding: 0; border: 0; border-radius: 0;
   background: none; color: inherit; white-space: normal; text-transform: none;
   font-family: inherit; font-size: 22px; font-weight: 200; line-height: 1.15; letter-spacing: 0;
 }
 @media (max-width: 671px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-card[class][class] { gap: var(--cds-spacing-06); padding: var(--cds-spacing-07) var(--cds-spacing-05); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-card[class][class] { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; gap: var(--cds-spacing-05); padding: var(--cds-spacing-07) var(--cds-spacing-05); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > :not(.a11y-sum-card) + .a11y-sum-card[class][class] { margin-top: var(--cds-spacing-10); }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-pic { font-size: 29px; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body { gap: var(--cds-spacing-05); font-size: 16px; line-height: 1.2; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-pic { grid-row: 4; font-size: 29px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body { font-size: 16px; line-height: 1.2; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-rest { grid-column: 1; grid-row: 3; gap: var(--cds-spacing-05); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-pill + .a11y-sum-point[class][class] { font-size: 22px; letter-spacing: 0.015em; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-pill[class] { font-size: 16px; line-height: 1.2; }
 }
@@ -7744,9 +7754,17 @@
    alike (70px each side, where it was 40), and the box's own words and
    buttons stand 30px inside its edge (they were 16px top and bottom,
    24px at the sides). Phones keep their gutter. */
+/* The box is half as tall (user's instruction, 25 Nov 2026, "make chat
+   half tall", on the empty box at about 200px): 8px inside at the top
+   and bottom where it was 32 (the 32px sides stay), the field one line
+   where it was two (it still grows as you type, up to 40vh), and 8px
+   between the field and the row of buttons where it was 16. Empty, the
+   box is about 110px. */
 @media (min-width: 672px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-layout > .a11y-chat[class] { padding-inline: var(--cds-spacing-07); }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-chat-box[class][class] { padding: var(--cds-spacing-07); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-chat-box[class][class] { padding: var(--cds-spacing-03) var(--cds-spacing-07); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-dock .a11y-chat-composer .a11y-chat-box textarea { min-height: 1lh; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-chat-box-row[class] { margin-top: var(--cds-spacing-03); }
 }
 
 /* ═══ THE STATEMENT'S FORM AND FACTS AS ONE PANEL (user's instruction,
