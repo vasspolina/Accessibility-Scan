@@ -469,7 +469,9 @@ export function ScoreGauge({
             note in a mono face, its striped edge left out): every line in
             the mono at one size, the heading first, one empty line between
             the parts, no icon on screen. The heading stays first in the
-            markup, so it is read first. */}
+            markup, so it is read first. The two stand side by side in one
+            row (a11y-sum-notes, "make these in two columns", the same day). */}
+        <div className="a11y-sum-notes">
         <section className="a11y-sum-counts a11y-sum-card" aria-labelledby={countsId}>
           <span className="a11y-sum-card-pic" aria-hidden="true"><Icon name="information" /></span>
           <div className="a11y-sum-card-body">
@@ -493,6 +495,7 @@ export function ScoreGauge({
             </div>
           </section>
         )}
+        </div>
       </div>
     </div>
   );

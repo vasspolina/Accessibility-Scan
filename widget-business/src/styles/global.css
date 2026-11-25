@@ -6823,7 +6823,7 @@
    icons were aria-hidden already). The score's two notes stand 16px apart
    under the issues; the overlay note keeps the notices' 32px under it.
    Focus never lands here. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-grid > .a11y-sum-card, .a11y-note.a11y-yellow-note)[class][class] {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-notes > .a11y-sum-card, .a11y-note.a11y-yellow-note)[class][class] {
   --yellow-note: #fff500;
   display: flex; flex-direction: column; align-items: stretch; gap: 1lh;
   padding: var(--cds-spacing-06) 28px; border: 0; border-radius: 12px;
@@ -6832,9 +6832,19 @@
   font-size: 18px; font-weight: 200; font-synthesis: none; line-height: 1.35; letter-spacing: 0.02em;
   overflow-wrap: anywhere;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-card[class][class] { margin: var(--cds-spacing-05) 0 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-note.a11y-yellow-note[class][class] { margin: 0 0 var(--cds-spacing-07); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > :not(.a11y-sum-card) + .a11y-sum-card[class][class] { margin-top: var(--cds-spacing-12); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-notes > .a11y-sum-card[class][class] { margin: 0; }
+/* A break above the overlay note ("add a break", 25 Nov 2026): it touched
+   the green report actions panel above it. 16px, the gap between the score's
+   two notes. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-note.a11y-yellow-note[class][class] { margin: var(--cds-spacing-05) 0 var(--cds-spacing-07); }
+/* The two notes side by side ("make these in two columns", 25 Nov 2026):
+   one row of two equal columns 16px apart, each note as tall as the row; a
+   lone How the score works (no warning) takes the whole row. One column
+   under 672px. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-notes {
+  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: var(--cds-spacing-05);
+  margin: var(--cds-spacing-12) 0 0;
+}
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-pic { display: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-card > .a11y-sum-card-body, .a11y-yellow-note > .a11y-note-body)[class] {
   display: flex; flex-direction: column; gap: 1lh; min-width: 0;
@@ -6846,11 +6856,11 @@
   font: inherit; letter-spacing: inherit;
 }
 @media (max-width: 671px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-grid > .a11y-sum-card, .a11y-note.a11y-yellow-note)[class][class] { padding: 20px var(--cds-spacing-05); }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > :not(.a11y-sum-card) + .a11y-sum-card[class][class] { margin-top: var(--cds-spacing-10); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-notes > .a11y-sum-card, .a11y-note.a11y-yellow-note)[class][class] { padding: 20px var(--cds-spacing-05); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-notes { grid-auto-flow: row; margin-top: var(--cds-spacing-10); }
 }
 @media (forced-colors: active) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-grid > .a11y-sum-card, .a11y-note.a11y-yellow-note)[class][class] { border: 1px solid CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-notes > .a11y-sum-card, .a11y-note.a11y-yellow-note)[class][class] { border: 1px solid CanvasText; }
 }
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card { break-inside: avoid; }
