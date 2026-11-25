@@ -5197,7 +5197,7 @@
    same size beside it. Code elsewhere keeps the one face. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd-body code {
   font-family: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
-  font-size: 0.8em; font-weight: 400; letter-spacing: 0;
+  font-size: 18px; font-weight: 400; letter-spacing: 0;
 }
 
 /* ═══ EVERY FORM AS THE EMAIL PANEL, EACH IN ITS OWN BRAND COLOUR (user's
@@ -5499,14 +5499,20 @@
    sentence up to 34% of the row, then the sentence wraps. The title's small
    print spans the count's column too, set to the end, and stands 3em clear
    of the count. Above 640px only: a phone keeps its stacked rows.
-   The one size scales with the screen (user's instruction, the same day,
-   "scale text proportionally on screens smaller sizes"): 32px from 1000px
-   of window up, 2px less for every 100px below it, never under 20px (at
-   375px it is 20px, at 800px 28px), so a narrower window sets the same
-   lines smaller instead of breaking them, and there is no step at 640px. */
+   The one size steps down with the screen (user's instruction, the same
+   day, "scale text proportionally on screens smaller sizes", held to the
+   type sizes on 25 Nov 2026, "make sure only 4 font sizes used"): 32px from
+   1000px of window up, 24px below it. It was a fluid clamp from 20 to 32px,
+   which drew every size between. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets :is(.a11y-legal-row, .a11y-conf-row) :is(.a11y-legal-row-label, .a11y-legal-count, .a11y-legal-mark, .a11y-legal-row-meaning, .a11y-conf-id, .a11y-conf-plain, .a11y-conf-status)[class][class][class],
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-row > .a11y-conf-body > strong:not(#x) {
-  font-size: clamp(20px, calc(12px + 2vw), 32px); line-height: 1.1; letter-spacing: 0.01em;
+  font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+}
+@media (min-width: 1000px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets :is(.a11y-legal-row, .a11y-conf-row) :is(.a11y-legal-row-label, .a11y-legal-count, .a11y-legal-mark, .a11y-legal-row-meaning, .a11y-conf-id, .a11y-conf-plain, .a11y-conf-status)[class][class][class],
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-row > .a11y-conf-body > strong:not(#x) {
+    font-size: 32px; line-height: 1.1; letter-spacing: 0.01em;
+  }
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-row > .a11y-conf-id[class][class] { padding-top: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-row .a11y-conf-plain[class][class] { margin-top: 0; }
@@ -6017,7 +6023,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class] > .a11y-affected-label > strong {
   display: inline-block; box-sizing: border-box; padding: 6px 12px 5px;
   border: 1px solid currentColor; border-radius: 999px;
-  font-size: 15px; line-height: 1; letter-spacing: 0.01em; text-transform: none; white-space: nowrap;
+  font-size: 18px; line-height: 1; letter-spacing: 0.025em; text-transform: none; white-space: nowrap;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-fd-meta[class] { padding-inline: 40px; }
 @container a11y-ftable (min-width: 641px) {
