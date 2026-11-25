@@ -6829,7 +6829,7 @@
   padding: var(--cds-spacing-06) 28px; border: 0; border-radius: 12px;
   background: var(--yellow-note); color: #000; text-align: left;
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
-  font-size: 18px; font-weight: 200; font-synthesis: none; line-height: 1.35; letter-spacing: 0.02em;
+  font-size: 21px; font-weight: 200; font-synthesis: none; line-height: 1.35; letter-spacing: 0.02em;
   overflow-wrap: anywhere;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-notes > .a11y-sum-card[class][class] { margin: 0; }
@@ -7427,8 +7427,8 @@
   background: var(--hl-blue); color: var(--hl-blue-ink);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-heading[class] {
-  margin: 0 0 var(--cds-spacing-03); padding: 0; border: 0; color: inherit; text-align: center;
-  font-size: inherit; font-weight: 200; line-height: 1.1; letter-spacing: inherit;
+  margin: 0 0 var(--cds-spacing-03); padding: 0; border: 0; color: inherit; text-align: start;
+  font-size: 1.15em; font-weight: 200; line-height: 1.1; letter-spacing: inherit;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] {
   display: block; justify-self: stretch; width: auto; max-width: none; margin: 0; padding: 0; border: 0;
@@ -7436,9 +7436,9 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] > * { width: auto; max-width: none; justify-self: stretch; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] > .a11y-select2 > .a11y-select2-label[class],
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] > .a11y-settings-label[class] {
-  display: block; justify-self: stretch; width: auto; margin: 0 0 var(--cds-spacing-04); color: inherit; text-align: center;
+  display: block; justify-self: stretch; width: auto; margin: 0 0 var(--cds-spacing-04); color: inherit; text-align: start;
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-synthesis: none;
-  font-size: 18px; font-weight: 200; line-height: 1.4; letter-spacing: 0.025em; text-transform: uppercase; font-feature-settings: "case";
+  font-size: 21px; font-weight: 200; line-height: 1.4; letter-spacing: 0.025em; text-transform: uppercase; font-feature-settings: "case";
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] > :is(.a11y-select2, .a11y-input) { display: block; max-width: none; }
 /* The account field's own label says "Account key" right under the row's
@@ -7459,7 +7459,7 @@
   display: flex; align-items: center; gap: var(--cds-spacing-05); box-sizing: border-box; width: 100%; min-width: 0; min-height: 64px; margin: 0;
   padding: var(--cds-spacing-03) var(--cds-spacing-06) var(--cds-spacing-03) var(--cds-spacing-05);
   border: 1px solid var(--tile-fill); border-radius: 999px; background: var(--tile-fill); color: var(--tile-ink); text-align: start;
-  font-size: 16px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 18px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-settings-opt[class][class] > .a11y-settings-words { flex: 1 1 auto; min-width: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] button.a11y-settings-opt[class][class]:enabled:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
@@ -7476,7 +7476,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] button.a11y-settings-opt[class][class]:enabled:hover .a11y-settings-ring > svg { color: var(--hover); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-settings-cost[class] {
   flex: none; margin: 0 0 0 auto; padding: var(--cds-spacing-01) var(--cds-spacing-03); border: 1px solid currentColor; border-radius: 999px;
-  font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; white-space: nowrap;
+  font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; white-space: nowrap;
 }
 
 /* The language: a white pill across the panel. */
@@ -7484,11 +7484,11 @@
   --ink: var(--tile-ink); /* the arrow is drawn in --ink: the pill's words, not the panel's */
   box-sizing: border-box; width: 100%; min-width: 0; max-width: none; min-height: 64px; margin: 0;
   padding: 0 var(--cds-spacing-11) 0 var(--cds-spacing-06); border: 1px solid var(--tile-fill); border-radius: 999px;
-  background-color: var(--tile-fill); color: var(--tile-ink); font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  background-color: var(--tile-fill); color: var(--tile-ink); font-size: 18px; line-height: 1.2; letter-spacing: 0.025em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-select2 .a11y-select2-field.a11y-select2-field:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; box-shadow: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] :is(.a11y-select2-help, .a11y-input-help, .a11y-settings-state)[class][class] {
-  display: block; justify-self: stretch; width: auto; margin: var(--cds-spacing-04) 0 0; color: inherit; text-align: center; font-size: 18px; line-height: 1.4; letter-spacing: 0.025em;
+  display: block; justify-self: stretch; width: auto; margin: var(--cds-spacing-04) 0 0; color: inherit; text-align: start; font-size: 21px; line-height: 1.4; letter-spacing: 0.025em;
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-synthesis: none;
 }
 
@@ -7497,12 +7497,12 @@
   min-height: 64px; box-sizing: border-box; padding: 0 var(--cds-spacing-06); border: 1px solid var(--tile-fill); border-radius: 999px;
   background: var(--tile-fill); color: var(--tile-ink);
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-input-shell[class] > input { border: 0; background: none; color: inherit; font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-input-shell[class] > input { border: 0; background: none; color: inherit; font-size: 18px; letter-spacing: 0.025em; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-input-shell[class]:has(> input:focus-visible) { outline: 2px solid var(--focus); outline-offset: -2px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-input-shell[class] > input:focus-visible { outline: none; box-shadow: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] :is(.a11y-settings-row, .a11y-manual-form-actions) > .a11y-btn[class][class] {
-  display: flex; justify-content: center; width: fit-content; margin-inline: auto; padding: var(--cds-spacing-02) var(--cds-spacing-05);
-  border: 1px solid var(--hl-blue-ink); border-radius: 999px; background: var(--hl-blue-ink); color: var(--hl-blue);
+  display: flex; justify-content: center; width: fit-content; margin-inline: 0 auto; padding: var(--cds-spacing-02) var(--cds-spacing-05);
+  border: 1px solid var(--hl-blue-ink); border-radius: 999px; background: var(--hl-blue-ink); color: var(--hl-blue); font-size: 18px;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] :is(.a11y-settings-row, .a11y-manual-form-actions) > .a11y-btn[class][class]:enabled:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] :is(.a11y-settings-row, .a11y-manual-form-actions) > .a11y-btn[class][class]:disabled { border: 1px dashed var(--hl-blue-ink); background: none; color: var(--hl-blue-ink); }
@@ -8035,3 +8035,53 @@
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
   font-weight: 200; font-style: normal; font-synthesis: none; letter-spacing: 0; line-height: 1.15;
 }
+
+/* ═══ THE SCAN SETTINGS SET LEFT, 15% LARGER (user's instructions, 25 Nov
+   2026, "allign tites left 15 bigger", "all text on form also 15% bigger")
+   ═══ Edited in place in the settings block above: "This scan" at 1.15em,
+   set left; the row labels and the notes under them (Lettra) 21px, set
+   left; the choices, the language, the account field, the cost badge and
+   the buttons 18px (all were 16px or 18px); the account buttons stand at
+   the left edge.
+
+   TAKE THE STATEMENT INSIDE THE BLUE PANEL (user's instruction, the same
+   day, "put this in this one"): the toggle and Copy close the statement's
+   blue panel, under the facts; the open draft keeps its grey ground with
+   black words (the panel's white had carried into it). */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] .a11y-stmt-card > .a11y-stmt-code[class] { --ink: #000; color: #000; margin-inline-start: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] .a11y-stmt-card > .a11y-stmt-code[class] a { color: #000; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] > .a11y-stmt-step:has(> .a11y-stmt-copy) .a11y-stmt-step-head[class] { text-transform: none; font-feature-settings: normal; letter-spacing: inherit; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] > :is(.a11y-stmt-step:has(> .a11y-stmt-copy), .a11y-stmt-card)[class] { align-self: stretch; width: auto; }
+
+/* ═══ THE DESIGNER AND DEVELOPER LIST WITHOUT NUMBERS (user's instruction,
+   25 Nov 2026, "delete numbers") ════════════════════════════════════════
+   The ring over each caret is gone from the markup; the caret, the words
+   and the fix kind stand on one line, the caret in its own width. On a
+   phone the kind goes under the words. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-q[class][class] { grid-template-columns: auto minmax(0, 1fr) auto; grid-template-rows: auto; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-q[class][class] > :is(.a11y-undecided-caret, .a11y-undecided-what, .a11y-undecided-kind) { grid-row: 1; }
+@container a11y-ledger (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-q[class][class] { grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-q[class][class] > .a11y-undecided-kind { grid-row: 2; }
+}
+/* Every yellow note (the score's two and the overlay and checks notes in
+   the conversation) is 21px, as the other Lettra text (user's instruction,
+   25 Nov 2026, "make it bigger like other letra text"); edited in place in
+   the yellow note block. */
+
+/* ═══ THE SIMULATION IN THE CONVERSATION SET ON ITS TITLE'S EDGE, SHOW ALL
+   A WHITE PILL, THE SPEAKERS IN LETTRA (user's instructions, 25 Nov 2026,
+   "allign to the left", "make into button, white", "letra") ═════════════
+   In the conversation the simulation's title has no bar, so its controls,
+   status and "What you'd hear" lose the bar's 32px inset and start on the
+   title's edge. Show all is the white field-fill pill that Skip the
+   transcript is (it was the panel's own grey, so it read as plain words).
+   The speaker labels over each turn, You and Assistant, are PP Lettra
+   Mono, no tracking. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr:has(h2#a11y-sr-heading:not(.a11y-accordion-title))[class][class][class] > .a11y-sr-bar { padding-inline: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class] .a11y-show-all[class][class] { border-color: var(--tile-fill); background: var(--tile-fill); color: var(--tile-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-chat-who[class][class] {
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-weight: 200; font-style: normal; font-synthesis: none; letter-spacing: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr:has(h2#a11y-sr-heading:not(.a11y-accordion-title))[class][class][class] .a11y-sr-log > .a11y-sr-log-heads[class] { padding-inline-start: 0; }

@@ -412,7 +412,6 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
           value={knownIssues.length === 0 ? t("None the scan can detect") : String(knownIssues.length)}
         />
       </dl>
-      </div>
 
       {/* One caret (user's instruction, 25 Nov 2026, "combine in one
           carret"): the step's own line opens the draft, the triangle before
@@ -465,6 +464,10 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
         </span>
         {/* No "Says partially conformant, based on N failed criteria" line:
             the Position and Problems disclosed cards above say both. */}
+      </div>
+      {/* Take the statement and its draft close the blue panel, under the
+          facts they are built from (user's instruction, 25 Nov 2026, "put
+          this in this one"). */}
       </div>
 
       <p className="a11y-conf-caveat">

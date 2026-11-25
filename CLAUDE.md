@@ -179,6 +179,11 @@ Comments in this codebase are long and record what was measured and why a value 
 - **How the score works is 21px** (was 18px), both score notes; alone in its row (no warning), its points run in two columns under the heading. Block `HOW THE SCORE WORKS IN TWO COLUMNS, 15% LARGER`.
 - **Recent's lines are 18px** (were 16px).
 - **The legal card's questions are led by a hung en dash** ("change to dashes"), not the numbered rings (`.a11y-legal-qdash` in `ConformanceView.tsx`).
+- **Take the statement and its draft sit inside the statement's blue panel**, under the facts ("put this in this one"); the toggle in sentence case, Copy at the panel's right edge, the open draft on its grey with black words.
+- **The scan settings ("This scan") are set left and 15% larger**: the title 1.15em, the Lettra row labels and notes 21px, choices, language, account field and buttons 18px; edited in place in the settings block.
+- **For your designer and developer has no numbers** ("delete numbers"): caret, words and fix kind on one line; "Same as item N" is gone, each answer says its own advice.
+- **Every yellow note is 21px** ("make it bigger like other letra text"), the conversation's included.
+- **The screen reader simulation in the conversation**: no "(N announcements)" after its title; its controls and "What you'd hear" on the title's edge; Show all a white pill like Skip the transcript. The speaker labels You and Assistant are PP Lettra Mono.
 - **Every section title is PP Lettra Mono** ("title needs to be in letra"), at its own size, no tracking, 1.15; the line under it stays PP Telegraf. Block `EVERY SECTION TITLE IN LETTRA`, last in `global.css`.
 
 ## The screen reader simulation as a form panel (user's reference, 25 Nov 2026, "design this like this")

@@ -204,10 +204,9 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
       <div className="a11y-accordion-row">
         {inChat ? (
           <h2 className="a11y-section-title" id="a11y-sr-heading">
-            {t("Screen reader simulation")}{" "}
-            {lines.length === 1
-              ? t("(1 announcement)")
-              : tf("({count} announcements)", { count: lines.length })}
+            {/* No "(120 announcements)" after it (user's instruction, 25 Nov
+                2026, "delete (120 announcements)"). */}
+            {t("Screen reader simulation")}
           </h2>
         ) : (
         <h2 className="a11y-section-title a11y-accordion-title" id="a11y-sr-heading" data-nav-label={t("Screen reader simulation")}>

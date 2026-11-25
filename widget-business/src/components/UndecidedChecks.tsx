@@ -126,7 +126,6 @@ export function UndecidedChecks({
               // The same guidance printed under every item of a kind was
               // the report's largest source of repeated sentences. Said once,
               // then pointed at.
-              const firstOfKind = e ? rows.findIndex((x) => undecidedExplanation(x.ruleId)?.ask === e.ask) : i;
               const isOpen = open.has(r.ruleId);
               const answerId = `a11y-undecided-answer-${i}`;
               return (
@@ -143,9 +142,6 @@ export function UndecidedChecks({
                     onClick={() => toggle(r.ruleId)}
                   >
                     <Icon name="caret--right" className="a11y-undecided-caret" />
-                    <span className="a11y-undecided-no" aria-hidden="true">
-                      {i + 1}
-                    </span>
                     <span className="a11y-undecided-what">{e ? e.what : r.help}</span>
                     <span className={`a11y-undecided-kind a11y-kind-${fix.key}`}>{t(fix.label)}</span>
                   </button>
@@ -157,7 +153,10 @@ export function UndecidedChecks({
                     {e && (
                       <p className="a11y-undecided-ask">
                         <strong className="a11y-sr-only">{t("What to ask for:")} </strong>
-                        {firstOfKind === i ? e.ask : tf("Same as item {number}.", { number: firstOfKind + 1 })}
+                        {/* Each answer says its own advice: "Same as item 2"
+                            pointed at the numbers, which are gone (user's
+                            instruction, 25 Nov 2026, "delete numbers"). */}
+                        {e.ask}
                       </p>
                     )}
                     {r.helpUrl && (
