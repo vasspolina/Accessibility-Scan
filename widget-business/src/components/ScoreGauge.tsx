@@ -1,4 +1,5 @@
 import { ScoreDial } from "./ScoreDial";
+import { Icon } from "./Icon";
 import { t, tf } from "../lib/strings";
 import { getLang } from "../lib/i18n";
 import { useState } from "react";
@@ -344,7 +345,7 @@ export function ScoreGauge({
           lines that run the full width, what the range means under it as
           the specimen line, then each issue as a specimen of its own, a
           small caption (criterion, severity, places) over the title. How
-          the score works and the warning follow as rows. */}
+          the score works and the warning follow as yellow cards. */}
       <div className="a11y-sum-grid a11y-sum-specimen">
         {/* Plain text, not the report's own HTML: the point is to leave the
             widget entirely, an email or a message to whoever owns the fix. */}
@@ -466,24 +467,31 @@ export function ScoreGauge({
           </section>
         )}
 
-        <section className="a11y-sum-counts" aria-labelledby={countsId}>
-          <h3 className="a11y-sum-label" id={countsId}>{t("How the score works")}</h3>
-          {SCORE_POINTS.map((point) => (
-            <p key={point} className="a11y-sum-point">{t(point)}</p>
-          ))}
+        {/* How the score works and the warning are yellow cards (user's
+            reference, 25 Nov 2026, "design this like this", a foundry's
+            notices): a picture square at the left holding the icon, the
+            words beside it, and the label as an outlined pill under them.
+            The heading stays first in the markup, so it is read first. */}
+        <section className="a11y-sum-counts a11y-sum-card" aria-labelledby={countsId}>
+          <span className="a11y-sum-card-pic" aria-hidden="true"><Icon name="information" /></span>
+          <div className="a11y-sum-card-body">
+            <h3 className="a11y-sum-label a11y-sum-card-pill" id={countsId}>{t("How the score works")}</h3>
+            {SCORE_POINTS.map((point) => (
+              <p key={point} className="a11y-sum-point">{t(point)}</p>
+            ))}
+          </div>
         </section>
 
         {/* Checks that did not finish qualify the score, so they stand with
-            how it works: the warning's badge as the label, its two lines
-            as the content. A status, so it waits its turn to be read. */}
+            how it works, as the second card. A status, so it waits its turn
+            to be read. */}
         {warning && (
-          <section className="a11y-sum-warning" role="status" aria-labelledby={warningId}>
-            <h3 className="a11y-sum-label" id={warningId}>
-              <span className="a11y-sum-warning-badge">{t("Warning")}</span>
-            </h3>
-            <div className="a11y-sum-warning-text">
-              <p>{warning.title}</p>
-              <p>{warning.subtitle}</p>
+          <section className="a11y-sum-warning a11y-sum-card" role="status" aria-labelledby={warningId}>
+            <span className="a11y-sum-card-pic" aria-hidden="true"><Icon name="warning--alt" /></span>
+            <div className="a11y-sum-card-body">
+              <h3 className="a11y-sum-label a11y-sum-card-pill" id={warningId}>{t("Warning")}</h3>
+              <p className="a11y-sum-point">{warning.title}</p>
+              <p className="a11y-sum-point">{warning.subtitle}</p>
             </div>
           </section>
         )}
