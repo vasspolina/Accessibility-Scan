@@ -42,7 +42,7 @@
   --blue: #2848c8; --green: #486048; --red: #f03c38; --black: #000;
   --on-blue: #fff; --on-green: #fff; --on-red: #000; --on-black: #fff;
   --grey-paper: #dcdbd5;       /* the scan form's panel, kept light in dark */
-  --field: #e6e6e6;            /* a filled field on the grey panel */
+  --field: #fff;               /* a white field on the grey panel (user's instruction, 25 Nov 2026, "make this white forms"; was #e6e6e6) */
   --tile: #f4efe2; --tile-ink: #000;
   --bubble: #e6e6e6; --bubble-ink: #000; --bubble-pill: #fff;
   --hover: #fff5c2; --hover-ink: #000;
