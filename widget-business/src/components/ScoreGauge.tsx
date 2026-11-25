@@ -464,19 +464,22 @@ export function ScoreGauge({
           </section>
         )}
 
-        {/* How the score works and the warning are grey panels set as a
-            gig poster (user's reference, 25 Nov 2026, "make these two look
-            like this"): centred, the heading as the caption, the first point
-            in the tight grotesque, the rest in the mono roman, the icon small
-            at the foot. The heading stays first in the markup, so it is read
-            first. */}
+        {/* How the score works and the warning are grey panels in two
+            columns (user's instruction, 25 Nov 2026, "turn into two
+            columns"): the caption, the first point in the grotesque and the
+            icon at the foot on the left; the rest in the mono roman on the
+            right (a11y-sum-card-rest). The heading stays first in the
+            markup, so it is read first. */}
         <section className="a11y-sum-counts a11y-sum-card" aria-labelledby={countsId}>
           <span className="a11y-sum-card-pic" aria-hidden="true"><Icon name="information" /></span>
           <div className="a11y-sum-card-body">
             <h3 className="a11y-sum-label a11y-sum-card-pill" id={countsId}>{t("How the score works")}</h3>
-            {SCORE_POINTS.map((point) => (
-              <p key={point} className="a11y-sum-point">{t(point)}</p>
-            ))}
+            <p className="a11y-sum-point">{t(SCORE_POINTS[0])}</p>
+            <div className="a11y-sum-card-rest">
+              {SCORE_POINTS.slice(1).map((point) => (
+                <p key={point} className="a11y-sum-point">{t(point)}</p>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -489,7 +492,9 @@ export function ScoreGauge({
             <div className="a11y-sum-card-body">
               <h3 className="a11y-sum-label a11y-sum-card-pill" id={warningId}>{t("Warning")}</h3>
               <p className="a11y-sum-point">{warning.title}</p>
-              <p className="a11y-sum-point">{warning.subtitle}</p>
+              <div className="a11y-sum-card-rest">
+                <p className="a11y-sum-point">{warning.subtitle}</p>
+              </div>
             </div>
           </section>
         )}
