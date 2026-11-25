@@ -302,20 +302,25 @@ main.wrap { padding-top: var(--s10); }
 .offer__link:hover { text-decoration: underline; }
 .action { margin-top: 1lh; }
 
-/* Terms as the cross list (user's reference, 25 Nov 2026, "this need to look
-   like this", on "Good copy should be:" beside a programme of past events,
-   each line behind a cross): one row per term, the cross as in .text li,
-   the term and its meaning running on as one line in the words' own face
-   and size, the term closed by a colon (generated, silent: ": " / ""),
-   rows set solid with no space between them. */
-.terms { display: grid; margin: 0; }
-.terms > div { position: relative; padding-left: 1.15em; }
-.terms > div::before {
-  content: ""; position: absolute; left: 0; top: calc((1lh - 0.7em) / 2); width: 0.7em; height: 0.7em; background: currentColor;
-  -webkit-mask: var(--close) center / contain no-repeat; mask: var(--close) center / contain no-repeat;
+/* Terms as labelled paragraphs (user's reference, 25 Nov 2026, a foundry's
+   contact page: "SUPPORT & TECH HELP:" over its words; the user chose it
+   over the cross rows of the same afternoon): each term in capitals in the
+   words' own face and size, closed by a colon (generated, silent), its
+   meaning on the next line, one empty line between terms. */
+.terms { display: grid; gap: 1lh; margin: 0; }
+.terms dt { text-transform: uppercase; }
+.terms dt::after { content: ":" / ""; }
+.terms dd { margin: 0; }
+
+/* Links in the column and the cards on a pale yellow highlight (the same
+   reference: its addresses on a pale yellow, no underline). Black words on
+   #fff5c2 in both themes; hover adds the underline. Buttons and the offer
+   list keep their own look. */
+.text a:not(.btn), .card p a:not(.btn) {
+  padding: 0 0.08em; border-radius: 4px; background: var(--hover); color: var(--hover-ink);
+  text-decoration: none; -webkit-box-decoration-break: clone; box-decoration-break: clone;
 }
-.terms dt, .terms dd { display: inline; margin: 0; }
-.terms dt::after { content: ": " / ""; }
+.text a:not(.btn):hover, .card p a:not(.btn):hover { text-decoration: underline; text-decoration-thickness: 1px; }
 
 /* ---------- On this page: the scan's rail, as pills ---------- */
 .toc-layout { display: grid; grid-template-columns: minmax(200px, 1fr) minmax(0, 3fr); gap: var(--gutter); align-items: start; }
@@ -496,7 +501,7 @@ footer.wrap { margin-top: var(--s12); padding-bottom: var(--s07); }
 @media (forced-colors: active) {
   .signup, .request, .plate, .card, .slogan__link, .chat__prompt, .bubble__msg, .acc__btn, .acc__row, .notice, .news,
   .nav a, .toc a, .plates__btn, .theme, .btn, .signup__btn, .chat__send, .request__link, .signup__field { border: 1px solid CanvasText; }
-  .signup__btn::after, .plates__btn::before, .news__btn::before, .offer__link::before, .text li::before, .terms > div::before { background: ButtonText; forced-color-adjust: none; }
+  .signup__btn::after, .plates__btn::before, .news__btn::before, .offer__link::before, .text li::before { background: ButtonText; forced-color-adjust: none; }
 }
 
 /* ---------- More air between the pieces (user's instruction, 25 Nov 2026,
