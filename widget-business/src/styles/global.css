@@ -7779,3 +7779,55 @@
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
   letter-spacing: 0; color: #fff;
 }
+
+/* ═══ THE OPENED FINDING'S CARDS TWO TO A ROW, ONE SIZE, NO GREEN (user's
+   instructions, 25 Nov 2026, on an opened design note: "body text needs to
+   be all same size, make two pr row, delete green background", then "pick
+   lighter grey for these") ═══════════════════════════════════════════════
+   Every part of an opened finding (Who fixes this, What we found, Why this
+   matters, What to do and their siblings) takes half the row, two to a
+   line, rows one height; a part with no neighbour grows to the full row.
+   The two column boxes are dropped from layout (display: contents) so the
+   parts pair across them; the markup order, and so the reading order, is
+   unchanged. The affected elements, the technical version and Learn more
+   keep the full row: the elements are already cards two to a row inside.
+   One column under 640px of table. The words of every part are 22px at
+   +0.015em on 1.15 (What to do was 26px). Applies to the findings and the
+   design notes alike, since both open the same finding.
+   The design notes' green panel is gone: the notes stand on the page's
+   paper, each shut note a card on the lighter grey (#efeee9, black words
+   18:1; dark keeps #1c1c1e), and an opened note is the paper with its
+   title bar on that grey and its parts as cards on the same grey, in place
+   of the #dcdbd5 they took. */
+.a11y-widget-biz { --fd-card-light: #efeee9; }
+.a11y-widget-biz[data-theme="dark"] { --fd-card-light: #1c1c1e; }
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz:not([data-theme="light"]) { --fd-card-light: #1c1c1e; }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] {
+  display: flex; flex-wrap: wrap; align-items: stretch; gap: var(--cds-spacing-05);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > * { box-sizing: border-box; flex: 1 1 100%; min-width: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col[class] { display: contents; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col > *[class][class][class] { flex: 1 1 100%; margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps)[class][class][class] {
+  flex: 1 1 calc(50% - var(--cds-spacing-05) / 2);
+  font-size: 22px; line-height: 1.15; letter-spacing: 0.015em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps)[class][class][class] :is(.a11y-fd-body, ul, li) {
+  font-size: 22px; line-height: 1.15; letter-spacing: 0.015em;
+}
+@container a11y-ftable (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps)[class][class][class] { flex-basis: 100%; }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn > .a11y-dn-panel[class] { padding: 0; border-radius: 0; background: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-panel > .a11y-dn-carets > .a11y-dn-caret[class][class] { background: var(--fd-card-light); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-panel > .a11y-dn-carets > .a11y-dn-caret[data-open][class][class] { padding-inline: 0; background: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-panel .a11y-dn-caret[data-open] .a11y-dn-caret-head > .a11y-dn-bar[class][class] { width: 100%; margin: 0; background: var(--fd-card-light); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-panel .a11y-dn-caret > .a11y-dn-detail[class][class] {
+  --paper: inherit; --tile: var(--fd-card-light); --bubble-pill: var(--fd-card-light);
+  margin-inline-start: 0;
+}
+@media (max-width: 671px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-detail .a11y-fd[class][class] > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps)[class][class][class] { flex-basis: 100%; }
+}
