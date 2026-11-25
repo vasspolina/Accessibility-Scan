@@ -6174,9 +6174,13 @@
    both sides of it. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-accordion-title .a11y-accordion-head[class][class]:focus-visible { outline: 2px solid #fff; outline-offset: -5px; }
 
-/* In the conversation: the title as the panel's capital line. */
+/* In the conversation: the title as the panel's capital line, in PP Lettra
+   Mono (user's instruction, 25 Nov 2026, "in letra", on "SCREEN READER
+   SIMULATION (120 ANNOUNCEMENTS)"). No tracking: a monospace is already
+   spaced, as in the opening questions. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] h2.a11y-section-title:not(.a11y-accordion-title)[class] {
-  margin: var(--cds-spacing-03) 0 0; color: #000; font-size: 29px; font-weight: 200; line-height: 1.1; letter-spacing: 0.04em;
+  margin: var(--cds-spacing-03) 0 0; color: #000; font-size: 29px; font-weight: 200; line-height: 1.1; letter-spacing: 0;
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-synthesis: none;
   text-align: start; text-transform: uppercase; font-feature-settings: "case";
 }
 /* Play, the transport, the status, the keys: set left under the bar.
@@ -6297,7 +6301,7 @@
   }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-accordion-title .a11y-accordion-head[class][class]::before { align-self: start; margin-top: calc((1lh - 0.68em) / 2); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-accordion-title .a11y-accordion-head[class][class] > .a11y-status-chip[class] { grid-column: 2; margin: 0; padding: 0; font-size: 16px; letter-spacing: 0.025em; text-align: start; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] h2.a11y-section-title:not(.a11y-accordion-title)[class] { font-size: 22px; letter-spacing: 0.04em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] h2.a11y-section-title:not(.a11y-accordion-title)[class] { font-size: 22px; letter-spacing: 0; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] { margin-top: var(--cds-spacing-06); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar.a11y-sr-tools[class] { margin-top: var(--cds-spacing-06); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-ctl[class] { width: 32px; padding-inline: 0; }
