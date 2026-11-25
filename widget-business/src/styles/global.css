@@ -6764,10 +6764,16 @@
    in both themes, black words 19:1), 20px corners, 24px inside (16px on a
    phone), 20px apart, as many to a row as fit at 260px or more, so three
    on a desktop and one on a phone. Each card's head (the standard, the two
-   titles) is the issue title's mono face at 24px/1.35 (18px on a phone),
-   its words under it in the body face at the same size, 12px between
-   them. The question numbers keep their solid rounds, black with yellow
-   figures, since --ink and --paper are redefined on the card. */
+   titles) is the issue title's mono face at 24px (18px on a phone), its
+   words under it in the body face at the same size, 12px between them.
+   Leading 1.1 (1.15 at 18px on a phone; user's reference, 25 Nov 2026,
+   "line height needs to be like this", a foundry's product copy measured
+   at about 42px of line on 38px type); it was 1.35 and 1.4. The question
+   numbers keep their solid rounds, black with yellow figures, since --ink
+   and --paper are redefined on the card, now one line tall (an 18px
+   figure in a 26px round, 22px plus the 2px padding round it, on the
+   26.4px line; 21px on the phone's 20.7px line), where the 36px round
+   had held each question's first line open past its leading. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: var(--cds-spacing-05) var(--cds-grid-gutter-narrow);
   margin: var(--cds-spacing-07) 0 0;
@@ -6781,19 +6787,20 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-standard, .a11y-legal-eyebrow) {
   display: block; margin: 0 0 var(--cds-spacing-04); padding: 0; border: 0; background: none; color: #000;
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
-  font-size: 24px; font-weight: 400; line-height: 1.35; letter-spacing: 0; text-transform: none;
+  font-size: 24px; font-weight: 400; line-height: 1.1; letter-spacing: 0; text-transform: none;
   overflow-wrap: anywhere;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-intro, .a11y-legal-lead, .a11y-legal-q) {
-  margin: 0; color: #000; font-size: 24px; line-height: 1.35; letter-spacing: 0.015em;
+  margin: 0; color: #000; font-size: 24px; line-height: 1.1; letter-spacing: 0.015em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards .a11y-legal-card { margin: 0; padding: 0; border: 0; background: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards .a11y-legal-q + .a11y-legal-q { margin-top: var(--cds-spacing-03); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards .a11y-legal-q > .a11y-legal-qnum { margin-top: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards .a11y-legal-q > .a11y-legal-qnum { width: 22px; height: 22px; margin-top: 0; font-size: 18px; }
 @media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards > :is(.a11y-legal-std, .a11y-legal-band, .a11y-legal-panel) { padding: var(--cds-spacing-05); }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-standard, .a11y-legal-eyebrow) { font-size: 18px; line-height: 1.4; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-intro, .a11y-legal-lead, .a11y-legal-q) { font-size: 18px; line-height: 1.4; letter-spacing: 0.025em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-standard, .a11y-legal-eyebrow) { font-size: 18px; line-height: 1.15; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-intro, .a11y-legal-lead, .a11y-legal-q) { font-size: 18px; line-height: 1.15; letter-spacing: 0.025em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards .a11y-legal-q > .a11y-legal-qnum { width: 17px; height: 17px; }
 }
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards > :is(.a11y-legal-std, .a11y-legal-band, .a11y-legal-panel) { border: 1px solid CanvasText; }
