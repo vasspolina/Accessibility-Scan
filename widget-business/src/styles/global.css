@@ -4780,7 +4780,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-ledger > .a11y-undecided-table > .a11y-undecided-cell.a11y-undecided-folded { display: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-q {
-  display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; grid-template-rows: auto auto; column-gap: var(--cds-spacing-04); row-gap: var(--cds-spacing-03); --row-line: calc(32px * 1.1); align-items: start;
+  display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; grid-template-rows: auto auto; column-gap: var(--cds-spacing-04); row-gap: var(--cds-spacing-03); --row-line: calc(32px * 1.1); align-items: start;
   box-sizing: border-box; width: 100%; min-height: 0; margin: 0; padding: 0; border: 0; border-radius: 0;
   background: none; color: var(--ink); text-align: left; cursor: pointer;
   font-size: 32px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
@@ -4789,9 +4789,12 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q:hover > .a11y-undecided-what { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.14em; }
 /* The caret: caret--right fills 10 of its 32 units across, so 1.4em draws
    it 0.44em wide and the capitals' height tall, as in the findings list.
-   The caret and the words share the line under the number. */
+   The caret and the words share the line under the number; the caret
+   sits in a column as wide as the number's ring, centred, so the ring
+   stands centred over it (user's instruction, 25 Nov 2026, "center
+   numbers"). */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-caret {
-  width: 1.4em; height: 1.4em; margin: calc((1lh - 1.4em) / 2) 0 0 calc(var(--cds-spacing-04) * -1); transition: transform 120ms ease;
+  width: 1.4em; height: 1.4em; margin: calc((1lh - 1.4em) / 2) 0 0; justify-self: center; transition: transform 120ms ease;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q[aria-expanded="true"] > .a11y-undecided-caret { transform: rotate(90deg); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-no {
@@ -4805,7 +4808,7 @@
    Nov 2026, "above caret plus text"); the caret, the words and the fix
    kind share the line under it. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-caret { grid-column: 1; grid-row: 2; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-no { grid-column: 1 / -1; grid-row: 1; justify-self: start; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-no { grid-column: 1; grid-row: 1; justify-self: center; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-what { grid-column: 2; grid-row: 2; min-width: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-kind { grid-column: 3; grid-row: 2; max-width: 260px; text-align: right; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-kind.a11y-kind-code { color: var(--word-blue); }
@@ -4815,7 +4818,7 @@
 /* The answer: the bubble, indented to the words, past the caret. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-answer {
   --paper: var(--bubble);
-  margin: var(--cds-spacing-04) 0 var(--cds-spacing-06) calc(26px + var(--cds-spacing-04)); padding: var(--cds-spacing-08) var(--cds-spacing-09) var(--cds-spacing-08); border-radius: var(--r-panel); background: var(--bubble); color: var(--ink);
+  margin: var(--cds-spacing-04) 0 var(--cds-spacing-06) calc(44px + var(--cds-spacing-04)); padding: var(--cds-spacing-08) var(--cds-spacing-09) var(--cds-spacing-08); border-radius: var(--r-panel); background: var(--bubble); color: var(--ink);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-answer[hidden] { display: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-answer > .a11y-fd-meta { margin-bottom: var(--cds-spacing-06); }
@@ -4827,7 +4830,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-answer > .a11y-learn-more { font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
 @container a11y-ledger (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-q {
-    grid-template-columns: 26px minmax(0, 1fr); grid-template-rows: auto auto auto; row-gap: var(--cds-spacing-02); column-gap: var(--cds-spacing-03); --row-line: calc(24px * 1.15);
+    grid-template-columns: 44px minmax(0, 1fr); grid-template-rows: auto auto auto; row-gap: var(--cds-spacing-02); column-gap: var(--cds-spacing-03); --row-line: calc(24px * 1.15);
     font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
   }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-kind { grid-column: 2; grid-row: 3; max-width: none; text-align: left; font-size: 18px; letter-spacing: 0.025em; }
