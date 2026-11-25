@@ -7580,3 +7580,23 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box-start .a11y-btn[class][class][class]:enabled:not(:hover, [aria-pressed="true"]) {
   background: transparent; color: var(--ink);
 }
+
+/* THE CHECKLIST'S QUESTIONS IN LETTRA, WITH AIR (user's picture of the
+   "A check didn't finish" group, 25 Nov 2026, "add more vertical space and
+   set questions in letra too"). Measured before at 1440px: rows 16px
+   apart, the note under a question touching it (0px). Now rows 32px apart
+   and the note 8px under its question; the question (or a failing row's
+   problem) is PP Lettra Mono Ultralight at its own size, no tracking, as
+   the other Lettra lines. Every result's group, since they share the row. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-list > .a11y-conf-row[class][class][class][class] { margin-bottom: 32px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-list > .a11y-conf-row:last-child[class][class][class][class] { margin-bottom: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-row .a11y-conf-body > :is(.a11y-conf-plain, .a11y-manual-verdict)[class][class][class] { display: block; margin-top: 8px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-row > .a11y-conf-body > strong:not(#x):not(#y) {
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-weight: 200; letter-spacing: 0;
+}
+@media (max-width: 671px) {
+  /* Stacked on a phone, the question stood right under the criterion's
+     name; the same 8px as the note under it. */
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-list > .a11y-conf-row > .a11y-conf-body[class][class][class] { margin-top: 8px; }
+}
