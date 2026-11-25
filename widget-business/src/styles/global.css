@@ -6502,8 +6502,9 @@
      these", a type foundry's news cards): the marker yellow
      (--hl-cap-a, #f8ff58 in both themes, black words 19:1), 20px
      corners, 24px inside, 20px apart, set left. The finding's picture,
-     when the scanner took one, is a 168px square with 16px corners at
-     the left (96px on a phone); the title beside it in the mono face at
+     when the scanner took one, runs the card's width at half its width
+     tall (aspect-ratio 2, user's word, 25 Nov 2026, "this image can be
+     twise less tall"; it was square), cropped to cover, 16px corners; the title beside it in the mono face at
      24px/1.35 (18px on a phone), and under it the criterion, the
      severity and the places as small outlined pills (1px black, 999px,
      mono 18px). Every word on the card is black in both themes, so the
@@ -6554,7 +6555,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec::before { content: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-shot {
-  display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 16px; background: #fff;
+  display: block; width: 100%; aspect-ratio: 2; object-fit: cover; border-radius: 16px; background: #fff;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-body { min-width: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-cap {
