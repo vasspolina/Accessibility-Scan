@@ -426,26 +426,39 @@ export function ScoreGauge({
                 const rep = group[0];
                 const title = plainForRule(rep.ruleId)?.plain ?? rep.title ?? rep.description;
                 const crit = criterionOf(rep);
+                // The card's square at the left: the first place in the
+                // group the scanner could picture. Decorative here (alt=""):
+                // the title beside it names the fault, and the opened
+                // finding shows the picture with its outline.
+                const shot = group.find((f) => f.elementScreenshot)?.elementScreenshot;
                 return (
-                  <li key={rep.id} className="a11y-sum-spec">
-                    {/* The specimen's caption: the criterion, the severity
-                        as its coloured word and the places, parted by a
-                        spaced em dash as criterion and level are. */}
-                    <p className="a11y-sum-spec-cap">
-                      {crit && <><span className="a11y-sum-spec-crit">{crit}</span>{" — "}</>}
-                      <SeverityTag severity={rep.severity} label={t(SEVERITY_LABEL[rep.severity])} />
-                      {group.length > 1 && <>{" — "}{tf("{count} places", { count: group.length })}</>}
-                    </p>
-                    <a
-                      className="a11y-sum-spec-title"
-                      href={`#a11y-finding-${rep.id}`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        openFinding(e.currentTarget, rep.id);
-                      }}
-                    >
-                      {title}
-                    </a>
+                  <li key={rep.id} className="a11y-sum-spec" data-shot={shot ? "" : undefined}>
+                    {shot && (
+                      <img className="a11y-sum-spec-shot" src={`data:image/jpeg;base64,${shot}`} alt="" />
+                    )}
+                    <div className="a11y-sum-spec-body">
+                      <a
+                        className="a11y-sum-spec-title"
+                        href={`#a11y-finding-${rep.id}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          openFinding(e.currentTarget, rep.id);
+                        }}
+                      >
+                        {title}
+                      </a>
+                      {/* Under the words, the criterion, the severity and
+                          the places, each a small outlined pill. */}
+                      <p className="a11y-sum-spec-cap">
+                        {crit && <span className="a11y-sum-spec-pill a11y-sum-spec-crit">{crit}</span>}
+                        <span className="a11y-sum-spec-pill">
+                          <SeverityTag severity={rep.severity} label={t(SEVERITY_LABEL[rep.severity])} />
+                        </span>
+                        {group.length > 1 && (
+                          <span className="a11y-sum-spec-pill">{tf("{count} places", { count: group.length })}</span>
+                        )}
+                      </p>
+                    </div>
                   </li>
                 );
               })}
