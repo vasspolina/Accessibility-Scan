@@ -6759,57 +6759,70 @@
   display: block; margin-top: var(--cds-spacing-02); white-space: normal; overflow-wrap: normal;
 }
 
-/* ═══ HOW THE SCORE WORKS AND THE WARNING AS YELLOW CARDS (user's
-   reference, 25 Nov 2026, "design this like this", a type foundry's
-   notices: yellow cards with a picture at the left, monospaced words and
-   an outlined pill) ═══════════════════════════════════════════════════════
-   Each is a card on the marker yellow (--hl-cap-a, #f8ff58 in both
-   themes, black words 19:1), 20px corners, 24px inside (16px on a
-   phone), the two cards 20px apart, as the issues' cards above are, and 90px under the issues (65px on a phone), no rule above.
-   At the left a 168px square, the issues' picture size (56px on a phone, where the pill needs the width) of black with 16px
-   corners holds the icon set's information or warning mark at 64px (32px)
-   in the yellow, the reference's picture. Beside it the words in the
-   monospaced face the opened finding's meta strip uses, 24px on a 1.35
-   line at weight 400, as the issues' titles (18px on a phone), one line apart; the heading is an
-   outlined pill under them, 1px black, 999px, 18px words, drawn last by
-   flex order while the markup keeps it first. Focus never lands here. */
+/* ═══ HOW THE SCORE WORKS AND THE WARNING AS A GIG POSTER (user's
+   reference, 25 Nov 2026, "make these two look like this", a grey bill
+   set centred: a roman caption, the names in a tight grotesque, the date
+   lines in the roman, a small pixel mark at the foot) ═══════════════════
+   This replaces the yellow cards with a black picture square of the same
+   morning. Each notice is one panel on the grey --bubble (black words in
+   light; #1c1c1e with the white ink in dark), 20px corners, 48px 32px
+   inside (32px 16px on a phone), the two 20px apart and 90px under the
+   issues (65px on a phone), everything centred on one column held to 28em
+   so a centred line stays short enough to read.
+   The roman of the reference is PP Lettra Mono Ultralight (the user's "use
+   letra for serif"), no tracking, 1.15 leading: the heading is the caption
+   at 24px over the rest, first in the markup, with no pill now. The first
+   point is the names, PP Telegraf Regular 32px set solid (1.0) and tight
+   (-0.025em, the reference's letters nearly touch; Regular is the heaviest
+   the widget draws), with 0.08em more word space, since at -0.03em
+   "visitors. Each" and "finish: phone" read as one word. The other points are the date lines, Lettra at 24px.
+   On a phone 18px, 24px and 18px. The icon is the pixel mark: the icon
+   set's information or warning--alt at 48px (32px) in the ink, centred at
+   the foot by flex order (first in the markup, aria-hidden). Focus never
+   lands here. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-card[class][class] {
-  display: flex; align-items: flex-start; gap: var(--cds-spacing-06);
-  margin: var(--cds-spacing-05) 0 0; padding: var(--cds-spacing-06); border: 0; border-radius: 20px;
-  background: var(--hl-cap-a); color: #000; text-align: start;
+  display: flex; flex-direction: column; align-items: center; gap: var(--cds-spacing-07);
+  margin: var(--cds-spacing-05) 0 0; padding: var(--cds-spacing-09) var(--cds-spacing-07); border: 0; border-radius: 20px;
+  background: var(--bubble); color: var(--ink); text-align: center;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > :not(.a11y-sum-card) + .a11y-sum-card[class][class] { margin-top: var(--cds-spacing-12); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-pic {
-  display: flex; flex: none; align-items: center; justify-content: center;
-  width: 168px; height: 168px; border-radius: 16px; background: #000; color: var(--hl-cap-a);
-  font-size: 64px; line-height: 1;
+  display: flex; flex: none; order: 1; align-items: center; justify-content: center;
+  width: auto; height: auto; border-radius: 0; background: none; color: inherit;
+  font-size: 48px; line-height: 1;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body {
-  display: flex; flex: 1 1 auto; flex-direction: column; align-items: flex-start; gap: var(--cds-spacing-07); min-width: 0;
+  display: flex; flex: none; flex-direction: column; align-items: center; gap: var(--cds-spacing-06);
+  width: 100%; max-width: 28em; min-width: 0;
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
-  font-size: 24px; font-weight: 400; line-height: 1.35; letter-spacing: 0;
+  font-size: 24px; font-weight: 200; font-synthesis: none; line-height: 1.15; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-point[class] {
-  /* Stretched to the body's width: at flex-start it took its min-content,
-     the longest word, and the German "Gestaltungshinweise" in the mono face
-     ran 7px past a 320px window once the phone margin became Carbon's 16px. */
-  align-self: stretch; max-width: none; margin: 0; padding: 0; color: #000;
-  font: inherit; letter-spacing: inherit; overflow-wrap: break-word;
+  /* Stretched to the body's width: at its min-content, the longest word,
+     the German "Gestaltungshinweise" in the mono face, ran past a 320px
+     window. */
+  align-self: stretch; max-width: none; margin: 0; padding: 0; color: inherit;
+  font: inherit; letter-spacing: inherit; text-align: center; overflow-wrap: break-word;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-pill + .a11y-sum-point[class][class] {
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 32px; font-weight: 400;
+  line-height: 1; letter-spacing: -0.025em; word-spacing: 0.08em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-pill[class] {
-  order: 1; margin: calc(var(--cds-spacing-03) * -1) 0 0; padding: 1px var(--cds-spacing-04); border: 1px solid #000; border-radius: 999px;
-  background: none; color: #000; white-space: normal;
-  font-family: inherit; font-size: 18px; font-weight: 400; line-height: 1.3; letter-spacing: 0;
+  order: 0; margin: 0; padding: 0; border: 0; border-radius: 0;
+  background: none; color: inherit; white-space: normal; text-transform: none;
+  font-family: inherit; font-size: 24px; font-weight: 200; line-height: 1.15; letter-spacing: 0;
 }
 @media (max-width: 671px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-card[class][class] { gap: var(--cds-spacing-05); padding: var(--cds-spacing-05); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-card[class][class] { gap: var(--cds-spacing-06); padding: var(--cds-spacing-07) var(--cds-spacing-05); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > :not(.a11y-sum-card) + .a11y-sum-card[class][class] { margin-top: var(--cds-spacing-10); }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-pic { width: 56px; height: 56px; border-radius: 10px; font-size: 32px; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body { font-size: 18px; line-height: 1.4; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-pic { font-size: 32px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body { gap: var(--cds-spacing-05); font-size: 18px; line-height: 1.2; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-pill + .a11y-sum-point[class][class] { font-size: 24px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-pill[class] { font-size: 18px; line-height: 1.2; }
 }
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-card[class][class] { border: 1px solid CanvasText; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-pill[class] { border-color: CanvasText; }
 }
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card { break-inside: avoid; }
