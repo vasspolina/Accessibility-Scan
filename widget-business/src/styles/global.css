@@ -42,23 +42,23 @@
    better against #000 (orange 10:1, blue 9:1, green 12:1). Everything else
    is ink on paper, which swap in dark. */
 .a11y-widget-biz {
-  --ink: #000; --paper: #fff; --focus: #198038; --chats-current: #14532d;
-  --hl-orange: #f08c5a; --urgent: #f08c5a; --hl-blue: #48a0da; --hl-green: #6ee597;
-  --hl-cap-a: #ffe14d; --hl-cap-b: #ff9ad5;
+  --ink: #000; --paper: #fff; --focus: #198038; --chats-current: #1e361f;
+  --hl-orange: #ffa0ff; --urgent: #ffa0ff; --hl-blue: #48a0da; --hl-green: #beffbd;
+  --hl-cap-a: #f8ff58; --hl-cap-b: #e4f5a4;
   /* The Report a barrier card's mint (user's swatch, 21 Nov 2026): black
      on #c6ffcc is 18.7:1; dark takes #30d158, black on it 7.4:1+. */
-  --barrier: #c6ffcc;
+  --barrier: #beffbd;
   /* Surfaces that were pinned light in both themes, as tokens so dark mode
      can take its own dark system greys (user's instruction, 18 Nov 2026,
      "do a proper dark mode, no white or light buttons"). Light keeps the
      values it had. */
-  --tile: #f0efe8; --tile-ink: #000; --tile-fill: #fff;
-  --strong: #000; --strong-ink: #f0efe8;
+  --tile: #f2f0e6; --tile-ink: #000; --tile-fill: #fff;
+  --strong: #000; --strong-ink: #f2f0e6;
   /* Hover is mint since 21 Nov 2026 (user's instruction, "make mint green
      on hover", on a pill button turned yellow): the Report a barrier
      card's and Send this report's #c6ffcc, black words 18.7:1. Dark keeps
      its #3a3a3c below. Marker yellow stays the highlight (--hl-cap-a). */
-  --hover: #c6ffcc; --hover-ink: #000;
+  --hover: #beffbd; --hover-ink: #000;
   /* What is drawn solid in ink (the primary action, a chosen option, a
      switch that is on, numbered rounds, the dark slabs): black in light; in
      dark the #636366 grey, so nothing solid turns white. */
@@ -71,9 +71,9 @@
    widget on a black page. index.tsx stamps data-theme on this element when
    the embedder pins one; otherwise the visitor's system setting decides. */
 @media (prefers-color-scheme: dark) {
-  .a11y-widget-biz:not([data-theme="light"]) { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #f08c5a; --urgent: #f08c5a; --hl-blue: #48a0da; --hl-green: #6ee597; --hl-cap-a: #ffd60a; --hl-cap-b: #ff375f; --focus: #6fdc8c; --chats-current: #30d158; --barrier: #30d158; }
+  .a11y-widget-biz:not([data-theme="light"]) { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #ffa0ff; --urgent: #ffa0ff; --hl-blue: #48a0da; --hl-green: #beffbd; --hl-cap-a: #f8ff58; --hl-cap-b: #e4f5a4; --focus: #6fdc8c; --chats-current: #beffbd; --barrier: #beffbd; }
 }
-.a11y-widget-biz[data-theme="dark"] { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #f08c5a; --urgent: #f08c5a; --hl-blue: #48a0da; --hl-green: #6ee597; --hl-cap-a: #ffd60a; --hl-cap-b: #ff375f; --focus: #6fdc8c; --chats-current: #30d158; --barrier: #30d158; }
+.a11y-widget-biz[data-theme="dark"] { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #ffa0ff; --urgent: #ffa0ff; --hl-blue: #48a0da; --hl-green: #beffbd; --hl-cap-a: #f8ff58; --hl-cap-b: #e4f5a4; --focus: #6fdc8c; --chats-current: #beffbd; --barrier: #beffbd; }
 
 .a11y-widget-biz {
   font-family: "PP Telegraf", "DejaVu Sans", sans-serif;
@@ -1827,7 +1827,7 @@
    "move buble to the right"), its tail and its lean mirrored: it covered
    the left of the picture, where the faulty element usually begins. */
 .a11y-widget-biz .a11y-shot.a11y-shot-has-bubble { width: fit-content; padding-top: 6px; }
-.a11y-widget-biz .a11y-shot-bubble { --tile: #ff9ad5; --tile-ink: #000; }
+.a11y-widget-biz .a11y-shot-bubble { --tile: #e4f5a4; --tile-ink: #000; }
 .a11y-widget-biz .a11y-shot-bubble {
   --ink: var(--tile-ink); --paper: var(--tile);
   position: relative; z-index: 1; display: block; width: fit-content; max-width: 85%;
@@ -2656,7 +2656,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row[data-issue] { border-top-style: dashed; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row .a11y-sr-line-text { font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row .a11y-sr-num { font-variant-numeric: tabular-nums; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row:is(button):enabled:hover { background: var(--hl-cap-a, #fbd24a); color: #000; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row:is(button):enabled:hover { background: var(--hl-cap-a, #f8ff58); color: #000; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row[aria-current="true"] {
   background: var(--ink); color: var(--paper); text-decoration: none;
 }
@@ -3565,14 +3565,14 @@
    The markup order (words, level split, status, count) is unchanged for
    screen readers; only the eye takes them as status, count, words. */
 .a11y-widget-biz {
-  --plate-1: #48a0da; --plate-2: #6ee597; --plate-3: #ff9ad5; --plate-4: #ffe14d; --plate-text: #000;
+  --plate-1: #a2e3ff; --plate-2: #beffbd; --plate-3: #ffa0ff; --plate-4: #f8ff58; --plate-text: #000;
 }
 .a11y-widget-biz[data-theme="dark"] {
-  --plate-1: #2e3350; --plate-2: #0f3a2a; --plate-3: #2e3814; --plate-4: #36310c; --plate-text: #fff;
+  --plate-1: #2e3350; --plate-2: #0f3a2a; --plate-3: #3d1440; --plate-4: #36310c; --plate-text: #fff;
 }
 @media (prefers-color-scheme: dark) {
   .a11y-widget-biz:not([data-theme="light"]) {
-    --plate-1: #2e3350; --plate-2: #0f3a2a; --plate-3: #2e3814; --plate-4: #36310c; --plate-text: #fff;
+    --plate-1: #2e3350; --plate-2: #0f3a2a; --plate-3: #3d1440; --plate-4: #36310c; --plate-text: #fff;
   }
 }
 .a11y-widget-biz .a11y-legal-results { container: a11y-legal-cards / inline-size; }
@@ -3843,7 +3843,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz .a11y-note.a11y-note-warning .a11y-note-badge {
   position: absolute; top: 0; left: 22px; margin: 0; padding: 4px 10px 3px; border-radius: 8px;
-  background: #ffe14d; color: #000;
+  background: #f8ff58; color: #000;
   font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
   font-size: 18px; line-height: 1.2; letter-spacing: 0.08em; white-space: nowrap;
   translate: 0 -50%; rotate: -2deg;
@@ -4138,26 +4138,33 @@
    and white in dark, so nothing turns white in dark); the PDF pill is
    --tile (#f0efe8 or #1c1c1e). The send is #000 with white words in both
    themes (21:1); hover is --hover, as on every button. */
+/* The studio's forest (user's instruction, 25 Nov 2026, "use these colors
+   across the acsessible scanner", with the studio site's request form):
+   the panel is the forest #1e361f in both themes, its words, edges and
+   focus line the pale lime #e3f1bd (11.0:1). The field, the send and the
+   PDF pill are 1px lime outlines on the forest, as the studio's Email and
+   Send request; hover fills the send and the PDF pill lime, forest words. */
+.a11y-widget-biz { --forest: #1e361f; --forest-ink: #e3f1bd; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions { container: a11y-ra / inline-size; margin-top: 70px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions > .a11y-ra-panel {
-  --ink: #000; --paper: var(--hl-orange);
+  --ink: var(--forest-ink); --paper: var(--forest); --focus: var(--forest-ink); --tile-ink: var(--forest-ink);
   position: relative; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 36px;
   margin: 0; padding: 56px 64px 48px; border-radius: 64px;
-  background: var(--hl-orange); color: #000; text-align: center;
+  background: var(--forest); color: var(--forest-ink); text-align: center;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-email-form {
   box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 24px;
   width: 100%; min-width: 0; margin: 0; padding: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-head {
-  margin: 0 0 26px; padding: 0; border: 0; color: #000;
+  margin: 0 0 26px; padding: 0; border: 0; color: var(--ink);
   font-size: 32px; font-weight: 400; line-height: 1.1; letter-spacing: 0.04em;
   text-transform: uppercase; font-feature-settings: "case";
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-field {
   box-sizing: border-box; display: flex; flex-direction: column; gap: 6px;
   width: 100%; min-width: 0; padding: 16px 28px 14px;
-  border: 0; border-radius: 24px; background: var(--tile-fill); color: var(--tile-ink); text-align: start;
+  border: 1px solid var(--ink); border-radius: 24px; background: transparent; color: var(--ink); text-align: start;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-field > .a11y-ra-field-label {
   font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
@@ -4176,24 +4183,24 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-send {
   box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; gap: 12px;
   max-width: 100%; min-height: 56px; margin: 0; padding: 10px 30px;
-  border: 1px solid #000; border-radius: 999px; background: #000; color: #fff;
+  border: 1px solid var(--ink); border-radius: 999px; background: transparent; color: var(--ink);
   font-size: 24px; font-weight: 400; line-height: 1.15; letter-spacing: 0.01em; text-align: center;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-send:enabled:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-send:enabled:hover { border-color: var(--ink); background: var(--ink); color: var(--forest); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-send:disabled { border-style: dashed; border-color: var(--ink); background: transparent; color: var(--ink); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-send > .a11y-ra-send-icon { width: 24px; height: 24px; flex: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-send-words { display: grid; min-width: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-send-word { grid-area: 1 / 1; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-send-word[data-off] { visibility: hidden; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-note {
-  margin: 0; color: #000; font-size: 24px; font-weight: 400; line-height: 1.2; letter-spacing: 0.015em;
+  margin: 0; color: var(--ink); font-size: 24px; font-weight: 400; line-height: 1.2; letter-spacing: 0.015em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-note:empty {
   position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-pdf {
   justify-content: center; min-height: 40px; padding: 6px 18px;
-  border: 1px solid var(--tile); border-radius: 999px; background: var(--tile); color: var(--tile-ink);
+  border: 1px solid var(--ink); border-radius: 999px; background: transparent; color: var(--ink);
   font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.01em;
 }
 @container a11y-ra (max-width: 560px) {
@@ -4330,7 +4337,7 @@
   margin: 0; font-size: 24px; font-weight: 200; line-height: 1.15; letter-spacing: 0.015em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-warning-badge {
-  display: inline-block; padding: 4px 10px 3px; border-radius: 8px; background: #ffe14d; color: #000;
+  display: inline-block; padding: 4px 10px 3px; border-radius: 8px; background: #f8ff58; color: #000;
   font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
   font-size: 18px; line-height: 1.2; letter-spacing: 0.08em; white-space: nowrap; rotate: -2deg;
 }
@@ -4375,7 +4382,7 @@
    The bubble's two grounds are their own tokens: --bubble a step off the
    page (#efefef, dark #1c1c1e) and --bubble-pill for what sits on it
    (#fff, dark #2c2c2e), black or white words on both. */
-.a11y-widget-biz { --bubble: #efefef; --bubble-pill: #fff; }
+.a11y-widget-biz { --bubble: #e6e6e6; --bubble-pill: #fff; }
 .a11y-widget-biz[data-theme="dark"] { --bubble: #1c1c1e; --bubble-pill: #2c2c2e; }
 @media (prefers-color-scheme: dark) {
   .a11y-widget-biz:not([data-theme="light"]) { --bubble: #1c1c1e; --bubble-pill: #2c2c2e; }
@@ -4384,11 +4391,11 @@
   --sev-critical: #80262a; --sev-serious: #1c4673; --sev-moderate: #20524d; --sev-minor: #ae5c44;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz[data-theme="dark"] .a11y-findings-table {
-  --sev-critical: #f08c5a; --sev-serious: #48a0da; --sev-moderate: #6ee597; --sev-minor: #e5dbb2;
+  --sev-critical: #ffa0ff; --sev-serious: #48a0da; --sev-moderate: #beffbd; --sev-minor: #f8ff58;
 }
 @media (prefers-color-scheme: dark) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz:not([data-theme="light"]) .a11y-findings-table {
-    --sev-critical: #f08c5a; --sev-serious: #48a0da; --sev-moderate: #6ee597; --sev-minor: #e5dbb2;
+    --sev-critical: #ffa0ff; --sev-serious: #48a0da; --sev-moderate: #beffbd; --sev-minor: #f8ff58;
   }
 }
 /* The header row is kept in the table, since a fixed table takes its
@@ -4645,11 +4652,11 @@
   --word-red: #80262a; --word-blue: #1c4673; --word-green: #20524d; --word-ochre: #ae5c44; --word-purple: #6929c4;
 }
 .a11y-widget-biz[data-theme="dark"] {
-  --word-red: #f08c5a; --word-blue: #48a0da; --word-green: #6ee597; --word-ochre: #e5dbb2; --word-purple: #be95ff;
+  --word-red: #ffa0ff; --word-blue: #48a0da; --word-green: #beffbd; --word-ochre: #f8ff58; --word-purple: #be95ff;
 }
 @media (prefers-color-scheme: dark) {
   .a11y-widget-biz:not([data-theme="light"]) {
-    --word-red: #f08c5a; --word-blue: #48a0da; --word-green: #6ee597; --word-ochre: #e5dbb2; --word-purple: #be95ff;
+    --word-red: #ffa0ff; --word-blue: #48a0da; --word-green: #beffbd; --word-ochre: #f8ff58; --word-purple: #be95ff;
   }
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list, .a11y-w22-list) {
@@ -5376,7 +5383,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret[data-open][class][class] { padding: 14px 28px 28px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret-failed { --row-plate: var(--hl-orange); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret-clean { --row-plate: var(--hl-green); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret-human { --row-plate: #e5dbb2; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret-human { --row-plate: #f8ff58; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret-not-measured { --row-plate: var(--hl-blue); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row[class][class][class][class] {
   align-items: baseline; width: 100%; min-height: 0; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; color: #000;
@@ -5805,7 +5812,7 @@
    lavender, not yet taken by another form: #cdb8ff (black words 12.6:1),
    dark #be95ff (9.6:1). No submit: the statement follows the fields as
    they are typed. 70px stands above the panel, as above every group. */
-.a11y-widget-biz { --form-stmt: #cdb8ff; }
+.a11y-widget-biz { --form-stmt: #b8fbff; }
 .a11y-widget-biz[data-theme="dark"] { --form-stmt: #be95ff; }
 @media (prefers-color-scheme: dark) {
   .a11y-widget-biz:not([data-theme="light"]) { --form-stmt: #be95ff; }
@@ -5998,7 +6005,7 @@
    the bar, 12:1 on white); on the black line being read, and on the dark
    pills in dark, the light focus green, #6fdc8c. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] {
-  --sr-brand: #a19cff; --sr-bar: #8f8af5;
+  --sr-brand: #a2e3ff; --sr-bar: #48a0da;
   --ink: #000; --paper: var(--sr-brand); --tile: var(--tile-fill); --focus: #0a3d1a;
   box-sizing: border-box; padding: 40px 64px 48px; border: 0; border-radius: 64px;
   background: var(--sr-brand); color: #000; text-align: start;
@@ -6199,7 +6206,7 @@
      96px with 12px corners, where the scan took one. The title's link
      covers the card; hover underlines it, focus rings the card.
    Under 900px of the block the cards go under the panel. */
-.a11y-widget-biz { --card-cool: #eef3f2; }
+.a11y-widget-biz { --card-cool: #e4f5a4; }
 .a11y-widget-biz[data-theme="dark"] { --card-cool: #1c1c1e; }
 @media (prefers-color-scheme: dark) {
   .a11y-widget-biz:not([data-theme="light"]) { --card-cool: #1c1c1e; }
@@ -6303,21 +6310,31 @@
    pill never slides out from under it. Report a barrier keeps its mint
    and its black "Start a report" pill, centred. Other questions is a
    grey pill (--bubble), 24px words, no edge. */
-.a11y-widget-biz { --note: #fdfbd5; --note-pill: #fff; --note-hover: #eef3f2; }
-.a11y-widget-biz[data-theme="dark"] { --note: #1c1c1e; --note-pill: #3a3a3c; --note-hover: #2c2c2e; }
+.a11y-widget-biz { --note: var(--plate-1); --note-pill: #fff; }
+.a11y-widget-biz[data-theme="dark"] { --note-pill: #000; }
 @media (prefers-color-scheme: dark) {
-  .a11y-widget-biz:not([data-theme="light"]) { --note: #1c1c1e; --note-pill: #3a3a3c; --note-hover: #2c2c2e; }
+  .a11y-widget-biz:not([data-theme="light"]) { --note-pill: #000; }
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt.a11y-prompt {
   padding-bottom: 76px; border: 0; box-shadow: none;
 }
+/* The studio's colours (user's instruction, 25 Nov 2026, "use these colors
+   across the acsessible scanner", with the studio site's question cards):
+   the questions take the plates in turn, sky, mint and pink, black words in
+   light (15.7:1, 18.2:1, 12.1:1); in dark the deep plates, navy #2e3350,
+   green #0f3a2a and plum #3d1440, white words (12:1 or better). --note is
+   the first plate, so a card the list does not count still has a ground.
+   Hover and focus keep the plate and draw a 1px edge in its words' colour
+   inside the card, with "Ask this" at the foot. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt.a11y-prompt:not(.a11y-prompt-barrier) {
-  --ink: var(--tile-ink); --paper: var(--note);
-  background: var(--note); color: var(--tile-ink);
+  --ink: var(--plate-text); --paper: var(--note);
+  background: var(--note); color: var(--plate-text);
 }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n + 2 of :not(.a11y-prompt-barrier)) { --note: var(--plate-2); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt[class]:nth-child(3n of :not(.a11y-prompt-barrier)) { --note: var(--plate-3); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt.a11y-prompt:not(.a11y-prompt-barrier):has(> .a11y-prompt-q:enabled):is(:hover, :has(> .a11y-prompt-q:focus-visible)) {
-  --ink: var(--tile-ink); --paper: var(--note-hover);
-  background: var(--note-hover); color: var(--tile-ink); border: 0; box-shadow: none;
+  --ink: var(--plate-text); --paper: var(--note);
+  background: var(--note); color: var(--plate-text); border: 0; box-shadow: inset 0 0 0 1px var(--plate-text);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt.a11y-prompt:has(> .a11y-prompt-q:disabled) { border: 0; outline: 1px dashed var(--tile-ink); outline-offset: -1px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-ask { margin-top: 4px; }
