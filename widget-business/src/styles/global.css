@@ -6935,3 +6935,11 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-q > .a11y-undecided-no, .a11y-legal-q > .a11y-legal-qnum, .a11y-stmt-step-head .a11y-stmt-step-num)[class][class] { border-color: CanvasText; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-text ol:not(.a11y-chat-plan)[class] > li::before { border-color: CanvasText; }
 }
+
+/* The account key field in the settings at 320px: the field's grid track
+   took the input's own width (20 characters at 24px, 294.5px here and
+   330px with CI's wider fallback font) and ran past a 288px column, which
+   failed check:reflow in every language and held every deploy since
+   b902260. The track now gives up its width to the column. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings-row > .a11y-input { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings-row > .a11y-input > .a11y-input-shell { min-width: 0; }
