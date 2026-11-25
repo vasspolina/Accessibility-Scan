@@ -5660,16 +5660,15 @@
    "redesign so it properly fits") ════════════════════════════════════════
    The severity word wrapped onto a line of its own whenever a title and
    its places filled the row, and the criterion's column was 150px for a
-   five-character number. The criterion takes 72px; the severity, first in
+   five-character number. The criterion takes one grid column (ONE 12-COLUMN GRID); the severity, first in
    the issue cell's markup, floats to the far end of the title's first line,
    so the title and its places wrap beside it and never push it down. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr[class] { grid-template-columns: 72px minmax(0, 1fr); column-gap: 16px; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr:not(:has(> .a11y-sum-table-wcag))[class] { grid-template-columns: minmax(0, 1fr); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr:not(:has(> .a11y-sum-table-wcag)):nth-child(n) { grid-template-columns: minmax(0, 1fr); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr > .a11y-sum-table-issue[class][class] { display: block; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue[class] > .a11y-sum-table-badge[class][class] { float: right; margin: 0; padding-left: 24px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue[class] > .a11y-sum-table-count[class] { margin-left: 0.35em; }
 @media (max-width: 640px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr[class] { grid-template-columns: minmax(0, 1fr); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr:nth-child(n) { grid-template-columns: minmax(0, 1fr); }
   /* A phone keeps the flex line, the severity under the title. */
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr > .a11y-sum-table-issue[class][class] { display: flex; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue[class] > .a11y-sum-table-badge[class][class] { float: none; flex-basis: 100%; margin: 2px 0 0; padding-left: 0; }
@@ -5712,3 +5711,31 @@
    inside an opened finding (48px). Where a comment above still says 65px,
    the value under it is now 70px. Gaps inside a group (cards 16px apart,
    a label over its words) are unchanged. */
+
+/* ═══ ONE 12-COLUMN GRID (user's choice, 24 Nov 2026, "add grid to website",
+   then "12 columns, titles stay on top") ═════════════════════════════════
+   Every multi-column group in the report stands on one grid: twelve
+   columns with a 16px gutter across the report's width, titles above their
+   content as before. A column is (width - 11 gutters) / 12, 102.7px at the
+   report's 1408px. The score block, the report actions and the statement's
+   two fields were already on it: four tracks 16px apart are three columns
+   each, and two halves are six. The rest snap to it:
+   - the WCAG 2.2 items and the checklist rows: the criterion two columns,
+     the question eight, the status two (they were 190px and 220px with
+     24px gutters), above 640px of list;
+   - the score's issues: the criterion one column of the nine the table
+     spans (72px before);
+   - the statement's facts: four columns of three, a 16px gutter (15px). */
+.a11y-widget-biz { --grid-gap: 16px; }
+@container a11y-qlist (min-width: 641px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list > .a11y-conf-row, .a11y-w22-list > .a11y-w22-row)[class] {
+    grid-template-columns: calc((100% - 11 * var(--grid-gap)) / 12 * 2 + var(--grid-gap)) minmax(0, 1fr) calc((100% - 11 * var(--grid-gap)) / 12 * 2 + var(--grid-gap));
+    column-gap: var(--grid-gap);
+  }
+}
+@media (min-width: 641px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr:has(> .a11y-sum-table-wcag):nth-child(n) {
+    grid-template-columns: calc((100% - 8 * var(--grid-gap)) / 9) minmax(0, 1fr); column-gap: var(--grid-gap);
+  }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-spec-grid { column-gap: var(--grid-gap); }
