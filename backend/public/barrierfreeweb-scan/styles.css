@@ -304,13 +304,20 @@ main.wrap { padding-top: var(--s10); }
 
 /* Terms as labelled paragraphs (user's reference, 25 Nov 2026, a foundry's
    contact page: "SUPPORT & TECH HELP:" over its words; the user chose it
-   over the cross rows of the same afternoon): each term in capitals in the
-   words' own face and size, closed by a colon (generated, silent), its
-   meaning on the next line, one empty line between terms. */
+   over the cross rows of the same afternoon): each term over its meaning,
+   one empty line between terms. */
 .terms { display: grid; gap: 1lh; margin: 0; }
-.terms dt { text-transform: uppercase; }
-.terms dt::after { content: ":" / ""; }
 .terms dd { margin: 0; }
+/* The term as a callout in Lettra (user's instruction, 25 Nov 2026, "put
+   call outs in letra", beside the scan's outlined pills "1.1.1", "Fix soon",
+   "2 places"): PP Lettra Mono, sentence case, no tracking, a 1px edge in the
+   words' colour round it with round ends, 0.83em of the words beside it
+   (24px in the 29px column), 0.3em over its meaning. Replaces the capitals
+   and colon of the same afternoon. */
+.terms dt {
+  display: inline-block; margin-bottom: 0.3em; padding: 0.15em 0.6em 0.1em; border: 1px solid currentColor; border-radius: 999px;
+  font-family: var(--mono); font-size: 0.83em; line-height: 1.2; letter-spacing: 0;
+}
 
 /* Links in the column and the cards on a pale yellow highlight (the same
    reference: its addresses on a pale yellow, no underline). Black words on
