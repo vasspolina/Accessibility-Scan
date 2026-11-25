@@ -891,8 +891,12 @@
 .a11y-widget-biz .a11y-url-form { margin: 0; }
 
 /* The address: label, then the field with the login button beside it. */
-.a11y-widget-biz .a11y-input { display: grid; gap: var(--cds-spacing-03); }
-.a11y-widget-biz .a11y-input-shell { display: flex; flex-wrap: wrap; align-items: stretch; gap: var(--cds-spacing-05) var(--cds-spacing-05); }
+/* minmax(0, 1fr) and the shell's min-width: 0 let the field narrow to its
+   column: without them the track took the input's own width (about twenty
+   characters plus its padding), and the settings block's Account key field
+   ran 10px past a 320px window on CI once that padding became 16px. */
+.a11y-widget-biz .a11y-input { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--cds-spacing-03); }
+.a11y-widget-biz .a11y-input-shell { display: flex; flex-wrap: wrap; align-items: stretch; gap: var(--cds-spacing-05) var(--cds-spacing-05); min-width: 0; }
 .a11y-widget-biz .a11y-input-shell > input { flex: 1 1 14em; min-width: 0; box-sizing: border-box; }
 .a11y-widget-biz .a11y-input-shell > .a11y-login-toggle { flex: none; white-space: nowrap; align-self: center; }
 .a11y-widget-biz .a11y-group-hint { font-size: 18px; letter-spacing: 0.025em; line-height: 1.2; }
@@ -6164,7 +6168,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-transport { gap: var(--cds-spacing-03); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-play[class]:enabled {
-  justify-content: center; min-height: 34px; padding: 0 var(--cds-spacing-04); border: 1px solid #000; border-radius: 999px;
+  justify-content: center; min-height: 32px; padding: 0 var(--cds-spacing-04); border: 1px solid #000; border-radius: 999px;
   background: #000; color: #fff; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; text-align: center;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-play[class]:enabled:hover { border-color: var(--sr-pill-hover); background: var(--sr-pill-hover); color: #000; }
@@ -6172,7 +6176,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-play[class] > svg { display: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] :is(.a11y-sr-ctl, .a11y-skip-link)[class],
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-show-all[class] {
-  justify-content: center; min-height: 34px; padding: 0 var(--cds-spacing-04); border: 1px solid var(--sr-pill); border-radius: 999px;
+  justify-content: center; min-height: 32px; padding: 0 var(--cds-spacing-04); border: 1px solid var(--sr-pill); border-radius: 999px;
   background: var(--sr-pill); color: #000; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] :is(.a11y-sr-ctl, .a11y-skip-link)[class]:enabled:hover,
@@ -6188,7 +6192,7 @@
 /* The filter: a grey pill, black with its check mark when on. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar.a11y-sr-tools[class] { justify-content: flex-start; gap: var(--cds-spacing-03); margin: var(--cds-spacing-07) 0 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class] {
-  position: relative; gap: var(--cds-spacing-03); min-height: 34px; padding: 0 var(--cds-spacing-04); border: 1px solid var(--sr-pill); border-radius: 999px;
+  position: relative; gap: var(--cds-spacing-03); min-height: 32px; padding: 0 var(--cds-spacing-04); border: 1px solid var(--sr-pill); border-radius: 999px;
   background: var(--sr-pill); color: #000; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class]:has(:checked) { border-color: #000; background: #000; color: #fff; }
@@ -6263,7 +6267,7 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] h2.a11y-section-title:not(.a11y-accordion-title)[class] { font-size: 24px; letter-spacing: 0.04em; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] { margin-top: var(--cds-spacing-06); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar.a11y-sr-tools[class] { margin-top: var(--cds-spacing-06); }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-ctl[class] { width: 34px; padding-inline: 0; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-ctl[class] { width: 32px; padding-inline: 0; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-log { margin-top: var(--cds-spacing-06); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-list[class] { gap: var(--cds-spacing-03); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-row[class][class] { gap: var(--cds-spacing-02) var(--cds-spacing-04); min-height: 60px; padding: var(--cds-spacing-03) var(--cds-spacing-05) var(--cds-spacing-03) var(--cds-spacing-04); border-radius: var(--r-card); }
@@ -6822,7 +6826,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-principle-group .a11y-principle-title {
   font-size: 38px; line-height: 1.1; letter-spacing: 0.01em;
 }
-@media (max-width: 640px) {
+@media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-principle-group .a11y-principle-title { font-size: 29px; }
 }
 
@@ -6841,10 +6845,10 @@
    round send arrow. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-chat-box,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box {
-  border: 0; border-radius: 32px; padding: 20px 24px; background: var(--bubble); color: var(--ink);
+  border: 0; border-radius: 32px; padding: var(--cds-spacing-05) var(--cds-spacing-06); background: var(--bubble); color: var(--ink);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box .a11y-btn[class][class] {
-  min-height: 34px; padding: 4px 14px; border: 0; border-radius: 999px;
+  min-height: 32px; padding: var(--cds-spacing-02) var(--cds-spacing-05); border: 0; border-radius: 999px;
   background: var(--bubble-pill); color: var(--ink);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box .a11y-btn[class][class][type="submit"] { background: var(--solid); color: var(--solid-ink); }
@@ -6852,15 +6856,15 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box .a11y-btn[class][class]:disabled {
   border: 1px dashed var(--ink); background: transparent; color: var(--ink);
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-suggest[class] { gap: 4px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-suggest[class] { gap: var(--cds-spacing-02); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-suggest .a11y-chat-chip[class] {
-  min-height: 34px; padding: 4px 14px; border: 0; border-radius: 999px;
+  min-height: 32px; padding: var(--cds-spacing-02) var(--cds-spacing-05); border: 0; border-radius: 999px;
   background: var(--bubble); color: var(--ink);
   font-size: 18px; line-height: 1.2; letter-spacing: 0.025em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-suggest .a11y-chat-chip[class]:enabled:hover { background: var(--hover); color: var(--hover-ink); }
-@media (max-width: 640px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-chat-box { border-radius: 24px; padding: 12px 10px 10px 16px; }
+@media (max-width: 671px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-chat-box { border-radius: 24px; padding: var(--cds-spacing-04) var(--cds-spacing-03) var(--cds-spacing-03) var(--cds-spacing-05); }
 }
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box,
@@ -6883,20 +6887,20 @@
    keyboard user sees where they are. The pills at the foot are unchanged. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-grid[class] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q[class] {
-  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 16px; row-gap: 8px; align-items: start;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--cds-grid-gutter-narrow); row-gap: var(--cds-spacing-03); align-items: start;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q[class] > .a11y-prompt-ask { margin-top: 0; }
 @container a11y-prompts (max-width: 900px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q[class] { grid-template-columns: minmax(0, 1fr); }
 }
-@media (max-width: 640px) {
+@media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-grid[class] { grid-template-columns: none; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt .a11y-prompt-q[class] { grid-template-columns: minmax(0, 1fr); }
 }
 /* Two to a row, the 296:285 proportion made each card about 570px tall at
    1440px; the card is as tall as its words and pills, 220px at least. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-grid > .a11y-prompt { aspect-ratio: auto; min-height: 220px; }
-@media (max-width: 640px) {
+@media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-grid > .a11y-prompt { min-height: 0; }
 }
 
