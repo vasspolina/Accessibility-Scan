@@ -390,7 +390,8 @@ export function ScoreGauge({
             {onSeeFindings && !inChat && findings.length > 0 && (
               <button type="button" className="a11y-dial-sticker" onClick={onSeeFindings}>
                 <span className="a11y-dial-sticker-words">
-                  {findings.length === 1 ? t("See the finding") : tf("See the {count} findings", { count: findings.length })}
+                  {/* No count: "N issues found" heads the table beside it. */}
+                  {findings.length === 1 ? t("See the finding") : t("See the findings")}
                 </span>
               </button>
             )}
