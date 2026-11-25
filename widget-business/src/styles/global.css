@@ -889,8 +889,12 @@
 .a11y-widget-biz .a11y-url-form { margin: 0; }
 
 /* The address: label, then the field with the login button beside it. */
-.a11y-widget-biz .a11y-input { display: grid; gap: var(--cds-spacing-03); }
-.a11y-widget-biz .a11y-input-shell { display: flex; flex-wrap: wrap; align-items: stretch; gap: var(--cds-spacing-05) var(--cds-spacing-05); }
+/* minmax(0, 1fr) and the shell's min-width: 0 let the field narrow to its
+   column: without them the track took the input's own width (about twenty
+   characters plus its padding), and the settings block's Account key field
+   ran 10px past a 320px window on CI once that padding became 16px. */
+.a11y-widget-biz .a11y-input { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--cds-spacing-03); }
+.a11y-widget-biz .a11y-input-shell { display: flex; flex-wrap: wrap; align-items: stretch; gap: var(--cds-spacing-05) var(--cds-spacing-05); min-width: 0; }
 .a11y-widget-biz .a11y-input-shell > input { flex: 1 1 14em; min-width: 0; box-sizing: border-box; }
 .a11y-widget-biz .a11y-input-shell > .a11y-login-toggle { flex: none; white-space: nowrap; align-self: center; }
 .a11y-widget-biz .a11y-group-hint { font-size: 18px; letter-spacing: 0.025em; line-height: 1.2; }
