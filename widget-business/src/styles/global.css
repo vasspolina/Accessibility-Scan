@@ -6052,7 +6052,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col:last-of-type[class] { margin-bottom: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps, .a11y-affected)[class][class] {
   display: grid; grid-template-columns: minmax(0, 1fr); column-gap: var(--cds-spacing-05); row-gap: var(--cds-spacing-04); align-items: baseline;
-  padding: var(--cds-spacing-05); border-radius: var(--r-card); text-align: left;
+  padding: var(--cds-spacing-05); border-radius: var(--r-card); text-align: left; font-size: 29px;
 }
 /* Everything in the first column, a row each in markup order; the label
    alone in the second column, on the first row. */
@@ -6067,10 +6067,10 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo)[class][class] > strong:first-child,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class][class] > p:first-child > strong,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class] > .a11y-affected-label > strong {
-  display: inline-block; box-sizing: border-box; padding: var(--cds-spacing-03) var(--cds-spacing-04) var(--cds-spacing-02);
+  display: inline-block; box-sizing: border-box; padding: var(--cds-spacing-03) var(--cds-spacing-04);
   border: 1px solid currentColor; border-radius: 999px;
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
-  font-size: 18px; line-height: 1; letter-spacing: 0; text-transform: none; white-space: nowrap;
+  font-size: 18px; line-height: 1; letter-spacing: 0; text-transform: none; white-space: nowrap; text-align: center; text-box: trim-both cap alphabetic;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-fd-meta[class] { padding-inline: var(--cds-spacing-08); }
 /* The affected elements keep their own setting under the centred pill: a
