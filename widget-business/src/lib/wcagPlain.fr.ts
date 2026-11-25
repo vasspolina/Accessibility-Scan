@@ -122,19 +122,19 @@ export const PLAIN_FR: Record<string, PlainRule> = {
   },
   "color-contrast": {
     research:
-      "WebAIM examine chaque année un million de pages d’accueil. Le texte trop peu contrasté est le défaut le plus fréquent qu’il y trouve, année après année. Bien plus de gens voient moins net que ne le supposent les écrans d’une équipe de design.",
+      "Le texte trop peu contrasté est le défaut le plus fréquent du relevé annuel de WebAIM sur un million de pages d’accueil. Bien plus de gens voient moins net que ne le supposent les écrans d’une équipe de design.",
     plain: "Texte trop pâle pour être lu",
     found: (n) =>
-      `${n} ${n === 1 ? "passage de texte sur cette page est trop proche" : "passages de texte sur cette page sont trop proches"} en couleur du fond qui se trouve derrière ${n === 1 ? "lui" : "eux"}. La version technique donne le rapport mesuré.`,
+      `${n} ${n === 1 ? "passage de texte sur cette page est trop proche" : "passages de texte sur cette page sont trop proches"} en couleur du fond qui se trouve derrière ${n === 1 ? "lui" : "eux"}.`,
     impact:
       "Difficile à lire en plein soleil, sur un écran bon marché, dans une pièce sombre ou avec une vue imparfaite. Le message ne passe pas.",
   },
   "image-alt": {
     research:
-      "WebAIM examine chaque année un million de pages d’accueil. Les images sans description comptent parmi les défauts les plus fréquents qu’il y trouve, année après année. C’est aussi l’un des plus simples à régler.",
+      "Les images sans description comptent parmi les défauts les plus fréquents du relevé annuel de WebAIM sur un million de pages d’accueil. Elles sont aussi parmi les plus simples à régler.",
     plain: "Les images n’ont pas de description",
     found: (n) =>
-      `${n} ${n === 1 ? "image n’a" : "images n’ont"} aucun texte alternatif. Pas même un texte vide pour ${n === 1 ? "la marquer décorative" : "les marquer décoratives"}. Un lecteur d’écran se rabat sur la lecture du nom de fichier, ou ${n === 1 ? "la saute" : "les saute"} en silence.`,
+      `${n} ${n === 1 ? "image n’a" : "images n’ont"} aucun texte alternatif. Pas même un texte vide pour ${n === 1 ? "la marquer décorative" : "les marquer décoratives"}.`,
     impact:
       "Les utilisateurs de lecteurs d’écran n’entendent rien pour ces images, et les moteurs de recherche ne savent pas ce qu’elles montrent. Le site y perd en accessibilité comme en référencement.",
   },
@@ -394,7 +394,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
   // groupée dont le nombre figure dans la description du backend, d'où
   // l'absence de found().
   "sr-filename-alt": {
-    found: (n) => (n === 1 ? "Au moins une image a pour description son nom de fichier. Un lecteur d’écran lit des chiffres et de la ponctuation, pas ce que montre l’image." : "{n} images ont leur nom de fichier pour description. Un lecteur d’écran lit des chiffres et de la ponctuation, pas ce qu’elles montrent.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Au moins une image a pour description son nom de fichier." : "{n} images ont leur nom de fichier pour description.".replace("{n}", String(n))),
     plain: "Des images décrites par leur nom de fichier",
     impact:
       "Un lecteur d’écran lit le nom de fichier à voix haute, chiffres et ponctuation compris. Le visiteur entend du bruit là où devrait se trouver le sens de l’image.",

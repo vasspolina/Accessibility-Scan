@@ -87,8 +87,8 @@ export function UndecidedChecks({
           whose, so the lead no longer repeats either. */}
       <p className="a11y-section-desc">
         {rows.length === 1
-          ? t("The scan couldn't decide this one. It doesn't count against the score.")
-          : t("The scan couldn't decide these. They don't count against the score.")}
+          ? t("The scan couldn't decide this one.")
+          : t("The scan couldn't decide these.")}
       </p>
       </div>
       {rows.length > 0 && (

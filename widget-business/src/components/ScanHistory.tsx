@@ -36,10 +36,31 @@ function ruleLabel(ruleId: string): string {
  * "just now"; the one below it carries "earlier", which is true of every
  * same-day run and claims no more precision than the date already does.
  */
-function groupByYear(
-  entries: { scannedAt: string; score: number; note?: string }[]
-): { year: string; runs: { scannedAt: string; score: number; note?: string }[] }[] {
-  const out: { year: string; runs: typeof entries }[] = [];
+type Run = { scannedAt: string; score: number; note?: string; times: number };
+
+/* Runs in a row on the same day with the same score and note are one line
+   with a count (user's instruction, 25 Nov 2026, "no repetition"): twenty
+   lines of "24 Nov 2026 – 62 / 100" said one thing twenty times. */
+function collapseRepeats(entries: { scannedAt: string; score: number; note?: string }[]): Run[] {
+  const out: Run[] = [];
+  for (const e of entries) {
+    const prev = out[out.length - 1];
+    if (
+      prev &&
+      new Date(prev.scannedAt).toDateString() === new Date(e.scannedAt).toDateString() &&
+      prev.score === e.score &&
+      prev.note === e.note
+    ) {
+      prev.times += 1;
+    } else {
+      out.push({ ...e, times: 1 });
+    }
+  }
+  return out;
+}
+
+function groupByYear(entries: Run[]): { year: string; runs: Run[] }[] {
+  const out: { year: string; runs: Run[] }[] = [];
   for (const e of entries) {
     const year = String(new Date(e.scannedAt).getFullYear());
     const last = out[out.length - 1];
@@ -94,14 +115,16 @@ export function ScanHistory({
 
   const sameDayAsCurrent = (iso: string) =>
     new Date(iso).toDateString() === new Date(current.scannedAt).toDateString();
-  const runsByYear = groupByYear([
-    { scannedAt: current.scannedAt, score: current.score, note: t("just now") },
-    ...previous.map((e) => ({
-      scannedAt: e.scannedAt,
-      score: e.score,
-      note: sameDayAsCurrent(e.scannedAt) ? t("earlier") : undefined,
-    })),
-  ]);
+  const runsByYear = groupByYear(
+    collapseRepeats([
+      { scannedAt: current.scannedAt, score: current.score, note: t("just now") },
+      ...previous.map((e) => ({
+        scannedAt: e.scannedAt,
+        score: e.score,
+        note: sameDayAsCurrent(e.scannedAt) ? t("earlier") : undefined,
+      })),
+    ])
+  );
 
   // The section doesn't vanish under the person who just pressed Delete —
   // that would drop keyboard focus to <body> and say nothing to a screen
@@ -155,6 +178,7 @@ export function ScanHistory({
                   <li key={e.scannedAt}>
                     {formatDate(e.scannedAt)} &mdash;{" "}
                     <span className="a11y-hist-score">{e.score} / 100</span>
+                    {e.times > 1 ? <span> {e.times}×</span> : null}
                     {e.note ? <em>, {e.note}</em> : null}
                   </li>
                 ))}

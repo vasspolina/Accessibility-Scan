@@ -121,19 +121,19 @@ export const PLAIN_ES: Record<string, PlainRule> = {
   },
   "color-contrast": {
     research:
-      "WebAIM revisa un millón de páginas de inicio cada año. El texto con poco contraste es el fallo más común que encuentra, año tras año. Mucha más gente ve con menos nitidez de lo que suponen los monitores de un equipo de diseño.",
+      "El texto con poco contraste es el fallo más común en la revisión anual de WebAIM de un millón de páginas de inicio. Mucha más gente ve con menos nitidez de lo que suponen los monitores de un equipo de diseño.",
     plain: "Texto demasiado claro para leerlo",
     found: (n) =>
-      `${n} ${n === 1 ? "texto de esta página está" : "textos de esta página están"} demasiado cerca en color del fondo que ${n === 1 ? "tiene" : "tienen"} detrás. La versión técnica da la proporción medida.`,
+      `${n} ${n === 1 ? "texto de esta página está" : "textos de esta página están"} demasiado cerca en color del fondo que ${n === 1 ? "tiene" : "tienen"} detrás.`,
     impact:
       "Cuesta leerlo con luz fuerte, en una pantalla barata, en una habitación oscura o con la vista imperfecta. Su mensaje no llega.",
   },
   "image-alt": {
     research:
-      "WebAIM revisa un millón de páginas de inicio cada año. Las imágenes sin descripción están entre los fallos más comunes que encuentra, año tras año. También es uno de los más sencillos de resolver.",
+      "Las imágenes sin descripción están entre los fallos más comunes de la revisión anual de WebAIM de un millón de páginas de inicio. También están entre los más sencillos de resolver.",
     plain: "Las imágenes no tienen descripción",
     found: (n) =>
-      `${n} ${n === 1 ? "imagen no tiene" : "imágenes no tienen"} ningún texto alternativo, ni siquiera uno vacío que ${n === 1 ? "la marque" : "las marque"} como decorativa. El lector de pantalla acaba leyendo el nombre del archivo en voz alta, o ${n === 1 ? "la salta" : "las salta"} en silencio.`,
+      `${n} ${n === 1 ? "imagen no tiene" : "imágenes no tienen"} ningún texto alternativo, ni siquiera uno vacío que ${n === 1 ? "la marque" : "las marque"} como decorativa.`,
     impact:
       "Quien usa un lector de pantalla no oye nada de estas imágenes, y los buscadores no saben qué muestran. Le cuesta accesibilidad y posicionamiento.",
   },
@@ -392,7 +392,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
   // tarjeta agrupada cuyo recuento está en la descripción del backend, así
   // que no llevan found().
   "sr-filename-alt": {
-    found: (n) => (n === 1 ? "Al menos una imagen lleva su nombre de archivo como descripción. El lector de pantalla lee cifras y signos, no lo que muestra la imagen." : "{n} imágenes llevan su nombre de archivo como descripción. El lector de pantalla lee cifras y signos, no lo que muestran.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Al menos una imagen lleva su nombre de archivo como descripción." : "{n} imágenes llevan su nombre de archivo como descripción.".replace("{n}", String(n))),
     plain: "Imágenes descritas con su nombre de archivo",
     impact:
       "El lector de pantalla lee el nombre del archivo en voz alta, con cifras y signos incluidos. Quien escucha oye ruido donde debería estar el sentido de la imagen.",
