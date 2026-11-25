@@ -7444,3 +7444,15 @@
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] { padding: 0; border-radius: 0; background: none; }
 }
+
+/* THE CHECKLIST'S CALL-OUTS IN LETTRA (user's instruction, 25 Nov 2026,
+   "use letra here for call outs", on the checklist's first column): the
+   criterion's number and level ("1.2.1 A") are PP Lettra Mono Ultralight
+   at the key's own size, no tracking (the monospace is already spaced),
+   as the settings labels and the score's lines are; the official name
+   under them stays PP Telegraf, so the call-out reads apart from the name
+   it labels. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-row > .a11y-conf-id > .a11y-conf-key {
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-synthesis: none;
+  font-weight: 200; letter-spacing: 0;
+}
