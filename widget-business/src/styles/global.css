@@ -2595,7 +2595,11 @@
    rest of the layout layer. */
 
 /* History: a card each for "Since last time" and "Where this lives". */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-col:last-child { display: flex; flex-direction: column; gap: var(--cds-spacing-11); }
+/* One gap between the runs, Since last time and Where this lives (user's
+   instruction, 25 Nov 2026, "fix"): the runs stood 12px over Since last
+   time, which stood 80px over Where this lives. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-cols { display: flex; flex-direction: column; gap: var(--cds-spacing-09); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-col:last-child { display: flex; flex-direction: column; gap: var(--cds-spacing-09); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card {
   display: flex; flex-direction: column; align-items: flex-start; gap: var(--cds-spacing-05);
   box-sizing: border-box; min-width: 0; margin: 0; padding: 0;
