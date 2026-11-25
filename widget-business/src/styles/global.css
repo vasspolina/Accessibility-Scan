@@ -1041,7 +1041,7 @@
   .a11y-widget-biz .a11y-sum-dial circle { stroke: CanvasText; }
 }
 .a11y-widget-biz .a11y-sum-dial-face { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
-.a11y-widget-biz .a11y-sum-dial-num { font-size: 32px; letter-spacing: 0.01em; font-weight: 200; line-height: 1; margin: 0; }
+.a11y-widget-biz .a11y-sum-dial-num { font-size: 48px; letter-spacing: 0; font-weight: 200; line-height: 1; margin: 0; }
 .a11y-widget-biz .a11y-sum-dial-of { font-size: 18px; letter-spacing: 0.025em; margin: 0; }
 
 /* The scan summary as a run of display type (user's instruction,
@@ -1447,7 +1447,7 @@
 
 /* The professional score: the number is the big word, the rest small print under it. */
 .a11y-widget-biz .a11y-pro-score { display: flex; align-items: baseline; gap: 0.4em; margin: 0 0 0.4em; }
-.a11y-widget-biz .a11y-pro-score-num { font-size: 32px; letter-spacing: 0.01em; font-weight: 200; line-height: 1; }
+.a11y-widget-biz .a11y-pro-score-num { font-size: 48px; letter-spacing: 0; font-weight: 200; line-height: 1; }
 .a11y-widget-biz .a11y-pro-score-of { font-size: 18px; letter-spacing: 0.025em; }
 .a11y-widget-biz .a11y-pro-eyebrow { font-size: 18px; letter-spacing: 0.025em; font-weight: 200; margin: 0 0 0.4em; }
 .a11y-widget-biz .a11y-pro-count { font-size: 24px; letter-spacing: 0.015em; }
@@ -4529,7 +4529,7 @@
    between pairs, never inside one. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd-meta {
   display: flex; flex-wrap: wrap; column-gap: 2.6em; row-gap: 0.3em; grid-column: 1 / -1; margin: 0 0 36px;
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
   font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd-meta > span { white-space: nowrap; }
@@ -5188,7 +5188,7 @@
    wide and its lowercase tall, so 0.8em of the card's text reads at the
    same size beside it. Code elsewhere keeps the one face. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd-body code {
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
   font-size: 18px; font-weight: 400; letter-spacing: 0;
 }
 
@@ -6478,7 +6478,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-pill {
   display: inline-block; box-sizing: border-box; max-width: 100%; padding: 1px 12px; border: 1px solid #000; border-radius: 999px; color: #000;
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
   font-size: 18px; font-weight: 400; line-height: 1.3; letter-spacing: 0; white-space: normal;
 }
 /* The pills held to one line ran past a 320px screen in French and Spanish
@@ -6492,7 +6492,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-pill > .a11y-sev[class][class][class]::after { content: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title {
   display: block; color: #000; text-decoration: none; overflow-wrap: anywhere;
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
   font-size: 24px; font-weight: 400; line-height: 1.35; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title::after {
@@ -6696,7 +6696,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body {
   display: flex; flex: 1 1 auto; flex-direction: column; align-items: flex-start; gap: 1.3em; min-width: 0;
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
   font-size: 24px; font-weight: 400; line-height: 1.35; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-point[class] {
@@ -6757,7 +6757,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-standard, .a11y-legal-eyebrow) {
   display: block; margin: 0 0 12px; padding: 0; border: 0; background: none; color: #000;
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
   font-size: 24px; font-weight: 400; line-height: 1.35; letter-spacing: 0; text-transform: none;
   overflow-wrap: anywhere;
 }
