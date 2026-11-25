@@ -5253,3 +5253,14 @@
 @media (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-warning-badge[class][class] { font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
 }
+
+/* CODE IN A FINDING'S CARDS (user's instruction, 24 Nov 2026, "put this
+   into code font", pointing at the mono of the meta strip's "Fix: Code
+   fix"). Code quoted in a card's words, such as the validator's messages
+   under What we found, is set in the meta strip's mono face. The face is
+   wide and its lowercase tall, so 0.8em of the card's text reads at the
+   same size beside it. Code elsewhere keeps the one face. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd-body code {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-size: 0.8em; font-weight: 400; letter-spacing: 0;
+}
