@@ -1416,27 +1416,40 @@ function CodeFixSuggestion({ fix }: { fix: NonNullable<AccessibilityFinding["sug
 
   return (
     <div className="a11y-code-fix">
+      {/* Set after a shop's list (user's reference, 25 Nov 2026): the
+          title, the warning under it as a red word, then each markup as a
+          white card over its name, and Copy as one black pill. The name
+          comes first in the markup for screen readers; CSS order puts the
+          card above it. */}
       <p className="a11y-code-fix-label">
-        <strong>{t("AI fix")}</strong> {t("Written by AI. Check it before you use it.")}
+        <strong>{t("AI fix")}</strong>{" "}
+        <span className="a11y-code-fix-warn">{t("Written by AI. Check it before you use it.")}</span>
       </p>
       {fix.note && <p className="a11y-code-fix-note">{fix.note}</p>}
-      <p className="a11y-code-fix-key">{t("Current markup")}</p>
-      {/* Scrollable, so keyboard-reachable; a group, not a region, for the
-          same reason as the professional snippet above. */}
-      <pre className="a11y-code-fix-pre" tabIndex={0} role="group" aria-label={t("Current markup")}>
-        <code>{fix.before}</code>
-      </pre>
-      <p className="a11y-code-fix-key">{t("Fixed markup")}</p>
-      <pre className="a11y-code-fix-pre a11y-code-fix-after" tabIndex={0} role="group" aria-label={t("Fixed markup")}>
-        <code>{fix.after}</code>
-      </pre>
+      <div className="a11y-code-fix-cols">
+        <div className="a11y-code-fix-col">
+          <p className="a11y-code-fix-key">{t("Current markup")}</p>
+          {/* Scrollable, so keyboard-reachable; a group, not a region, for the
+              same reason as the professional snippet above. */}
+          <pre className="a11y-code-fix-pre" tabIndex={0} role="group" aria-label={t("Current markup")}>
+            <code>{fix.before}</code>
+          </pre>
+        </div>
+        <div className="a11y-code-fix-col">
+          <p className="a11y-code-fix-key">{t("Fixed markup")}</p>
+          <pre className="a11y-code-fix-pre a11y-code-fix-after" tabIndex={0} role="group" aria-label={t("Fixed markup")}>
+            <code>{fix.after}</code>
+          </pre>
+        </div>
+      </div>
       <button
         type="button"
         className="a11y-copy-btn"
         onClick={copy}
         aria-label={copied ? t("Copied the fixed markup") : t("Copy the fixed markup")}
       >
-        {copied ? t("Copied") : t("Copy")}
+        <Icon name={copied ? "checkmark" : "copy"} />
+        <span>{copied ? t("Copied") : t("Copy")}</span>
       </button>
       <span className="a11y-sr-only" role="status">
         {copied ? t("Fixed markup copied to the clipboard.") : ""}

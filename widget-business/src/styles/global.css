@@ -57,8 +57,11 @@
   /* Hover is mint since 21 Nov 2026 (user's instruction, "make mint green
      on hover", on a pill button turned yellow): the Report a barrier
      card's and Send this report's #c6ffcc, black words 18.7:1. Dark keeps
-     its #3a3a3c below. Marker yellow stays the highlight (--hl-cap-a). */
-  --hover: #beffbd; --hover-ink: #000;
+     its #3a3a3c below. Marker yellow stays the highlight (--hl-cap-a).
+     Since 25 Nov 2026 it is a shop page's pale yellow, #fff5c2, measured
+     off the user's reference ("add this yellow color as hovers on buttons",
+     "everywhere in the app"), in both themes, black words 19.1:1. */
+  --hover: #fff5c2; --hover-ink: #000;
   /* What is drawn solid in ink (the primary action, a chosen option, a
      switch that is on, numbered rounds, the dark slabs): black in light; in
      dark the #636366 grey, so nothing solid turns white. */
@@ -92,9 +95,9 @@
    widget on a black page. index.tsx stamps data-theme on this element when
    the embedder pins one; otherwise the visitor's system setting decides. */
 @media (prefers-color-scheme: dark) {
-  .a11y-widget-biz:not([data-theme="light"]) { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #ffa0ff; --urgent: #ffa0ff; --hl-blue: #48a0da; --hl-green: #beffbd; --hl-cap-a: #f8ff58; --hl-cap-b: #e4f5a4; --focus: #6fdc8c; --chats-current: #beffbd; --barrier: #beffbd; }
+  .a11y-widget-biz:not([data-theme="light"]) { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #fff5c2; --hover-ink: #000; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #ffa0ff; --urgent: #ffa0ff; --hl-blue: #48a0da; --hl-green: #beffbd; --hl-cap-a: #f8ff58; --hl-cap-b: #e4f5a4; --focus: #6fdc8c; --chats-current: #beffbd; --barrier: #beffbd; }
 }
-.a11y-widget-biz[data-theme="dark"] { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #3a3a3c; --hover-ink: #fff; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #ffa0ff; --urgent: #ffa0ff; --hl-blue: #48a0da; --hl-green: #beffbd; --hl-cap-a: #f8ff58; --hl-cap-b: #e4f5a4; --focus: #6fdc8c; --chats-current: #beffbd; --barrier: #beffbd; }
+.a11y-widget-biz[data-theme="dark"] { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #fff5c2; --hover-ink: #000; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #ffa0ff; --urgent: #ffa0ff; --hl-blue: #48a0da; --hl-green: #beffbd; --hl-cap-a: #f8ff58; --hl-cap-b: #e4f5a4; --focus: #6fdc8c; --chats-current: #beffbd; --barrier: #beffbd; }
 
 .a11y-widget-biz {
   font-family: "PP Telegraf", "DejaVu Sans", sans-serif;
@@ -6111,7 +6114,7 @@
    the bar, 12:1 on white); on the black line being read, and on the dark
    pills in dark, the light focus green, #6fdc8c. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] {
-  --sr-brand: #a2e3ff; --sr-bar: #48a0da; --sr-pill: #e6e6e6; --sr-pill-hover: #beffbd;
+  --sr-brand: #a2e3ff; --sr-bar: #48a0da; --sr-pill: #e6e6e6; --sr-pill-hover: #fff5c2;
   --ink: #000; --paper: var(--sr-brand); --tile: var(--tile-fill); --focus: #0a3d1a;
   box-sizing: border-box; padding: var(--cds-spacing-08) var(--cds-spacing-10) var(--cds-spacing-09); border: 0; border-radius: var(--r-panel);
   background: var(--sr-brand); color: #000; text-align: start;
@@ -6950,3 +6953,84 @@
    b902260. The track now gives up its width to the column. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings-row > .a11y-input { grid-template-columns: minmax(0, 1fr); min-width: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings-row > .a11y-input > .a11y-input-shell { min-width: 0; }
+
+
+/* ═══ BUTTON HOVER IN THE PALE YELLOW (user's instruction, 25 Nov 2026,
+   "add this yellow color as hovers on buttons", "everywhere in the app") ═══
+   --hover is #fff5c2 in both themes (the root rules); these are the
+   buttons whose hover was its own colour: New chat and Report a barrier
+   (solid ink), Send this report (ink with forest words), the language
+   menu (the tile). Black words, 19.1:1. Keyboard focus keeps each one's
+   own look; only the pointer's hover changes. Cards, rows and accordion
+   heads are not buttons in this sense and keep theirs. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-new[type="button"][class][class]:enabled:hover,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-send[class]:enabled:hover,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-lang-menu .a11y-lang-toggle[class]:enabled:hover,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-lang-menu .a11y-lang-option[class]:enabled:hover {
+  --ink: #000; border-color: var(--hover); background: var(--hover); color: var(--hover-ink);
+}
+
+/* ═══ THE AI FIX AS A SHOP'S LIST (user's reference, 25 Nov 2026, "design
+   this like this", a shop page on pale yellow: titles over a red "Sold
+   Out", a black pill with the address) ═══
+   One panel on #fff5c2, black words in both themes (19.1:1), 28px corners
+   (24px under 640px of block). "AI fix" at 24px with the warning under it
+   as the red word, #c8102e (5.35:1 on the yellow); the AI's note at 24px;
+   then the two markups side by side, each a white card (20px corners, the
+   code at 18px) over its name at 24px, one column under 640px of block
+   (CSS order: the name stays first for screen readers). Copy is one black
+   pill, centred, 48px tall, the icon set's copy mark and 24px white words;
+   hover is the panel's own yellow with a 1px black edge inside, so the
+   pill does not vanish into the ground. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] {
+  --ink: #000; --paper: #fff5c2;
+  container-type: inline-size;
+  box-sizing: border-box; margin: var(--cds-spacing-07) 0 0; padding: 28px;
+  border-radius: 28px; background: #fff5c2; color: #000;
+  font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] > .a11y-code-fix-label {
+  margin: 0; padding: 0; border: 0; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] > .a11y-code-fix-label > strong {
+  display: block; margin: 0; text-transform: none; letter-spacing: 0.015em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] .a11y-code-fix-warn { display: block; color: #c8102e; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] > .a11y-code-fix-note { margin: 1lh 0 0; overflow-wrap: break-word; hyphens: manual; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] > .a11y-code-fix-cols {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 40px;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] .a11y-code-fix-col { display: flex; flex-direction: column; min-width: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] .a11y-code-fix-col > .a11y-code-fix-key {
+  order: 2; margin: 12px 0 0; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] .a11y-code-fix-col > .a11y-code-fix-pre {
+  order: 1; flex: 1 1 auto; box-sizing: border-box; margin: 0; padding: 16px 20px;
+  border: 0; border-radius: 20px; background: #fff; color: #000;
+  font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] .a11y-code-fix-col > .a11y-code-fix-pre:focus-visible { outline: 2px solid #198038; outline-offset: -2px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] > .a11y-copy-btn[class] {
+  box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 12px;
+  width: max-content; max-width: 100%; min-height: 48px; margin: 40px auto 0; padding: 0 24px;
+  border: 0; border-radius: 999px; background: #000; color: #fff;
+  font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] > .a11y-copy-btn[class] > svg { flex: none; font-size: 24px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] > .a11y-copy-btn[class]:hover {
+  background: #fff5c2; color: #000; box-shadow: inset 0 0 0 1px #000;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] > .a11y-copy-btn[class]:focus-visible { outline: 2px solid #6fdc8c; outline-offset: -4px; }
+@container (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] > .a11y-code-fix-cols { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] { padding: 20px; border-radius: 24px; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] { border: 1px solid CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] > .a11y-copy-btn[class] { border: 1px solid ButtonText; }
+}
+@media print {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] > .a11y-copy-btn[class] { display: none; }
+}
