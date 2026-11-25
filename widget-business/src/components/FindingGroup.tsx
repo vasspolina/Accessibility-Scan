@@ -798,17 +798,6 @@ export function FindingDetails({
           {rep.wcagLevel && levelFraming(rep.wcagLevel)}
         </p>
       )}
-      {rep.helpUrl && (
-        <p className="a11y-fd-learn">
-          <a
-            className="a11y-learn-more"
-            href={rep.helpUrl}
-            onClick={learnMoreClick(ask, tf("Tell me more about this: {issue}", { issue: title }), rep.helpUrl)}
-          >
-            {t("Learn more about this issue")} <Icon name="arrow--right" />
-          </a>
-        </p>
-      )}
 
       {locatesSomething && (
       <div className="a11y-affected" data-size={visibleEntries.length === 1 && !summarize ? tileSize(visibleEntries[0].label) : "l"}>
@@ -938,6 +927,23 @@ export function FindingDetails({
             ))}
           </ul>
         </details>
+      )}
+      {/* Learn more stands last, under the technical version (or the
+          professional block), as a prompt pill like the opening
+          questions' "Ask this" (user's word, 25 Nov 2026, "put links about
+          learn more under technical description also make it into prompt
+          button"). A press asks the chat about the issue with the help page
+          as its source; a modified click, or no chat, opens the page. */}
+      {rep.helpUrl && (
+        <p className="a11y-fd-learn">
+          <a
+            className="a11y-learn-more a11y-learn-prompt"
+            href={rep.helpUrl}
+            onClick={learnMoreClick(ask, tf("Tell me more about this: {issue}", { issue: title }), rep.helpUrl)}
+          >
+            {t("Learn more about this issue")} <Icon name="arrow--right" />
+          </a>
+        </p>
       )}
       {/* The owner's mark, on every path a group's details render —
           the card and the professional table's expand row alike. */}

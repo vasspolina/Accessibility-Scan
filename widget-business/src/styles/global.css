@@ -6001,7 +6001,7 @@
   --sr-brand: #a19cff; --sr-bar: #8f8af5;
   --ink: #000; --paper: var(--sr-brand); --tile: var(--tile-fill); --focus: #0a3d1a;
   box-sizing: border-box; padding: 40px 64px 48px; border: 0; border-radius: 64px;
-  background: var(--sr-brand); color: #000; text-align: center;
+  background: var(--sr-brand); color: #000; text-align: start;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] > :not(.a11y-section-head),
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] > .a11y-section-head > * { margin-inline-start: 0; }
@@ -6024,12 +6024,12 @@
 /* In the conversation: the title as the panel's capital line. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] h2.a11y-section-title:not(.a11y-accordion-title)[class] {
   margin: 8px 0 0; color: #000; font-size: 32px; font-weight: 200; line-height: 1.1; letter-spacing: 0.04em;
-  text-align: center; text-transform: uppercase; font-feature-settings: "case";
+  text-align: start; text-transform: uppercase; font-feature-settings: "case";
 }
 
-/* Play, the transport, the status, the keys: centred under the bar. */
+/* Play, the transport, the status, the keys: set left under the bar. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] {
-  justify-content: center; gap: 8px; margin: 32px 0 0; padding: 0; background: none; color: #000;
+  justify-content: flex-start; gap: 8px; margin: 32px 0 0; padding: 0; background: none; color: #000;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[data-active][class] {
   padding-block: 12px; background: var(--sr-brand);
@@ -6048,15 +6048,17 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] :is(.a11y-sr-ctl, .a11y-skip-link)[class]:enabled:hover,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-show-all[class]:enabled:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] :is(.a11y-sr-status, .a11y-sr-keys) { flex-basis: 100%; margin: 0; color: #000; text-align: center; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] :is(.a11y-sr-status, .a11y-sr-keys) {
+  flex-basis: 100%; margin: 0; color: #000; font-size: 18px; line-height: 1.4; letter-spacing: 0.025em; text-align: start;
+}
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] span.a11y-sr-status:empty { display: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report .a11y-sr[class] > p.a11y-sr-caveat[class],
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] > p.a11y-sr-caveat[class] {
-  margin: 16px 0 0; color: #000; font-size: 18px; line-height: 1.4; letter-spacing: 0.025em; text-align: center;
+  margin: 4px 0 0; color: #000; font-size: 18px; line-height: 1.4; letter-spacing: 0.025em; text-align: start;
 }
 
 /* The filter: a line with a ring for its box, the check in the ring when on. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar.a11y-sr-tools[class] { justify-content: center; gap: 16px 32px; margin: 32px 0 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar.a11y-sr-tools[class] { justify-content: flex-start; gap: 16px 32px; margin: 32px 0 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class] {
   position: relative; gap: 12px; min-height: 40px; padding: 0; border: 0; border-radius: 0; background: none; color: #000;
   font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
@@ -6074,8 +6076,8 @@
 /* "What you'd hear": the capital label over the lines. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-log { container: a11y-srlog / inline-size; margin: 40px 0 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-log > .a11y-sr-log-heads {
-  display: block; margin: 0 0 20px; color: #000; font-size: 18px; line-height: 1.4; letter-spacing: 0.04em;
-  text-align: center; text-transform: uppercase; font-feature-settings: "case";
+  display: block; margin: 0 0 20px; padding-inline-start: 36px; color: #000; font-size: 18px; line-height: 1.4; letter-spacing: 0.04em;
+  text-align: start; text-transform: uppercase; font-feature-settings: "case";
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-log > .a11y-sr-log-heads > :not(:nth-child(2)) { display: none; }
 
@@ -6088,15 +6090,21 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-list > li { display: flex; min-width: 0; margin: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-row[class][class] {
-  display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; align-items: center; gap: 4px 16px;
+  display: grid; grid-template-columns: minmax(44px, max-content) minmax(0, 1fr) auto; align-items: center; gap: 4px 16px;
   box-sizing: border-box; width: 100%; min-height: 80px; margin: 0; padding: 12px 32px 12px 20px;
   border: 0; border-radius: 40px; background: var(--tile-fill); color: var(--tile-ink); text-align: start; text-decoration: none;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-row[class][class] > .a11y-sr-num[class] {
-  grid-column: 1; grid-row: 1; align-self: center; box-sizing: border-box; width: 32px; height: 32px; margin: 0; padding: 0;
-  border: 1px solid currentColor; border-radius: 50%; background: none; color: inherit;
+  grid-column: 1; grid-row: 1; align-self: center; box-sizing: border-box; min-width: 44px; width: auto; height: 44px; margin: 0; padding: 0 6px;
+  border: 1px solid currentColor; border-radius: 22px; background: none; color: inherit;
   font-size: 18px; line-height: 1; letter-spacing: 0;
 }
+/* The ring holds its figures with air round them (user's word, 25 Nov
+   2026, "numbers here need margin"): at 32px a three-figure line number
+   (108 is about 32px wide in Telegraf, which has no tabular figures)
+   touched the ring on both sides. 44px keeps it a circle up to three
+   figures (108 measured 29px, so 7px of air each side); past that the
+   ring stretches into a pill, 6px inside. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-row[class][class] > .a11y-sr-line-text { grid-column: 2; grid-row: 1; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-row[class][class] > .a11y-sr-issue[class] {
   grid-column: 2; grid-row: 2; margin: 0; padding: 0; background: none; color: var(--word-red, #b42800);
@@ -6382,4 +6390,58 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-head { margin-bottom: 8px; }
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-open { border: 1px solid CanvasText; }
+}
+
+/* ═══ THE SCREEN READER SIMULATION SET LEFT (user's word, 25 Nov 2026,
+   "organise, left allign", on the centred controls under the bar) ═══════
+   The rules above now set everything left (they were centred): the
+   conversation's capital title, the transport row (Play first), the
+   status, the keys and the method line, the filter and Skip the
+   transcript, and "What you'd hear". The three notes are one group at
+   18px, 4px apart, 8px under the transport; the filter row stands 32px
+   under them. The bar's own 36px inset is the edge for words and
+   controls; the line pills stay full width, like the bar. On a phone the
+   panel's padding is the edge. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-status:not(:empty) { margin-top: 8px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-keys { margin-top: -4px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] > :is(.a11y-sr-bar, .a11y-sr-caveat, h2.a11y-section-title),
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] .a11y-accordion-panel > :is(.a11y-sr-bar, .a11y-sr-caveat) { padding-inline: 36px; }
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] > :is(.a11y-sr-bar, .a11y-sr-caveat, h2.a11y-section-title),
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section.a11y-sr[class][class][class] .a11y-accordion-panel > :is(.a11y-sr-bar, .a11y-sr-caveat) { padding-inline: 0; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-log > .a11y-sr-log-heads[class] { padding-inline-start: 0; }
+}
+
+/* ═══ LEARN MORE AS A PROMPT PILL UNDER THE TECHNICAL VERSION (user's word,
+   25 Nov 2026, "put links about learn more under techincal description
+   also make it into promt button") ══════════════════════════════════════
+   The opened finding's Learn more is the last thing in it, under the
+   technical version's yellow pill (or the professional block), set as the
+   opening questions' "Ask this": a black pill, white words at 18px, 34px
+   tall, 0 14px inside, the arrow after the words. Hover is the mint every
+   button takes; focus the light green, since the dark one is 1.6:1 on
+   black. Dark mode's solid is #636366 with white words (6.1:1). The
+   painted underline and the link blue of the plain Learn more do not
+   apply here. In print it is the plain link again. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-fd-learn:has(> .a11y-learn-prompt) {
+  margin: 16px 0 0; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; text-align: start;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz a.a11y-learn-more.a11y-learn-prompt[class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz a.a11y-learn-more.a11y-learn-prompt[class]:visited {
+  display: inline-flex; align-items: center; gap: 8px; box-sizing: border-box; min-height: 34px; padding: 0 14px;
+  border: 1px solid var(--solid); border-radius: 999px; background: var(--solid); color: var(--solid-ink);
+  font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; text-decoration: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz a.a11y-learn-more.a11y-learn-prompt[class]:hover {
+  border-color: var(--hover); background: var(--hover); color: var(--hover-ink); text-decoration: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz a.a11y-learn-more.a11y-learn-prompt[class]:focus-visible {
+  outline: 2px solid #6fdc8c; outline-offset: -4px; background: var(--solid); color: var(--solid-ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz a.a11y-learn-more.a11y-learn-prompt[class] > svg { flex: none; font-size: 18px; }
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz a.a11y-learn-more.a11y-learn-prompt[class] { border: 1px solid LinkText; background: Canvas; color: LinkText; }
+}
+@media print {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz a.a11y-learn-more.a11y-learn-prompt[class] { min-height: 0; padding: 0; border: 0; background: none; color: #000; text-decoration: underline; }
 }
