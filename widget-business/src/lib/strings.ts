@@ -310,6 +310,7 @@ export const CHROME_KEYS: string[] = [
   "The standard a buyer will ask you about",
   "Rows the scan can evidence",
   "{failed} of {total}; the rest need a person",
+  "Tell us about the product",
   "Product name",
   "Contact for accessibility questions",
   "Copy the draft",

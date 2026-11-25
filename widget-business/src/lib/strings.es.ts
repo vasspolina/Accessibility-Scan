@@ -337,6 +337,7 @@ export const STRINGS_ES: Record<string, string> = {
   "The standard a buyer will ask you about": "La norma por la que le preguntará el departamento de compras",
   "Rows the scan can evidence": "Filas que el análisis puede respaldar con pruebas",
   "{failed} of {total}; the rest need a person": "{failed} de {total}; el resto debe comprobarlo una persona",
+  "Tell us about the product": "Háblenos del producto",
   "Product name": "Nombre del producto",
   "Contact for accessibility questions": "Contacto para preguntas sobre accesibilidad",
   "Copy the draft": "Copiar el borrador",

@@ -766,13 +766,13 @@
   font-size: 16px; letter-spacing: 0.025em; font-weight: 200; line-height: 1.2;
 }
 .a11y-widget-biz .a11y-stmt-field:focus-within { outline: 2px solid var(--focus); outline-offset: -2px; }
-.a11y-widget-biz .a11y-stmt .a11y-stmt-fields > .a11y-stmt-field > input {
+.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-fields > .a11y-stmt-field > input {
   box-sizing: border-box; width: 100%; min-height: 32px; margin: 0; padding: var(--cds-spacing-02) 0;
   border: 0; border-radius: 0; background: transparent; color: var(--tile-ink);
   font: inherit; font-size: 16px; font-weight: 200; letter-spacing: 0.025em; line-height: 1.2;
 }
-.a11y-widget-biz .a11y-stmt .a11y-stmt-fields > .a11y-stmt-field > input::placeholder { color: var(--tile-ink); opacity: 1; font-weight: 200; }
-.a11y-widget-biz .a11y-stmt .a11y-stmt-fields > .a11y-stmt-field > input:focus-visible { outline: none; }
+.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-fields > .a11y-stmt-field > input::placeholder { color: var(--tile-ink); opacity: 1; font-weight: 200; }
+.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-fields > .a11y-stmt-field > input:focus-visible { outline: none; }
 /* The section's title shows in the conversation too (user's word, 25 Nov
    2026, "lost its title"): it was clipped there while a block carried its own
    summary line, and that line went on 22 Nov 2026, which left the statement
@@ -5155,7 +5155,7 @@
   /* A statement field's label is a label: 18px, so "Kontakt-E-Mail für
      Barrierefreiheitsprobleme" breaks at its spaces, not inside the word.
      The address typed under it keeps 24px. */
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-fields > .a11y-stmt-field {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-fields > .a11y-stmt-field {
     padding: var(--cds-spacing-05) var(--cds-spacing-05) var(--cds-spacing-04); font-size: 16px; letter-spacing: 0.025em; line-height: 1.4;
   }
   /* The card title keeps room for Copy (about 90px at 12px from the edge),
@@ -5856,7 +5856,7 @@
     grid-template-columns: calc((100% - 8 * var(--grid-gap)) / 9) minmax(0, 1fr); column-gap: var(--grid-gap);
   }
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-spec-grid { column-gap: var(--grid-gap); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-spec-grid { column-gap: var(--grid-gap); }
 
 /* ═══ THE WCAG 2.2 ITEMS AS CARET ROWS (user's instruction, 24 Nov 2026,
    "align properly and make a carret") ═════════════════════════════════════
@@ -5965,37 +5965,37 @@
 @media (prefers-color-scheme: dark) {
   .a11y-widget-biz:not([data-theme="light"]) { --form-stmt: #dcdbd5; }
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form {
   --ink: #000; --paper: var(--form-stmt);
   box-sizing: border-box; display: flex; flex-direction: column; align-items: flex-start; gap: var(--cds-spacing-07);
   width: 100%; margin: var(--cds-spacing-10) 0 0; padding: var(--cds-spacing-09) var(--cds-spacing-10) var(--cds-spacing-09); border-radius: var(--r-panel);
   background: var(--form-stmt); color: #000; text-align: left;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form > * { box-sizing: border-box; max-width: 100%; margin: 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form > .a11y-stmt-step { margin: 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form .a11y-stmt-step-head {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form > * { box-sizing: border-box; max-width: 100%; margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form > .a11y-stmt-step { margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form .a11y-stmt-step-head {
   justify-content: flex-start; color: #000; text-transform: uppercase; font-feature-settings: "case";
   font-size: inherit; line-height: 1.1; letter-spacing: 0.04em;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form > .a11y-stmt-fields {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form > .a11y-stmt-fields {
   display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--cds-spacing-05); width: 100%;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form .a11y-stmt-fields > .a11y-stmt-field {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form .a11y-stmt-fields > .a11y-stmt-field {
   display: flex; flex-direction: column; align-items: stretch; gap: var(--cds-spacing-03); margin: 0; padding: var(--cds-spacing-05) var(--cds-spacing-06) var(--cds-spacing-05);
   border: 0; border-radius: var(--r-card); background: var(--form-field); color: var(--form-field-ink); text-align: start;
   font-size: 16px; line-height: 1.4; letter-spacing: 0.025em;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form .a11y-stmt-fields > .a11y-stmt-field > input {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form .a11y-stmt-fields > .a11y-stmt-field > input {
   color: var(--form-field-ink); font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
 }
 @media (max-width: 671px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form { gap: var(--cds-spacing-06); padding: var(--cds-spacing-07) var(--cds-spacing-05) var(--cds-spacing-06); border-radius: var(--r-panel); }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form .a11y-stmt-step-head { font-size: inherit; letter-spacing: 0.04em; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form .a11y-stmt-fields > .a11y-stmt-field { padding: var(--cds-spacing-05) var(--cds-spacing-05) var(--cds-spacing-04); border-radius: var(--r-card); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form { gap: var(--cds-spacing-06); padding: var(--cds-spacing-07) var(--cds-spacing-05) var(--cds-spacing-06); border-radius: var(--r-panel); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form .a11y-stmt-step-head { font-size: inherit; letter-spacing: 0.04em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form .a11y-stmt-fields > .a11y-stmt-field { padding: var(--cds-spacing-05) var(--cds-spacing-05) var(--cds-spacing-04); border-radius: var(--r-card); }
 }
 @media (forced-colors: active) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form { border: 1px solid CanvasText; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form .a11y-stmt-fields > .a11y-stmt-field { border: 1px solid CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form { border: 1px solid CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form .a11y-stmt-fields > .a11y-stmt-field { border: 1px solid CanvasText; }
 }
 
 /* ═══ HOW THE SCORE WORKS AS ROWS (user's instruction, 24 Nov 2026, "design
@@ -6362,24 +6362,24 @@
    colour pairs, #48a0da in both themes, black words on it (7.3:1): ends
    rounded as far as the text allows, generous inside, no rules under the
    labels. Two to a row as before, one under 640px. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-spec-grid[class] {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-spec-grid[class] {
   --ink: #fff; --paper: #2848c8;
   box-sizing: border-box; gap: var(--cds-spacing-06) var(--grid-gap); padding: var(--cds-spacing-09) var(--cds-spacing-11); border-radius: var(--r-panel);
   background: #2848c8; color: #fff;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-spec-grid > .a11y-spec-card[class] { color: #fff; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-spec-card > .a11y-spec-label[class] {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-spec-grid > .a11y-spec-card[class] { color: #fff; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-spec-card > .a11y-spec-label[class] {
   margin: 0 0 var(--cds-spacing-02); padding: 0; border: 0; color: #000;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-spec-card > .a11y-spec-value > .a11y-spec-gloss { margin-top: var(--cds-spacing-02); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-spec-card > .a11y-spec-value > .a11y-spec-gloss { margin-top: var(--cds-spacing-02); }
 @media (max-width: 671px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-spec-grid[class] { gap: var(--cds-spacing-05); padding: var(--cds-spacing-07) var(--cds-spacing-07); border-radius: var(--r-panel); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-spec-grid[class] { gap: var(--cds-spacing-05); padding: var(--cds-spacing-07) var(--cds-spacing-07); border-radius: var(--r-panel); }
 }
 @media (forced-colors: active) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-spec-grid[class] { border: 1px solid CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-spec-grid[class] { border: 1px solid CanvasText; }
 }
 @media (min-width: 672px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-spec-grid[class] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-spec-grid[class] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 /* ═══ THE OPENING QUESTIONS AS PALE LABEL CARDS (user's reference, 25 Nov
@@ -7189,7 +7189,7 @@
    their own; these turn every word in them white, the status words with
    them (red on blue is 1.9:1). */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > :is(.a11y-legal-caret-clean, .a11y-legal-caret-not-measured)[class][class][class][class][class] * { color: var(--row-ink); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-spec-grid[class][class][class][class][class] * { color: #fff; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-spec-grid[class][class][class][class][class] * { color: #fff; }
 
 /* ═══ CENTRED CALLOUTS SET AS THE POSTER'S PROGRAMME (user's reference,
    25 Nov 2026, "also this typesetting for centered call outs", a cream
@@ -7406,7 +7406,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(
   :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] :is(.a11y-input, .a11y-select2, .a11y-textarea),
   .a11y-url-form[class] .a11y-login .a11y-stmt-field,
-  .a11y-stmt .a11y-stmt-form .a11y-stmt-fields > .a11y-stmt-field
+  :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form .a11y-stmt-fields > .a11y-stmt-field
 )[class][class] { --focus: #198038; }
 /* ═══ THE SCAN'S SETTINGS AS A FORM PANEL OF PILLS (user's reference,
    25 Nov 2026, "design this like this", a type foundry's trial-font
@@ -7697,7 +7697,7 @@
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
   letter-spacing: 0;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-step-head[class][class][class] {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-step-head[class][class][class] {
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
   letter-spacing: 0;
 }
@@ -7795,25 +7795,25 @@
    over Prepared for), still the grey fill with black words (#e6e6e6,
    18.4:1), then a 1px white rule and the facts under it, no ground of
    their own. One column of each under 672px. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form[class] {
   --ink: #fff; --paper: #2848c8;
   background: #2848c8; color: #fff;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] .a11y-stmt-step-head[class] { color: #fff; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] > .a11y-spec-grid[class][class] {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form[class] .a11y-stmt-step-head[class] { color: #fff; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form[class] > .a11y-spec-grid[class][class] {
   width: 100%; margin: 0; padding: var(--cds-spacing-07) 0 0; border: 0; border-top: 1px solid #fff; border-radius: 0; background: none;
 }
 @media (min-width: 672px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] > .a11y-stmt-fields[class] { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--grid-gap); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form[class] > .a11y-stmt-fields[class] { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--grid-gap); }
 }
 @media (forced-colors: active) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] > .a11y-spec-grid[class][class] { border: 0; border-top: 1px solid CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form[class] > .a11y-spec-grid[class][class] { border: 0; border-top: 1px solid CanvasText; }
 }
 /* The facts' labels (Prepared for, Website, Checked against, Position,
    Problems disclosed) in PP Lettra Mono Ultralight, as the panel's title
    above them (user's instruction, 25 Nov 2026, "use letra for bottom part
    titles"), no tracking, white on the blue (7.4:1). */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] .a11y-spec-card > .a11y-spec-label[class][class] {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form[class] .a11y-spec-card > .a11y-spec-label[class][class] {
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
   letter-spacing: 0; color: #fff;
 }
@@ -7916,3 +7916,18 @@
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-attached-remove[type="button"] { border-color: ButtonText; background: ButtonFace; color: ButtonText; }
 }
+
+/* ═══ THE CONFORMANCE REPORT'S FORM AS THE STATEMENT'S PANEL (user's
+   instruction, 25 Nov 2026, "design this like the other forms", on the
+   dotted Product name, Version and Contact fields under the ruled facts)
+   ═══ The statement's panel rules above read :is(.a11y-stmt, .a11y-acr),
+   so the draft's form is the same blue panel: the title in Lettra
+   capitals, the fields filled grey with black words, a 1px white rule and
+   the four facts under it in white (7.4:1). Its three fields stand three
+   to a row above 672px, where the statement's two stand two (two over one
+   was tried the same day and reverted, "make this back to old"); one
+   column under. The actions under it keep the 70px every group has. */
+@media (min-width: 672px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-acr .a11y-stmt-form[class] > .a11y-stmt-fields[class][class] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-acr .a11y-stmt-form + * { margin-top: var(--cds-spacing-10); }

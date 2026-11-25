@@ -337,6 +337,7 @@ export const STRINGS_FR: Record<string, string> = {
   "The standard a buyer will ask you about": "La norme sur laquelle le service achats vous interrogera",
   "Rows the scan can evidence": "Lignes que l’analyse peut étayer",
   "{failed} of {total}; the rest need a person": "{failed} sur {total} ; le reste doit être vérifié par une personne",
+  "Tell us about the product": "Parlez-nous du produit",
   "Product name": "Nom du produit",
   "Contact for accessibility questions": "Contact pour les questions d’accessibilité",
   "Copy the draft": "Copier le brouillon",
