@@ -7612,3 +7612,21 @@
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
   text-align: center; line-height: 1.15; letter-spacing: 0;
 }
+
+/* THE SECTION COUNT AND THE STATEMENT'S STEPS IN LETTRA (user's
+   instructions, 25 Nov 2026, "this needs to be in letra" on the count's
+   round after "What people can't use", and "this goes in letra" on the
+   statement form's "1 Tell us who this is for"): PP Lettra Mono
+   Ultralight. The count keeps its round, its 18px and its plate; the step
+   head keeps its capitals and its 32px (24px on a phone), and the ring's
+   figure follows it. No tracking, as every Lettra line: a monospace is
+   already spaced. The ring for the other numbered lists stays Telegraf. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section-title .a11y-section-count.a11y-count-dot[class][class] {
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
+  letter-spacing: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-step-head[class][class][class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-step-head > .a11y-stmt-step-num[class][class][class] {
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
+  letter-spacing: 0;
+}
