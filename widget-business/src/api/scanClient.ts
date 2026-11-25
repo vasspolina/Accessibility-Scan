@@ -58,6 +58,10 @@ export interface AccessibilityFinding {
   // Absent on reports saved before it was sent.
   pictureReason?: "hidden" | "offscreen" | "missing" | "too-large" | "no-usable-image" | "not-attempted" | "unreachable";
   pictureFrame?: string;
+  // What the picture shows when it is not simply the element: the part of
+  // the page a hidden one is folded into, a skip link with the keyboard on
+  // it, the top of a region, or the screen with something lying over it.
+  pictureShows?: "container" | "focused" | "top" | "covered";
   // One sentence from the age-inclusive review, shown as its own line.
   ageNote?: string;
   // The AI review's words on this same fault, folded in on the server.

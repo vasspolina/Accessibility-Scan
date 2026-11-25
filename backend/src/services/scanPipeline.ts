@@ -162,6 +162,10 @@ async function attachEvidence(
       const shot = shots.shots[finding.selector];
       if (shot) {
         finding.elementScreenshot = shot;
+        const box = shots.boxes?.[finding.selector];
+        if (box) finding.elementBox = box;
+        const shows = shots.shows?.[finding.selector];
+        if (shows) finding.pictureShows = shows;
         continue;
       }
       // No picture, and the page told us why. Nearly always this is correct

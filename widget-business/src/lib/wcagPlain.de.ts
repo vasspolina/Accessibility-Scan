@@ -113,17 +113,17 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     impact: "Wer einen Screenreader nutzt, hört dasselbe zweimal und verliert Zeit ohne Gewinn.",
   },
   "color-contrast": {
-    research: "WebAIM prüft jedes Jahr eine Million Startseiten. Zu blasser Text ist Jahr für Jahr der häufigste Fehler, den WebAIM dabei findet. Weit mehr Menschen sehen schlechter, als die Monitore eines Design-Teams vermuten lassen.",
+    research: "Zu blasser Text ist der häufigste Fehler in der jährlichen WebAIM-Untersuchung von einer Million Startseiten. Weit mehr Menschen sehen schlechter, als die Monitore eines Design-Teams vermuten lassen.",
     plain: "Text zu blass zum Lesen",
     found: (n) =>
-      `${n} ${n === 1 ? "Textstelle auf dieser Seite liegt" : "Textstellen auf dieser Seite liegen"} farblich zu nah am Hintergrund dahinter. Die technische Fassung nennt das gemessene Verhältnis.`,
+      `${n} ${n === 1 ? "Textstelle auf dieser Seite liegt" : "Textstellen auf dieser Seite liegen"} farblich zu nah am Hintergrund dahinter.`,
     impact: "Schwer zu lesen bei hellem Licht, auf einem billigen Bildschirm oder mit nicht perfekten Augen. Ihre Botschaft kommt nicht an.",
   },
   "image-alt": {
-    research: "WebAIM prüft jedes Jahr eine Million Startseiten. Bilder ohne Beschreibung gehören Jahr für Jahr zu den häufigsten Fehlern. Und es ist einer der einfachsten, die sich beheben lassen.",
+    research: "Bilder ohne Beschreibung gehören zu den häufigsten Fehlern in der jährlichen WebAIM-Untersuchung von einer Million Startseiten. Sie sind auch am leichtesten zu beheben.",
     plain: "Bilder ohne Beschreibung",
     found: (n) =>
-      `${n} ${n === 1 ? "Bild hat" : "Bilder haben"} gar keinen Alt-Text. Nicht einmal einen leeren, der ${n === 1 ? "es" : "sie"} als Schmuck kennzeichnet. Ein Screenreader liest dann den Dateinamen vor oder übergeht ${n === 1 ? "es" : "sie"} stumm.`,
+      `${n} ${n === 1 ? "Bild hat" : "Bilder haben"} gar keinen Alt-Text. Nicht einmal einen leeren, der ${n === 1 ? "es" : "sie"} als Schmuck kennzeichnet.`,
     impact: "Wer einen Screenreader nutzt, hört zu diesen Bildern nichts, und Suchmaschinen wissen nicht, was darauf zu sehen ist. Das kostet Sie beides: Zugänglichkeit und Auffindbarkeit.",
   },
   "svg-img-alt": {
@@ -358,7 +358,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   // Die Namensprüfungen für Screenreader. Jede ist eine gebündelte Karte,
   // deren Anzahl in der Beschreibung des Backends steht, daher kein found().
   "sr-filename-alt": {
-    found: (n) => (n === 1 ? "Mindestens ein Bild trägt seinen Dateinamen als Beschreibung. Ein Screenreader liest Ziffern und Satzzeichen vor, nicht, was das Bild zeigt." : "{n} Bilder tragen ihren Dateinamen als Beschreibung. Ein Screenreader liest Ziffern und Satzzeichen vor, nicht, was die Bilder zeigen.".replace("{n}", String(n))),
+    found: (n) => (n === 1 ? "Mindestens ein Bild trägt seinen Dateinamen als Beschreibung." : "{n} Bilder tragen ihren Dateinamen als Beschreibung.".replace("{n}", String(n))),
     plain: "Bildbeschreibungen sind Dateinamen",
     impact: "Ein Screenreader liest den Dateinamen vor, samt Ziffern und Satzzeichen. Wo die Bedeutung des Bildes sein sollte, hört man nur Rauschen.",
   },

@@ -117,9 +117,10 @@ export function SideNav({
       <ul id={listId} data-open={open}>
         {groupSections(sections).map((g) => (
           <li key={g.label} className="a11y-shell-nav-group">
-            {/* No label over a group that is one link of the same name —
-                "Score" above "Score" said it twice. */}
-            {!(g.items.length === 1 && g.items[0].label === t(g.label)) && (
+            {/* No label over a group whose first link has the same name:
+                "Score" above "Score" said it twice, with or without "Since
+                last time" under it. */}
+            {g.items[0].label !== t(g.label) && (
               <span className="a11y-shell-nav-group-label" aria-hidden="true">{t(g.label)}</span>
             )}
             <ul aria-label={t(g.label)}>
