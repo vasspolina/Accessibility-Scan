@@ -5720,7 +5720,7 @@
    report's 1408px. The score block, the report actions and the statement's
    two fields were already on it: four tracks 16px apart are three columns
    each, and two halves are six. The rest snap to it:
-   - the WCAG 2.2 items and the checklist rows: the criterion two columns,
+   - the checklist rows: the criterion two columns,
      the question eight, the status two (they were 190px and 220px with
      24px gutters), above 640px of list;
    - the score's issues: the criterion one column of the nine the table
@@ -5728,7 +5728,7 @@
    - the statement's facts: four columns of three, a 16px gutter (15px). */
 .a11y-widget-biz { --grid-gap: 16px; }
 @container a11y-qlist (min-width: 641px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list > .a11y-conf-row, .a11y-w22-list > .a11y-w22-row)[class] {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-list > .a11y-conf-row[class] {
     grid-template-columns: calc((100% - 11 * var(--grid-gap)) / 12 * 2 + var(--grid-gap)) minmax(0, 1fr) calc((100% - 11 * var(--grid-gap)) / 12 * 2 + var(--grid-gap));
     column-gap: var(--grid-gap);
   }
@@ -5739,3 +5739,64 @@
   }
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-spec-grid { column-gap: var(--grid-gap); }
+
+/* ═══ THE WCAG 2.2 ITEMS AS CARET ROWS (user's instruction, 24 Nov 2026,
+   "align properly and make a carret") ═════════════════════════════════════
+   Each item is a caret row, as a finding: the solid triangle in the 35px
+   column, the plain question at 32px, the call at the far end as its
+   coloured word; a count of findings, where there is one, under the
+   question at 18px. Opened, the criterion (number, level and official
+   name on one line, parted by spaced em dashes) and why a person is
+   needed sit in the findings' round panel under the question. The three
+   columns, whose number and level never shared a baseline, are gone. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-list > .a11y-w22-row[class][class] {
+  display: block; margin: 0 0 14px; padding: 0; border: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-toggle {
+  display: flex; align-items: baseline; gap: 0; width: 100%; min-height: 0; margin: 0; padding: 0; border: 0; border-radius: 0;
+  background: none; color: var(--ink); text-align: start; cursor: pointer;
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 32px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-toggle:enabled:hover { background: none; color: var(--ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-toggle::before {
+  content: ""; flex: none; align-self: flex-start; width: 0.42em; height: 0.68em; background: currentColor;
+  margin: calc((1lh - 0.68em) / 2) calc(var(--caret-col) - 0.42em) 0 0; transition: transform 120ms ease;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='12 8 10 16'%3E%3Cpath d='M12 8 22 16 12 24z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='12 8 10 16'%3E%3Cpath d='M12 8 22 16 12 24z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-toggle[aria-expanded="true"]::before { transform: rotate(90deg); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-toggle > .a11y-w22-q[class] {
+  display: block; flex: 1 1 0; min-width: 0; margin: 0; font: inherit; letter-spacing: inherit; text-align: start;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-toggle > .a11y-w22-call[class] {
+  display: block; flex: none; margin: 0 0 0 24px; padding: 0; text-align: end;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-count[class] {
+  display: block; margin: 4px 0 0 var(--caret-col); font-size: 18px; line-height: 1.4; letter-spacing: 0.025em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-detail {
+  --paper: var(--bubble); margin: 16px 0 0 var(--caret-col); padding: 32px; border-radius: 40px; background: var(--bubble);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-detail[hidden] { display: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-detail > p { margin: 0; font-size: 24px; line-height: 1.35; letter-spacing: 0.015em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-detail > p + p { margin-top: 12px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-detail :is(.a11y-w22-id, .a11y-w22-level, .a11y-w22-name)[class] {
+  display: inline; margin: 0; padding: 0; font: inherit; letter-spacing: inherit; white-space: normal;
+}
+@media (hover: hover) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-toggle:hover > .a11y-w22-q { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.14em; }
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-toggle { flex-wrap: wrap; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-toggle > .a11y-w22-call[class] { flex-basis: 100%; margin: 2px 0 0 var(--caret-col); text-align: start; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-detail { padding: 20px; border-radius: 28px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-detail > p { font-size: 18px; line-height: 1.4; letter-spacing: 0.025em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-toggle::before { transition: none; }
+}
+@media print {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-detail[hidden] { display: block; }
+}
+/* The note after the WCAG 2.2 items is its own group: 70px under the list. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-panel > .a11y-w22-list + * { margin-top: 70px; }
