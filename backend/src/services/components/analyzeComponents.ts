@@ -151,7 +151,7 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
       makeFinding(
         "component-table-no-headers",
         t.selector,
-        `A table of ${t.rows} rows and ${t.cols} columns has no header cells.`,
+        `A table of ${t.rows} rows and ${t.cols} columns has no header cells. A screen reader reads each cell as a bare value with no column or row name attached, so the numbers and words lose their meaning.`,
         `Mark the header row's cells as <th scope="col">, and the first column's cells as <th scope="row"> if the rows have names. If the table is only used for layout, give it role="presentation".`,
         "https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships.html",
         "accessibility",
@@ -189,7 +189,7 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
       makeFinding(
         "form-field-placeholder-label",
         worst.selector,
-        `${placeholderOnly.length === 1 ? "A form field has" : `${placeholderOnly.length} form fields have`} placeholder text as ${placeholderOnly.length === 1 ? "its" : "their"} only label, for example "${(worst.placeholder ?? "").trim().slice(0, 40)}".`,
+        `${placeholderOnly.length === 1 ? "A form field relies" : `${placeholderOnly.length} form fields rely`} on placeholder text as ${placeholderOnly.length === 1 ? "its" : "their"} only label. For example, "${(worst.placeholder ?? "").trim().slice(0, 40)}". The placeholder disappears the moment someone starts typing, which is exactly when they need to be reminded what the field asks for.`,
         `Give each field a visible <label> tied to it with for/id. Keep the placeholder for an example of the format if you like. As a hint it is fine, as the only label it is not.`,
         "https://www.w3.org/WAI/WCAG21/Understanding/labels-or-instructions.html",
         "accessibility",
@@ -208,7 +208,7 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
       makeFinding(
         "component-form-autocomplete",
         worst.selector,
-        `${missingAutocomplete.length} personal-detail field${missingAutocomplete.length === 1 ? "" : "s"} with no autocomplete token, for example the ${purpose.label} field.`,
+        `Form fields that collect personal details (${missingAutocomplete.length} field${missingAutocomplete.length === 1 ? "" : "s"}, e.g. the ${purpose.label} field) are not labelled with what they collect. Browsers and password managers then can't offer to fill them in.`,
         `Add the matching autocomplete token to each field. For example, autocomplete="${purpose.token}" on the ${purpose.label} field. This is a one-line change per field that makes forms far faster to complete.`,
         "https://www.w3.org/WAI/WCAG21/Understanding/identify-input-purpose.html",
         // The comment on makeFinding names this exact defect, and this call
@@ -236,7 +236,7 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
       makeFinding(
         "component-input-type",
         wrongInputType[0].selector,
-        `${wrongInputType.length} email or phone field${wrongInputType.length === 1 ? "" : "s"} set as plain text instead of the matching type.`,
+        `Email or phone fields are set as plain text boxes (${wrongInputType.length} field${wrongInputType.length === 1 ? "" : "s"}) instead of the matching type. On phones that means the generic keyboard, not one with "@" or a number pad.`,
         'Use type="email" for email fields and type="tel" for phone fields. Mobile devices then show the right keyboard, and the browser can validate the format.',
         "https://www.w3.org/WAI/tutorials/forms/"
       )
@@ -260,7 +260,7 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
         makeFinding(
           "component-required-cue",
           unmarkedRequired[0].selector,
-          `${unmarkedRequired.length} required field${unmarkedRequired.length === 1 ? " is" : "s are"} marked required only in code, not in the visible label.`,
+          `${unmarkedRequired.length} required field${unmarkedRequired.length === 1 ? " is" : "s are"} marked required only in code, with nothing in the visible label to say so. Visitors don't find out a field was mandatory until the form rejects them.`,
           'Add a visible cue to the label of each required field, in addition to the required attribute. "Email (required)" works, or an asterisk with a "* required" key. People then know before they submit.',
           "https://www.w3.org/WAI/tutorials/forms/validation/"
         )
@@ -283,7 +283,7 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
         makeFinding(
           "component-submit-clarity",
           firstForm.selector,
-          "No clearly labelled submit button in this form.",
+          "This form doesn't appear to have a clearly-labelled submit button. A button that just says \"Go\" or shows only an icon leaves people unsure how to complete the form. So does a form you can only submit by pressing Enter, with no visible button.",
           'Give the form a real <button type="submit"> with text that names the action: "Create account", "Send message". Avoid a generic "Submit" or an icon alone.',
           "https://www.w3.org/WAI/ARIA/apg/patterns/button/"
         )
@@ -301,7 +301,7 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
       makeFinding(
         "component-nav-labels",
         unlabelledNavs[0].selector,
-        `${unlabelledNavs.length} of ${navs.length} navigation menus ${unlabelledNavs.length === 1 ? "has" : "have"} no label.`,
+        `The page has ${navs.length} separate navigation menus, and ${unlabelledNavs.length} of them have no label. Someone using a screen reader hears each one announced only as "navigation". They can't tell the main menu from the footer links or breadcrumbs.`,
         'Give each navigation an aria-label describing its purpose: aria-label="Main menu", aria-label="Footer links". They\'re then distinguishable when listed.',
         "https://www.w3.org/WAI/ARIA/apg/patterns/landmarks/examples/navigation.html",
         "accessibility"
@@ -342,7 +342,7 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
       makeFinding(
         "component-skip-link-dead",
         l.selector,
-        `The skip link "${l.text}" points at "${l.href}", and nothing on the page has that id.`,
+        `The skip link "${l.text}" points at "${l.href}", and nothing on the page has that id. Activating it does nothing, so the one shortcut keyboard users are offered fails.`,
         `Give the main content an id and point the skip link at it, for example href="#main-content" on a link and id="main-content" on the main area. Make the target focusable if it is not a landmark.`,
         "https://www.w3.org/WAI/WCAG21/Understanding/bypass-blocks.html",
         "accessibility",
@@ -369,14 +369,14 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
         ? makeFinding(
             "component-skip-link",
             navs[0].selector,
-            "No \"skip to main content\" link, though a main landmark marks the content.",
+            "There's no \"skip to main content\" link. The page marks where its main content starts, and screen readers can jump there, so this meets the letter of the law. A sighted keyboard user has no shortcut, and still tabs through the menu on every page.",
             'Add a skip link as the very first thing the Tab key reaches. Point it at #main-content and keep it visually hidden until the Tab key lands on it. It\'s a small addition that saves keyboard users dozens of key presses per page.',
             "https://www.w3.org/WAI/WCAG21/Understanding/bypass-blocks.html"
           )
         : makeFinding(
             "component-skip-link",
             navs[0].selector,
-            "No \"skip to main content\" link and no main landmark.",
+            "There's no \"skip to main content\" link, and nothing in the code marks where the main content starts. Keyboard and screen-reader users have to tab through the entire navigation menu before they reach the content. That happens on every page.",
             'Add a skip link as the very first thing the Tab key reaches. Point it at #main-content and keep it visually hidden until the Tab key lands on it. It\'s a small addition that saves keyboard users dozens of key presses per page.',
             "https://www.w3.org/WAI/WCAG21/Understanding/bypass-blocks.html",
             "accessibility",
@@ -410,7 +410,7 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
       // The baseline audit found this level missing, which hid the finding
       // from the score's AAA filter. 2.4.4 Link Purpose (In Context) is A.
       wcagLevel: "A",
-      description: `This link reads only “${text}”.`,
+      description: `This link reads only “${text}”, so it gives no clue where it goes.`,
       suggestedFix:
         "Write link text that makes sense read on its own: “Read the 2026 fee changes” rather than “Read more”. Where the design needs the short version, keep the visible text and add the full wording with aria-label.",
       helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/link-purpose-in-context.html",

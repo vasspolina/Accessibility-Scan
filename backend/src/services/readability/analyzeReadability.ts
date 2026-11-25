@@ -135,7 +135,7 @@ export function evaluateReadability(signals: ReadabilitySignals): AccessibilityF
       // than required. Saying otherwise would invent a legal duty.
       wcagLevel: "AAA",
       selector: "main",
-      description: `The writing needs about ${years} years of schooling to read, measured over ${score.words} words at ${Math.round(score.words / score.sentences)} words a sentence.`,
+      description: `The writing on this page needs about ${years} years of schooling to read comfortably. Roughly first-year university. Measured over ${score.words} words, averaging ${Math.round(score.words / score.sentences)} words a sentence. Nobody reads a page like this closely: people scan it, miss things, and some give up. It is not a legal requirement, and it is the change with the widest reach of anything in this report.`,
       suggestedFix:
         "Shorten sentences first. One idea each, and around 15 to 20 words. Then swap the longest words for ordinary ones where an ordinary one exists. Put what the reader needs to do at the top rather than after the background. GOV.UK writes at about a nine-year-old's reading age on purpose. It is not a simple site; it is a well-written one.",
       ruleId: "readability-dense-prose",
@@ -167,7 +167,7 @@ function evaluateOtherLanguage(text: string, lang: string): AccessibilityFinding
       wcagCriterion: "3.1.5",
       wcagLevel: "AAA",
       selector: "main",
-      description: `The writing scores ${Math.round(score.ease)} on ${formula.name}, the ${formula.language} reading-ease scale, where under ${formula.hardBelow} is for specialist readers, measured over ${score.words} words at ${Math.round(score.words / score.sentences)} words a sentence.`,
+      description: `The writing on this page is very hard to read: ${Math.round(score.ease)} on ${formula.name}, the reading-ease scale made for ${formula.language}, where under ${formula.hardBelow} is written for academic or specialist readers. Measured over ${score.words} words, averaging ${Math.round(score.words / score.sentences)} words a sentence. Nobody reads a page like this closely: people scan it, miss things, and some give up. It is not a legal requirement, and it is the change with the widest reach of anything in this report.`,
       suggestedFix:
         "Shorten sentences first. One idea each, and around 15 to 20 words. Then swap the longest words for ordinary ones where an ordinary one exists, and split long compound words where the language allows. Put what the reader needs to do at the top rather than after the background.",
       ruleId: "readability-dense-prose",

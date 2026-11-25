@@ -291,8 +291,8 @@ describe("qa-layers.html: the layers written for this project", () => {
       .filter((f) => f.ruleId === "keyboard-mouse-only")
       .map((f) => f.description)
       .join(" ");
-    expect(texts).toContain("Enter and Space do nothing");
-    expect(texts).toContain("Tab never reaches it");
+    expect(texts).toContain("Enter or Space there does nothing");
+    expect(texts).toContain("pressing Tab never reaches it");
 
     // The inline-handler variant is correct and must not be among them —
     // the re-audit found the evidence check blind to on* bindings.

@@ -126,7 +126,7 @@ describe("evaluateDarkPatterns — confirmshaming", () => {
       })
     );
     expect(rulesOf(findings)).toContain("dark-confirmshaming");
-    expect(findings[0].description).toMatch(/shame/i);
+    expect(findings[0].description).toMatch(/confirmshaming/i);
   });
 });
 

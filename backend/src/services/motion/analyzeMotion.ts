@@ -70,7 +70,7 @@ export function evaluateMotion(
         "motion-marquee",
         "serious",
         marquees[0].selector,
-        `Scrolling ticker text (<marquee>) with no pause control in ${marquees.length} place${marquees.length === 1 ? "" : "s"}.`,
+        `Text scrolls continuously in a ticker (<marquee>, ${marquees.length} place${marquees.length === 1 ? "" : "s"}) with no way to pause it. Moving text is hard to read for everyone and can be unusable for people with attention or balance disorders.`,
         "Remove the <marquee> element and present the text statically, or provide a visible pause/stop control."
       )
     );
@@ -92,7 +92,7 @@ export function evaluateMotion(
         "motion-autoplay-audio",
         "serious",
         autoplayAudio[0].selector,
-        `Sound plays automatically with no visible controls to stop it in ${autoplayAudio.length} element${autoplayAudio.length === 1 ? "" : "s"}.`,
+        `Sound starts playing automatically with no visible controls to pause or stop it (${autoplayAudio.length} element${autoplayAudio.length === 1 ? "" : "s"}). It plays over what a screen reader says, and the visitor can't turn it off.`,
         "Remove autoplay, or add visible player controls (the controls attribute) so visitors can stop the sound.",
         "1.4.2",
         "https://www.w3.org/WAI/WCAG21/Understanding/audio-control.html"
@@ -105,7 +105,7 @@ export function evaluateMotion(
         "motion-autoplay-media",
         "serious",
         autoplayVisual[0].selector,
-        `Media plays automatically with no visible controls to stop it in ${autoplayVisual.length} element${autoplayVisual.length === 1 ? "" : "s"}.`,
+        `Media starts playing automatically with no visible controls to pause or stop it (${autoplayVisual.length} element${autoplayVisual.length === 1 ? "" : "s"}). Visitors can't stop the motion or sound, which is disorienting and plays over what a screen reader says.`,
         "Remove autoplay, or add visible player controls (the controls attribute) so visitors can pause or stop playback."
       )
     );
@@ -135,7 +135,7 @@ export function evaluateMotion(
             "motion-infinite-no-reduced-motion",
             "moderate",
             stillMoving[0].selector,
-            `${stillMoving.length} element${stillMoving.length === 1 ? " kept" : "s kept"} animating with reduced motion turned on.`,
+            `${stillMoving.length} element${stillMoving.length === 1 ? " animates" : "s animate"} on this page without stopping, even though the visitor has asked their system to reduce motion. We checked by turning that setting on and watching.`,
             "Wrap the animation in @media (prefers-reduced-motion: no-preference), or stop it after a few seconds. A visible pause control also passes. Note that having such a rule somewhere in your stylesheets is not enough. It has to cover these particular animations."
           )
         );
@@ -146,7 +146,7 @@ export function evaluateMotion(
           "motion-infinite-no-reduced-motion",
           "moderate",
           infinite[0].selector,
-          `Endless animation in ${infinite.length} element${infinite.length === 1 ? "" : "s"}, and no stylesheet mentions reduced motion.`,
+          `Content animates non-stop (${infinite.length} element${infinite.length === 1 ? "" : "s"} with infinite animations). No stylesheet on this page mentions the visitor's "reduce motion" setting at all.`,
           "Wrap the animations in @media (prefers-reduced-motion: no-preference), or stop them after a few seconds. A visible pause control also passes."
         )
       );

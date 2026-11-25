@@ -120,7 +120,7 @@ describe("evaluateMobile", () => {
     const f = findings.find((x) => x.ruleId === "mobile-horizontal-scroll")!;
     expect(f.wcagCriterion).toBe("N/A");
     expect(f.severity).toBe("moderate");
-    expect(f.description).toContain("fits at 320px");
+    expect(f.description).toContain("does fit at the 320px");
   });
 
   it("flags targets that pass on size and fail on proximity", () => {

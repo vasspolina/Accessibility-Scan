@@ -179,7 +179,7 @@ export function evaluateReflowHeight(s: ReflowHeightSignals | undefined): Access
       wcagLevel: "AA",
       selector: panel.selector,
       elementSnippet: panel.snippet,
-      description: `At 400% zoom (a window ${s.viewportHeight}px tall), this pinned ${panel.heightPx}px panel does not scroll, and ${panel.unreachable.length === 1 ? "one control in it sits" : `${panel.unreachable.length} controls in it sit`} below the bottom edge: ${names}.`,
+      description: `Zoomed to 400% (a window ${s.viewportHeight}px tall), this panel is pinned to the screen and ${panel.heightPx}px tall, and it does not scroll. ${panel.unreachable.length === 1 ? "One control in it sits" : `${panel.unreachable.length} controls in it sit`} below the bottom edge, where nobody zoomed in can reach ${panel.unreachable.length === 1 ? "it" : "them"}: ${names}. Scrolling the page does not help, because a pinned panel does not move.`,
       suggestedFix:
         "Let the panel scroll inside itself (max-height: 100vh with overflow-y: auto), or stop pinning it when the window is short (a max-height media query). Put its buttons first, above the long text, so they are the part that shows.",
       ruleId: "reflow-height-unreachable",
@@ -206,8 +206,8 @@ export function evaluateReflowHeight(s: ReflowHeightSignals | undefined): Access
       selector: bars[0].selector,
       elementSnippet: bars[0].snippet,
       description: lost
-        ? `At 400% zoom (a window ${s.viewportHeight}px tall), ${bars.length} pinned bar${bars.length === 1 ? "" : "s"} take ${pinnedPx}px, ${pct}%, leaving ${Math.max(0, left)}px, less than one line of text.`
-        : `At 400% zoom (a window ${s.viewportHeight}px tall), ${bars.length} pinned bar${bars.length === 1 ? "" : "s"} take ${pinnedPx}px, ${pct}%, leaving ${left}px to read through.`,
+        ? `Zoomed to 400% (a window ${s.viewportHeight}px tall), bars pinned to the screen take ${pinnedPx}px of it, ${pct}%, across ${bars.length} element${bars.length === 1 ? "" : "s"}. That leaves ${Math.max(0, left)}px to read the page through: not one line of text. Someone who zooms in to read cannot read the page at all.`
+        : `Zoomed to 400% (a window ${s.viewportHeight}px tall), bars pinned to the screen take ${pinnedPx}px of it, ${pct}%, across ${bars.length} element${bars.length === 1 ? "" : "s"}. The page still reads, through a slot of ${left}px. Someone who zooms in to read sees a few lines at a time and loses their place between them.`,
       suggestedFix:
         "Stop pinning the bars when the window is short: a media query on height (for example max-height: 500px) that sets position: static, or a header that scrolls away and returns on scroll up.",
       ruleId: lost ? "reflow-height-pinned" : "reflow-height-pinned-advisory",

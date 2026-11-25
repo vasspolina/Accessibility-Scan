@@ -283,7 +283,7 @@ async function readPdf(
         "critical",
         "1.3.1",
         "A",
-        "This PDF has no tags.",
+        "This PDF has no tags, so its structure exists only visually. A screen reader has no headings to navigate by and no reading order it can rely on. It can't tell a heading from a caption.",
         "Re-export it from the original document with tagging turned on. In Word or Google Docs, use real heading styles and export as a tagged PDF rather than printing to PDF. Retagging an existing PDF by hand in Acrobat is possible but far slower than fixing the source.",
         "https://www.w3.org/WAI/WCAG21/Techniques/pdf/PDF9"
       )
@@ -298,7 +298,7 @@ async function readPdf(
         "critical",
         "1.1.1",
         "A",
-        "This document has no readable text.",
+        "There is no readable text in this document. The pages appear to be images, most likely a scan. Screen readers and search have nothing to work with at all.",
         "Run optical character recognition over it, or better, publish the original document it was scanned from. A scan with OCR is readable; a scan without it is a picture of words.",
         "https://www.w3.org/WAI/WCAG21/Techniques/pdf/PDF7"
       )
@@ -312,7 +312,7 @@ async function readPdf(
         "serious",
         "2.4.2",
         "A",
-        "This document has no title set.",
+        "This document has no title set, so screen readers announce it by its filename. Someone with several documents open hears something like \"final-v3-web.pdf\" instead of what it is.",
         "Set the document title in the file's properties, and set it to display in place of the filename. In Acrobat that is File, Properties, Description, and then Initial View, Show, Document Title.",
         "https://www.w3.org/WAI/WCAG21/Techniques/pdf/PDF18"
       )
@@ -326,7 +326,7 @@ async function readPdf(
         "serious",
         "3.1.1",
         "A",
-        "This document has no language set.",
+        "This document does not say what language it is written in. A screen reader reads it in whatever voice it happens to be set to. English read in a Dutch voice is close to unintelligible.",
         "Set the document language in the file's properties. In Acrobat that is File, Properties, Advanced, Reading Options, Language.",
         "https://www.w3.org/WAI/WCAG21/Techniques/pdf/PDF16"
       )
@@ -344,7 +344,7 @@ async function readPdf(
         "serious",
         "1.1.1",
         "A",
-        `${missing} of the ${figures.total} images in this document have no description.`,
+        `${missing} of the ${figures.total} images in this document have no description. Anyone using a screen reader hears that an image is there, and nothing about what it shows.`,
         "Add alternate text to each image in the source document before exporting, or in Acrobat's reading order tool. Mark purely decorative images as artifacts instead, so screen readers skip them rather than announcing them.",
         "https://www.w3.org/WAI/WCAG21/Techniques/pdf/PDF1"
       )
@@ -358,7 +358,7 @@ async function readPdf(
         "moderate",
         "1.3.1",
         "A",
-        "This document is tagged but has no headings.",
+        "This document is tagged but has no headings. Screen reader users navigate long documents by jumping between headings, and without any they have to read from the top.",
         "Use real heading styles in the source document rather than making text large and bold, then re-export.",
         "https://www.w3.org/WAI/WCAG21/Techniques/pdf/PDF9"
       )

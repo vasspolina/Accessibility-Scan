@@ -97,7 +97,7 @@ describe("evaluateMotion: measuring the preference instead of inferring it", () 
     });
     const f = findings.find((x) => x.ruleId === "motion-infinite-no-reduced-motion");
     expect(f).toBeDefined();
-    expect(f!.description).toContain("reduced motion turned on");
+    expect(f!.description).toContain("watching");
   });
 
   it("stays quiet about an animation that stopped when asked", () => {
