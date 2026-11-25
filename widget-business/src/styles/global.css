@@ -1858,7 +1858,12 @@
    "move buble to the right"), its tail and its lean mirrored: it covered
    the left of the picture, where the faulty element usually begins. */
 .a11y-widget-biz .a11y-shot.a11y-shot-has-bubble { width: fit-content; padding-top: var(--cds-spacing-03); }
-.a11y-widget-biz .a11y-shot-bubble { --tile: var(--hl-cap-b); --tile-ink: #000; }
+/* The poster's dark green since 25 Nov 2026 (user's screenshot, "fix"):
+   with the poster's colours --hl-cap-b became the grey paper #dcdbd5, the
+   same grey as the ground round the picture, so the bubble melted into it.
+   #486048 with white words (6.9:1) stands off the white card, the grey
+   paper and the picture alike, and is the green of "pink or green". */
+.a11y-widget-biz .a11y-shot-bubble { --tile: var(--hl-green); --tile-ink: var(--hl-green-ink); }
 .a11y-widget-biz .a11y-shot-bubble {
   --ink: var(--tile-ink); --paper: var(--tile);
   position: relative; z-index: 1; display: block; width: fit-content; max-width: 85%;
@@ -7503,3 +7508,17 @@
   font-weight: 400; letter-spacing: 0; font-variant-numeric: lining-nums;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-row > .a11y-conf-id > .a11y-conf-key > em { font-style: inherit; margin-inline-start: 0.25em; }
+
+
+/* ═══ NEW CHAT AND REPORT A BARRIER STACKED (user's instructions, 25 Nov
+   2026, "slightly bigger", then "dont need to be stretched, just need to
+   be stacked on top of each other") ═══
+   The two pills stand one under the other at the panel's left edge, each
+   as wide as its words, 4px apart (they sat side by side). 44px tall with
+   16px inside (were 32px and 12px); the words stay 18px, the smallest of
+   the three sizes. Colours, hover and the dashed disabled edge are the
+   grey pills' blocks above, unchanged. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-new[type="button"][class] {
+  display: flex; align-items: center; box-sizing: border-box;
+  width: fit-content; min-height: 44px; margin: 0 0 var(--cds-spacing-02); padding: var(--cds-spacing-03) var(--cds-spacing-05);
+}
