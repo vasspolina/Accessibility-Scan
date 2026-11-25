@@ -356,26 +356,15 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
         )}
       </p>
 
-      {/* Numbered steps, from the reference's licence builder. This section
-          has always been a two-step job — say who it is for, then take the
-          text — and it read as a form followed by an unrelated block of
-          prose. The numbers say there are two things to do and that you are
-          on the first, which is most of what that layout is for.
-
-          The numbers are decoration: each step already has a real heading
-          the marker sits beside, so a screen reader hears the heading and
-          not "one, two". */}
-      {/* Step 1 is a form, set as every form in the report is (user's
-          instruction, 24 Nov 2026, "design this as form"): one rounded
-          panel in its own colour, the title centred in capitals, each field
-          filled white with its label inside. No submit: the statement below
-          follows the fields as they are typed. */}
+      {/* One panel (user's instruction, 25 Nov 2026, "combine these two in
+          one design, no need to number it"): the two fields and the facts
+          they feed share the blue panel, the fields on top and the facts
+          under them, so what you type and where it lands read as one thing.
+          The step numbers went with it. No submit: the facts and the
+          statement below follow the fields as they are typed. */}
       <div className="a11y-stmt-form">
       <div className="a11y-stmt-step">
-        <h3 className="a11y-stmt-step-head">
-          <span className="a11y-stmt-step-num" aria-hidden="true">1</span>
-          {t("Tell us who this is for")}
-        </h3>
+        <h3 className="a11y-stmt-step-head">{t("Tell us who this is for")}</h3>
       </div>
 
       <div className="a11y-stmt-fields">
@@ -400,17 +389,10 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
           />
         </label>
       </div>
-      </div>
 
-      {/* The statement's declared facts as a spec sheet — the same shape the
-          reference uses for a typeface's own specification: a small label
-          over a large value, one card per fact, the first one filled.
-
-          A <dl>, not a table. These are name/value pairs and always were —
-          the table had a single column and a header reading "What this
-          statement says", which is a list wearing a table's clothes. A
-          definition list says the same thing to a screen reader in fewer
-          words, and it is what lets the facts sit side by side on a wide
+      {/* The statement's declared facts. A <dl>, not a table: these are
+          name/value pairs, and a definition list says so to a screen reader
+          in fewer words, and lets the facts sit side by side on a wide
           screen and stack on a narrow one without a scrollbar. */}
       <dl className="a11y-spec-grid" aria-label={t("What this statement declares")}>
         <SpecCard field={t("Prepared for")} value={organisation.trim() || t("[Your organisation]")} lead />
@@ -430,6 +412,7 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
           value={knownIssues.length === 0 ? t("None the scan can detect") : String(knownIssues.length)}
         />
       </dl>
+      </div>
 
       {/* One caret (user's instruction, 25 Nov 2026, "combine in one
           carret"): the step's own line opens the draft, the triangle before
@@ -446,7 +429,6 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
             aria-controls="a11y-stmt-draft"
             onClick={() => setDraftOpen((v) => !v)}
           >
-            <span className="a11y-stmt-step-num" aria-hidden="true">2</span>
             <span className="a11y-stmt-toggle-words">{t("Take the statement")}</span>
           </button>
         </h3>

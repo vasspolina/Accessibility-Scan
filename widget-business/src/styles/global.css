@@ -739,7 +739,6 @@
    placeholder is ink at Light, never grey. The focus ring goes round the
    whole field. */
 .a11y-widget-biz .a11y-stmt-step-head { margin: 0; font-size: 29px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em; }
-.a11y-widget-biz .a11y-stmt-step-num { margin-inline-end: var(--cds-spacing-04); font-weight: 200; }
 .a11y-widget-biz .a11y-stmt .a11y-stmt-step + * { margin-top: var(--cds-spacing-06); }
 .a11y-widget-biz .a11y-stmt-fields {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: var(--cds-spacing-05) var(--cds-grid-gutter-narrow); margin: 0 0 var(--cds-spacing-07);
@@ -4480,13 +4479,23 @@
   text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.14em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule .a11y-finding-meta-line { display: block; margin-top: var(--cds-spacing-02); }
-/* The severity word at the end of the line, as wide as its longest word. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule th[data-col="severity"] { width: 232px; }
+/* The severity word at the end of the line, as wide as its longest word.
+   260px since it is set in Lettra (25 Nov 2026): "Fix eventually" is about
+   244px in the mono face at 29px and broke onto two lines in the 232px it
+   had under Telegraf. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule th[data-col="severity"] { width: 260px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule th[data-col="count"] { width: 120px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule td[data-col="severity"] { padding-inline-end: 0; text-align: right; }
 /* It wraps between words inside its column: "À corriger en premier" and
-   "Arreglar más adelante" are wider than the column at 32px. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-finding-sev-word { display: inline-block; white-space: normal; overflow-wrap: normal; }
+   "Arreglar más adelante" are wider than the column at 32px.
+   Set in PP Lettra Mono Ultralight, no tracking (user's instruction,
+   25 Nov 2026, "letra", on "Fix soon"): its longest single word,
+   "Irgendwann", is about 174px of the 260px column at 29px. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-finding-sev-word {
+  display: inline-block; white-space: normal; overflow-wrap: normal;
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-weight: 200; font-synthesis: none; letter-spacing: 0;
+}
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-finding-sev-critical { color: var(--sev-critical); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-finding-sev-serious { color: var(--sev-serious); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-finding-sev-moderate { color: var(--sev-moderate); }
@@ -5059,19 +5068,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt-step-head {
   display: flex; align-items: center; gap: var(--cds-spacing-05);
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt-step-num {
-  display: inline-grid; place-items: center; flex: none; box-sizing: content-box;
-  width: 40px; height: 40px; margin: 0; padding: var(--cds-spacing-01); border-radius: 50%;
-  background: var(--ink); color: var(--paper);
-  font-size: 22px; font-weight: 200; line-height: 1; letter-spacing: 0; font-variant-numeric: tabular-nums;
-}
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt > .a11y-stmt-step { margin-top: var(--cds-spacing-10); }
-@media (max-width: 671px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt-step-num { width: 32px; height: 32px; font-size: 16px; letter-spacing: 0.025em; }
-}
-@media (forced-colors: active) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt-step-num { border: 1px solid CanvasText; }
-}
 
 /* THE DESIGN NOTES AS CARETS (user's instruction, 24 Nov 2026, "make these
    into carrets like this", on the notes' crossed list and their cards,
@@ -6089,21 +6086,33 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-research[class][class] > :not(strong:first-child) { text-align: start; }
 /* The points take the hung en dash again now the words are set left
    (user's instruction, 25 Nov 2026, "add back en dashes, and left margin
-   that was bigger"), 12px apart. */
+   that was bigger"), 12px apart. The dash hangs in the row's 40px start at
+   every width, phones included ("make margin like this", the same day), so
+   a list's words share the left edge of a sentence in the row above. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > * > :is(.a11y-fd-points, ul:not(.a11y-occurrence-list))[class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class] > ul { padding-inline-start: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > * > :is(.a11y-fd-points, ul:not(.a11y-occurrence-list))[class] > li + li,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class] > ul > li + li { margin-top: var(--cds-spacing-04); }
+/* The dash is drawn, not the list's outside marker (user's "fix", 25 Nov
+   2026, on a dash standing outside its card's left edge): where an outside
+   marker hangs is the browser's choice, and it hung past the card's 40px
+   start. Drawn as a 1em box pulled 1em back, it sits 1em left of the words
+   in every browser: 29px of the 40px start on a desktop, 22px of the list's
+   own 40px indent on a phone. The lists keep role="list" for Safari, and the
+   dash has empty alt text, so nothing is read out for it. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > * > :is(.a11y-fd-points, ul:not(.a11y-occurrence-list))[class] > li,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class] > ul > li { list-style: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > * > :is(.a11y-fd-points, ul:not(.a11y-occurrence-list))[class] > li::before,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class] > ul > li::before {
+  content: "\2013" / ""; display: inline-block; width: 1em; margin-inline-start: -1em;
+}
 @container a11y-ftable (min-width: 641px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class] { padding: var(--cds-spacing-06) var(--cds-spacing-06) var(--cds-spacing-06); }
-  /* A list's en dash hangs in the row's 40px start, so its words share the
-     left edge of a sentence in the row above. Phones keep the list's own
-     indent: their 18px start is narrower than the dash. */
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > * > :is(.a11y-fd-points, ul:not(.a11y-occurrence-list))[class],
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class] > ul { padding-inline-start: 0; }
 }
 @container a11y-ftable (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps, .a11y-affected)[class][class] {
-    column-gap: var(--cds-spacing-04); padding: var(--cds-spacing-05) var(--cds-spacing-04) var(--cds-spacing-05) var(--cds-spacing-05); border-radius: var(--r-card);
-    --fd-label-shift: calc((var(--cds-spacing-04) - var(--cds-spacing-05)) / 2);
+    column-gap: var(--cds-spacing-04); padding: var(--cds-spacing-05) var(--cds-spacing-04) var(--cds-spacing-05) var(--cds-spacing-08); border-radius: var(--r-card);
+    --fd-label-shift: calc((var(--cds-spacing-04) - var(--cds-spacing-08)) / 2);
   }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-fd-meta[class] { padding-inline: var(--cds-spacing-05); }
 }
@@ -6506,14 +6515,14 @@
      the yellow).
    How the score works and the warning keep their rows. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score:has(> .a11y-sum-specimen) > h2.a11y-section-title {
-  text-align: left; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  text-align: center; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-actions {
-  display: flex; justify-content: flex-start; margin: var(--cds-spacing-04) 0 0; padding: 0;
+  display: flex; justify-content: center; margin: var(--cds-spacing-04) 0 0; padding: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-actions > .a11y-score-copy { margin: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run {
-  display: block; margin: var(--cds-spacing-08) 0 0; padding: 0; text-align: left;
+  display: block; margin: var(--cds-spacing-08) 0 0; padding: 0; text-align: center;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run:first-child { margin-top: var(--cds-spacing-06); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-dial-card {
@@ -6521,14 +6530,14 @@
   display: block; position: relative; height: var(--dial); margin: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen .a11y-sum-dial-card > .a11y-sum-dial {
-  width: var(--dial); height: var(--dial); margin: 0;
+  width: var(--dial); height: var(--dial); margin: 0 auto;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen .a11y-sum-dial-num { font-size: 43px; line-height: 1; letter-spacing: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-verdict {
-  max-width: 24em; margin: var(--cds-spacing-07) 0 0; text-align: left;
+  max-width: 24em; margin: var(--cds-spacing-07) auto 0; text-align: center;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-issues {
-  display: block; margin-top: var(--cds-spacing-12); padding: 0; border: 0; text-align: left;
+  display: block; margin-top: var(--cds-spacing-12); padding: 0; border: 0; text-align: center;
   container: a11y-sum-issues / inline-size;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-issues > .a11y-sum-label {
@@ -6772,57 +6781,76 @@
   display: block; margin-top: var(--cds-spacing-02); white-space: normal; overflow-wrap: normal;
 }
 
-/* ═══ HOW THE SCORE WORKS AND THE WARNING AS YELLOW CARDS (user's
-   reference, 25 Nov 2026, "design this like this", a type foundry's
-   notices: yellow cards with a picture at the left, monospaced words and
-   an outlined pill) ═══════════════════════════════════════════════════════
-   Each is a card on the marker yellow (--hl-cap-a, #f8ff58 in both
-   themes, black words 19:1), 20px corners, 24px inside (16px on a
-   phone), the two cards 20px apart, as the issues' cards above are, and 90px under the issues (65px on a phone), no rule above.
-   At the left a 168px square, the issues' picture size (56px on a phone, where the pill needs the width) of black with 16px
-   corners holds the icon set's information or warning mark at 64px (32px)
-   in the yellow, the reference's picture. Beside it the words in the
-   monospaced face the opened finding's meta strip uses, 24px on a 1.35
-   line at weight 400, as the issues' titles (18px on a phone), one line apart; the heading is an
-   outlined pill under them, 1px black, 999px, 18px words, drawn last by
-   flex order while the markup keeps it first. Focus never lands here. */
+/* ═══ HOW THE SCORE WORKS AND THE WARNING AS A GIG POSTER (user's
+   reference, 25 Nov 2026, "make these two look like this", a grey bill
+   set centred: a roman caption, the names in a tight grotesque, the date
+   lines in the roman, a small pixel mark at the foot) ═══════════════════
+   This replaces the yellow cards with a black picture square of the same
+   morning. Each notice is one panel on the grey --bubble (black words in
+   light; #1c1c1e with the white ink in dark), 20px corners, 48px 32px
+   inside (32px 16px on a phone), the two 20px apart and 90px under the
+   issues (65px on a phone), everything centred on one column held to 28em
+   so a centred line stays short enough to read.
+   The roman of the reference is PP Lettra Mono Ultralight (the user's "use
+   letra for serif"), no tracking, 1.15 leading: the heading is the caption
+   at 24px over the rest, first in the markup, with no pill now. The first
+   point is the names, PP Telegraf Regular 32px set solid (1.0) at the
+   widget's own tracking for its size, +0.01em (+0.015em at 24px on a
+   phone): the reference's tight -0.025em crowded the letters ("make proper
+   letter spacing", the same day). The other points are the date lines,
+   Lettra at 24px.
+   On a phone 18px, 24px and 18px. The icon is the pixel mark: the icon
+   set's information or warning--alt at 48px (32px) in the ink, centred at
+   the foot by flex order (first in the markup, aria-hidden). Focus never
+   lands here.
+   Merged after the same day's two passes: the sizes are the ten-percent-
+   smaller ones (24 to 22, 32 to 29, 18 to 16, the icon 48 to 43 and 32 to
+   29), and the panel stays centred as the one block exception to
+   EVERYTHING SET LEFT, since the reference the user asked for is a centred
+   bill. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-card[class][class] {
-  display: flex; align-items: flex-start; gap: var(--cds-spacing-06);
-  margin: var(--cds-spacing-05) 0 0; padding: var(--cds-spacing-06); border: 0; border-radius: 20px;
-  background: var(--hl-cap-a); color: #000; text-align: start;
+  display: flex; flex-direction: column; align-items: center; gap: var(--cds-spacing-07);
+  margin: var(--cds-spacing-05) 0 0; padding: var(--cds-spacing-09) var(--cds-spacing-07); border: 0; border-radius: 20px;
+  background: var(--bubble); color: var(--ink); text-align: center;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > :not(.a11y-sum-card) + .a11y-sum-card[class][class] { margin-top: var(--cds-spacing-12); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-pic {
-  display: flex; flex: none; align-items: center; justify-content: center;
-  width: 168px; height: 168px; border-radius: 16px; background: #000; color: var(--hl-cap-a);
-  font-size: 58px; line-height: 1;
+  display: flex; flex: none; order: 1; align-items: center; justify-content: center;
+  width: auto; height: auto; border-radius: 0; background: none; color: inherit;
+  font-size: 43px; line-height: 1;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body {
-  display: flex; flex: 1 1 auto; flex-direction: column; align-items: flex-start; gap: var(--cds-spacing-07); min-width: 0;
+  display: flex; flex: none; flex-direction: column; align-items: center; gap: var(--cds-spacing-06);
+  width: 100%; max-width: 28em; min-width: 0;
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
-  font-size: 22px; font-weight: 400; line-height: 1.35; letter-spacing: 0;
+  font-size: 22px; font-weight: 200; font-synthesis: none; line-height: 1.15; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-point[class] {
-  /* Stretched to the body's width: at flex-start it took its min-content,
-     the longest word, and the German "Gestaltungshinweise" in the mono face
-     ran 7px past a 320px window once the phone margin became Carbon's 16px. */
-  align-self: stretch; max-width: none; margin: 0; padding: 0; color: #000;
-  font: inherit; letter-spacing: inherit; overflow-wrap: break-word;
+  /* Stretched to the body's width: at its min-content, the longest word,
+     the German "Gestaltungshinweise" in the mono face, ran past a 320px
+     window. */
+  align-self: stretch; max-width: none; margin: 0; padding: 0; color: inherit;
+  font: inherit; letter-spacing: inherit; text-align: center; overflow-wrap: break-word;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-pill + .a11y-sum-point[class][class] {
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 29px; font-weight: 400;
+  line-height: 1; letter-spacing: 0.01em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-pill[class] {
-  order: 1; margin: calc(var(--cds-spacing-03) * -1) 0 0; padding: var(--cds-spacing-01) var(--cds-spacing-04); border: 1px solid #000; border-radius: 999px;
-  background: none; color: #000; white-space: normal;
-  font-family: inherit; font-size: 16px; font-weight: 400; line-height: 1.3; letter-spacing: 0;
+  order: 0; margin: 0; padding: 0; border: 0; border-radius: 0;
+  background: none; color: inherit; white-space: normal; text-transform: none;
+  font-family: inherit; font-size: 22px; font-weight: 200; line-height: 1.15; letter-spacing: 0;
 }
 @media (max-width: 671px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-card[class][class] { gap: var(--cds-spacing-05); padding: var(--cds-spacing-05); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-card[class][class] { gap: var(--cds-spacing-06); padding: var(--cds-spacing-07) var(--cds-spacing-05); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > :not(.a11y-sum-card) + .a11y-sum-card[class][class] { margin-top: var(--cds-spacing-10); }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-pic { width: 56px; height: 56px; border-radius: 10px; font-size: 29px; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body { font-size: 16px; line-height: 1.4; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-pic { font-size: 29px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body { gap: var(--cds-spacing-05); font-size: 16px; line-height: 1.2; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-pill + .a11y-sum-point[class][class] { font-size: 22px; letter-spacing: 0.015em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-pill[class] { font-size: 16px; line-height: 1.2; }
 }
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-card[class][class] { border: 1px solid CanvasText; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-pill[class] { border-color: CanvasText; }
 }
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card { break-inside: avoid; }
@@ -6848,7 +6876,9 @@
    phone), 20px apart, as many to a row as fit at 260px or more, so three
    on a desktop and one on a phone. Each card's head (the standard, the two
    titles) is the issue title's mono face at 24px (18px on a phone), its
-   words under it in the body face at the same size, 12px between them.
+   words under it in the body face at the same size, 24px between them
+   (12px until the user's "add 100% more space between title and body
+   text", 25 Nov 2026).
    Leading 1.1 (1.15 at 18px on a phone; user's reference, 25 Nov 2026,
    "line height needs to be like this", a foundry's product copy measured
    at about 42px of line on 38px type); it was 1.35 and 1.4. The question
@@ -6868,7 +6898,7 @@
   background: var(--hl-cap-a); color: #000;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-standard, .a11y-legal-eyebrow) {
-  display: block; margin: 0 0 var(--cds-spacing-04); padding: 0; border: 0; background: none; color: #000;
+  display: block; margin: 0 0 var(--cds-spacing-06); padding: 0; border: 0; background: none; color: #000;
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
   font-size: 22px; font-weight: 400; line-height: 1.1; letter-spacing: 0; text-transform: none;
   overflow-wrap: anywhere;
@@ -6997,7 +7027,7 @@
    line's height, not from 1lh, which inside the ring is its own 18px line.
    The section titles' count dots are counts, not item numbers, and keep
    their round. Forced colours draw the ring in CanvasText. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-q > .a11y-undecided-no, .a11y-legal-q > .a11y-legal-qnum, .a11y-stmt-step-head .a11y-stmt-step-num)[class][class] {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-q > .a11y-undecided-no, .a11y-legal-q > .a11y-legal-qnum)[class][class] {
   display: inline-grid; place-items: center; flex: none; box-sizing: border-box;
   min-width: 44px; width: auto; height: 44px; padding: 0 var(--cds-spacing-03);
   border: 1px solid currentColor; border-radius: 22px; background: none; color: inherit;
@@ -7005,7 +7035,6 @@
   line-height: 1; letter-spacing: 0; font-variant-numeric: tabular-nums;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-no[class][class] { margin-top: 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt-step-head .a11y-stmt-step-num[class][class] { margin: 0; }
 /* The legal questions: a 44px column for the ring, 12px to the words; the
    cards' 24px/1.35 line (18px/1.4 on a phone) gives the ring's offset. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-q[class][class] { grid-template-columns: 44px minmax(0, 1fr); column-gap: var(--cds-spacing-04); align-items: start; }
@@ -7025,7 +7054,7 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-q > .a11y-legal-qnum[class][class] { margin-top: calc((18px * 1.4 - 44px) / 2); }
 }
 @media (forced-colors: active) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-q > .a11y-undecided-no, .a11y-legal-q > .a11y-legal-qnum, .a11y-stmt-step-head .a11y-stmt-step-num)[class][class] { border-color: CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-q > .a11y-undecided-no, .a11y-legal-q > .a11y-legal-qnum)[class][class] { border-color: CanvasText; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-text ol:not(.a11y-chat-plan)[class] > li::before { border-color: CanvasText; }
 }
 
@@ -7188,7 +7217,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score:has(> .a11y-sum-specimen) > h2.a11y-section-title[class][class],
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score .a11y-sum-specimen :is(.a11y-sum-run > .a11y-sum-verdict, .a11y-sum-issues > .a11y-sum-label)[class][class] {
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
-  text-transform: none; text-align: left; line-height: 1.15; letter-spacing: 0;
+  text-transform: none; text-align: center; line-height: 1.15; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-verdict[class][class] { font-size: 29px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score .a11y-sum-specimen > .a11y-sum-issues > .a11y-sum-label[class][class] { font-size: 22px; }
@@ -7638,8 +7667,7 @@
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
   letter-spacing: 0;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-step-head[class][class][class],
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-step-head > .a11y-stmt-step-num[class][class][class] {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-step-head[class][class][class] {
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
   letter-spacing: 0;
 }
@@ -7718,4 +7746,36 @@
 @media (min-width: 672px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-layout > .a11y-chat[class] { padding-inline: var(--cds-spacing-07); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-chat-box[class][class] { padding: var(--cds-spacing-07); }
+}
+
+/* ═══ THE STATEMENT'S FORM AND FACTS AS ONE PANEL (user's instruction,
+   25 Nov 2026, "combine these two in one design, no need to number it",
+   on the grey "1 Tell us who this is for" form over the blue facts) ═══
+   One panel in the facts' blue (#2848c8, white words 7.4:1): the title in
+   white capitals with no round number, the two fields beside each other
+   above 672px (the facts' own two columns, so Organisation name stands
+   over Prepared for), still the grey fill with black words (#e6e6e6,
+   18.4:1), then a 1px white rule and the facts under it, no ground of
+   their own. One column of each under 672px. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] {
+  --ink: #fff; --paper: #2848c8;
+  background: #2848c8; color: #fff;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] .a11y-stmt-step-head[class] { color: #fff; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] > .a11y-spec-grid[class][class] {
+  width: 100%; margin: 0; padding: var(--cds-spacing-07) 0 0; border: 0; border-top: 1px solid #fff; border-radius: 0; background: none;
+}
+@media (min-width: 672px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] > .a11y-stmt-fields[class] { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--grid-gap); }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] > .a11y-spec-grid[class][class] { border: 0; border-top: 1px solid CanvasText; }
+}
+/* The facts' labels (Prepared for, Website, Checked against, Position,
+   Problems disclosed) in PP Lettra Mono Ultralight, as the panel's title
+   above them (user's instruction, 25 Nov 2026, "use letra for bottom part
+   titles"), no tracking, white on the blue (7.4:1). */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] .a11y-spec-card > .a11y-spec-label[class][class] {
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
+  letter-spacing: 0; color: #fff;
 }
