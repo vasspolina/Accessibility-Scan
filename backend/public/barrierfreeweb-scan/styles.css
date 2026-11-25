@@ -269,8 +269,10 @@ main.wrap { padding-top: var(--s10); }
 }
 /* The column's words 10% under the body's 32px (user's instruction, 25 Nov
    2026, "make this font 10% smaller", on Why not just fix your current
-   site?): 29px, the title with them. The phone keeps its 24px. */
-.text { font-size: 29px; }
+   site?): 29px, the title with them; then 15% under that (the same day,
+   "make this font 15% smaller", on the same passage): 25px. The phone
+   keeps its 24px. */
+.text { font-size: 25px; }
 .text h2, .card h2 { margin-bottom: var(--s05); }
 .text h3 { margin: 1lh 0 var(--s03); letter-spacing: 0.02em; text-transform: uppercase; }
 /* A list in the column (user's reference, 25 Nov 2026, "typesetting need to
@@ -327,7 +329,20 @@ main.wrap { padding-top: var(--s10); }
 @container content (min-width: 560px) {
   .acc__body .terms { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--gutter); align-items: start; }
 }
-.acc__body .terms > div { text-align: center; }
+/* The What we offer terms as a type foundry's info and credits columns
+   (user's reference, 25 Nov 2026, "design this like this", its INFO and
+   CREDITS panes): the term a small capital label centred over its
+   column, Telegraf at 18px tracked +0.04em with no pill; its meaning set
+   left under it at the column's 24px, one 16px step down; 32px between
+   rows, two lines of the words. Replaces the centred Lettra pills of the
+   same day, in these panels only; the text column's lists keep theirs. */
+.acc__body .terms { row-gap: var(--s07); }
+.acc__body .terms dt {
+  display: block; margin-bottom: var(--s05); padding: 0; border: 0; border-radius: 0;
+  font-family: inherit; font-size: 18px; line-height: 1.2; letter-spacing: 0.04em;
+  text-transform: uppercase; text-align: center;
+}
+.acc__body .terms dd { text-align: start; }
 
 /* Links in the column and the cards on a pale yellow highlight (the same
    reference: its addresses on a pale yellow, no underline). Black words on
@@ -551,9 +566,10 @@ footer.wrap { margin-top: var(--s12); padding-bottom: var(--s07); }
    buble"; then, on the terracotta version, "keep this but put on yellow
    beige and in lettra font"). The card keeps its rounded shape on the pale
    yellow #fff5c2 with black words (19.1:1), in both themes. Everything in it
-   is PP Lettra Mono Ultralight: on top "What we offer" in small tracked
-   capitals over a 1px rule; then the six services in capitals, each with its
-   number at the right, between 1px rules. The number is drawn with alt text
+   is PP Lettra Mono Ultralight: on top "What we offer" at 18px over a 1px
+   rule; then the six services, each with its number at the right, between
+   1px rules. In lower case, as written, no tracking (user's instruction,
+   the same day, "lower case", on the card in capitals). The number is drawn with alt text
    "" so a link's name stays the service. No marker triangles. ---------- */
 .card:has(> .offer) {
   --ink: #000; --focus: #198038;
@@ -562,14 +578,14 @@ footer.wrap { margin-top: var(--s12); padding-bottom: var(--s07); }
 }
 .card:has(> .offer) > h2 {
   margin: 0; padding-bottom: var(--s03); border-bottom: 1px solid currentColor;
-  font-family: var(--mono); font-size: 18px; line-height: 1.2; letter-spacing: 0.08em; text-transform: uppercase;
+  font-family: var(--mono); font-size: 18px; line-height: 1.2; letter-spacing: 0;
 }
 .card > .offer { gap: 0; counter-reset: offer-card; }
 .card > .offer > li { counter-increment: offer-card; border-bottom: 1px solid currentColor; }
 .card .offer__link {
   display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; column-gap: var(--s05);
   padding: var(--s04) 0; color: inherit; text-decoration: none;
-  font-family: var(--mono); font-size: 24px; line-height: 1.15; letter-spacing: 0; text-transform: uppercase;
+  font-family: var(--mono); font-size: 24px; line-height: 1.15; letter-spacing: 0;
 }
 .card .offer__link::before { content: none; }
 .card .offer__link::after { content: counter(offer-card, decimal-leading-zero) / ""; font-size: 18px; }
