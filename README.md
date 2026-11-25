@@ -100,19 +100,20 @@ everything right.
 
 ## Deploying
 
-The live app is one Railway service built from `backend/` (its Dockerfile,
-root directory `backend`), connected to this repository on `main`. **Merging
-to `main` deploys.** Nothing else does: no workflow in `.github/` touches
-Railway, and `railway up` is only for a one-off upload from your own machine.
+The live app is one Railway service built from `backend/Dockerfile` with the
+repository root as its build context (root directory empty, settings in
+[railway.json](railway.json)), connected to this repository on `main`.
+**Merging to `main` deploys.** Nothing else does: no workflow in `.github/`
+touches Railway, and `railway up` (run from the repository root) is only for a
+one-off upload from your own machine.
 
-The server serves `backend/public/widget-business.js` as committed. The Docker
-build context is `backend/` alone, so the widget cannot be built in the
-image: **a change to `widget-business/src` reaches the live app only when the
-bundle is rebuilt and committed with it.** From `backend/`:
+The image builds the owner's widget itself and serves it as
+`public/widget-business.js`, so a change to `widget-business/src` needs no
+built file committed with it; the bundle is gitignored. To serve the widget
+from a local backend, build it once from `backend/`:
 
 ```bash
 npm run build:widget-business   # builds ../widget-business, copies dist/widget-business.js here
-git add public/widget-business.js
 ```
 
 To see which build is live, open `/healthz` on the app: `commit` is the

@@ -1,0 +1,15 @@
+# The image is built from the repository root (see backend/Dockerfile), but
+# needs only the scanner, the owner's widget and the design system it links.
+*
+!backend
+!widget-business
+!design-system/production
+
+**/node_modules
+**/dist
+**/.env
+**/*.log
+**/*.tsbuildinfo
+backend/data
+widget-business/axe.dev.js
+widget-business/public/ui-kit.html
