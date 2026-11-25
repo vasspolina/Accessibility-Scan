@@ -18,7 +18,13 @@ const MIN_CROP_WIDTH = 260;
 const MIN_CROP_HEIGHT = 120;
 const MAX_THUMB_WIDTH = 480;
 const JPEG_QUALITY = 60;
-const MAX_THUMBNAILS_PER_SCAN = 70;
+// Was 70. Raised so every element the report points at is pictured (user's
+// instruction, 25 Nov 2026): whatever this cap leaves goes on to the second
+// visit, which is capped far lower and costs a page load. Crops are cheap,
+// measured at 297ms for seventy four at a time (see CONCURRENT_CROPS below),
+// so two hundred costs under a second, and memory is bounded by the four in
+// flight, not by the count.
+const MAX_THUMBNAILS_PER_SCAN = 200;
 const SEVERITY_PRIORITY: Record<Severity, number> = { critical: 0, serious: 1, moderate: 2, minor: 3 };
 
 // Elements small and self-contained enough that a crop shows the thing itself:
@@ -239,7 +245,17 @@ export async function attachElementScreenshots(
     // written label — "link to Accessible UX Research" — identifies it far
     // better, and where a link's text says nothing the label carries the
     // destination for exactly this reason.
-    if (finding.ruleId === "link-name" || finding.ruleId === "link-text-vague") continue;
+    //
+    // It still gets a picture (user's instruction, 25 Nov 2026, every element
+    // pointed at is pictured), just not that one: the padded crop instead of
+    // the element-only capture, so the frame shows the link with the words
+    // and pictures round it and the outline marks which part is the link.
+    // These skipped this function altogether before, and only reached a
+    // picture by spending a slot of the capped second visit.
+    if (finding.ruleId === "link-name" || finding.ruleId === "link-text-vague") {
+      needsCrop.push(finding);
+      continue;
+    }
     const shot = precaptured[finding.selector];
     if (shot) {
       finding.elementScreenshot = shot;

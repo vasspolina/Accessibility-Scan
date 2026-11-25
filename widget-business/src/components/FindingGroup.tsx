@@ -587,9 +587,14 @@ export function FindingDetails({
   findings,
   asNotes = false,
   meta = false,
+  badged = false,
 }: {
   findings: AccessibilityFinding[];
   asNotes?: boolean;
+  /** The row above already carries the method badge ("From the AI review.
+   *  Not confirmed."), so the opened finding does not say where it came
+   *  from a second time. */
+  badged?: boolean;
   /** The schedule's opened row: WCAG, level, fix kind and count as one
    *  "Key: value" line at the top, since the row no longer has columns
    *  for them. The printed cards and the professional table carry them
@@ -610,7 +615,6 @@ export function FindingDetails({
   const worded = modelPlain(rep);
   const entries = dedupeOccurrences(findings);
   const measured = whatWeFound(rep, plain, entries.length, title);
-  const aiSupport = findings.find((f) => f.aiSupport)?.aiSupport;
   const locatesSomething = entries.some(
     // An AI fix is shown in the element's row, so a row that carries one is
     // kept even when its label and picture identify nothing on their own.
@@ -678,7 +682,7 @@ export function FindingDetails({
           <strong>{t("Check it yourself")}</strong> <TileBody text={keyboardHint()} />
         </div>
       )}
-      {fromAi && (
+      {fromAi && !badged && (
         <div className="a11y-method-hint" data-size={tileSize(aiHint())}>
           <strong>{t("Where this came from")}</strong> <TileBody text={aiHint()} />
         </div>
@@ -725,14 +729,10 @@ export function FindingDetails({
           <strong>{t("Past sixty")}</strong> <TileBody text={rep.ageNote} />
         </div>
       )}
-      {/* The AI review's account of this same fault, folded into the
-          measured card on the server (foldAiIntoMeasured): evidence beside
-          the rule's finding, not a second card and not in the score. */}
-      {aiSupport && (
-        <div className="a11y-finding-measured" data-size={tileSize(aiSupport)}>
-          <strong>{t("The AI review saw it too")}</strong> <TileBody text={aiSupport} />
-        </div>
-      )}
+      {/* The AI review's account of the same fault (aiSupport, folded in
+          on the server by foldAiIntoMeasured) is not shown: it retold What
+          we found and Why this matters in other words, three cards saying
+          one thing (user's instruction, 25 Nov 2026, "no repetition"). */}
       {/* The model's account of what happens on this page, from the
           elements it was shown. Beside the curated "why", not instead of
           it: the curated line is reviewed, this one is not. */}
@@ -775,7 +775,10 @@ export function FindingDetails({
         </div>
       ) : (
         <p className="a11y-finding-todo" data-size={tileSize(whatToDo)}>
-          <strong className="a11y-fd-title">{t("What to do")}</strong> <CodeText text={whatToDo} />
+          {/* One body span, so the row lays out as label and words, the
+              way every other part does (TileBody's span). */}
+          <strong className="a11y-fd-title">{t("What to do")}</strong>{" "}
+          <span className="a11y-fd-body"><CodeText text={whatToDo} /></span>
         </p>
       )}
       {/* The WCAG and Level columns fold in here at phone width, the same
@@ -912,14 +915,11 @@ export function FindingDetails({
           <summary>{t("The technical version")}</summary>
           {/* Only when it was not already shown in the open part of the
               card above. It nearly always is now. */}
-          {!measured && rep.description && (
+          {/* Not when it only repeats the row's title, and no WCAG line:
+              the criterion is in the row and in the line above. */}
+          {!measured && rep.description && rep.description.trim() !== title.trim() && (
             <p>
               <strong>{t("What we found:")}</strong> <CodeText text={rep.description} />
-            </p>
-          )}
-          {rep.wcagCriterion && rep.wcagCriterion !== "N/A" && (
-            <p>
-              <strong>{t("WCAG criterion:")}</strong> {rep.wcagCriterion}
             </p>
           )}
           {rep.ruleId && (
@@ -1018,7 +1018,7 @@ export function findingRow(
             {t(severityLabel[rep.severity])}
           </span>,
         ],
-    expand: <FindingDetails findings={findings} asNotes={asNotes} meta />,
+    expand: <FindingDetails findings={findings} asNotes={asNotes} meta badged />,
   };
 }
 
@@ -1136,7 +1136,7 @@ export function FindingGroup({
           And aria-controls above pointed at an element that did not exist
           while collapsed, which is exactly what that attribute must not do. */}
       <div id={detailsId} className="a11y-finding-details" hidden={!expanded}>
-        <FindingDetails findings={findings} asNotes={asNotes} />
+        <FindingDetails findings={findings} asNotes={asNotes} badged />
       </div>
     </li>
   );
@@ -1359,7 +1359,7 @@ function ColourSuggestion({
       </p>
       <p className="a11y-colour-fix-note">
         {tf(
-          "Same hue, dark enough to reach {ratio}:1 against {background}, where {required}:1 is the minimum. Adjust it to taste as long as it stays at or above that.",
+          "Same hue, {ratio}:1 against {background}, where {required}:1 is the minimum.",
           { ratio: suggestion.ratio, background: suggestion.background, required: suggestion.required }
         )}
       </p>
@@ -1392,7 +1392,7 @@ function CodeFixSuggestion({ fix }: { fix: NonNullable<AccessibilityFinding["sug
   return (
     <div className="a11y-code-fix">
       <p className="a11y-code-fix-label">
-        <strong>{t("AI fix")}</strong> {t("Written by AI from this element's markup. Check it before you use it.")}
+        <strong>{t("AI fix")}</strong> {t("Written by AI. Check it before you use it.")}
       </p>
       {fix.note && <p className="a11y-code-fix-note">{fix.note}</p>}
       <p className="a11y-code-fix-key">{t("Current markup")}</p>

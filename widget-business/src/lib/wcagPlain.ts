@@ -229,19 +229,19 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "color-contrast": {
     research:
-      "WebAIM checks a million homepages every year. Low-contrast text is the most common failure it finds, year after year. Far more people see less sharply than a design team's monitors assume.",
+      "Low-contrast text is the most common failure in WebAIM's yearly check of a million homepages. Far more people see less sharply than a design team's monitors assume.",
     plain: "Text too faint to read",
     found: (n) =>
-      `${n} ${n === 1 ? "piece" : "pieces"} of text on this page ${n === 1 ? "sits" : "sit"} too close in colour to the background behind ${n === 1 ? "it" : "them"}. The technical version gives the measured ratio.`,
+      `${n} ${n === 1 ? "piece" : "pieces"} of text on this page ${n === 1 ? "sits" : "sit"} too close in colour to the background behind ${n === 1 ? "it" : "them"}.`,
     impact:
       "Hard to read in bright light, on a cheap screen, in a dim room, or with imperfect eyesight. The message doesn't land.",
   },
   "image-alt": {
     research:
-      "WebAIM checks a million homepages every year. Images with no description sit among its most common failures, year after year. It is also one of the simplest to resolve.",
+      "Images with no description are among the most common failures in WebAIM's yearly check of a million homepages. They are also among the simplest to fix.",
     plain: "Images have no description",
     found: (n) =>
-      `${n} ${n === 1 ? "image has" : "images have"} no alt text at all, not even an empty one to mark ${n === 1 ? "it" : "them"} decorative. A screen reader falls back to reading the filename aloud, or skips ${n === 1 ? "it" : "them"} in silence.`,
+      `${n} ${n === 1 ? "image has" : "images have"} no alt text at all, not even an empty one to mark ${n === 1 ? "it" : "them"} decorative.`,
     impact:
       "Screen reader users hear nothing for these images, and search engines can't tell what they show. It costs the site both accessibility and SEO.",
   },

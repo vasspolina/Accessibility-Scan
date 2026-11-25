@@ -431,25 +431,14 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
         />
       </dl>
 
+      {/* One caret (user's instruction, 25 Nov 2026, "combine in one
+          carret"): the step's own line opens the draft, the triangle before
+          its number. Copy stays at the line's far end (24 Nov 2026, "the
+          button can be at same row on far right"), so the draft can be
+          taken shut. The second line, "The statement", that used to open
+          it is gone. */}
       <div className="a11y-stmt-step">
         <h3 className="a11y-stmt-step-head">
-          <span className="a11y-stmt-step-num" aria-hidden="true">2</span>
-          {t("Take the statement")}
-        </h3>
-        {/* Copy on the step's own line, at its far end (user's instruction,
-            24 Nov 2026, "the button can be at same row on far right"), so
-            the draft can be taken without opening it. */}
-        <button type="button" className="a11y-sr-play a11y-stmt-copy" onClick={copy}>
-          {copied ? t("Copied") : t("Copy")}
-        </button>
-      </div>
-
-      {/* The draft, its label and its Copy on one card, the way the design
-          draws it. Copy used to sit in a row above the text with no visible
-          tie to it; on the bar it is unmistakably the control for the block
-          it sits on. */}
-      <div className="a11y-stmt-card" data-open={draftOpen || undefined}>
-        <h4 className="a11y-stmt-card-title">
           <button
             type="button"
             className="a11y-stmt-toggle"
@@ -457,9 +446,16 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
             aria-controls="a11y-stmt-draft"
             onClick={() => setDraftOpen((v) => !v)}
           >
-            {t("The statement")}
+            <span className="a11y-stmt-step-num" aria-hidden="true">2</span>
+            <span className="a11y-stmt-toggle-words">{t("Take the statement")}</span>
           </button>
-        </h4>
+        </h3>
+        <button type="button" className="a11y-sr-play a11y-stmt-copy" onClick={copy}>
+          {copied ? t("Copied") : t("Copy")}
+        </button>
+      </div>
+
+      <div className="a11y-stmt-card" data-open={draftOpen || undefined}>
         <div className="a11y-stmt-code" id="a11y-stmt-draft" hidden={!draftOpen}>
           {/* Focusable on purpose. The block scrolls (overflow: auto), and a
               scrollable box that can't be focused is unreachable by keyboard —
@@ -491,7 +487,7 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
 
       <p className="a11y-conf-caveat">
         <strong>{t("Read it before you publish.")}</strong>{" "}
-        {t("Make sure it matches the testing you have actually done. This is a starting point, not legal advice.")}
+        {t("Not legal advice.")}
       </p>
     </section>
   );
