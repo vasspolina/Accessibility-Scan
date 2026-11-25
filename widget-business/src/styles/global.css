@@ -7456,3 +7456,17 @@
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-synthesis: none;
   font-weight: 200; letter-spacing: 0;
 }
+
+
+/* ═══ NEW CHAT AND REPORT A BARRIER STACKED (user's instructions, 25 Nov
+   2026, "slightly bigger", then "dont need to be stretched, just need to
+   be stacked on top of each other") ═══
+   The two pills stand one under the other at the panel's left edge, each
+   as wide as its words, 4px apart (they sat side by side). 44px tall with
+   16px inside (were 32px and 12px); the words stay 18px, the smallest of
+   the three sizes. Colours, hover and the dashed disabled edge are the
+   grey pills' blocks above, unchanged. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-new[type="button"][class] {
+  display: flex; align-items: center; box-sizing: border-box;
+  width: fit-content; min-height: 44px; margin: 0 0 var(--cds-spacing-02); padding: var(--cds-spacing-03) var(--cds-spacing-05);
+}
