@@ -279,7 +279,6 @@
 .a11y-widget-biz .a11y-sr-line-text,
 .a11y-widget-biz .a11y-sr-num,
 .a11y-widget-biz .a11y-sum-dial-num,
-.a11y-widget-biz .a11y-sum-dial-of,
 .a11y-widget-biz .a11y-switch-controls,
 .a11y-widget-biz .a11y-switch-label { margin-inline-end: var(--cds-spacing-03); }
 
@@ -1067,7 +1066,6 @@
 }
 .a11y-widget-biz .a11y-sum-dial-face { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
 .a11y-widget-biz .a11y-sum-dial-num { font-size: 48px; letter-spacing: 0; font-weight: 200; line-height: 1; margin: 0; }
-.a11y-widget-biz .a11y-sum-dial-of { font-size: 18px; letter-spacing: 0.025em; margin: 0; }
 
 /* The scan summary as a run of display type (user's instruction,
    4 Nov 2026, kept with the dial; no corner marks, user's word the same
@@ -3223,7 +3221,7 @@
    strong or th included) is drawn in Ultralight, and this list names the
    elements whose browser style sets its own face or weight. */
 .a11y-widget-biz :where(button, input, select, textarea, label, small, th, strong, b, optgroup, option,
-  .a11y-shell-nav-link, .a11y-switch-word, .a11y-url-submit-note, .a11y-sum-dial-of) { font-family: inherit; font-weight: 200; }
+  .a11y-shell-nav-link, .a11y-switch-word, .a11y-url-submit-note) { font-family: inherit; font-weight: 200; }
 
 /* ═══ THE WARNING AS A BUBBLE (user's instruction, 22 Nov 2026, "make
    warning a buble") ══════════════════════════════════════════════════════
@@ -6148,9 +6146,11 @@
 /* Play, the transport, the status, the keys: set left under the bar.
    Every control in the panel is a grey pill (user's reference, 25 Nov
    2026, "design these like these", a type foundry's row of family pills,
-   one of them black): no edge, 999px corners, 48px tall, 0 20px inside,
-   18px words, 6px apart (measured off the reference at half its pixels:
-   pills 96px tall, gaps 13px). The grey is #e6e6e6 with black words,
+   one of them black): no edge, 999px corners, 18px words, 6px apart.
+   Since the same day ("design these like these, all in one row", "less
+   padding", a black "ABC Caps" pill beside a grey one) Play, the filter
+   and Skip the transcript stand in one row, and every pill is 34px tall
+   with 0 12px inside (it was 48px and 0 20px). The grey is #e6e6e6 with black words,
    17.6:1, fixed in both themes because the panel is; Play (or Pause,
    Resume) is the reference's black pill, white words, and so is the filter
    while it is on, its check mark kept. Hover is the mint, black words, so
@@ -6165,7 +6165,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-transport { gap: var(--cds-spacing-03); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-play[class]:enabled {
-  justify-content: center; min-height: 48px; padding: 0 var(--cds-spacing-05); border: 1px solid #000; border-radius: 999px;
+  justify-content: center; min-height: 34px; padding: 0 var(--cds-spacing-04); border: 1px solid #000; border-radius: 999px;
   background: #000; color: #fff; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; text-align: center;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-play[class]:enabled:hover { border-color: var(--sr-pill-hover); background: var(--sr-pill-hover); color: #000; }
@@ -6173,7 +6173,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-play[class] > svg { display: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] :is(.a11y-sr-ctl, .a11y-skip-link)[class],
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-show-all[class] {
-  justify-content: center; min-height: 48px; padding: 0 var(--cds-spacing-05); border: 1px solid var(--sr-pill); border-radius: 999px;
+  justify-content: center; min-height: 34px; padding: 0 var(--cds-spacing-04); border: 1px solid var(--sr-pill); border-radius: 999px;
   background: var(--sr-pill); color: #000; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] :is(.a11y-sr-ctl, .a11y-skip-link)[class]:enabled:hover,
@@ -6189,7 +6189,7 @@
 /* The filter: a grey pill, black with its check mark when on. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar.a11y-sr-tools[class] { justify-content: flex-start; gap: var(--cds-spacing-03); margin: var(--cds-spacing-07) 0 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class] {
-  position: relative; gap: var(--cds-spacing-03); min-height: 48px; padding: 0 var(--cds-spacing-05); border: 1px solid var(--sr-pill); border-radius: 999px;
+  position: relative; gap: var(--cds-spacing-03); min-height: 34px; padding: 0 var(--cds-spacing-04); border: 1px solid var(--sr-pill); border-radius: 999px;
   background: var(--sr-pill); color: #000; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class]:has(:checked) { border-color: #000; background: #000; color: #fff; }
@@ -6264,7 +6264,7 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] h2.a11y-section-title:not(.a11y-accordion-title)[class] { font-size: 24px; letter-spacing: 0.04em; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] { margin-top: var(--cds-spacing-06); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar.a11y-sr-tools[class] { margin-top: var(--cds-spacing-06); }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-ctl[class] { width: 48px; padding-inline: 0; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-ctl[class] { width: 34px; padding-inline: 0; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-log { margin-top: var(--cds-spacing-06); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-list[class] { gap: var(--cds-spacing-03); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-row[class][class] { gap: var(--cds-spacing-02) var(--cds-spacing-04); min-height: 60px; padding: var(--cds-spacing-03) var(--cds-spacing-05) var(--cds-spacing-03) var(--cds-spacing-04); border-radius: var(--r-card); }
@@ -6340,9 +6340,11 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n + 2 of :not(.a11y-prompt-barrier)) { --note: var(--plate-2); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt[class]:nth-child(3n of :not(.a11y-prompt-barrier)) { --note: var(--plate-3); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt.a11y-prompt:not(.a11y-prompt-barrier):has(> .a11y-prompt-q:enabled):is(:hover, :has(> .a11y-prompt-q:focus-visible)) {
-  --ink: var(--plate-text); --paper: var(--note);
-  background: var(--note); color: var(--plate-text); border: 0; box-shadow: inset 0 0 0 1px var(--plate-text);
+/* Hover and focus are the beige since later the same day; see THE OPENING
+   QUESTIONS TWO TO A ROW at the end of the file. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt.a11y-prompt:has(> .a11y-prompt-q:enabled):is(:hover, :has(> .a11y-prompt-q:focus-visible)) {
+  --ink: var(--tile-ink); --paper: var(--tile);
+  background: var(--tile); color: var(--tile-ink); border: 0; box-shadow: none; outline: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt.a11y-prompt:has(> .a11y-prompt-q:disabled) { border: 0; outline: 1px dashed var(--tile-ink); outline-offset: -1px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-ask { margin-top: var(--cds-spacing-02); }
@@ -6424,12 +6426,12 @@
    Centred throughout, on the page's paper.
    - "Your score" is the specimen's caption, 18px, centred; Copy summary
      is the small pill under it, the ordinary button, centred.
-   - The C dial, 280px (200px under 640px), centred on three guide lines
-     that run the full width: a 1px ink line through the top of the stroke
-     (8% down), a 1px dashed ink line at 36%, and the baseline in the blue
-     word tone through the foot of the stroke (92%). The counter is filled
-     with the paper, so the lines stop at the letter and never cross the
-     number.
+   - The C dial, 336px (240px on a phone), on no lines (user's
+   instruction, 25 Nov 2026, "delete lines, make moon 20% larger, and big
+   number inside, do not say out of 100": the guide lines are gone and the
+   C is 20% over its 280px and 200px). The score alone sits in its bowl at
+   120px (88px on a phone), a display size outside the four by the user's
+   word; "out of 100" is said only to screen readers, in the dial's name.
    - What the range means under it, centred, 32px (24px on a phone).
    - "N issues found" as a caption, 18px, centred, then the issues three
      to a row (user's instruction, 25 Nov 2026, "fold this in 3 rows": each
@@ -6463,17 +6465,13 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run:first-child { margin-top: var(--cds-spacing-06); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-dial-card {
-  --dial: 280px;
+  --dial: 336px;
   display: block; position: relative; height: var(--dial); margin: 0;
-  background:
-    linear-gradient(var(--ink), var(--ink)) 0 calc(var(--dial) * 0.08) / 100% 1px no-repeat,
-    repeating-linear-gradient(90deg, var(--ink) 0 6px, transparent 6px 12px) 0 calc(var(--dial) * 0.36) / 100% 1px no-repeat,
-    linear-gradient(var(--word-blue), var(--word-blue)) 0 calc(var(--dial) * 0.92) / 100% 1px no-repeat;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen .a11y-sum-dial-card > .a11y-sum-dial {
   width: var(--dial); height: var(--dial); margin: 0 auto;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-dial circle.a11y-sum-dial-counter { fill: var(--paper); stroke: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen .a11y-sum-dial-num { font-size: 120px; line-height: 1; letter-spacing: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-verdict {
   max-width: 24em; margin: var(--cds-spacing-07) auto 0; text-align: center;
 }
@@ -6527,7 +6525,8 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title:focus-visible { outline: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title:focus-visible::after { outline: 2px solid var(--focus); outline-offset: -2px; }
 @media (max-width: 671px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-dial-card { --dial: 200px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-dial-card { --dial: 240px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen .a11y-sum-dial-num { font-size: 88px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-issues { margin-top: var(--cds-spacing-10); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec { gap: var(--cds-spacing-05); padding: var(--cds-spacing-05); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title { font-size: 18px; line-height: 1.4; }
@@ -6769,10 +6768,16 @@
    in both themes, black words 19:1), 20px corners, 24px inside (16px on a
    phone), 20px apart, as many to a row as fit at 260px or more, so three
    on a desktop and one on a phone. Each card's head (the standard, the two
-   titles) is the issue title's mono face at 24px/1.35 (18px on a phone),
-   its words under it in the body face at the same size, 12px between
-   them. The question numbers keep their solid rounds, black with yellow
-   figures, since --ink and --paper are redefined on the card. */
+   titles) is the issue title's mono face at 24px (18px on a phone), its
+   words under it in the body face at the same size, 12px between them.
+   Leading 1.1 (1.15 at 18px on a phone; user's reference, 25 Nov 2026,
+   "line height needs to be like this", a foundry's product copy measured
+   at about 42px of line on 38px type); it was 1.35 and 1.4. The question
+   numbers keep their solid rounds, black with yellow figures, since --ink
+   and --paper are redefined on the card, now one line tall (an 18px
+   figure in a 26px round, 22px plus the 2px padding round it, on the
+   26.4px line; 21px on the phone's 20.7px line), where the 36px round
+   had held each question's first line open past its leading. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: var(--cds-spacing-05) var(--cds-grid-gutter-narrow);
   margin: var(--cds-spacing-07) 0 0;
@@ -6786,25 +6791,114 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-standard, .a11y-legal-eyebrow) {
   display: block; margin: 0 0 var(--cds-spacing-04); padding: 0; border: 0; background: none; color: #000;
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
-  font-size: 24px; font-weight: 400; line-height: 1.35; letter-spacing: 0; text-transform: none;
+  font-size: 24px; font-weight: 400; line-height: 1.1; letter-spacing: 0; text-transform: none;
   overflow-wrap: anywhere;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-intro, .a11y-legal-lead, .a11y-legal-q) {
-  margin: 0; color: #000; font-size: 24px; line-height: 1.35; letter-spacing: 0.015em;
+  margin: 0; color: #000; font-size: 24px; line-height: 1.1; letter-spacing: 0.015em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards .a11y-legal-card { margin: 0; padding: 0; border: 0; background: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards .a11y-legal-q + .a11y-legal-q { margin-top: var(--cds-spacing-03); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards .a11y-legal-q > .a11y-legal-qnum { margin-top: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards .a11y-legal-q > .a11y-legal-qnum { width: 22px; height: 22px; margin-top: 0; font-size: 18px; }
 @media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards > :is(.a11y-legal-std, .a11y-legal-band, .a11y-legal-panel) { padding: var(--cds-spacing-05); }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-standard, .a11y-legal-eyebrow) { font-size: 18px; line-height: 1.4; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-intro, .a11y-legal-lead, .a11y-legal-q) { font-size: 18px; line-height: 1.4; letter-spacing: 0.025em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-standard, .a11y-legal-eyebrow) { font-size: 18px; line-height: 1.15; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-intro, .a11y-legal-lead, .a11y-legal-q) { font-size: 18px; line-height: 1.15; letter-spacing: 0.025em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards .a11y-legal-q > .a11y-legal-qnum { width: 17px; height: 17px; }
 }
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards > :is(.a11y-legal-std, .a11y-legal-band, .a11y-legal-panel) { border: 1px solid CanvasText; }
 }
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards > * { break-inside: avoid; }
+}
+
+/* ===== THE PRINCIPLE GROUPS' TITLES 120% OF THE PROSE =====
+   "Can people use it?" and its siblings under "What people can't use"
+   (user's instruction, 25 Nov 2026, "make this title 120% larger"): they
+   were the prose size, 32px, the same as the section title over them.
+   120% of 32 is 38.4, set as 38px at the 32px step's 1.1 leading and
+   0.01em tracking; on a phone 120% of the 24px headings, 29px. The one
+   exception to three sizes only, at the user's word. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-principle-group .a11y-principle-title {
+  font-size: 38px; line-height: 1.1; letter-spacing: 0.01em;
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-principle-group .a11y-principle-title { font-size: 29px; }
+}
+
+/* ═══ THE CHAT BOX AS A ROUND BAR OF GREY PILLS (user's reference, 25 Nov
+   2026, "design this like this": a foundry's search bar with a grey
+   Explore pill, and its row of grey name pills, the chosen one black) ═══
+   The box loses its dotted edge: a --bubble ground (#e6e6e6, dark
+   #1c1c1e), 32px corners, no edge, 20px 24px inside. Its buttons (Voice
+   control, Scan a page behind a login, Back) are white pills on it
+   (--bubble-pill), no edge, 999px corners, 34px tall; Send is the solid
+   black pill, as the reference's chosen name is; a disabled Send keeps
+   its dashed edge, because dashed means disabled across the widget. The
+   section pills under the box ("Since last time") are the same grey pills
+   on the paper, 4px apart. Hover is mint as on every button. The focus
+   line round the box while you type stays. On a phone the box keeps its
+   round send arrow. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-chat-box,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box {
+  border: 0; border-radius: 32px; padding: 20px 24px; background: var(--bubble); color: var(--ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box .a11y-btn[class][class] {
+  min-height: 34px; padding: 4px 14px; border: 0; border-radius: 999px;
+  background: var(--bubble-pill); color: var(--ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box .a11y-btn[class][class][type="submit"] { background: var(--solid); color: var(--solid-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box .a11y-btn[class][class]:enabled:hover { background: var(--hover); color: var(--hover-ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box .a11y-btn[class][class]:disabled {
+  border: 1px dashed var(--ink); background: transparent; color: var(--ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-suggest[class] { gap: 4px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-suggest .a11y-chat-chip[class] {
+  min-height: 34px; padding: 4px 14px; border: 0; border-radius: 999px;
+  background: var(--bubble); color: var(--ink);
+  font-size: 18px; line-height: 1.2; letter-spacing: 0.025em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-suggest .a11y-chat-chip[class]:enabled:hover { background: var(--hover); color: var(--hover-ink); }
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-chat-box { border-radius: 24px; padding: 12px 10px 10px 16px; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box,
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box .a11y-btn[class][class],
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-suggest .a11y-chat-chip[class] { border: 1px solid ButtonText; }
+}
+
+/* ═══ THE OPENING QUESTIONS TWO TO A ROW, IN TWO COLUMNS, BEIGE ON HOVER
+   (user's instructions, 25 Nov 2026, "make these two per row and text on
+   it two columns", "add proper hover with beige color and dont do outline
+   on hover") ═══════════════════════════════════════════════════════════
+   Two cards to a row at every width above a phone (four in a row before).
+   Inside, the group's name and the question stand side by side, two equal
+   columns 16px apart; under 900px of card grid (a card under about 440px,
+   where the question's column fell to four words a line) they stack. Hover
+   and keyboard focus turn every card, Report a barrier included, the
+   studio's beige (--tile, #f2f0e6 with black words 19:1; dark #1c1c1e
+   with white) with no edge: the 1px inset line of the plates block is
+   gone. The keyboard focus ring on the question stays, since it is how a
+   keyboard user sees where they are. The pills at the foot are unchanged. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-grid[class] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q[class] {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 16px; row-gap: 8px; align-items: start;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q[class] > .a11y-prompt-ask { margin-top: 0; }
+@container a11y-prompts (max-width: 900px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q[class] { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-grid[class] { grid-template-columns: none; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt .a11y-prompt-q[class] { grid-template-columns: minmax(0, 1fr); }
+}
+/* Two to a row, the 296:285 proportion made each card about 570px tall at
+   1440px; the card is as tall as its words and pills, 220px at least. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-grid > .a11y-prompt { aspect-ratio: auto; min-height: 220px; }
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-grid > .a11y-prompt { min-height: 0; }
 }
 
 /* ═══ EVERY LIST NUMBER IN A RING (user's reference, 25 Nov 2026, "design

@@ -970,9 +970,10 @@ export function ScanChat({
     if (outcome.kind === "audit") showSection("audit", { ...quiet, resultKey: resultKeyOf(outcome.audit) });
   }
 
-  /** One assistant turn, and the tools it calls. A scan gets a second turn
-   *  so the assistant can say what came back; a shown section does not —
-   *  the block speaks for itself, and the next question picks it up. */
+  /** One assistant turn, and the tools it calls. Only a failed scan gets a
+   *  second turn, to say what went wrong or offer another address; a
+   *  finished scan and a shown section do not: the blocks speak for
+   *  themselves, and the next question picks them up. */
   async function assistantTurn(messages: ChatMessage[], source?: ChatSource) {
     const turnId = nextId++;
     add({ id: turnId, who: "checker", text: "", streaming: true });
@@ -1077,17 +1078,21 @@ export function ScanChat({
       // Committed before the next request, success or not: a tool call
       // without its result would make every later turn invalid.
       history.current = appendUser(history.current, [toolResult]);
+      // A finished scan gets no reply (user's instruction, 25 Nov 2026,
+      // "delete this chapter", on the paragraph that retold the score and
+      // the first findings over the blocks that show them). The result
+      // stays in the history, and the next question joins that user turn.
+      if (!failed) {
+        showResult(outcome);
+        return;
+      }
       try {
         await assistantTurn(history.current);
       } catch (err) {
-        // The scan finished even if the reply about it did not: say both,
-        // in the one message the failure path shows and announces.
+        // The scan failed and the reply about it did too: say both, in the
+        // one message the failure path shows and announces.
         const why = err instanceof Error ? err.message : t("The assistant couldn't answer that.");
         throw new ChatError(`${outcomeLine(outcome)} ${why}`, err instanceof ChatError ? err.status : undefined);
-      } finally {
-        // The block is the scan's, not the reply's: it is shown whether or
-        // not the assistant managed to say anything about it.
-        if (!failed) showResult(outcome);
       }
     }
   }
