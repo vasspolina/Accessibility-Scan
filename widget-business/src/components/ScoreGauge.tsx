@@ -221,6 +221,9 @@ const BAND_WORD = (score: number) =>
    rather than only the one the template happened to draw. */
 const DIAL_R = 42;
 const DIAL_C = 2 * Math.PI * DIAL_R;
+/* The C's stroke: the reference's is about an eighth of the letter's
+   width (82 of 690 units), so 12 in this 100-unit box, round ended. */
+const DIAL_W = 12;
 
 export function ScoreGauge({
   score,
@@ -230,7 +233,6 @@ export function ScoreGauge({
   allFindings,
   total,
   tookSeconds,
-  onSeeFindings,
   warning,
 }: {
   score: number;
@@ -239,9 +241,6 @@ export function ScoreGauge({
      "combine in 3 columns"): it qualifies the score, so it stands with
      the key rather than in a bubble under it. */
   warning?: { title: string; subtitle: string };
-  /* Takes the reader to the findings schedule: the round sticker on the
-     dial. Left out in the conversation, where the findings follow. */
-  onSeeFindings?: () => void;
   /* For the run pills beside the dial: how many issues, and how long it
      took. Both come from the report rather than being recounted here. */
   total: number;
@@ -264,6 +263,7 @@ export function ScoreGauge({
   const { inChat } = useReportView();
   const [copied, setCopied] = useState(false);
   const grouped = groupFindings(findings);
+  const dialShare = Math.max(0, Math.min(100, score)) / 100;
   const preview = grouped.slice(0, PREVIEW_LIMIT);
   /* The same answer the report-actions panel gets, from the same shared
      helper — computing it twice would be two places to disagree. */
@@ -337,24 +337,31 @@ export function ScoreGauge({
         {t("Your score")}
       </h2>
 
-      {/* The score as a type tester's panel with the issues as cards
-          beside it (user's reference, 25 Nov 2026, "design this like
-          this", a foundry's tester and its release-note cards). The grey
-          panel holds what the range means as its caption, the dial in a
-          white window, and Copy summary as a pill at its foot; the worst
-          issues stand beside it, one pale card each: the severity as an
-          outlined pill, the title, the criterion and places under it, and
-          the element's picture at the right where the scan took one.
-          How the score works and the warning follow as rows. */}
-      <div className="a11y-sum-grid">
-        <div className="a11y-sum-top">
+      {/* The score as a type specimen (user's references, 25 Nov 2026: a
+          foundry's tester and its C on the glyph's guide lines). Centred
+          throughout: the title as the specimen's small caption with Copy
+          summary as the small pill under it, the C dial on three guide
+          lines that run the full width, what the range means under it as
+          the specimen line, then each issue as a specimen of its own, a
+          small caption (criterion, severity, places) over the title. How
+          the score works and the warning follow as rows. */}
+      <div className="a11y-sum-grid a11y-sum-specimen">
+        {/* Plain text, not the report's own HTML: the point is to leave the
+            widget entirely, an email or a message to whoever owns the fix. */}
+        {!inChat && (
+          <div className="a11y-sum-actions">
+            <button type="button" className="a11y-show-all a11y-score-copy" onClick={copySummary}>
+              {copied ? t("Copied") : t("Copy summary as plain text")}
+            </button>
+            <span className="a11y-sr-only" role="status">
+              {copied ? t("Summary copied to the clipboard.") : ""}
+            </span>
+          </div>
+        )}
+
         <section className="a11y-sum-run" aria-labelledby="a11y-sum-run-heading">
           <h3 className="a11y-sr-only" id="a11y-sum-run-heading">{t("Scan summary")}</h3>
 
-          {/* What the range means: the panel's caption, over the number. */}
-          <p className="a11y-sum-verdict">{t(scoreSummary(score, seed))}</p>
-
-          <div className="a11y-sum-window">
           <div className="a11y-sum-dial-card">
             {/* One label carries the whole thing, and every part of the
                 drawing is hidden: the arc and the numeral repeat it. */}
@@ -376,47 +383,32 @@ export function ScoreGauge({
                     })
               }
             >
+              {/* The dial as a C (user's reference, 25 Nov 2026, a type
+                  foundry's C): one thick stroke with round ends and no
+                  track. The arc is the score, centred on the left, so the
+                  opening on the right is what is missing. An SVG circle's
+                  stroke starts at three o'clock and runs clockwise, so
+                  turning it by 180·(1 − s) degrees centres an arc of s·C
+                  on nine o'clock. */}
               <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+                {/* The counter, in the paper's colour, so the guide lines
+                    stop at the letter as they do in the glyph view and
+                    never run through the number. */}
+                <circle className="a11y-sum-dial-counter" cx="50" cy="50" r={DIAL_R} />
                 <circle cx="50" cy="50" r={DIAL_R} fill="none"
-                  stroke="var(--orange-20)" strokeWidth="9" />
-                <circle cx="50" cy="50" r={DIAL_R} fill="none"
-                  stroke="var(--orange-50)" strokeWidth="9" strokeLinecap="round"
-                  strokeDasharray={`${(Math.max(0, Math.min(100, score)) / 100) * DIAL_C} ${DIAL_C}`}
-                  transform="rotate(-90 50 50)" />
+                  strokeWidth={DIAL_W} strokeLinecap="round"
+                  strokeDasharray={`${dialShare * DIAL_C} ${DIAL_C}`}
+                  transform={`rotate(${180 * (1 - dialShare)} 50 50)`} />
               </svg>
               <span className="a11y-sum-dial-face" aria-hidden="true">
                 <span className="a11y-sum-dial-num">{score}</span>
                 <span className="a11y-sum-dial-of">{t("out of 100")}</span>
               </span>
             </div>
-            {/* The round sticker on the dial (user's instruction, 23 Nov
-                2026): a call to act, a real button after the dial in the
-                markup. Left out in the conversation, where the findings
-                follow. */}
-            {onSeeFindings && !inChat && findings.length > 0 && (
-              <button type="button" className="a11y-dial-sticker" onClick={onSeeFindings}>
-                <span className="a11y-dial-sticker-words">
-                  {/* No count: "N issues found" heads the cards beside it. */}
-                  {findings.length === 1 ? t("See the finding") : t("See the findings")}
-                </span>
-              </button>
-            )}
-          </div>
           </div>
 
-          {/* Plain text, not the report's own HTML: the point is to leave
-              the widget entirely, an email or a message to whoever owns the
-              fix. The pill at the panel's foot. */}
-          {!inChat && (
-            <div className="a11y-sum-actions">
-              <button type="button" className="a11y-show-all a11y-score-copy" onClick={copySummary}>
-                {copied ? t("Copied") : t("Copy summary as plain text")}
-              </button>
-              <span className="a11y-sr-only" role="status">
-                {copied ? t("Summary copied to the clipboard.") : ""}
-              </span>
-            </div>
-          )}
+          {/* What the range means, the specimen line under the number. */}
+          <p className="a11y-sum-verdict">{t(scoreSummary(score, seed))}</p>
         </section>
 
         {preview.length === 0 ? (
@@ -429,21 +421,23 @@ export function ScoreGauge({
             {/* role="list" said out loud: WebKit drops the list role from a
                 list drawn without markers. */}
             {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
-            <ul className="a11y-sum-cards" role="list">
+            <ul className="a11y-sum-specs" role="list">
               {preview.map((group) => {
                 const rep = group[0];
                 const title = plainForRule(rep.ruleId)?.plain ?? rep.title ?? rep.description;
                 const crit = criterionOf(rep);
-                const shot = group.find((f) => f.elementScreenshot)?.elementScreenshot;
                 return (
-                  <li key={rep.id} className="a11y-sum-card" data-shot={shot ? "" : undefined}>
-                    {/* The severity as the card's pill, then the title,
-                        whose link covers the whole card. */}
-                    <span className="a11y-sum-card-pill">
+                  <li key={rep.id} className="a11y-sum-spec">
+                    {/* The specimen's caption: the criterion, the severity
+                        as its coloured word and the places, parted by a
+                        spaced em dash as criterion and level are. */}
+                    <p className="a11y-sum-spec-cap">
+                      {crit && <><span className="a11y-sum-spec-crit">{crit}</span>{" — "}</>}
                       <SeverityTag severity={rep.severity} label={t(SEVERITY_LABEL[rep.severity])} />
-                    </span>
+                      {group.length > 1 && <>{" — "}{tf("{count} places", { count: group.length })}</>}
+                    </p>
                     <a
-                      className="a11y-sum-card-title"
+                      className="a11y-sum-spec-title"
                       href={`#a11y-finding-${rep.id}`}
                       onClick={(e) => {
                         e.preventDefault();
@@ -452,21 +446,12 @@ export function ScoreGauge({
                     >
                       {title}
                     </a>
-                    {(crit || group.length > 1) && (
-                      <span className="a11y-sum-card-meta">
-                        {crit && <span>WCAG {crit}</span>}
-                        {group.length > 1 && <span>{tf("{count} places", { count: group.length })}</span>}
-                      </span>
-                    )}
-                    {/* The element itself; the title already names it. */}
-                    {shot && <img className="a11y-sum-card-shot" src={`data:image/jpeg;base64,${shot}`} alt="" />}
                   </li>
                 );
               })}
             </ul>
           </section>
         )}
-        </div>
 
         <section className="a11y-sum-counts" aria-labelledby={countsId}>
           <h3 className="a11y-sum-label" id={countsId}>{t("How the score works")}</h3>

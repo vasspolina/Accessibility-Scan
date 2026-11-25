@@ -602,7 +602,6 @@ export function App({
                 allFindings={report.findings}
                 total={report.summary.total}
                 tookSeconds={tookSeconds}
-                onSeeFindings={() => focusFindings("a11y-pro-findings")}
               />
               <ProSummary
                 report={report}
@@ -625,7 +624,6 @@ export function App({
                   allFindings={report.findings}
                   total={report.summary.total}
                   tookSeconds={tookSeconds}
-                  onSeeFindings={() => focusFindings("a11y-accessibility-heading")}
                   warning={incompleteWarning}
                 />
                 {/* In the conversation the score block heads a report the
