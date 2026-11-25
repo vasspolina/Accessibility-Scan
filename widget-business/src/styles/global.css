@@ -6772,10 +6772,11 @@
    The roman of the reference is PP Lettra Mono Ultralight (the user's "use
    letra for serif"), no tracking, 1.15 leading: the heading is the caption
    at 24px over the rest, first in the markup, with no pill now. The first
-   point is the names, PP Telegraf Regular 32px set solid (1.0) and tight
-   (-0.025em, the reference's letters nearly touch; Regular is the heaviest
-   the widget draws), with 0.08em more word space, since at -0.03em
-   "visitors. Each" and "finish: phone" read as one word. The other points are the date lines, Lettra at 24px.
+   point is the names, PP Telegraf Regular 32px set solid (1.0) at the
+   widget's own tracking for its size, +0.01em (+0.015em at 24px on a
+   phone): the reference's tight -0.025em crowded the letters ("make proper
+   letter spacing", the same day). The other points are the date lines,
+   Lettra at 24px.
    On a phone 18px, 24px and 18px. The icon is the pixel mark: the icon
    set's information or warning--alt at 48px (32px) in the ink, centred at
    the foot by flex order (first in the markup, aria-hidden). Focus never
@@ -6806,7 +6807,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-pill + .a11y-sum-point[class][class] {
   font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 32px; font-weight: 400;
-  line-height: 1; letter-spacing: -0.025em; word-spacing: 0.08em;
+  line-height: 1; letter-spacing: 0.01em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-pill[class] {
   order: 0; margin: 0; padding: 0; border: 0; border-radius: 0;
@@ -6818,7 +6819,7 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > :not(.a11y-sum-card) + .a11y-sum-card[class][class] { margin-top: var(--cds-spacing-10); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-pic { font-size: 32px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body { gap: var(--cds-spacing-05); font-size: 18px; line-height: 1.2; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-pill + .a11y-sum-point[class][class] { font-size: 24px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-pill + .a11y-sum-point[class][class] { font-size: 24px; letter-spacing: 0.015em; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-pill[class] { font-size: 18px; line-height: 1.2; }
 }
 @media (forced-colors: active) {
