@@ -35,7 +35,9 @@ export interface MountOptions {
 // letra as mono font"), its Ultralight cut declared for every weight like
 // Telegraf (the free package has only Ultralight and Medium upright), and
 // its Medium cut from 500 up, for the principle groups' titles only (user's
-// instruction, 25 Nov 2026, "also use letra medium mono"). It is
+// instruction, 25 Nov 2026, "also use letra medium mono") and the report's
+// section titles; its Medium Italic, for every weight, sets the line under
+// each section title (user's instruction, 25 Nov 2026). It is
 // the first name in every mono stack in global.css, with the system mono
 // behind it. Same free-for-personal-use licence as the Telegraf files.
 // EB Garamond (SIL OFL, latin subset from @fontsource/eb-garamond 5, the
@@ -68,6 +70,13 @@ function injectFonts(apiBase: string) {
   src: url("${base}/fonts/PPLettraMono-Medium.otf") format("opentype");
   font-weight: 500 900;
   font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PP Lettra Mono";
+  src: url("${base}/fonts/PPLettraMono-MediumItalic.otf") format("opentype");
+  font-weight: 100 900;
+  font-style: italic;
   font-display: swap;
 }
 @font-face {

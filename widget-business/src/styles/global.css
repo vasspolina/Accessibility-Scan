@@ -7340,3 +7340,34 @@
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] { padding: 0; border-radius: 0; background: none; }
 }
+
+/* ═══ THE SECTION TITLES IN LETTRA MONO, UNDERLINED, THE LINE UNDER IN
+   ITALIC (user's references, 25 Nov 2026, "set these titles like these
+   use letra bold", "and like these but left alligned": two event posters,
+   a large name underlined with small words beside it and the lines under
+   it in a smaller size, roman mixed with italic) ═══════════════════════
+   Every visible report section title (the ones that stand under the
+   section's rule) is PP Lettra Mono Medium, the package's heaviest cut
+   (it has no Bold), at 48px, the display step, set solid at 1.05 with no
+   tracking, since a mono face is spaced by its own widths; set left. It is
+   underlined as the posters' names are: a 2px ink line 0.14em under the
+   baseline, unbroken through descenders. The count's round hangs after it
+   as before (an inline grid, so the line does not run under it). The line
+   under the title (.a11y-section-desc) is Lettra Mono Medium Italic at
+   24px/1.15, the posters' smaller italic lines. On a phone 32px and 18px.
+   The accordion heads (the conformance report, the screen reader
+   simulation) are bars with their own type and are left alone. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report h2:is(.a11y-section-title, .a11y-top-title, .a11y-legal-title, .a11y-results-title):not(.a11y-sr-only, .a11y-accordion-title) {
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-size: 48px; font-weight: 500; font-style: normal; line-height: 1.05; letter-spacing: 0; text-align: left;
+  text-decoration: underline; text-decoration-color: var(--ink); text-decoration-thickness: 2px;
+  text-underline-offset: 0.14em; text-decoration-skip-ink: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report .a11y-section-desc {
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-size: 24px; font-weight: 500; font-style: italic; font-synthesis: none; line-height: 1.15; letter-spacing: 0; text-align: left;
+}
+@media (max-width: 671px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report h2:is(.a11y-section-title, .a11y-top-title, .a11y-legal-title, .a11y-results-title):not(.a11y-sr-only, .a11y-accordion-title) { font-size: 32px; text-decoration-thickness: 1.5px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report .a11y-section-desc { font-size: 18px; }
+}
