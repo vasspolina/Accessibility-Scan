@@ -6087,6 +6087,19 @@
    that was bigger"), 12px apart. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > * > :is(.a11y-fd-points, ul:not(.a11y-occurrence-list))[class] > li + li,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class] > ul > li + li { margin-top: var(--cds-spacing-04); }
+/* The dash is drawn, not the list's outside marker (user's "fix", 25 Nov
+   2026, on a dash standing outside its card's left edge): where an outside
+   marker hangs is the browser's choice, and it hung past the card's 40px
+   start. Drawn as a 1em box pulled 1em back, it sits 1em left of the words
+   in every browser: 29px of the 40px start on a desktop, 22px of the list's
+   own 40px indent on a phone. The lists keep role="list" for Safari, and the
+   dash has empty alt text, so nothing is read out for it. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > * > :is(.a11y-fd-points, ul:not(.a11y-occurrence-list))[class] > li,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class] > ul > li { list-style: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > * > :is(.a11y-fd-points, ul:not(.a11y-occurrence-list))[class] > li::before,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class] > ul > li::before {
+  content: "\2013" / ""; display: inline-block; width: 1em; margin-inline-start: -1em;
+}
 @container a11y-ftable (min-width: 641px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class] { padding: var(--cds-spacing-06) var(--cds-spacing-06) var(--cds-spacing-06); }
   /* A list's en dash hangs in the row's 40px start, so its words share the
@@ -6501,14 +6514,14 @@
      the yellow).
    How the score works and the warning keep their rows. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score:has(> .a11y-sum-specimen) > h2.a11y-section-title {
-  text-align: left; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  text-align: center; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-actions {
-  display: flex; justify-content: flex-start; margin: var(--cds-spacing-04) 0 0; padding: 0;
+  display: flex; justify-content: center; margin: var(--cds-spacing-04) 0 0; padding: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-actions > .a11y-score-copy { margin: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run {
-  display: block; margin: var(--cds-spacing-08) 0 0; padding: 0; text-align: left;
+  display: block; margin: var(--cds-spacing-08) 0 0; padding: 0; text-align: center;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run:first-child { margin-top: var(--cds-spacing-06); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-dial-card {
@@ -6516,14 +6529,14 @@
   display: block; position: relative; height: var(--dial); margin: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen .a11y-sum-dial-card > .a11y-sum-dial {
-  width: var(--dial); height: var(--dial); margin: 0;
+  width: var(--dial); height: var(--dial); margin: 0 auto;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen .a11y-sum-dial-num { font-size: 43px; line-height: 1; letter-spacing: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-verdict {
-  max-width: 24em; margin: var(--cds-spacing-07) 0 0; text-align: left;
+  max-width: 24em; margin: var(--cds-spacing-07) auto 0; text-align: center;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-issues {
-  display: block; margin-top: var(--cds-spacing-12); padding: 0; border: 0; text-align: left;
+  display: block; margin-top: var(--cds-spacing-12); padding: 0; border: 0; text-align: center;
   container: a11y-sum-issues / inline-size;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-issues > .a11y-sum-label {
@@ -6862,7 +6875,9 @@
    phone), 20px apart, as many to a row as fit at 260px or more, so three
    on a desktop and one on a phone. Each card's head (the standard, the two
    titles) is the issue title's mono face at 24px (18px on a phone), its
-   words under it in the body face at the same size, 12px between them.
+   words under it in the body face at the same size, 24px between them
+   (12px until the user's "add 100% more space between title and body
+   text", 25 Nov 2026).
    Leading 1.1 (1.15 at 18px on a phone; user's reference, 25 Nov 2026,
    "line height needs to be like this", a foundry's product copy measured
    at about 42px of line on 38px type); it was 1.35 and 1.4. The question
@@ -6882,7 +6897,7 @@
   background: var(--hl-cap-a); color: #000;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-standard, .a11y-legal-eyebrow) {
-  display: block; margin: 0 0 var(--cds-spacing-04); padding: 0; border: 0; background: none; color: #000;
+  display: block; margin: 0 0 var(--cds-spacing-06); padding: 0; border: 0; background: none; color: #000;
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
   font-size: 22px; font-weight: 400; line-height: 1.1; letter-spacing: 0; text-transform: none;
   overflow-wrap: anywhere;
@@ -7201,7 +7216,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score:has(> .a11y-sum-specimen) > h2.a11y-section-title[class][class],
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score .a11y-sum-specimen :is(.a11y-sum-run > .a11y-sum-verdict, .a11y-sum-issues > .a11y-sum-label)[class][class] {
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
-  text-transform: none; text-align: left; line-height: 1.15; letter-spacing: 0;
+  text-transform: none; text-align: center; line-height: 1.15; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-verdict[class][class] { font-size: 29px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score .a11y-sum-specimen > .a11y-sum-issues > .a11y-sum-label[class][class] { font-size: 22px; }
