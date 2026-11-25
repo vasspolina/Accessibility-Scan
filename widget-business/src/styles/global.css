@@ -6611,3 +6611,56 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-row > .a11y-conf-id > .a11y-conf-name {
   display: block; margin-top: 4px; white-space: normal; overflow-wrap: normal;
 }
+
+/* ═══ HOW THE SCORE WORKS AND THE WARNING AS YELLOW CARDS (user's
+   reference, 25 Nov 2026, "design this like this", a type foundry's
+   notices: yellow cards with a picture at the left, monospaced words and
+   an outlined pill) ═══════════════════════════════════════════════════════
+   Each is a card on the marker yellow (--hl-cap-a, #f8ff58 in both
+   themes, black words 19:1), 20px corners, 20px inside, the two cards
+   20px apart and 90px under the issues (65px on a phone), no rule above.
+   At the left a 120px square (56px on a phone) of black with 14px
+   corners holds the icon set's information or warning mark at 64px (32px)
+   in the yellow, the reference's picture. Beside it the words in the
+   monospaced face the opened finding's meta strip uses, 24px on a 1.3
+   line with +0.01em (18px on a phone), one line apart; the heading is an
+   outlined pill under them, 1px black, 999px, 18px words, drawn last by
+   flex order while the markup keeps it first. Focus never lands here. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-card[class][class] {
+  display: flex; align-items: flex-start; gap: 20px;
+  margin: 20px 0 0; padding: 20px; border: 0; border-radius: 20px;
+  background: var(--hl-cap-a); color: #000; text-align: start;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > :not(.a11y-sum-card) + .a11y-sum-card[class][class] { margin-top: 90px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-pic {
+  display: flex; flex: none; align-items: center; justify-content: center;
+  width: 120px; height: 120px; border-radius: 14px; background: #000; color: var(--hl-cap-a);
+  font-size: 64px; line-height: 1;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body {
+  display: flex; flex: 1 1 auto; flex-direction: column; align-items: flex-start; gap: 1.3em; min-width: 0;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-size: 24px; font-weight: 200; line-height: 1.3; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-point[class] {
+  max-width: none; margin: 0; padding: 0; color: #000;
+  font: inherit; letter-spacing: inherit; overflow-wrap: break-word;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-pill[class] {
+  order: 1; margin: -0.4em 0 0; padding: 2px 12px; border: 1px solid #000; border-radius: 999px;
+  background: none; color: #000; white-space: normal;
+  font-family: inherit; font-size: 18px; font-weight: 200; line-height: 1.2; letter-spacing: 0.01em;
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-card[class][class] { gap: 12px; padding: 14px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > :not(.a11y-sum-card) + .a11y-sum-card[class][class] { margin-top: 65px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-pic { width: 56px; height: 56px; border-radius: 10px; font-size: 32px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body { font-size: 18px; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-card[class][class] { border: 1px solid CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card[class] > .a11y-sum-card-body > .a11y-sum-card-pill[class] { border-color: CanvasText; }
+}
+@media print {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-card { break-inside: avoid; }
+}
