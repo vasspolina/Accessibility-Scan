@@ -6031,7 +6031,9 @@
    Since later the same day the label stands above the words at every
    width, in PP Lettra Mono (user's instruction, "who fixes this need to
    be above in letra"), still the outlined pill and still first in the
-   markup; the row is one column, the label 12px over the words. */
+   markup; the row is one column, the label 12px over the words.
+   Since later still the pill is centred on the row (user's picture of the
+   pill, "center"); the words under it stay set left. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col[class] { gap: var(--cds-spacing-03); margin-bottom: var(--cds-spacing-03); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col:last-of-type[class] { margin-bottom: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps, .a11y-affected)[class][class] {
@@ -6046,7 +6048,11 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo)[class][class] > strong:first-child,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class][class] > p:first-child,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class] > .a11y-affected-label {
-  grid-column: 1; grid-row: 1; justify-self: start; margin: 0; text-align: start;
+  grid-column: 1; grid-row: 1; justify-self: center; margin: 0; text-align: center;
+  /* Centred on the row, not on its content box: the row's start padding is
+     wider than its end (room for a list's hung en dash), so the pill is
+     moved back by half the difference. */
+  position: relative; inset-inline-start: var(--fd-label-shift, calc((var(--cds-spacing-05) - var(--cds-spacing-08)) / 2));
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo)[class][class] > strong:first-child,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class][class] > p:first-child > strong,
@@ -6068,6 +6074,7 @@
 @container a11y-ftable (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps, .a11y-affected)[class][class] {
     column-gap: var(--cds-spacing-04); padding: var(--cds-spacing-05) var(--cds-spacing-04) var(--cds-spacing-05) var(--cds-spacing-05); border-radius: var(--r-card);
+    --fd-label-shift: calc((var(--cds-spacing-04) - var(--cds-spacing-05)) / 2);
   }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-fd-meta[class] { padding-inline: var(--cds-spacing-05); }
 }
@@ -7480,4 +7487,16 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions :is(.a11y-ra-send, .a11y-ra-pdf):focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable > tbody > tr:has(> td > .a11y-dt-toggle:focus-visible) { outline-color: Highlight; }
+}
+
+/* THE CHECKLIST'S CALL-OUTS IN LETTRA (user's instruction, 25 Nov 2026,
+   "use letra here for call outs", on the checklist's first column): the
+   criterion's number and level ("1.2.1 A") are PP Lettra Mono Ultralight
+   at the key's own size, no tracking (the monospace is already spaced),
+   as the settings labels and the score's lines are; the official name
+   under them stays PP Telegraf, so the call-out reads apart from the name
+   it labels. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-row > .a11y-conf-id > .a11y-conf-key {
+  font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-synthesis: none;
+  font-weight: 200; letter-spacing: 0;
 }

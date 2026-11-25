@@ -117,7 +117,10 @@ function CriterionRow({ c, verdict }: { c: CriterionResult; verdict?: RecordedVe
       className={`a11y-conf-row a11y-conf-${c.status}`}
     >
       <span className="a11y-conf-id">
-        {c.id} <em>{c.level}</em>
+        {/* The number and level are the row's call-out, in PP Lettra Mono
+            (user's instruction, 25 Nov 2026, "use letra here for call
+            outs"); the name under them stays in the body face. */}
+        <span className="a11y-conf-key">{c.id} <em>{c.level}</em></span>
         {/* The criterion's official name under its number, in the key's
             column (user's instruction, 25 Nov 2026, "move focus visible to
             first column"); the column on the right holds only the line. */}
