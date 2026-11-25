@@ -5218,7 +5218,7 @@
    same size beside it. Code elsewhere keeps the one face. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd-body code {
   font-family: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
-  font-size: 0.8em; font-weight: 400; letter-spacing: 0;
+  font-size: 18px; font-weight: 400; letter-spacing: 0;
 }
 
 /* ═══ EVERY FORM AS THE EMAIL PANEL, EACH IN ITS OWN BRAND COLOUR (user's
@@ -5520,14 +5520,20 @@
    sentence up to 34% of the row, then the sentence wraps. The title's small
    print spans the count's column too, set to the end, and stands 3em clear
    of the count. Above 640px only: a phone keeps its stacked rows.
-   The one size scales with the screen (user's instruction, the same day,
-   "scale text proportionally on screens smaller sizes"): 32px from 1000px
-   of window up, 2px less for every 100px below it, never under 20px (at
-   375px it is 20px, at 800px 28px), so a narrower window sets the same
-   lines smaller instead of breaking them, and there is no step at 640px. */
+   The one size steps down with the screen (user's instruction, the same
+   day, "scale text proportionally on screens smaller sizes", held to the
+   type sizes on 25 Nov 2026, "make sure only 4 font sizes used"): 32px from
+   1056px of window up (Carbon's lg; it was 1000px), 24px below it. It was a fluid clamp from 20 to 32px,
+   which drew every size between. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets :is(.a11y-legal-row, .a11y-conf-row) :is(.a11y-legal-row-label, .a11y-legal-count, .a11y-legal-mark, .a11y-legal-row-meaning, .a11y-conf-id, .a11y-conf-plain, .a11y-conf-status)[class][class][class],
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-row > .a11y-conf-body > strong:not(#x) {
-  font-size: clamp(20px, calc(12px + 2vw), 32px); line-height: 1.1; letter-spacing: 0.01em;
+  font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+}
+@media (min-width: 1056px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets :is(.a11y-legal-row, .a11y-conf-row) :is(.a11y-legal-row-label, .a11y-legal-count, .a11y-legal-mark, .a11y-legal-row-meaning, .a11y-conf-id, .a11y-conf-plain, .a11y-conf-status)[class][class][class],
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-row > .a11y-conf-body > strong:not(#x) {
+    font-size: 32px; line-height: 1.1; letter-spacing: 0.01em;
+  }
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-row > .a11y-conf-id[class][class] { padding-top: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-row .a11y-conf-plain[class][class] { margin-top: 0; }
@@ -6038,7 +6044,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class] > .a11y-affected-label > strong {
   display: inline-block; box-sizing: border-box; padding: var(--cds-spacing-03) var(--cds-spacing-04) var(--cds-spacing-02);
   border: 1px solid currentColor; border-radius: 999px;
-  font-size: 15px; line-height: 1; letter-spacing: 0.01em; text-transform: none; white-space: nowrap;
+  font-size: 18px; line-height: 1; letter-spacing: 0.025em; text-transform: none; white-space: nowrap;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-fd-meta[class] { padding-inline: var(--cds-spacing-08); }
 @container a11y-ftable (min-width: 641px) {
@@ -6433,7 +6439,11 @@
      with the paper, so the lines stop at the letter and never cross the
      number.
    - What the range means under it, centred, 32px (24px on a phone).
-   - "N issues found" as a caption, 18px, centred, then each issue as a
+   - "N issues found" as a caption, 18px, centred, then the issues three
+     to a row (user's instruction, 25 Nov 2026, "fold this in 3 rows": each
+     card folded into three rows, picture, title, pills; two to a row under
+     760px of the list, one under 480px, where the picture goes back beside
+     the title at 96px), each issue a
      yellow card (user's reference, 25 Nov 2026, "design these like
      these", a type foundry's news cards): the marker yellow
      (--hl-cap-a, #f8ff58 in both themes, black words 19:1), 20px
@@ -6477,20 +6487,20 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-issues {
   display: block; margin-top: var(--cds-spacing-12); padding: 0; border: 0; text-align: center;
+  container: a11y-sum-issues / inline-size;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-issues > .a11y-sum-label {
   margin: 0 0 var(--cds-spacing-07); padding: 0; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs {
-  display: grid; gap: var(--cds-spacing-05); margin: 0; padding: 0; list-style: none; text-align: left;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--cds-spacing-05) var(--cds-grid-gutter-narrow); margin: 0; padding: 0; list-style: none; text-align: left;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec {
   --ink: #000; --paper: var(--hl-cap-a); --focus: #0a3d1a;
-  position: relative; display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; gap: var(--cds-spacing-06);
+  position: relative; display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: var(--cds-spacing-05);
   max-width: none; margin: 0; padding: var(--cds-spacing-06); border-radius: 20px;
   background: var(--hl-cap-a); color: #000;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec[data-shot] { grid-template-columns: 168px minmax(0, 1fr); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec::before { content: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-shot {
   display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 16px; background: #fff;
@@ -6528,8 +6538,14 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-dial-card { --dial: 200px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-issues { margin-top: var(--cds-spacing-10); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec { gap: var(--cds-spacing-05); padding: var(--cds-spacing-05); }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec[data-shot] { grid-template-columns: 96px minmax(0, 1fr); align-items: start; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title { font-size: 18px; line-height: 1.4; }
+}
+@container a11y-sum-issues (max-width: 760px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@container a11y-sum-issues (max-width: 480px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs { grid-template-columns: minmax(0, 1fr); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec[data-shot] { grid-template-columns: 96px minmax(0, 1fr); align-items: start; }
 }
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec { border: 1px solid CanvasText; }
@@ -6753,3 +6769,48 @@
   width: 100%; margin: 0; padding: 0; list-style: none; text-align: center;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-scan-itinerary[class] > .a11y-scan-step::marker { content: none; }
+
+/* ═══ THE LEGAL HEAD AS YELLOW CARDS (user's instruction, 25 Nov 2026,
+   "make this as yellow pils above as well", on the standard, the "not a
+   pass" band and the questions no software can answer) ═══════════════
+   Set as the score's issue cards: the marker yellow (--hl-cap-a, #f8ff58
+   in both themes, black words 19:1), 20px corners, 24px inside (16px on a
+   phone), 20px apart, as many to a row as fit at 260px or more, so three
+   on a desktop and one on a phone. Each card's head (the standard, the two
+   titles) is the issue title's mono face at 24px/1.35 (18px on a phone),
+   its words under it in the body face at the same size, 12px between
+   them. The question numbers keep their solid rounds, black with yellow
+   figures, since --ink and --paper are redefined on the card. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: var(--cds-spacing-05) var(--cds-grid-gutter-narrow);
+  margin: var(--cds-spacing-07) 0 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards + .a11y-legal-grid { margin-top: var(--cds-spacing-10); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards > :is(.a11y-legal-std, .a11y-legal-band, .a11y-legal-panel) {
+  --ink: #000; --paper: var(--hl-cap-a); --focus: #0a3d1a;
+  box-sizing: border-box; min-width: 0; margin: 0; padding: var(--cds-spacing-06); border: 0; border-radius: 20px;
+  background: var(--hl-cap-a); color: #000;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-standard, .a11y-legal-eyebrow) {
+  display: block; margin: 0 0 var(--cds-spacing-04); padding: 0; border: 0; background: none; color: #000;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-size: 24px; font-weight: 400; line-height: 1.35; letter-spacing: 0; text-transform: none;
+  overflow-wrap: anywhere;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-intro, .a11y-legal-lead, .a11y-legal-q) {
+  margin: 0; color: #000; font-size: 24px; line-height: 1.35; letter-spacing: 0.015em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards .a11y-legal-card { margin: 0; padding: 0; border: 0; background: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards .a11y-legal-q + .a11y-legal-q { margin-top: var(--cds-spacing-03); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards .a11y-legal-q > .a11y-legal-qnum { margin-top: 0; }
+@media (max-width: 671px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards > :is(.a11y-legal-std, .a11y-legal-band, .a11y-legal-panel) { padding: var(--cds-spacing-05); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-standard, .a11y-legal-eyebrow) { font-size: 18px; line-height: 1.4; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-intro, .a11y-legal-lead, .a11y-legal-q) { font-size: 18px; line-height: 1.4; letter-spacing: 0.025em; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards > :is(.a11y-legal-std, .a11y-legal-band, .a11y-legal-panel) { border: 1px solid CanvasText; }
+}
+@media print {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards > * { break-inside: avoid; }
+}
