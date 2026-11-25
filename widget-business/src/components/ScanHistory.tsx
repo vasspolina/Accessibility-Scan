@@ -59,6 +59,22 @@ function collapseRepeats(entries: { scannedAt: string; score: number; note?: str
   return out;
 }
 
+/* A fact reads "Score is up – 46 then, 48 now": what changed, then the
+   figures. Set as a programme, the first part is the small italic call-out
+   and the rest the large line beside it; the dash stays for a screen
+   reader. A line with no dash (or an unforeseen translation) is set whole. */
+function Fact({ text }: { text: string }) {
+  const m = /^(.+?)\s[–—]\s(.+)$/su.exec(text);
+  if (!m) return <span className="a11y-hist-fact-value">{text}</span>;
+  return (
+    <>
+      <span className="a11y-hist-fact-label">{m[1]}</span>
+      <span className="a11y-sr-only"> – </span>
+      <span className="a11y-hist-fact-value">{m[2]}</span>
+    </>
+  );
+}
+
 function groupByYear(entries: Run[]): { year: string; runs: Run[] }[] {
   const out: { year: string; runs: Run[] }[] = [];
   for (const e of entries) {
@@ -174,12 +190,17 @@ export function ScanHistory({
             {runsByYear.map(({ year, runs }) => (
               <Fragment key={year}>
                 <li className="a11y-hist-year">{year}</li>
+                {/* Set as a programme: the date and the note are small
+                    italic call-outs either side of the score. The dash and
+                    the comma that join them in a sentence are kept for a
+                    screen reader and clipped for the eye. */}
                 {runs.map((e) => (
-                  <li key={e.scannedAt}>
-                    {formatDate(e.scannedAt)} &mdash;{" "}
+                  <li key={e.scannedAt} className="a11y-hist-run">
+                    <span className="a11y-hist-date">{formatDate(e.scannedAt)}</span>
+                    <span className="a11y-sr-only"> &mdash; </span>
                     <span className="a11y-hist-score">{e.score} / 100</span>
-                    {e.times > 1 ? <span> {e.times}×</span> : null}
-                    {e.note ? <em>, {e.note}</em> : null}
+                    {e.times > 1 ? <span className="a11y-hist-times"> {e.times}×</span> : null}
+                    {e.note ? <em className="a11y-hist-note"><span className="a11y-sr-only">, </span>{e.note}</em> : null}
                   </li>
                 ))}
               </Fragment>
@@ -196,7 +217,7 @@ export function ScanHistory({
               does not believe. */}
           <ul className="a11y-hist-facts">
             <li>
-              {comparable
+              <Fact text={comparable
                 ? tf(
                     flat
                       ? "Score unchanged – {then} then, {now} now"
@@ -207,19 +228,19 @@ export function ScanHistory({
                   )
                 : t(
                     "Not comparable – we scored the earlier scan by different rules. Some checks now count towards the score that did not before, so we do not compare the two."
-                  )}
+                  )} />
             </li>
             <li>
-              {diff.fixed.length === 0
+              <Fact text={diff.fixed.length === 0
                 ? t("Problems fixed – none")
-                : tf("Problems fixed – {rules}", { rules: diff.fixed.map(ruleLabel).join(", ") })}
+                : tf("Problems fixed – {rules}", { rules: diff.fixed.map(ruleLabel).join(", ") })} />
             </li>
             {/* "none weren't there before" is a double negative, and the
                 design's own copy has it. Said the way round it means. */}
             <li>
-              {diff.appeared.length === 0
+              <Fact text={diff.appeared.length === 0
                 ? t("New problems – none")
-                : tf("New problems – {rules}", { rules: diff.appeared.map(ruleLabel).join(", ") })}
+                : tf("New problems – {rules}", { rules: diff.appeared.map(ruleLabel).join(", ") })} />
             </li>
           </ul>
           </div>

@@ -7630,3 +7630,57 @@
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
   letter-spacing: 0;
 }
+
+/* PREVIOUS SCANS AS A PROGRAMME, SET LEFT (user's reference, 25 Nov 2026,
+   "design this like this but left aligned", a concert programme whose
+   small italic runs label the large names beside them, set flush right;
+   here flush left). The year, each run's date and note, and the heads
+   and labels of Since last time and Where this lives are EB Garamond
+   italic at 18px, as the checklist's call-outs after the same reference;
+   the score is the large name, 48px (32px on a phone), and each fact's
+   figures ("46 then, 48 now") 32px (24px). No en-dash markers and no rules
+   between lines. A call-out beside a large line is raised so its capitals
+   centre on the large capitals: (cap of the large size, 0.7em, less the
+   call-out's 0.7 × 18px) / 2, worked per size below. The dash and comma
+   joining the parts are clipped, kept for a screen reader. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-runs[class][class] {
+  display: flex; flex-direction: column; align-items: flex-start; gap: var(--cds-spacing-02);
+  margin: 0; padding: 0; list-style: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-runs > li[class][class] { margin: 0; padding: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-runs > li[class][class]::before { content: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-runs > .a11y-hist-run[class][class] {
+  display: flex; flex-wrap: wrap; align-items: baseline; column-gap: var(--cds-spacing-04); row-gap: 0; min-width: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist :is(.a11y-hist-year, .a11y-hist-date, .a11y-hist-times, .a11y-hist-note, .a11y-hist-fact-label)[class][class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-card > .a11y-hist-head[class][class] {
+  font-family: "EB Garamond", Georgia, serif; font-style: italic; font-weight: 400; font-synthesis: none;
+  font-size: 18px; line-height: 1.2; letter-spacing: 0; font-variant-numeric: lining-nums; text-transform: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-runs > .a11y-hist-year[class][class] { margin: 0 0 var(--cds-spacing-03); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-run > :is(.a11y-hist-date, .a11y-hist-times, .a11y-hist-note)[class][class] { position: relative; top: -10px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-run > .a11y-hist-score[class][class] {
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200;
+  font-size: 48px; line-height: 1.05; letter-spacing: 0; font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-card[class][class] { gap: var(--cds-spacing-03); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-card > .a11y-hist-head[class][class] {
+  align-self: flex-start; padding: 0; border: 0; color: var(--ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-card > .a11y-hist-facts[class][class] {
+  display: flex; flex-direction: column; gap: var(--cds-spacing-03);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-card > .a11y-hist-facts > li[class][class] {
+  display: flex; flex-wrap: wrap; align-items: baseline; column-gap: var(--cds-spacing-04); row-gap: 0; min-width: 0;
+  margin: 0; padding: 0; border: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-facts > li > .a11y-hist-fact-label[class][class] { position: relative; top: -5px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-facts > li > .a11y-hist-fact-value[class][class] {
+  min-width: 0; font-size: 32px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em; overflow-wrap: anywhere;
+}
+@media (max-width: 640px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-run > .a11y-hist-score[class][class] { font-size: 32px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-run > :is(.a11y-hist-date, .a11y-hist-times, .a11y-hist-note)[class][class] { top: -5px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-facts > li > .a11y-hist-fact-value[class][class] { font-size: 24px; letter-spacing: 0.015em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-facts > li > .a11y-hist-fact-label[class][class] { top: -2px; }
+}
