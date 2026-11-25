@@ -4780,7 +4780,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-ledger > .a11y-undecided-table > .a11y-undecided-cell.a11y-undecided-folded { display: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-q {
-  display: grid; grid-template-columns: 26px auto minmax(0, 1fr) auto; column-gap: var(--cds-spacing-04); --row-line: calc(32px * 1.1); align-items: start;
+  display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; grid-template-rows: auto 1fr; column-gap: var(--cds-spacing-04); --row-line: calc(32px * 1.1); align-items: start;
   box-sizing: border-box; width: 100%; min-height: 0; margin: 0; padding: 0; border: 0; border-radius: 0;
   background: none; color: var(--ink); text-align: left; cursor: pointer;
   font-size: 32px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
@@ -4788,9 +4788,11 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-q:enabled:hover { background: none; color: var(--ink); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q:hover > .a11y-undecided-what { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.14em; }
 /* The caret: caret--right fills 10 of its 32 units across, so 1.4em draws
-   it 0.44em wide and the capitals' height tall, as in the findings list. */
+   it 0.44em wide and the capitals' height tall, as in the findings list.
+   It stands under the number, centred in the ring's column (user's
+   instruction, 25 Nov 2026, "put number above the carret"). */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-caret {
-  width: 1.4em; height: 1.4em; margin: calc((1lh - 1.4em) / 2) 0 0 calc(var(--cds-spacing-04) * -1); transition: transform 120ms ease;
+  width: 1.4em; height: 1.4em; margin: var(--cds-spacing-02) 0 0; justify-self: center; transition: transform 120ms ease;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q[aria-expanded="true"] > .a11y-undecided-caret { transform: rotate(90deg); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-no {
@@ -4799,19 +4801,22 @@
   font-size: 24px; line-height: 1; letter-spacing: 0; font-variant-numeric: tabular-nums;
 }
 /* Every part names its column: an older rule pins the round to row 1,
-   and an item with a row is placed before the others. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-caret { grid-column: 1; grid-row: 1; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-no { grid-column: 2; grid-row: 1; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-what { grid-column: 3; grid-row: 1; min-width: 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-kind { grid-column: 4; grid-row: 1; max-width: 260px; text-align: right; }
+   and an item with a row is placed before the others. The number and the
+   caret share the first column, the number on top; the words span both
+   rows so a long check does not push the caret under its last line. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-caret { grid-column: 1; grid-row: 2; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-no { grid-column: 1; grid-row: 1; justify-self: center; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-what { grid-column: 2; grid-row: 1 / span 2; min-width: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-kind { grid-column: 3; grid-row: 1; max-width: 260px; text-align: right; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-kind.a11y-kind-code { color: var(--word-blue); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-kind.a11y-kind-content { color: var(--word-green); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-kind.a11y-kind-design { color: var(--word-purple); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-kind.a11y-kind-document { color: var(--word-ochre); }
-/* The answer: the bubble, indented past the caret and the round. */
+/* The answer: the bubble, indented to the words, past the column that
+   holds the round and the caret. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-answer {
   --paper: var(--bubble);
-  margin: var(--cds-spacing-04) 0 var(--cds-spacing-06) var(--cds-spacing-11); padding: var(--cds-spacing-08) var(--cds-spacing-09) var(--cds-spacing-08); border-radius: var(--r-panel); background: var(--bubble); color: var(--ink);
+  margin: var(--cds-spacing-04) 0 var(--cds-spacing-06) calc(44px + var(--cds-spacing-04)); padding: var(--cds-spacing-08) var(--cds-spacing-09) var(--cds-spacing-08); border-radius: var(--r-panel); background: var(--bubble); color: var(--ink);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-answer[hidden] { display: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-answer > .a11y-fd-meta { margin-bottom: var(--cds-spacing-06); }
@@ -4823,10 +4828,10 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-answer > .a11y-learn-more { font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
 @container a11y-ledger (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-q {
-    grid-template-columns: 26px auto minmax(0, 1fr); row-gap: var(--cds-spacing-02); column-gap: var(--cds-spacing-03); --row-line: calc(24px * 1.15);
+    grid-template-columns: 44px minmax(0, 1fr); grid-template-rows: auto 1fr auto; row-gap: var(--cds-spacing-02); column-gap: var(--cds-spacing-03); --row-line: calc(24px * 1.15);
     font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
   }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-kind { grid-column: 3; grid-row: 2; max-width: none; text-align: left; font-size: 18px; letter-spacing: 0.025em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-kind { grid-column: 2; grid-row: 3; max-width: none; text-align: left; font-size: 18px; letter-spacing: 0.025em; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-no { width: 24px; height: 24px; margin-top: calc((var(--row-line) - 26px) / 2); font-size: 18px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-answer { margin-left: 0; padding: var(--cds-spacing-06) var(--cds-spacing-05) var(--cds-spacing-06); border-radius: var(--r-panel); }
 }
