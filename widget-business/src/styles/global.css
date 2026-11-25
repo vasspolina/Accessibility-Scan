@@ -258,7 +258,6 @@
 .a11y-widget-biz .a11y-sr-line-text,
 .a11y-widget-biz .a11y-sr-num,
 .a11y-widget-biz .a11y-sum-dial-num,
-.a11y-widget-biz .a11y-sum-dial-of,
 .a11y-widget-biz .a11y-switch-controls,
 .a11y-widget-biz .a11y-switch-label { margin-inline-end: 0.3em; }
 
@@ -1042,7 +1041,6 @@
 }
 .a11y-widget-biz .a11y-sum-dial-face { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
 .a11y-widget-biz .a11y-sum-dial-num { font-size: 48px; letter-spacing: 0; font-weight: 200; line-height: 1; margin: 0; }
-.a11y-widget-biz .a11y-sum-dial-of { font-size: 18px; letter-spacing: 0.025em; margin: 0; }
 
 /* The scan summary as a run of display type (user's instruction,
    4 Nov 2026, kept with the dial; no corner marks, user's word the same
@@ -3198,7 +3196,7 @@
    strong or th included) is drawn in Ultralight, and this list names the
    elements whose browser style sets its own face or weight. */
 .a11y-widget-biz :where(button, input, select, textarea, label, small, th, strong, b, optgroup, option,
-  .a11y-shell-nav-link, .a11y-switch-word, .a11y-url-submit-note, .a11y-sum-dial-of) { font-family: inherit; font-weight: 200; }
+  .a11y-shell-nav-link, .a11y-switch-word, .a11y-url-submit-note) { font-family: inherit; font-weight: 200; }
 
 /* ═══ THE WARNING AS A BUBBLE (user's instruction, 22 Nov 2026, "make
    warning a buble") ══════════════════════════════════════════════════════
@@ -6411,12 +6409,12 @@
    Centred throughout, on the page's paper.
    - "Your score" is the specimen's caption, 18px, centred; Copy summary
      is the small pill under it, the ordinary button, centred.
-   - The C dial, 280px (200px under 640px), centred on three guide lines
-     that run the full width: a 1px ink line through the top of the stroke
-     (8% down), a 1px dashed ink line at 36%, and the baseline in the blue
-     word tone through the foot of the stroke (92%). The counter is filled
-     with the paper, so the lines stop at the letter and never cross the
-     number.
+   - The C dial, 336px (240px under 640px), on no lines (user's
+   instruction, 25 Nov 2026, "delete lines, make moon 20% larger, and big
+   number inside, do not say out of 100": the guide lines are gone and the
+   C is 20% over its 280px and 200px). The score alone sits in its bowl at
+   120px (88px on a phone), a display size outside the four by the user's
+   word; "out of 100" is said only to screen readers, in the dial's name.
    - What the range means under it, centred, 32px (24px on a phone).
    - "N issues found" as a caption, 18px, centred, then the issues three
      to a row (user's instruction, 25 Nov 2026, "fold this in 3 rows": each
@@ -6450,17 +6448,13 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run:first-child { margin-top: 24px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-dial-card {
-  --dial: 280px;
+  --dial: 336px;
   display: block; position: relative; height: var(--dial); margin: 0;
-  background:
-    linear-gradient(var(--ink), var(--ink)) 0 calc(var(--dial) * 0.08) / 100% 1px no-repeat,
-    repeating-linear-gradient(90deg, var(--ink) 0 6px, transparent 6px 12px) 0 calc(var(--dial) * 0.36) / 100% 1px no-repeat,
-    linear-gradient(var(--word-blue), var(--word-blue)) 0 calc(var(--dial) * 0.92) / 100% 1px no-repeat;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen .a11y-sum-dial-card > .a11y-sum-dial {
   width: var(--dial); height: var(--dial); margin: 0 auto;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-dial circle.a11y-sum-dial-counter { fill: var(--paper); stroke: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen .a11y-sum-dial-num { font-size: 120px; line-height: 1; letter-spacing: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-verdict {
   max-width: 24em; margin: 32px auto 0; text-align: center;
 }
@@ -6514,7 +6508,8 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title:focus-visible { outline: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title:focus-visible::after { outline: 2px solid var(--focus); outline-offset: -2px; }
 @media (max-width: 640px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-dial-card { --dial: 200px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-dial-card { --dial: 240px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen .a11y-sum-dial-num { font-size: 88px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-issues { margin-top: 65px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec { gap: 14px; padding: 16px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title { font-size: 18px; line-height: 1.4; }
