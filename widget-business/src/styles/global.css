@@ -5889,3 +5889,22 @@
 @container a11y-ftable (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > [data-size="s"][class][class] { flex-basis: 100%; }
 }
+
+/* ═══ LEARN MORE UNDERLINED UNDER THE ARROW TOO (user's instruction, 25 Nov
+   2026, "make learn more link underline 1 px and it needs to be under arrow
+   as well and drop it 2px down") ═════════════════════════════════════════
+   A text underline stops at the arrow, which is an icon, not text. The
+   line is painted instead, 1px, across the link's whole inline box, the
+   space and the arrow included, 2px lower than the old underline: 0.15em
+   + 2px under the baseline. The inline box ends at the face's descent,
+   measured 0.2917em on PP Telegraf (7px at 24px), so the line sits
+   0.1417em - 3px above that edge. Forced colours keep a plain underline. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz a.a11y-learn-more,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz a.a11y-learn-more:is(:hover, :focus-visible) {
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) 0 calc(100% - 0.1417em + 3px) / 100% 1px no-repeat;
+  box-decoration-break: slice; -webkit-box-decoration-break: slice;
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz a.a11y-learn-more { background: none; text-decoration: underline 1px; text-underline-offset: calc(0.15em + 2px); }
+}
