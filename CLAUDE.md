@@ -13,7 +13,7 @@ npx tsc --noEmit                    # CI runs types first
 npm test                            # vitest run (~60 files in test/)
 npx vitest run test/scoring.test.ts # one file; add -t "name" for one test
 npm run build                       # tsc to dist/
-npm run build:widget-business       # builds ../widget-business, copies the bundle into public/
+npm run build:widget-business       # builds ../widget-business into public/ for the local dev server (gitignored; the Docker image builds its own)
 node dist/cli.js https://example.com   # the a11y-scan CLI (docs/CLI.md: exit 0 ok, 1 threshold missed, 2 scan failed); takes several URLs, --urls, --sitemap; writes --json --sarif --junit --csv --markdown
 node dist/mcp.js                       # a11y-scan-mcp, the scanner as an MCP stdio server (docs/MCP.md); stdout is protocol only
 
@@ -346,7 +346,7 @@ Comments in this codebase are long and record what was measured and why a value 
 - Colour, spacing, radius, motion still use tokens (`var(--…)`).
 
 ## Shipping
-- Merging to `main` deploys the Railway service from `backend/` (Dockerfile, root directory `backend`). The widget is served from the committed `backend/public/widget-business.js`, which the image copies as-is: **rebuild and commit the bundle in the same change as any widget source edit** (`cd backend && npm run build:widget-business`). `/healthz` reports the deployed `commit` and a `widgetBundle` fingerprint; check it before concluding a deploy did not happen.
+- Merging to `main` deploys the Railway service: `backend/Dockerfile` built from the repository root (`railway.json`, Railway's root directory empty). **The image builds `widget-business` itself; `backend/public/widget-business.js` is gitignored and never committed** (user's choice, 25 Nov 2026: the committed bundle conflicted on nearly every merge of main). Build it locally only to serve it from the dev backend (`cd backend && npm run build:widget-business`). A branch from before the change that still has the bundle merges main with a modify/delete conflict on it: resolve with `git rm --cached backend/public/widget-business.js`. `/healthz` reports the deployed `commit` and a `widgetBundle` fingerprint; check it before concluding a deploy did not happen.
 
 ## Not in this repository
-- **Culture Atlas** (the cultural atlas, Sponsor Atlas, MoMA Money Map) is a separate project in `~/culture-atlas` (user's instruction, 18 Oct 2026). Nothing of it is tracked here. A session opened in this folder and asked about the atlas should say so and point to that folder, not add atlas files or servers here. Sessions for this repository go in their own worktree, not the shared checkout: several sessions editing `global.css` and the committed widget bundle in one folder is how work got overwritten.
+- **Culture Atlas** (the cultural atlas, Sponsor Atlas, MoMA Money Map) is a separate project in `~/culture-atlas` (user's instruction, 18 Oct 2026). Nothing of it is tracked here. A session opened in this folder and asked about the atlas should say so and point to that folder, not add atlas files or servers here. Sessions for this repository go in their own worktree, not the shared checkout: several sessions editing `global.css` and the widget bundle (committed until 25 Nov 2026) in one folder is how work got overwritten.
