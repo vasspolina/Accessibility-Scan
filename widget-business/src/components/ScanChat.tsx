@@ -49,6 +49,17 @@ import {
   type ChatResult,
 } from "../lib/chatResults";
 import { Icon } from "./Icon";
+import {
+  IMAGE_TYPES,
+  MAX_IMAGE_CHARS_TOTAL,
+  MAX_IMAGES_PER_CONVERSATION,
+  MAX_IMAGES_PER_MESSAGE,
+  imageBlock,
+  imageLoad,
+  imageSrc,
+  readImage,
+  type ChatImage,
+} from "../lib/chatImages";
 
 /**
  * The whole checker, as one conversation with an assistant.
@@ -99,6 +110,9 @@ type Turn =
       marks?: Mark[];
       searching?: string | null;
       sources?: ChatSource[];
+      /** Pictures the reader attached to this message; never stored in the
+       *  archive (settleTurn). */
+      images?: ChatImage[];
     }
   | { id: number; who: "scan"; url: string; state: "running" | "done" | "failed"; steps: string[]; seconds?: number; resultKey?: string }
   | { id: number; who: "block"; section: SectionKey; resultKey: string }
@@ -644,6 +658,11 @@ export function ScanChat({
 }) {
   const [turns, setTurns] = useState<Turn[]>([]);
   const [draft, setDraft] = useState("");
+  /** Pictures waiting to go with the next message, and the line that says
+   *  why a file was refused. */
+  const [attached, setAttached] = useState<ChatImage[]>([]);
+  const [attachNote, setAttachNote] = useState("");
+  const fileRef = useRef<HTMLInputElement>(null);
   // The opening questions: drawn fresh on every load, one from each group,
   // each in a different layout (user's instruction, 4 Nov 2026).
   const [picks, setPicks] = useState(() => pickOpeningPrompts());
@@ -808,6 +827,8 @@ export function ScanChat({
     sharedScan.current = null;
     setBackTo(null);
     setDraft("");
+    setAttached([]);
+    setAttachNote("");
     setPicks((last) => pickOpeningPrompts(Math.random, last));
     setPanelOpen(false);
     onLeaveBarrier?.();
@@ -1222,35 +1243,71 @@ export function ScanChat({
     }
   }
 
+  /** Files picked or pasted into the box: each read, checked and scaled
+   *  (lib/chatImages.ts), up to the message's cap. A refused file says why,
+   *  once, in the box and to screen readers; the others are still added. */
+  async function attachFiles(files: File[]) {
+    if (!files.length) return;
+    const room = MAX_IMAGES_PER_MESSAGE - attached.length;
+    let note = "";
+    if (files.length > room) note = t("Four images at most in one message.");
+    const read = await Promise.all(files.slice(0, Math.max(0, room)).map(readImage));
+    const ok: ChatImage[] = [];
+    for (const r of read) {
+      if (typeof r !== "string") ok.push(r);
+      else if (!note)
+        note =
+          r === "type"
+            ? t("Only PNG, JPEG, GIF or WebP images.")
+            : r === "size"
+              ? t("That image is too large. Use one under 10 MB.")
+              : t("Couldn't read that image.");
+    }
+    if (ok.length) setAttached((list) => [...list, ...ok].slice(0, MAX_IMAGES_PER_MESSAGE));
+    setAttachNote(note);
+    setAnnouncement(note || (ok.length === 1 ? tf("Image added: {name}", { name: ok[0].name }) : tf("{count} images added", { count: String(ok.length) })));
+  }
+
+  function removeImage(image: ChatImage) {
+    setAttached((list) => list.filter((x) => x.id !== image.id));
+    setAttachNote("");
+    setAnnouncement(tf("Image removed: {name}", { name: image.name }));
+    focusInput();
+  }
+
   async function send(e: FormEvent) {
     e.preventDefault();
     const text = draft.trim();
-    if (!text || busy || loading) return;
+    const images = attached;
+    if ((!text && !images.length) || busy || loading) return;
     setDraft("");
+    setAttached([]);
+    setAttachNote("");
     const box = rootRef.current?.querySelector<HTMLTextAreaElement>("#a11y-chat-input");
     if (box) box.style.height = "";
     // One box for both (user's instruction, 22 Nov 2026, "merge inputs"):
     // on the opening screen a message that is only an address scans
     // straight away, as the separate address field did; anything else, or
-    // an address with words around it, goes to the assistant.
-    const url = /\s/.test(text) || text.startsWith("/") ? null : addressIn(text);
+    // an address with words around it, goes to the assistant. A message
+    // with a picture is always a question about the picture.
+    const url = images.length || /\s/.test(text) || text.startsWith("/") ? null : addressIn(text);
     if (url && turns.length === 0 && !currentKeyRef.current) {
       await scanAddress(url);
       return;
     }
-    await ask(text);
+    await ask(text, undefined, images);
   }
 
   /** One message from the reader, typed or picked from the opening prompts:
    *  both go the same way, so a prompt is exactly what typing it would be. */
-  async function ask(text: string, source?: ChatSource) {
-    if (!text || busy || loading) return;
+  async function ask(text: string, source?: ChatSource, images: ChatImage[] = []) {
+    if ((!text && !images.length) || busy || loading) return;
     // A new question moves the conversation on; there is nowhere to go back to.
     setBackTo(null);
-    add({ id: nextId++, who: "you", text });
+    add({ id: nextId++, who: "you", text, ...(images.length ? { images } : {}) });
     focusInput();
 
-    if (text.startsWith("/")) {
+    if (text.startsWith("/") && !images.length) {
       commandTurn(text);
       return;
     }
@@ -1264,9 +1321,15 @@ export function ScanChat({
       // A long conversation starts over before the server's caps refuse it.
       // Nothing is edited: the old history is set aside whole, and the new
       // one opens with the latest report, below.
+      // Pictures are measured on their own caps (lib/chatImages.ts), the
+      // server's: one screenshot outweighs a conversation of words.
+      const load = imageLoad(history.current);
+      const adding = images.reduce((n, x) => n + x.data.length, 0);
       if (
         history.current.length >= MAX_HISTORY_MESSAGES ||
-        JSON.stringify(history.current).length > MAX_HISTORY_CHARS
+        JSON.stringify(history.current).length - load.chars > MAX_HISTORY_CHARS ||
+        load.count + images.length > MAX_IMAGES_PER_CONVERSATION ||
+        load.chars + adding > MAX_IMAGE_CHARS_TOTAL
       ) {
         history.current = [];
         sharedScan.current = null;
@@ -1294,7 +1357,11 @@ export function ScanChat({
       }
       const before = history.current;
       try {
-        await assistantTurn(appendUser(before, [...blocks, { type: "text", text }]), source);
+        // Pictures before the words, the order the model reads best.
+        await assistantTurn(
+          appendUser(before, [...blocks, ...images.map(imageBlock), ...(text ? [{ type: "text", text }] : [])]),
+          source
+        );
       } catch (err) {
         // "No assistant" only when nothing of this turn reached one. After a
         // turn was committed — the reply after a scan — a failure is a
@@ -1728,7 +1795,18 @@ export function ScanChat({
                       )}
                     </>
                   ) : (
-                    <p>{capsWrap(smarten(turn.text, getLang()))}</p>
+                    <>
+                      {turn.images && turn.images.length > 0 && (
+                        <ul className="a11y-chat-images" role="list">
+                          {turn.images.map((img) => (
+                            <li key={img.id}>
+                              <img src={imageSrc(img)} alt={img.name} />
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                      {turn.text && <p>{capsWrap(smarten(turn.text, getLang()))}</p>}
+                    </>
                   )}
                 </div>
               </li>
@@ -1753,21 +1831,29 @@ export function ScanChat({
             </label>
             <textarea
               id="a11y-chat-input"
-              rows={2}
+              rows={1}
               value={draft}
               autoComplete="off"
               enterKeyHint="send"
               maxLength={4000}
               onChange={(e) => {
                 setDraft(e.target.value);
-                // Measured from 0px, not auto: auto falls back to rows={2},
-                // so a one-line message stood two lines tall on a phone,
-                // where the field starts at one. The CSS min-height still
-                // holds the desktop's two lines.
+                // Measured from 0px, not auto, so the field fits its words
+                // exactly. It starts at one line on every width since
+                // 25 Nov 2026 ("make chat half tall"); the CSS min-height
+                // holds that line when the field is empty.
                 e.target.style.height = "0px";
                 e.target.style.height = e.target.scrollHeight + "px";
               }}
               aria-describedby={suggestion ? "a11y-chat-tabhint" : undefined}
+              onPaste={(e) => {
+                // A screenshot pasted into the box is attached, as if picked.
+                // Words pasted with it still land in the field.
+                const files = Array.from(e.clipboardData.files).filter((f) => f.type.startsWith("image/"));
+                if (!files.length) return;
+                if (!e.clipboardData.getData("text/plain")) e.preventDefault();
+                void attachFiles(files);
+              }}
               onKeyDown={(e) => {
                 // Tab takes the suggestion; with none
                 // showing, or once taken, Tab moves on as it always does.
@@ -1788,6 +1874,24 @@ export function ScanChat({
                 }
               }}
             />
+            {attached.length > 0 && (
+              <ul className="a11y-chat-attached" role="list" aria-label={t("Attached images")}>
+                {attached.map((img) => (
+                  <li key={img.id}>
+                    <img src={imageSrc(img)} alt={img.name} />
+                    <button
+                      type="button"
+                      className="a11y-chat-attached-remove"
+                      aria-label={tf("Remove {name}", { name: img.name })}
+                      onClick={() => removeImage(img)}
+                    >
+                      <Icon name="close" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {attachNote && <p className="a11y-chat-attach-note">{attachNote}</p>}
             <div className="a11y-chat-box-row">
               <span className="a11y-chat-box-start">
                 {backTo && (
@@ -1797,6 +1901,29 @@ export function ScanChat({
                   </Button>
                 )}
                 <VoiceControl />
+                {/* The file field is the control; the button opens it, so
+                    it takes the box's own button style. Hidden, it is out of
+                    the tab order and the accessibility tree. */}
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept={IMAGE_TYPES.join(",")}
+                  multiple
+                  hidden
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files ?? []);
+                    e.target.value = "";
+                    void attachFiles(files);
+                  }}
+                />
+                <Button
+                  variant="ghost"
+                  disabled={attached.length >= MAX_IMAGES_PER_MESSAGE}
+                  onClick={() => fileRef.current?.click()}
+                >
+                  <Icon name="image" />{" "}
+                  {t("Add an image")}
+                </Button>
                 {/* In the box (user's instruction, 20 Nov 2026), and only
                     while a website is being scanned: the message names an
                     address, or a website's report is open. It opens the
@@ -1824,7 +1951,7 @@ export function ScanChat({
                   <span className="a11y-chat-tabhint-text">{smarten(suggestion, getLang())}</span>
                 </p>
               )}
-              <Button type="submit" variant="primary" disabled={busy || loading || !draft.trim()}>
+              <Button type="submit" variant="primary" disabled={busy || loading || (!draft.trim() && !attached.length)}>
                 {/* On a phone the word is clipped and the arrow drawn: the
                     button keeps "Send" as its name. */}
                 <span className="a11y-chat-send-word">{t("Send")}</span>

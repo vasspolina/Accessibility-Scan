@@ -57,12 +57,17 @@ export function titleOf(turns: ArchivableTurn[]): string {
 
 /** A turn as it should be stored: nothing that only means something while
  *  a reply streams, and a scan that was still running stored as stopped,
- *  since nothing will finish it once the page is gone. */
+ *  since nothing will finish it once the page is gone. Attached pictures
+ *  are not kept: one phone screenshot is a few hundred kilobytes of base64,
+ *  and a handful would fill MAX_STORE_CHARS and push older conversations
+ *  out. The words of the message are kept; a reopened conversation goes on
+ *  without the picture, as its history is rebuilt from words anyway. */
 export function settleTurn<T extends ArchivableTurn>(turn: T): T {
-  const rest = { ...turn } as T & { streaming?: unknown; marks?: unknown; searching?: unknown };
+  const rest = { ...turn } as T & { streaming?: unknown; marks?: unknown; searching?: unknown; images?: unknown };
   delete rest.streaming;
   delete rest.marks;
   delete rest.searching;
+  delete rest.images;
   if (rest.who === "scan" && rest.state === "running") return { ...rest, state: "failed" };
   return rest;
 }

@@ -58,11 +58,64 @@ describe("POST /api/chat guardrails", () => {
     expect((await post({ messages })).statusCode).toBe(413);
   });
 
-  it("refuses a document or image block — the API would fetch and bill its source", async () => {
+  it("refuses a document block, or an image by address — the API would fetch and bill its source", async () => {
     const doc = { type: "document", source: { type: "url", url: "https://example.com/600-pages.pdf" } };
     expect((await post({ messages: [{ role: "user", content: [doc, { type: "text", text: "summarise" }] }] })).statusCode).toBe(400);
     const img = { type: "image", source: { type: "url", url: "https://example.com/a.png" } };
     expect((await post({ messages: [{ role: "user", content: [img] }] })).statusCode).toBe(400);
+  });
+
+  // A picture the person attached rides as base64 data: nothing for the
+  // API to fetch. Only the four types the widget accepts, checked by their
+  // bytes as well as their stated type, and held to the caps.
+  describe("attached images", () => {
+    const PNG = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0]).toString("base64");
+    const JPEG = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0, 16, 74, 70, 73, 70, 0, 1, 1, 0, 0, 1, 0, 0]).toString("base64");
+    // 18 bytes each, so the base64 has no padding and the cap tests can
+    // lengthen it.
+    const image = (media_type: string, data: string) => ({ type: "image", source: { type: "base64", media_type, data } });
+    const ask = (...blocks: unknown[]) => post({ messages: [{ role: "user", content: [...blocks, { type: "text", text: "what is wrong here?" }] }] });
+
+    it("lets a png or jpeg through to the model", async () => {
+      // Past every guardrail; without an API key in tests the route answers 503.
+      expect((await ask(image("image/png", PNG))).statusCode).toBe(503);
+      expect((await ask(image("image/jpeg", JPEG))).statusCode).toBe(503);
+    });
+
+    it("refuses a type the widget does not accept", async () => {
+      expect((await ask(image("image/svg+xml", PNG))).statusCode).toBe(400);
+      expect((await ask(image("image/bmp", PNG))).statusCode).toBe(400);
+    });
+
+    it("refuses bytes that are not the stated type", async () => {
+      expect((await ask(image("image/png", JPEG))).statusCode).toBe(400);
+      expect((await ask(image("image/gif", Buffer.from("<svg onload=x>hello").toString("base64")))).statusCode).toBe(400);
+    });
+
+    it("refuses data that is not base64", async () => {
+      expect((await ask(image("image/png", `${PNG}!!not base64`))).statusCode).toBe(400);
+    });
+
+    it("refuses an image over the per-image cap", async () => {
+      const big = PNG + "A".repeat(5_000_000);
+      expect((await ask(image("image/png", big))).statusCode).toBe(400);
+    });
+
+    it("refuses more than four images in one turn", async () => {
+      const five = Array.from({ length: 5 }, () => image("image/png", PNG));
+      expect((await ask(...five)).statusCode).toBe(400);
+    });
+
+    it("answers a conversation holding too many images as too long", async () => {
+      const turn = (n: number) => ({ role: "user", content: [...Array.from({ length: n }, () => image("image/png", PNG)), { type: "text", text: "and this" }] });
+      const messages = [turn(4), { role: "assistant", content: "ok" }, turn(4), { role: "assistant", content: "ok" }, turn(4), { role: "assistant", content: "ok" }, turn(1)];
+      expect((await post({ messages })).statusCode).toBe(413);
+    });
+
+    it("measures the words apart from the images, so a large picture does not make the words too long", async () => {
+      const large = PNG + "A".repeat(600_000);
+      expect((await ask(image("image/png", large))).statusCode).toBe(503);
+    });
   });
 
   it("refuses a sourced block passed off as the assistant's", async () => {

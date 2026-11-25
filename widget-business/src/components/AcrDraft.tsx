@@ -154,34 +154,16 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
             </ul>
           </div>
 
-          {/* What the draft declares, in the same spec-sheet shape the
-              accessibility statement uses — the two documents are read by
-              the same person for the same reason. */}
-          <dl className="a11y-spec-grid" aria-label={t("What this draft declares")}>
-            <div className="a11y-spec-card a11y-spec-card-lead">
-              <dt className="a11y-spec-label">{t("Product")}</dt>
-              <dd className="a11y-spec-value">{productName.trim() || t("[Your product]")}</dd>
-            </div>
-            <div className="a11y-spec-card">
-              <dt className="a11y-spec-label">{t("Version")}</dt>
-              <dd className="a11y-spec-value">{productVersion.trim() || t("[Version]")}</dd>
-            </div>
-            <div className="a11y-spec-card">
-              <dt className="a11y-spec-label">{t("Checked against")}</dt>
-              <dd className="a11y-spec-value">
-                {report.conformance.standard}
-                <span className="a11y-spec-gloss">{t("The standard a buyer will ask you about")}</span>
-              </dd>
-            </div>
-            <div className="a11y-spec-card">
-              <dt className="a11y-spec-label">{t("Rows the scan can evidence")}</dt>
-              <dd className="a11y-spec-value">
-                {rowsBefore}
-                {report.conformance.failed}
-                <span className="a11y-spec-gloss">{(rowsAfter ?? "").trim()}</span>
-              </dd>
-            </div>
-          </dl>
+          {/* One panel, as the accessibility statement's form (user's
+              instruction, 25 Nov 2026, "design this like the other forms"):
+              the title, the three fields on top and the facts they feed
+              under a rule, so what you type and where it lands read as one
+              thing. No submit: the facts and the draft follow the fields as
+              they are typed. */}
+          <div className="a11y-stmt-form">
+          <div className="a11y-stmt-step">
+            <h3 className="a11y-stmt-step-head">{t("Tell us about the product")}</h3>
+          </div>
 
           <div className="a11y-stmt-fields">
             <label className="a11y-stmt-field">
@@ -213,6 +195,36 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
                 placeholder="access@example.com"
               />
             </label>
+          </div>
+
+          {/* What the draft declares, in the same spec-sheet shape the
+              accessibility statement uses — the two documents are read by
+              the same person for the same reason. */}
+          <dl className="a11y-spec-grid" aria-label={t("What this draft declares")}>
+            <div className="a11y-spec-card a11y-spec-card-lead">
+              <dt className="a11y-spec-label">{t("Product")}</dt>
+              <dd className="a11y-spec-value">{productName.trim() || t("[Your product]")}</dd>
+            </div>
+            <div className="a11y-spec-card">
+              <dt className="a11y-spec-label">{t("Version")}</dt>
+              <dd className="a11y-spec-value">{productVersion.trim() || t("[Version]")}</dd>
+            </div>
+            <div className="a11y-spec-card">
+              <dt className="a11y-spec-label">{t("Checked against")}</dt>
+              <dd className="a11y-spec-value">
+                {report.conformance.standard}
+                <span className="a11y-spec-gloss">{t("The standard a buyer will ask you about")}</span>
+              </dd>
+            </div>
+            <div className="a11y-spec-card">
+              <dt className="a11y-spec-label">{t("Rows the scan can evidence")}</dt>
+              <dd className="a11y-spec-value">
+                {rowsBefore}
+                {report.conformance.failed}
+                <span className="a11y-spec-gloss">{(rowsAfter ?? "").trim()}</span>
+              </dd>
+            </div>
+          </dl>
           </div>
 
           <div className="a11y-stmt-actions">
