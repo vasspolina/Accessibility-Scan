@@ -1062,7 +1062,7 @@
   .a11y-widget-biz .a11y-sum-dial circle { stroke: CanvasText; }
 }
 .a11y-widget-biz .a11y-sum-dial-face { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
-.a11y-widget-biz .a11y-sum-dial-num { font-size: 32px; letter-spacing: 0.01em; font-weight: 200; line-height: 1; margin: 0; }
+.a11y-widget-biz .a11y-sum-dial-num { font-size: 48px; letter-spacing: 0; font-weight: 200; line-height: 1; margin: 0; }
 .a11y-widget-biz .a11y-sum-dial-of { font-size: 18px; letter-spacing: 0.025em; margin: 0; }
 
 /* The scan summary as a run of display type (user's instruction,
@@ -1468,7 +1468,7 @@
 
 /* The professional score: the number is the big word, the rest small print under it. */
 .a11y-widget-biz .a11y-pro-score { display: flex; align-items: baseline; gap: var(--cds-spacing-04); margin: 0 0 var(--cds-spacing-04); }
-.a11y-widget-biz .a11y-pro-score-num { font-size: 32px; letter-spacing: 0.01em; font-weight: 200; line-height: 1; }
+.a11y-widget-biz .a11y-pro-score-num { font-size: 48px; letter-spacing: 0; font-weight: 200; line-height: 1; }
 .a11y-widget-biz .a11y-pro-score-of { font-size: 18px; letter-spacing: 0.025em; }
 .a11y-widget-biz .a11y-pro-eyebrow { font-size: 18px; letter-spacing: 0.025em; font-weight: 200; margin: 0 0 var(--cds-spacing-03); }
 .a11y-widget-biz .a11y-pro-count { font-size: 24px; letter-spacing: 0.015em; }
