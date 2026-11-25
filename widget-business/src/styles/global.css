@@ -6087,21 +6087,20 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-research[class][class] > :not(strong:first-child) { text-align: start; }
 /* The points take the hung en dash again now the words are set left
    (user's instruction, 25 Nov 2026, "add back en dashes, and left margin
-   that was bigger"), 12px apart. */
+   that was bigger"), 12px apart. The dash hangs in the row's 40px start at
+   every width, phones included ("make margin like this", the same day), so
+   a list's words share the left edge of a sentence in the row above. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > * > :is(.a11y-fd-points, ul:not(.a11y-occurrence-list))[class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class] > ul { padding-inline-start: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > * > :is(.a11y-fd-points, ul:not(.a11y-occurrence-list))[class] > li + li,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class] > ul > li + li { margin-top: var(--cds-spacing-04); }
 @container a11y-ftable (min-width: 641px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class] { padding: var(--cds-spacing-06) var(--cds-spacing-06) var(--cds-spacing-06); }
-  /* A list's en dash hangs in the row's 40px start, so its words share the
-     left edge of a sentence in the row above. Phones keep the list's own
-     indent: their 18px start is narrower than the dash. */
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > * > :is(.a11y-fd-points, ul:not(.a11y-occurrence-list))[class],
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class] > ul { padding-inline-start: 0; }
 }
 @container a11y-ftable (max-width: 640px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps, .a11y-affected)[class][class] {
-    column-gap: var(--cds-spacing-04); padding: var(--cds-spacing-05) var(--cds-spacing-04) var(--cds-spacing-05) var(--cds-spacing-05); border-radius: var(--r-card);
-    --fd-label-shift: calc((var(--cds-spacing-04) - var(--cds-spacing-05)) / 2);
+    column-gap: var(--cds-spacing-04); padding: var(--cds-spacing-05) var(--cds-spacing-04) var(--cds-spacing-05) var(--cds-spacing-08); border-radius: var(--r-card);
+    --fd-label-shift: calc((var(--cds-spacing-04) - var(--cds-spacing-08)) / 2);
   }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-fd-meta[class] { padding-inline: var(--cds-spacing-05); }
 }
