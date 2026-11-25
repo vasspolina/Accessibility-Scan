@@ -175,24 +175,18 @@ main.wrap { padding-top: var(--s10); }
 }
 .title { max-width: 30ch; margin: 0 auto var(--s10); text-wrap: balance; }
 .title__sub { margin-top: var(--s05); color: var(--ink); font-size: 24px; }
-/* The home page's lede as a type foundry's tester panel (user's reference,
-   25 Nov 2026, "design this like this", a black panel with its specimen
-   line in white Lettra): the column's width on solid black, 28px corners,
-   at least 400px tall, the line centred both ways in white Lettra
-   Ultralight at 56px, 1.15, no tracking (21:1). Black in both themes, as
-   the reference. The reference's pill and weight slider are left out:
-   there are no words or controls of the studio's own for them. The phone
-   takes 32px in a 280px panel. */
+/* The home page's lede in blue Lettra on the page (user's instruction,
+   25 Nov 2026, "delete background and make text blue", on the black panel
+   of the same morning): no panel, corners or fill; the line centred in
+   Lettra Ultralight at 56px, 1.15, no tracking, in the title's callout blue
+   (#2848c8 on white, 7.4:1; #7d95ff on black in dark). The phone takes
+   32px. */
 .title--lede {
-  display: grid; place-content: center; max-width: none; min-height: 400px; margin: 0 0 var(--s10);
-  padding: var(--s10) var(--s09); border-radius: var(--r-panel); background: #000; color: #fff;
+  max-width: none; margin: 0 0 var(--s10);
   font-size: 56px; line-height: 1.15;
 }
 @media (max-width: 671px) {
-  .title.title--lede { min-height: 280px; padding: var(--s07) var(--s05); font-size: 32px; }
-}
-@media (forced-colors: active) {
-  .title--lede { border: 1px solid CanvasText; }
+  .title.title--lede { font-size: 32px; }
 }
 
 /* ---------- The request form: the scan form's grey panel ---------- */
@@ -461,7 +455,10 @@ main.wrap { padding-top: var(--s10); }
 .acc__btn:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
 .acc__row:has(> .acc__head [aria-expanded="true"]) { border-radius: var(--r-panel); background: var(--bubble); color: var(--bubble-ink); }
 .acc__row:has(> .acc__head [aria-expanded="true"]) .acc__btn { border-radius: var(--r-panel); }
-.acc__panel { display: grid; gap: var(--s05); padding: var(--s03) var(--s07) var(--s07); }
+/* Three times the space between an opened service's lede and its terms
+   (user's instruction, 25 Nov 2026, "add 3 times more paragraph break
+   here"): 16px became 48px. The panel holds only those two. */
+.acc__panel { display: grid; gap: var(--s09); padding: var(--s03) var(--s07) var(--s07); }
 .acc__panel[hidden] { display: none; }
 .acc__lede { font-size: 32px; }
 .acc__body {
@@ -623,12 +620,15 @@ footer.wrap { margin-top: var(--s12); padding-bottom: var(--s07); }
    button with it (user's instruction, the same day, "left align", on the
    exemption card of services.html; they were centred as a programme that
    morning). The card's cream, corners and 24px size stay. ---------- */
+/* Lettra 15% smaller in these cards (user's instruction, the same day,
+   "make lettra font be smaller 15%", on the exemption card): 24px became
+   20px, the phone's 18px 15px; the button keeps its own size. */
 .card:not(:has(> .offer)) {
-  font-family: var(--mono); letter-spacing: 0; line-height: 1.15;
+  font-family: var(--mono); font-size: 20px; letter-spacing: 0; line-height: 1.15;
 }
-.card:not(:has(> .offer)) h2 { font-family: var(--mono); letter-spacing: 0; }
+.card:not(:has(> .offer)) h2 { font-family: var(--mono); font-size: 20px; letter-spacing: 0; }
 /* Buttons stay in the body face, as every pill in the scan. */
 .card:not(:has(> .offer)) .btn { font-family: "PP Telegraf", "DejaVu Sans", sans-serif; letter-spacing: 0.025em; line-height: 1.2; text-wrap: nowrap; }
 @media (max-width: 671px) {
-  .card:not(:has(> .offer)) { letter-spacing: 0; line-height: 1.2; }
+  .card:not(:has(> .offer)) { font-size: 15px; letter-spacing: 0; line-height: 1.2; }
 }
