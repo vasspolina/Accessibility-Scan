@@ -5551,6 +5551,58 @@
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret[class][class] { border: 1px solid CanvasText; }
 }
+/* One size and one grid (user's instruction, 25 Nov 2026, "all this content
+   can be same size font, put top row on grid"). Every word in a result and
+   its checklist is the row's size: the criterion, its official name and the
+   places are no longer 18px under 32px titles. The list is the grid and each
+   result, its title line, its group and every criterion row are subgrids of
+   it, so the columns are the same down all four results: the triangle; the
+   sentence over the criteria; the count over the titles; the status at the
+   end over the places. The sentence's column is as wide as the widest
+   sentence up to 34% of the row, then the sentence wraps. The title's small
+   print spans the count's column too, set to the end, and stands 3em clear
+   of the count. Above 640px only: a phone keeps its stacked rows.
+   The one size scales with the screen (user's instruction, the same day,
+   "scale text proportionally on screens smaller sizes"): 32px from 1000px
+   of window up, 2px less for every 100px below it, never under 20px (at
+   375px it is 20px, at 800px 28px), so a narrower window sets the same
+   lines smaller instead of breaking them, and there is no step at 640px. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets :is(.a11y-legal-row, .a11y-conf-row) :is(.a11y-legal-row-label, .a11y-legal-count, .a11y-legal-mark, .a11y-legal-row-meaning, .a11y-conf-id, .a11y-conf-plain, .a11y-conf-status)[class][class][class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-row > .a11y-conf-body > strong:not(#x) {
+  font-size: clamp(20px, calc(12px + 2vw), 32px); line-height: 1.1; letter-spacing: 0.01em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-row > .a11y-conf-id[class][class] { padding-top: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-row .a11y-conf-plain[class][class] { margin-top: 0; }
+@media (min-width: 641px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles.a11y-legal-carets[class][class] {
+    display: grid; grid-template-columns: 28px var(--caret-col) fit-content(34%) minmax(0, 1fr) auto 28px; column-gap: 0; row-gap: 12px;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret[class][class][class] {
+    display: grid; grid-column: 1 / -1; grid-template-columns: subgrid; align-content: start; padding-inline: 0;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row[class][class][class][class][class] {
+    grid-column: 1 / -1; grid-template-columns: subgrid;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row[class][class][class][class]::before { grid-column: 2; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row .a11y-legal-row-label[class][class][class] { grid-column: 3; padding-inline-end: 24px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row .a11y-legal-count[class][class][class] { grid-column: 4; justify-self: start; padding: 0; text-align: start; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row > .a11y-legal-row-desc[class] { grid-column: 4 / 6; margin-inline-start: 3em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-group[class][class] {
+    display: grid; grid-column: 3 / 6; grid-template-columns: subgrid; width: auto; margin-inline-start: 0;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-group[hidden][class][class] { display: none; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-group > :is(.a11y-conf-list, .a11y-conf-caveat)[class] { grid-column: 1 / -1; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-group > .a11y-conf-list[class] {
+    display: grid; grid-template-columns: subgrid; container-type: normal;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-list > .a11y-conf-row[class][class] {
+    grid-column: 1 / -1; grid-template-columns: subgrid; column-gap: 0;
+  }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-list > .a11y-conf-row > .a11y-conf-id[class][class] { grid-column: 1; padding-inline-end: 24px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-list > .a11y-conf-row > .a11y-conf-body { grid-column: 2; min-width: 0; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets .a11y-conf-list > .a11y-conf-row > .a11y-conf-status[class][class] { grid-column: 3; padding-inline-start: 24px; }
+}
+
 
 /* The design notes. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-carets > .a11y-dn-caret[class] {
@@ -5654,6 +5706,18 @@
 }
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card > .a11y-stmt-code[hidden] { display: block; }
+}
+/* One caret (user's instruction, 25 Nov 2026, "combine in one carret"):
+   "Take the statement" is the toggle, the triangle in the caret column,
+   then the step's round number and the words; Copy keeps the line's far
+   end. The draft opens under it on the triangle's edge. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-step > .a11y-stmt-step-head { flex: 1 1 auto; min-width: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-step-head > .a11y-stmt-toggle { align-items: center; gap: 16px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-step-head > .a11y-stmt-toggle::before { align-self: center; margin: 0 calc(var(--caret-col) - 0.42em - 16px) 0 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-step-head > .a11y-stmt-toggle > .a11y-stmt-toggle-words { min-width: 0; }
+@media (hover: hover) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-step-head > .a11y-stmt-toggle:hover { text-decoration: none; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-step-head > .a11y-stmt-toggle:hover > .a11y-stmt-toggle-words { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.14em; }
 }
 
 /* ═══ THE SCORE'S ISSUES FIT THEIR ROW (user's instruction, 24 Nov 2026,
@@ -5800,3 +5864,35 @@
 }
 /* The note after the WCAG 2.2 items is its own group: 70px under the list. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-panel > .a11y-w22-list + * { margin-top: 70px; }
+
+/* Ready for WCAG 2.2? as one caret (user's instruction, 25 Nov 2026, "this
+   whole content needs to be a caret"): the title is the toggle, the
+   triangle in the caret column before it; the when and the fail count stay
+   under it shut, and the sentence and the six items open under them, all on
+   the title's left edge. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22 > .a11y-w22-title > .a11y-w22-head {
+  display: flex; align-items: baseline; width: 100%; min-height: 0; margin: 0; padding: 0; border: 0; border-radius: 0;
+  background: none; color: var(--ink); text-align: start; cursor: pointer;
+  font: inherit; letter-spacing: inherit;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22 > .a11y-w22-title > .a11y-w22-head:enabled:hover { background: none; color: var(--ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22 > .a11y-w22-title > .a11y-w22-head::before {
+  content: ""; flex: none; align-self: flex-start; width: 0.42em; height: 0.68em; background: currentColor;
+  margin: calc((1lh - 0.68em) / 2) calc(var(--caret-col) - 0.42em) 0 0; transition: transform 120ms ease;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='12 8 10 16'%3E%3Cpath d='M12 8 22 16 12 24z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='12 8 10 16'%3E%3Cpath d='M12 8 22 16 12 24z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22 > .a11y-w22-title > .a11y-w22-head[aria-expanded="true"]::before { transform: rotate(90deg); }
+@media (hover: hover) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22 > .a11y-w22-title > .a11y-w22-head:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.14em; }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22 > :is(.a11y-next, .a11y-w22-panel) { margin-inline-start: var(--caret-col); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22 > .a11y-w22-panel[hidden],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-desc[hidden] { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22 > .a11y-w22-title > .a11y-w22-head::before { transition: none; }
+}
+@media print {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22 > .a11y-w22-panel[hidden] { display: block; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-desc[hidden] { display: block; }
+}
