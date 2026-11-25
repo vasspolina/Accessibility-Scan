@@ -33,9 +33,15 @@ export interface MountOptions {
 // loads, and every rule keeps a system fallback.
 // The mono face is PP Lettra Mono (user's instruction, 25 Nov 2026, "use
 // letra as mono font"), its Ultralight cut declared for every weight like
-// Telegraf (the free package has only Ultralight and Medium upright). It is
+// Telegraf (the free package has only Ultralight and Medium upright), and
+// its Medium cut from 500 up, for the principle groups' titles only (user's
+// instruction, 25 Nov 2026, "also use letra medium mono"). It is
 // the first name in every mono stack in global.css, with the system mono
 // behind it. Same free-for-personal-use licence as the Telegraf files.
+// EB Garamond (SIL OFL, latin subset from @fontsource/eb-garamond 5, the
+// licence beside the files) sets the centred callouts after the user's
+// poster reference of 25 Nov 2026: one roman and one italic, each declared
+// for every weight so the widget's 200 draws them without synthesis.
 function injectFonts(apiBase: string) {
   const id = "a11y-widget-fonts";
   if (document.getElementById(id)) return;
@@ -53,8 +59,29 @@ function injectFonts(apiBase: string) {
 @font-face {
   font-family: "PP Lettra Mono";
   src: url("${base}/fonts/PPLettraMono-Ultralight.otf") format("opentype");
+  font-weight: 100 499;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PP Lettra Mono";
+  src: url("${base}/fonts/PPLettraMono-Medium.otf") format("opentype");
+  font-weight: 500 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "EB Garamond";
+  src: url("${base}/fonts/EBGaramond-latin-400-normal.woff2") format("woff2");
   font-weight: 100 900;
   font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "EB Garamond";
+  src: url("${base}/fonts/EBGaramond-latin-400-italic.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: italic;
   font-display: swap;
 }`;
   document.head.appendChild(style);
