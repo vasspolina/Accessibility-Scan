@@ -299,16 +299,46 @@
    13px label, the words at 16px. Prose gets a reading line (1.35); rows
    keep 19px. */
 .a11y-widget-biz .g-thread { margin: 0; }
-.a11y-widget-biz .g-row { margin: 0; padding: 8px 0 13px; border-bottom: 1px solid var(--rule); animation: a11y-rise 0.3s cubic-bezier(0.2, 0, 0, 1) both; }
+.a11y-widget-biz .g-row { margin: 0; padding: 13px 0 13px; animation: a11y-rise 0.3s cubic-bezier(0.2, 0, 0, 1) both; }
+.a11y-widget-biz .g-row + .g-row:not(.g-row-cont) { margin-top: 13px; }
 .a11y-widget-biz .g-row + .g-row { margin-top: 0; }
 .a11y-widget-biz .g-row-cont { padding-top: 0; }
-.a11y-widget-biz .g-row:has(+ .g-row-cont) { border-bottom: 0; }
 @keyframes a11y-rise { from { opacity: 0; transform: translateY(6px); } }
-.a11y-widget-biz .g-who { margin: 0 0 8px; font-size: 13px; line-height: 16px; color: var(--ink-2); }
+.a11y-widget-biz .g-who { margin: 0 0 4px; font-size: 13px; line-height: 16px; color: var(--ink-2); }
 .a11y-widget-biz .g-row[data-busy] .g-who::after { content: " ●" / ""; color: var(--accent); animation: a11y-blink 1s steps(2, start) infinite; }
 @keyframes a11y-blink { to { visibility: hidden; } }
 .a11y-widget-biz .g-row-you .g-who { color: var(--ink-2); }
-.a11y-widget-biz .g-text { line-height: 1.35; }
+/* Your words at the row size, 16px; the assistant's reply as the
+   reference's article, a size down (13px on 16px), paragraphs one blank
+   line apart, lists with hanging markers (numbers kept), inline code at the
+   text's size. No rules inside a reply (user's "not always a line divider
+   needed", 26 Nov 2026). */
+.a11y-widget-biz .g-text { font-size: 16px; line-height: 19px; }
+.a11y-widget-biz .g-row:not(.g-row-you) .g-text { font-size: 13px; line-height: 16px; }
+.a11y-widget-biz .g-text :is(p, ul, ol, pre) { margin: 0 0 13px; }
+.a11y-widget-biz .g-text :is(ul, ol) { padding-inline-start: 18px; }
+.a11y-widget-biz .g-text ul { list-style: "•  " outside; }
+.a11y-widget-biz .g-text ol { list-style: decimal outside; }
+.a11y-widget-biz .g-text :is(ul, ol) > li { margin: 0; padding-inline-start: 2px; }
+.a11y-widget-biz .g-text :is(ul, ol) > li + li { margin-top: 4px; }
+.a11y-widget-biz .g-text :is(ul, ol) > li::marker { color: var(--ink); }
+.a11y-widget-biz .g-text code { font-size: inherit; line-height: inherit; }
+.a11y-widget-biz .g-text strong { color: var(--ink); }
+.a11y-widget-biz .g-text a { color: var(--link); }
+/* A code block: a label line with Copy at its end, the code under it at the
+   reply's size, wrapped, no rules. */
+.a11y-widget-biz .a11y-chat-copy { margin: 0 0 13px; }
+.a11y-widget-biz .a11y-chat-copy-bar { display: flex; justify-content: flex-end; margin: 0 0 4px; }
+.a11y-widget-biz .a11y-chat-copy-btn { padding: 0; font-size: 11px; line-height: 13px; color: var(--ink-2); text-decoration: underline; text-underline-offset: 3px; }
+.a11y-widget-biz .a11y-chat-copy-btn:hover { color: var(--ink); }
+.a11y-widget-biz .a11y-chat-copy pre,
+.a11y-widget-biz .g-text pre { margin: 0; padding: 0; border: 0; font-size: 13px; line-height: 16px; white-space: pre-wrap; overflow-wrap: anywhere; }
+/* A test plan in a reply: numbered steps, the name then its line. */
+.a11y-widget-biz .g-text .a11y-chat-plan { list-style: none; padding: 0; }
+.a11y-widget-biz .a11y-chat-plan > li { position: relative; padding-inline-start: 18px; }
+.a11y-widget-biz .a11y-chat-plan-no { position: absolute; inset-inline-start: 0; }
+.a11y-widget-biz .a11y-chat-plan-title { display: block; }
+.a11y-widget-biz .a11y-chat-plan-text { display: block; }
 .a11y-widget-biz .g-text > :last-child { margin-bottom: 0; }
 .a11y-widget-biz .g-msg-images { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 8px; }
 .a11y-widget-biz .g-msg-images img { display: block; max-width: 160px; }
