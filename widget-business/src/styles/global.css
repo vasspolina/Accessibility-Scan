@@ -3053,7 +3053,7 @@
    16px it measured 36px) until the one 40px margin below. */
 @media (min-width: 672px) {
   /* 24px with the widget's own 16px is 40px: see ONE 40PX MARGIN below. */
-  .a11y-widget-biz .a11y-chat-layout { padding-inline: var(--cds-spacing-06); padding-top: var(--cds-spacing-09); box-sizing: border-box; }
+  .a11y-widget-biz .a11y-chat-layout { padding-inline: var(--cds-spacing-06); padding-top: calc(var(--cds-spacing-10) + var(--cds-spacing-03)); box-sizing: border-box; }
   .a11y-widget-biz .a11y-chat-layout > .a11y-chat { padding-inline-end: 0; }
 }
 /* Where the panel is folded (641 to 960px) there is no panel edge to keep
@@ -3085,7 +3085,7 @@
    tall scroll by 32px. Phones keep their 10px gutter. */
 @media (min-width: 672px) {
   .a11y-widget-biz:has(> .a11y-widget-inner .a11y-chat-layout) { padding-block: 0; }
-  .a11y-widget-biz .a11y-chat-layout .a11y-chat-dock { padding-bottom: var(--cds-spacing-09); }
+  .a11y-widget-biz .a11y-chat-layout .a11y-chat-dock { padding-bottom: calc(var(--cds-spacing-10) + var(--cds-spacing-03)); }
 }
 @media (min-width: 1056px) {
   .a11y-widget-biz .a11y-chat-layout {
@@ -3096,7 +3096,7 @@
     padding-top: 0; padding-inline-start: var(--cds-spacing-02);
   }
   .a11y-widget-biz .a11y-chat-layout > .a11y-chats { padding: var(--cds-spacing-08) var(--cds-spacing-08) var(--cds-spacing-08) 0; }
-  .a11y-widget-biz .a11y-chat-layout > .a11y-chat { padding-inline: 0; padding-top: var(--cds-spacing-09); }
+  .a11y-widget-biz .a11y-chat-layout > .a11y-chat { padding-inline: 0; padding-top: calc(var(--cds-spacing-10) + var(--cds-spacing-03)); }
 }
 
 /* ═══ FORM FIELDS AS THE CHAT BOX (user's instruction, 21 Nov 2026) ═════════
@@ -7821,9 +7821,13 @@
    30% more is 94px, and the nearest Carbon step for its padding is 48px,
    so it stands 88px. The window's top to its first line and the box you
    type in to the window's foot go from 40px to 48px (52px, snapped).
-   The conversations panel keeps its 40px and 20px. */
+   The conversations panel keeps its 40px and 20px.
+   50% more again (user's instruction, 26 Nov 2026, "lets make chat margin
+   50% more"): the conversation's padding, the window's top to its first
+   line and the box to the window's foot are 72px (were 48px), written as
+   Carbon's 64 + 8 since the scale has no 72. */
 @media (min-width: 672px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-layout > .a11y-chat[class] { padding-inline: var(--cds-spacing-09); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-layout > .a11y-chat[class] { padding-inline: calc(var(--cds-spacing-10) + var(--cds-spacing-03)); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-chat-box[class][class] { padding: var(--cds-spacing-03) var(--cds-spacing-07); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-dock .a11y-chat-composer .a11y-chat-box textarea { min-height: 1lh; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-chat-box-row[class] { margin-top: var(--cds-spacing-03); }
@@ -8006,8 +8010,11 @@
 }
 /* An opened design note stands 16px under its bar, the same as its cards
    stand from each other (user's instruction, the same day, "make same
-   line height between cards and drawer"); it was 4px. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-panel .a11y-dn-caret > .a11y-dn-detail[class][class][class] { margin-top: var(--cds-spacing-05); }
+   line height between cards and drawer"); it was 4px. Since the label
+   pills moved onto the cards' top edge (26 Nov 2026) the cards stand 32px
+   apart, so the note stands 32px under its bar ("add same vertical space
+   between element"); at 16px the first row's pills nearly met the bar. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-panel .a11y-dn-caret > .a11y-dn-detail[class][class][class] { margin-top: var(--cds-spacing-07); }
 
 /* ═══ THE STATEMENT'S DRAFT IN TWO COLUMNS (user's instruction, 25 Nov
    2026, "two columns font 20% bigger, paragraph break and space underneath
@@ -8201,13 +8208,16 @@
    inside a part stand one line apart, 24px (Carbon's spacing-06, the 22px
    x 1.1 line rounded onto the scale), where they were 12px; the label pill
    keeps its 18px and its 12px over the words. The affected elements keep
-   their own setting. */
+   their own setting. The dashed points of a list are set one under the
+   other with no space between them (user's instruction, the same day, "no
+   need for paragraph break between dashes"); separate paragraphs keep the
+   line. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps)[class][class][class][class] {
   font-size: 22px; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps)[class][class][class][class] > * + * + * { margin-top: calc(var(--cds-spacing-06) - var(--cds-spacing-04)); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps)[class][class][class][class] :is(ul, ol)[class] > li + li,
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col > .a11y-finding-steps[class][class][class][class] > ul > li + li { margin-top: var(--cds-spacing-06); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col > .a11y-finding-steps[class][class][class][class] > ul > li + li { margin-top: 0; }
 
 /* ═══ THE OPENED FINDING'S LABELS ON THE CARD'S TOP EDGE (user's
    instruction, 26 Nov 2026, "ad this badge on top of top line in buble",
@@ -8244,3 +8254,11 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class][class] > .a11y-affected-label { display: flex; height: auto; min-height: 0; padding: 0; line-height: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class][class] > .a11y-affected-label > strong,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class][class][class] > p:first-child > strong { margin: 0; }
+
+/* ═══ THE YELLOW NOTES' TITLES AT 18PX (user's instruction, 26 Nov 2026,
+   "use smaller font for title", on How the score works) ═══ The title of
+   each yellow note (How the score works, the warning's heading, the
+   overlay note's title) is 18px, a step under the note's 22px words, so it
+   reads as the note's label; it keeps its place first, one line over the
+   words. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-card > .a11y-sum-card-body > h3, .a11y-yellow-note > .a11y-note-body > .a11y-note-title)[class][class][class] { font-size: 18px; }
