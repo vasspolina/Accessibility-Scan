@@ -1101,6 +1101,18 @@
 .a11y-widget-biz .a11y-tech-details { border-bottom: 0; }
 .a11y-widget-biz .a11y-fd .a11y-code-fix { max-width: 760px; }
 
+/* The drawer's parts as balanced columns: they flow down the left column
+   and on into the right, never split mid-part, so a short part never leaves
+   a hole beside a long one. The tags line, the affected elements, the
+   technical version and Learn more run across both columns. */
+.a11y-widget-biz .a11y-fd { display: block; columns: 2; column-gap: 33px; }
+.a11y-widget-biz .a11y-fd > .a11y-fd-col { display: contents; }
+.a11y-widget-biz .a11y-fd > .a11y-fd-col > * { break-inside: avoid; }
+.a11y-widget-biz .a11y-fd > :is(.a11y-fd-meta, .a11y-tech-details, .a11y-fd-learn),
+.a11y-widget-biz .a11y-fd > .a11y-fd-col > :is(.a11y-affected, .a11y-finding-level-fold) { column-span: all; }
+.a11y-widget-biz .a11y-fd > .a11y-fd-col > .a11y-affected { margin-top: 16px; padding-top: 16px; }
+@media (max-width: 640px) { .a11y-widget-biz .a11y-fd { columns: 1; } }
+
 /* The form's report (a page behind a login) keeps the product shell. */
 .a11y-widget-biz .a11y-shell-with-nav > .a11y-shell-main { display: grid; grid-template-columns: 225px minmax(0, 1fr); gap: 13px; padding: 16px; }
 .a11y-widget-biz .a11y-shell-nav { position: sticky; top: 16px; align-self: start; display: flex; flex-direction: column; gap: 2px; }
