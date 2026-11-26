@@ -1123,6 +1123,10 @@
 .a11y-widget-biz .a11y-sum-run { gap: 33px; }
 @media (max-width: 640px) { .a11y-widget-biz .a11y-sum-dial { width: 150px; } }
 
+/* The delete button in Recent as a rounded square, like the box's buttons
+   (user's "this can be a square too", 26 Nov 2026). */
+.a11y-widget-biz .g-list-delete { border-radius: 6px; }
+
 /* The form's report (a page behind a login) keeps the product shell. */
 .a11y-widget-biz .a11y-shell-with-nav > .a11y-shell-main { display: grid; grid-template-columns: 225px minmax(0, 1fr); gap: 13px; padding: 16px; }
 .a11y-widget-biz .a11y-shell-nav { position: sticky; top: 16px; align-self: start; display: flex; flex-direction: column; gap: 2px; }
