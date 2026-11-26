@@ -378,7 +378,6 @@
 .a11y-widget-biz .g-app .g-side-foot [data-tip]::after { top: auto; bottom: 4px; transform: none; }
 .a11y-widget-biz .g-app[data-rail="open"] .g-side [data-tip]::after,
 .a11y-widget-biz .g-app[data-rail="open"] .g-menu[data-tip]::after { display: none; }
-.a11y-widget-biz .g-app .g-chip[data-tip]::after { top: auto; bottom: calc(100% + 6px); left: 0; transform: none; }
 
 /* The conversation: one centred column, one left edge for everything in it. */
 .a11y-widget-biz .g-main {
@@ -411,13 +410,17 @@
 .a11y-widget-biz .g-chips { margin-top: 16px; }
 .a11y-widget-biz .g-chip-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 0; }
 .a11y-widget-biz .g-chip-list > li { margin: 0; min-width: 0; }
+/* Equal cards, the whole question in each (up to three lines), the spark at
+   the top: no cut-off words. */
+.a11y-widget-biz .g-chip-list > li { display: flex; }
 .a11y-widget-biz .g-chip {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
   width: 100%;
-  height: 48px;
-  padding: 0 16px;
+  min-height: 112px;
+  padding: 16px;
   border: 1px solid var(--divider);
   border-radius: 12px;
   text-align: start;
@@ -425,7 +428,7 @@
   color: var(--ink);
 }
 .a11y-widget-biz .g-chip:hover:not(:disabled) { background: var(--container); }
-.a11y-widget-biz .g-chip-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.a11y-widget-biz .g-chip-text { min-width: 0; font-weight: 400; line-height: 1.45; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; overflow: hidden; }
 .a11y-widget-biz .g-chip-mark {
   flex: none; width: 18px; height: 18px; background: var(--chip, #4285f4);
   -webkit-mask: var(--icon-spark) center / 16px no-repeat; mask: var(--icon-spark) center / 16px no-repeat;
@@ -457,7 +460,6 @@
 .a11y-widget-biz .g-tools,
 .a11y-widget-biz .g-tools-start { display: contents; }
 .a11y-widget-biz .g-field .a11y-voice { order: 0; display: inline-flex; }
-.a11y-widget-biz .g-field .a11y-voice .a11y-btn { min-height: 40px; padding: 0 12px; color: var(--ink-2); }
 .a11y-widget-biz .g-field .g-icon-btn { order: 0; }
 .a11y-widget-biz .g-input {
   order: 1;
@@ -789,11 +791,12 @@
   .a11y-widget-biz .g-column { padding-inline: 16px; }
   .a11y-widget-biz .a11y-report,
   .a11y-widget-biz .a11y-shell-content > div:not([class]) > .a11y-url-form { padding-inline: 16px; }
-  .a11y-widget-biz .g-chip-list { grid-template-columns: minmax(0, 1fr); }
+  /* On a phone the cards run in one row that scrolls sideways. */
+  .a11y-widget-biz .g-chip-list { display: flex; overflow-x: auto; scrollbar-width: none; margin-inline: -16px; padding: 0 16px 2px; }
+  .a11y-widget-biz .g-chip-list > li { flex: 0 0 72%; }
   .a11y-widget-biz .g-msg-model { flex-direction: column; gap: 8px; }
   .a11y-widget-biz .g-msg-cont { padding-inline-start: 0; }
   .a11y-widget-biz .g-bubble { max-width: 88%; }
-  .a11y-widget-biz .g-field .a11y-voice .a11y-btn { padding: 0 8px; }
   .a11y-widget-biz :is(.a11y-score, .a11y-ra-panel, .a11y-fd, .a11y-note) { padding: 16px; border-radius: 20px; }
   .a11y-widget-biz .a11y-sum-spec { grid-template-columns: 88px minmax(0, 1fr); }
   .a11y-widget-biz .a11y-sum-spec-shot { width: 88px; }

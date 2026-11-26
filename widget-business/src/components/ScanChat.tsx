@@ -1578,7 +1578,7 @@ export function ScanChat({
               >
                 <Icon name="image" size={20} />
               </button>
-              <VoiceControl />
+              <VoiceControl iconOnly />
               {(addressIn(draft) || (report && report.meta.documentKind !== "pdf")) && (
                 <button type="button" className="g-pill" onClick={onSignInForm}>
                   {t("Scan a page behind a login")}
@@ -1690,7 +1690,6 @@ export function ScanChat({
                         type="button"
                         className="g-chip"
                         disabled={busy || loading}
-                        data-tip={smarten(t(p.prompt), getLang())}
                         onClick={() => void ask(t(p.prompt))}
                       >
                         <span className="g-chip-mark" aria-hidden="true" />
