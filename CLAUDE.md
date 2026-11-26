@@ -16,6 +16,8 @@ npm run build                       # tsc to dist/
 npm run build:widget-business       # builds ../widget-business into public/ for the local dev server (gitignored; the Docker image builds its own)
 node dist/cli.js https://example.com   # the a11y-scan CLI (docs/CLI.md: exit 0 ok, 1 threshold missed, 2 scan failed); takes several URLs, --urls, --sitemap; writes --json --sarif --junit --csv --markdown
 node dist/mcp.js                       # a11y-scan-mcp, the scanner as an MCP stdio server (docs/MCP.md); stdout is protocol only
+# The scanner as a Claude Code skill: .claude-plugin/marketplace.json + plugins/a11y-scan/ (docs/SKILL.md).
+# Its scan.sh clones main and runs backend/dist/cli.js, so a CLI option or exit-code change must be reflected in its SKILL.md.
 
 # widget-business/
 npx vite                            # dev harness on :5174
