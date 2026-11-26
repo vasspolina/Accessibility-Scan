@@ -23,7 +23,12 @@ export interface MountOptions {
 }
 
 // @font-face is IGNORED inside a shadow-root stylesheet, so the face is
-// declared once at document level. One face for everything (user's
+// declared once at document level. The face is Jokker VF (trial), served
+// beside the other fonts (user's instruction, 26 Nov 2026, "use Jokker font
+// instead of pp telegraph"): a variable font over weights 100–900, which
+// global.css pins at 200 so it draws as thin as the Telegraf Ultralight it
+// replaces. Check the trial terms before the public site uses it. Before
+// it, one face for everything (user's
 // instruction, 24 Nov 2026, "use pp telegraph thin for all fonts"): PP
 // Telegraf Ultralight, the family's thinnest cut (it has none named Thin),
 // declared for the whole weight range 100–900 so any weight a rule or the
@@ -50,8 +55,8 @@ function injectFonts(apiBase: string) {
   style.id = id;
   style.textContent = `
 @font-face {
-  font-family: "PP Telegraf";
-  src: url("${base}/fonts/PPTelegraf-Ultralight.otf") format("opentype");
+  font-family: "Jokker";
+  src: url("${base}/fonts/JokkerVF-TRIAL.woff2") format("woff2");
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;

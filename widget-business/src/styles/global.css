@@ -106,7 +106,28 @@
 .a11y-widget-biz[data-theme="dark"] { --ink: #fff; --paper: #000; color-scheme: dark; --tile: #1c1c1e; --tile-ink: #fff; --tile-fill: #2c2c2e; --strong: #636366; --strong-ink: #fff; --hover: #fff5c2; --hover-ink: #000; --solid: #636366; --solid-ink: #fff; --btn-fill: #2c2c2e; --field-edge: 1px solid #8e8e93; --field-bg: #1c1c1e; --hl-orange: #f03c38; --urgent: #f03c38; --hl-blue: #2848c8; --hl-green: #486048; --hl-cap-a: #fff5c2; --hl-cap-b: #dcdbd5; --focus: #6fdc8c; --chats-current: #fff5c2; --barrier: #486048; }
 
 .a11y-widget-biz {
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif;
+  font-family: "Jokker", "DejaVu Sans", sans-serif;
+  /* FIVE SIZES, 16PX AND UP (user's instruction, 26 Nov 2026, "lets just
+     use only 5 font sizes and round everything in between, font sizes on
+     desctop need to start from 16 px"). The widget uses these and nothing
+     else, on a desktop and on a phone:
+       16px  labels, fields, small print
+       18px  buttons and the labels set beside them
+       22px  secondary lines; the body on a phone (this root under 672px)
+       29px  the body (this root)
+       43px  display figures: the score, the principle titles
+     Rounded to the nearest of them on that day: 19 to 18, 21 and 24 to 22,
+     26 to 29, and the settings heading's 1.15em (33px) to the body's size.
+     The four-size note below is the step before.
+     The face is Jokker VF again (user's instruction, the same day, "use
+     Jokker font instead of pp telegraph"), with its ss04 and ss05
+     alternates on as when it was last the face (19 Oct to 22 Nov 2026).
+     It is a variable font (wght 100 to 900), so the weight axis is pinned
+     at 200 here (font-variation-settings, inherited): every text stays as
+     thin as the Telegraf Ultralight it replaces, including the rules that
+     still name 400 or 500, which Telegraf's one declared cut drew thin.
+     Where the comments below measure "PP Telegraf", the number was taken
+     on Telegraf. */
   /* FOUR SIZES, ONE BODY SIZE (user's instruction, 25 Nov 2026, "make
      acsessible scan use only 4 different font sizes, only one size for body
      text and overall experiense and design consistent, cut variations").
@@ -154,7 +175,8 @@
      smaller" took it from 29px to 26px on 25 Nov 2026, and "body font too",
      10% larger again the same evening, brought it back. */
   font-size: 29px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
-  font-kerning: normal; font-variant-ligatures: common-ligatures; text-rendering: optimizeLegibility; font-synthesis: none;
+  font-kerning: normal; font-feature-settings: "ss04", "ss05"; font-variant-ligatures: common-ligatures; text-rendering: optimizeLegibility; font-synthesis: none;
+  font-variation-settings: "wght" 200;
   background: var(--paper); color: var(--ink);
   /* No rag (user's instruction, 18 Nov 2026, "do not rag the text"): no
      hyphenation anywhere and no text-wrap pretty or balance, so every line
@@ -536,7 +558,7 @@
    emphasis is the Medium cut or nothing. Hyphenation keeps at least
    three letters either side and no more than three lines in a row end in
    a hyphen (p.47). */
-.a11y-widget-biz .a11y-caps { font-size: inherit; letter-spacing: 0.06em; font-feature-settings: "case"; }
+.a11y-widget-biz .a11y-caps { font-size: inherit; letter-spacing: 0.06em; font-feature-settings: "ss04", "ss05", "case"; }
 /* case (above): Jokker raises hyphens, brackets and dashes to capital
    height, so the punctuation in (WCAG-AA) sits with the capitals around it
    rather than at lowercase height (p.39–40). */
@@ -1321,7 +1343,7 @@
 .a11y-widget-biz .a11y-fd .a11y-finding-steps,
 .a11y-widget-biz .a11y-fd .a11y-fix-once,
 .a11y-widget-biz .a11y-fd .a11y-picture-note {
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-size: inherit; line-height: 1.1; letter-spacing: inherit;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 200; font-size: inherit; line-height: 1.1; letter-spacing: inherit;
   overflow-wrap: break-word; hyphens: manual;
 }
 .a11y-widget-biz .a11y-fd .a11y-method-hint > strong:first-child,
@@ -1332,7 +1354,7 @@
 .a11y-widget-biz .a11y-fd .a11y-finding-steps > p > strong,
 .a11y-widget-biz .a11y-fd .a11y-affected-label > strong {
   display: block; margin: 0 0 var(--cds-spacing-03); padding-bottom: var(--cds-spacing-04); border-bottom: 1px solid var(--ink);
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-size: 16px; line-height: 1.2;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 200; font-size: 16px; line-height: 1.2;
   letter-spacing: 0.04em; text-transform: uppercase;
 }
 .a11y-widget-biz .a11y-fd .a11y-fix-once > strong { font-weight: 200; }
@@ -1374,7 +1396,7 @@
   display: flex; flex-direction: column; align-items: stretch; gap: var(--cds-spacing-03);
   box-sizing: border-box; min-width: 0; max-width: none; margin: 0; padding: var(--cds-spacing-06) var(--cds-spacing-06) var(--cds-spacing-07);
   border-radius: 20px; background: var(--tile); color: var(--tile-ink); text-align: start;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-size: inherit; line-height: 1.1; letter-spacing: inherit;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 200; font-size: inherit; line-height: 1.1; letter-spacing: inherit;
 }
 /* Smaller and Regular (user's instruction, 20 Nov 2026: "make large font
    smaller and regular"): every card's words at 22px Regular, whatever their
@@ -1386,7 +1408,7 @@
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-points > li:last-child { margin-bottom: 0; }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > * > strong:first-child {
   flex: none; margin: 0; padding: 0 0 var(--cds-spacing-03); border: 0; border-bottom: 1px solid var(--ink); border-radius: 0; background: none; color: inherit;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; text-transform: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 200; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; text-transform: none;
 }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-body {
   display: block; margin-block: 0; max-width: 100%;}
@@ -1405,7 +1427,7 @@
 }
 .a11y-widget-biz .a11y-fd .a11y-pro-block,
 .a11y-widget-biz .a11y-fd .a11y-tech-details {
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-size: inherit; line-height: 1.1; letter-spacing: inherit;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 200; font-size: inherit; line-height: 1.1; letter-spacing: inherit;
 }
 /* The technical version (user's instructions, 18 Nov 2026: "design this",
    then "needs a carret and make lines brown"). It keeps its two rules, one
@@ -1459,11 +1481,11 @@
 }
 .a11y-widget-biz .a11y-fd .a11y-pro-line:not(:has(> strong:first-child)) { text-indent: 0; }
 .a11y-widget-biz .a11y-fd .a11y-pro-block > .a11y-pro-snippet { margin: var(--cds-spacing-03) 0 var(--cds-spacing-03) 288px; }
-.a11y-widget-biz .a11y-fd .a11y-finding-level-fold { font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-size: 16px; letter-spacing: 0.025em; line-height: 1.2; margin-bottom: var(--cds-spacing-06); }
+.a11y-widget-biz .a11y-fd .a11y-finding-level-fold { font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 200; font-size: 16px; letter-spacing: 0.025em; line-height: 1.2; margin-bottom: var(--cds-spacing-06); }
 /* Learn more at the size of What to do above it, 32px (user's instruction,
    24 Nov 2026, "same size text as text above it"). */
-.a11y-widget-biz .a11y-fd .a11y-fd-learn { font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-size: inherit; line-height: 1.1; letter-spacing: inherit; }
-.a11y-widget-biz .a11y-fd .a11y-occurrence-list { font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-fd .a11y-fd-learn { font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 200; font-size: inherit; line-height: 1.1; letter-spacing: inherit; }
+.a11y-widget-biz .a11y-fd .a11y-occurrence-list { font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 200; font-size: 16px; letter-spacing: 0.025em; }
 .a11y-widget-biz .a11y-fd .a11y-tech-details > summary { font-size: 16px; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; }
 /* The affected elements, two to a row (user's instruction, 18 Nov 2026,
    "put into cards so its two per row"). The cards' #f0efe8 ground and 20px
@@ -1578,7 +1600,7 @@
 .a11y-widget-biz .a11y-pro-row > span:first-child,
 .a11y-widget-biz .a11y-manual-row > .a11y-conf-id {
   display: block; margin: 0 0 var(--cds-spacing-03); padding: 0 0 var(--cds-spacing-03); border-bottom: 1px solid var(--ink); text-align: start;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em;
   text-transform: none;
 }
 /* The lines: Jokker 18px, the rows of a ruled column. */
@@ -1588,16 +1610,16 @@
 .a11y-widget-biz .a11y-pro-row > .a11y-pro-row-pass,
 .a11y-widget-biz .a11y-manual-row > .a11y-conf-body > strong {
   display: block; margin: 0;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-size: inherit; line-height: 1.1; letter-spacing: inherit;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 200; font-size: inherit; line-height: 1.1; letter-spacing: inherit;
 }
 /* A design note's title at button size (user's instruction, 18 Nov 2026,
    "make this text size like this"): 0.6 of the 32px it was, so 22px (the larger of the two label sizes) set solid at
    line-height 1.0, +0.01em as 22px takes. */
 .a11y-widget-biz .a11y-dn-link > .a11y-dn-link-text {
-  display: block; margin: 0; font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-size: inherit; line-height: 1.1; letter-spacing: inherit;
+  display: block; margin: 0; font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 200; font-size: inherit; line-height: 1.1; letter-spacing: inherit;
 }
 /* Small print under the words stays Jokker at 15px or 18px. */
-.a11y-widget-biz .a11y-spec-card > .a11y-spec-value > .a11y-spec-gloss { margin-top: var(--cds-spacing-05); font-family: "PP Telegraf", "DejaVu Sans", sans-serif; }
+.a11y-widget-biz .a11y-spec-card > .a11y-spec-value > .a11y-spec-gloss { margin-top: var(--cds-spacing-05); font-family: "Jokker", "DejaVu Sans", sans-serif; }
 .a11y-widget-biz .a11y-manual-row > .a11y-conf-body > .a11y-conf-plain { display: block; margin-top: var(--cds-spacing-03); font-size: 16px; letter-spacing: 0.025em; }
 .a11y-widget-biz .a11y-manual-row > :is(.a11y-conf-body, .a11y-manual-actions) { display: block; }
 .a11y-widget-biz .a11y-manual-row > .a11y-manual-actions { margin-top: var(--cds-spacing-07); }
@@ -2397,7 +2419,7 @@
   margin: 0 0 var(--cds-spacing-03); font-size: inherit; font-weight: 200; line-height: 1.1; letter-spacing: inherit;
 }
 .a11y-widget-biz .a11y-tester > .a11y-tester-sub {
-  margin: var(--cds-spacing-08) 0 var(--cds-spacing-04); font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: inherit; font-weight: 200; line-height: 1.1; letter-spacing: inherit;
+  margin: var(--cds-spacing-08) 0 var(--cds-spacing-04); font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: inherit; font-weight: 200; line-height: 1.1; letter-spacing: inherit;
 }
 /* A field: the filled box holds its label and its control. */
 .a11y-widget-biz .a11y-tester .a11y-input,
@@ -2609,7 +2631,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-hist-head {
   align-self: stretch; margin: 0; padding: 0 0 var(--cds-spacing-03); border-bottom: 1px solid var(--ink); border-radius: 0; background: none; color: var(--ink);
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-hist-facts {
   align-self: stretch; margin: 0; padding: 0; list-style: none;
@@ -3154,11 +3176,11 @@
 .a11y-widget-biz .a11y-first-fix { margin: 0 0 var(--cds-spacing-10); padding: 0; }
 .a11y-widget-biz .a11y-first-fix .a11y-first-fix-label {
   margin: 0 0 var(--cds-spacing-05); padding: 0; border: 0; color: var(--ink); text-transform: none;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em;
 }
 .a11y-widget-biz .a11y-first-fix .a11y-first-fix-lead {
   max-width: none; margin: 0 0 var(--cds-spacing-05);
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: inherit; font-weight: 200; line-height: 1.1; letter-spacing: inherit;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: inherit; font-weight: 200; line-height: 1.1; letter-spacing: inherit;
 }
 .a11y-widget-biz .a11y-first-fix .a11y-first-fix-lead > a {
   color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.12em;
@@ -3166,7 +3188,7 @@
 .a11y-widget-biz .a11y-first-fix .a11y-first-fix-lead > a:hover { text-decoration-thickness: 2px; }
 .a11y-widget-biz .a11y-first-fix .a11y-first-fix-how {
   max-width: none; margin: 0;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em;
 }
 @media (max-width: 671px) {
   .a11y-widget-biz .a11y-first-fix .a11y-first-fix-lead { font-size: inherit; letter-spacing: inherit; }
@@ -3380,7 +3402,7 @@
   border-top: 1px solid var(--ink); padding-top: var(--cds-spacing-03);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report h2:is(.a11y-section-title, .a11y-top-title, .a11y-legal-title, .a11y-results-title):not(.a11y-sr-only) {
-  margin-top: 0; margin-bottom: var(--cds-spacing-05); font-family: "PP Telegraf", "DejaVu Sans", sans-serif;
+  margin-top: 0; margin-bottom: var(--cds-spacing-05); font-family: "Jokker", "DejaVu Sans", sans-serif;
   font-size: inherit; font-weight: 200; line-height: 1.1; letter-spacing: inherit;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report h2.a11y-accordion-title .a11y-accordion-head { font-size: inherit; line-height: 1.1; letter-spacing: inherit; }
@@ -3389,7 +3411,7 @@
    section's: one rule per section. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report > .a11y-section .a11y-section-head > .a11y-accordion-row { border-top: 0; padding-top: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report :is(.a11y-section-desc, .a11y-section > p) {
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 200;
   font-size: inherit; line-height: 1.1; letter-spacing: inherit; margin-top: 0; margin-bottom: var(--cds-spacing-07);
 }
 @media (max-width: 671px) {
@@ -3519,7 +3541,7 @@
   transform: translate(-50%, -50%) rotate(var(--bubble-tilt, 0deg));
   max-width: min(80%, 22em); margin: 0; padding: var(--cds-spacing-02) var(--cds-spacing-03) var(--cds-spacing-02); box-sizing: border-box;
   border-radius: 8px; box-shadow: none; color: #000;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
   font-size: 16px; line-height: 1.2; letter-spacing: 0.08em;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
@@ -3548,7 +3570,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-pro-chip, .a11y-conf-status, .a11y-principle-count, .a11y-status-chip, .a11y-next-count) {
   display: inline-block; vertical-align: 0.15em; box-sizing: border-box;
   margin-inline: var(--cds-spacing-02); padding: var(--cds-spacing-02) var(--cds-spacing-03) var(--cds-spacing-02); border-radius: 8px; box-shadow: none; color: #000;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
   font-size: 16px; line-height: 1.2; letter-spacing: 0.08em; white-space: nowrap;
   -webkit-box-decoration-break: slice; box-decoration-break: slice;
 }
@@ -3630,7 +3652,7 @@
   text-decoration-thickness: 2px; text-underline-offset: 0.12em;
 }
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row:nth-child(even) .a11y-legal-row-label {
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-synthesis: none; letter-spacing: -0.015em;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-synthesis: none; letter-spacing: -0.015em;
 }
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-meaning {
   margin-top: var(--cds-spacing-04); font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
@@ -3671,7 +3693,7 @@
    EVERY BADGE AS A SMALL BUBBLE. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-finding-sev-fold > .a11y-sev.a11y-sev {
   display: inline-block; margin: 0; padding: var(--cds-spacing-02) var(--cds-spacing-03) var(--cds-spacing-02); border-radius: 8px; box-shadow: none;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
   font-size: 16px; line-height: 1.2; letter-spacing: 0.08em; white-space: nowrap;
   rotate: var(--sev-tilt, 0deg);
   background: var(--plate-2); color: var(--plate-text);
@@ -3730,7 +3752,7 @@
 .a11y-widget-biz .a11y-w22-call > .a11y-next-status[data-status] {
   display: inline-block; width: fit-content; padding: var(--cds-spacing-02) var(--cds-spacing-03) var(--cds-spacing-02); border-radius: 8px;
   background: var(--plate-4); color: var(--plate-text);
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
   font-size: 16px; line-height: 1.2; letter-spacing: 0.08em;
   max-width: 100%; box-sizing: border-box; white-space: normal; overflow-wrap: break-word;
   rotate: var(--bubble-tilt, -2deg);
@@ -3822,7 +3844,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-label {
   align-self: stretch; width: auto; padding: 0; border: 0; border-radius: 0;
   background: none; color: inherit;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
   font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; white-space: normal; rotate: none;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n+2) { --plate-text: var(--plate-3-ink); --card-plate: var(--plate-3); }
@@ -3870,7 +3892,7 @@
 .a11y-widget-biz.a11y-widget-biz .a11y-note.a11y-note-warning .a11y-note-badge {
   position: absolute; top: 0; left: var(--cds-spacing-06); margin: 0; padding: var(--cds-spacing-02) var(--cds-spacing-03) var(--cds-spacing-02); border-radius: 8px;
   background: var(--hl-cap-a); color: #000;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
   font-size: 16px; line-height: 1.2; letter-spacing: 0.08em; white-space: nowrap;
   translate: 0 -50%; rotate: -2deg;
 }
@@ -3929,7 +3951,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > :is(.a11y-method-badge, .a11y-undecided-places, .a11y-undecided-most) {
   display: inline-block; margin: 0; padding: var(--cds-spacing-02) var(--cds-spacing-03) var(--cds-spacing-02); border-radius: 8px;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
   font-size: 16px; line-height: 1.2; letter-spacing: 0.08em;
   background: var(--tile); color: var(--tile-ink);
   rotate: -2deg;
@@ -4009,13 +4031,13 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-undecided-table > .a11y-undecided-cell > .a11y-undecided-no, .a11y-legal-q > .a11y-legal-qnum, .a11y-sr-row > .a11y-sr-num) {
   display: inline-grid; place-items: center; box-sizing: content-box; padding: var(--cds-spacing-01); border-radius: 50%;
   background: var(--ink); color: var(--paper);
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
   line-height: 1; letter-spacing: 0; font-variant-numeric: tabular-nums;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-text ol:not(.a11y-chat-plan) > li::before {
   box-sizing: content-box; padding: var(--cds-spacing-01); margin-block-start: calc(var(--cds-spacing-01) * -1); margin-inline-start: calc(var(--cds-spacing-01) * -1);
   background: var(--ink); color: var(--paper);
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
 }
 /* The designer and developer list and the legal questions sit in the
    report's prose: a 0.9em figure in a 1.333em round is the words' 1.2
@@ -4061,7 +4083,7 @@
    the colour. */
 .a11y-widget-biz .a11y-learn-more {
   color: #0043ce;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
 }
 .a11y-widget-biz[data-theme="dark"] .a11y-learn-more { color: #78a9ff; }
 @media (prefers-color-scheme: dark) {
@@ -4185,7 +4207,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-head {
   margin: 0 0 var(--cds-spacing-06); padding: 0; border: 0; color: var(--ink);
   font-size: inherit; font-weight: 400; line-height: 1.1; letter-spacing: 0.04em;
-  text-transform: uppercase; font-feature-settings: "case";
+  text-transform: uppercase; font-feature-settings: "ss04", "ss05", "case";
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-field {
   box-sizing: border-box; display: flex; flex-direction: column; gap: var(--cds-spacing-03);
@@ -4278,7 +4300,7 @@
    Telegraf: it sets its own face. Serrif has only the Light cut, so no
    weight is synthesized. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd :is(.a11y-finding-steps > ul, .a11y-finding-todo) {
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
 }
 
 /* ═══ THE RING'S PASTELS ACROSS THE WIDGET, ONE RED-ORANGE (user's
@@ -4333,7 +4355,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-actions > .a11y-sr-only { grid-column: auto; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid .a11y-sum-label {
   grid-column: 1; margin: 0; padding: 0 var(--cds-spacing-05) 0 0; border: 0; background: none; color: var(--ink); text-transform: none;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > :is(.a11y-sum-issues, .a11y-sum-warning) > :where(:not(.a11y-sum-label)) { grid-column: 2 / -1; min-width: 0; }
 
@@ -4405,7 +4427,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-warning-badge {
   display: inline-block; padding: var(--cds-spacing-02) var(--cds-spacing-03) var(--cds-spacing-02); border-radius: 8px; background: var(--hl-cap-a); color: #000;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 200; font-synthesis: none;
   font-size: 16px; line-height: 1.2; letter-spacing: 0.08em; white-space: nowrap; rotate: -2deg;
 }
 
@@ -4757,7 +4779,7 @@
    the body face (user's instruction, 24 Nov 2026, "set these in same
    font"; it was the mono face for a few hours). */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list > .a11y-conf-row > .a11y-conf-id, .a11y-w22-row .a11y-w22-id, .a11y-w22-row .a11y-w22-level, .a11y-sum-table .a11y-sum-table-wcag) {
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif;
+  font-family: "Jokker", "DejaVu Sans", sans-serif;
   font-size: 16px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em; font-variant-numeric: normal;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-list > .a11y-conf-row > .a11y-conf-id { padding-top: var(--cds-spacing-03); }
@@ -4773,7 +4795,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list .a11y-conf-row > .a11y-conf-status, .a11y-w22-list .a11y-w22-row > .a11y-w22-call, .a11y-w22-list .a11y-w22-row .a11y-next-status)[class] {
   position: static; inset: auto; transform: none; rotate: none; translate: none;
   margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em;
   white-space: normal; text-align: right; justify-self: end; max-width: 260px;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-row > .a11y-conf-status { grid-column: 3; grid-row: 1; }
@@ -4914,7 +4936,7 @@
   box-sizing: border-box; flex: none; width: auto; max-width: 100%; height: auto; min-height: 0; aspect-ratio: auto; container-type: normal; contain: none;
   margin: 0; padding: var(--cds-spacing-01) var(--cds-spacing-05) var(--cds-spacing-02) 0; border: 0; border-radius: 999px; background: none; box-shadow: none; outline-offset: 2px;
   transform: none; rotate: none; color: var(--ink); text-align: left; cursor: pointer;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: inherit; font-weight: 200; line-height: 1.1; letter-spacing: inherit;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: inherit; font-weight: 200; line-height: 1.1; letter-spacing: inherit;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-tiles > li > .a11y-legal-row, .a11y-dn-list > .a11y-dn-link)[class][class]::before {
   content: ""; flex: none; align-self: center; width: 0.5em; height: 0.5em; margin: 0 var(--cds-spacing-03) 0 0; padding: 0; border: 0; background: currentColor;
@@ -4939,7 +4961,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row-not-measured .a11y-legal-row-label[class] { background: var(--hl-blue); color: var(--hl-blue-ink); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row :is(.a11y-legal-mark, .a11y-legal-row-meaning)[class] {
   position: static; display: inline; align-self: baseline; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; rotate: none; transform: none;
-  color: var(--ink); font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em; text-transform: none;
+  color: var(--ink); font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em; text-transform: none;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row .a11y-legal-mark[class] { order: 3; margin-left: var(--cds-spacing-04); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row .a11y-legal-row-meaning[class] { order: 4; }
@@ -5055,7 +5077,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue[class] > .a11y-sum-table-badge[class] { order: 2; display: block; margin: 0 0 0 auto; padding-left: var(--cds-spacing-06); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev[class] {
   position: static; display: inline; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; rotate: none; transform: none;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em; text-transform: none; white-space: nowrap;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 200; line-height: 1.2; letter-spacing: 0.025em; text-transform: none; white-space: nowrap;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev[class]::before,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev[class]::after { content: none; }
@@ -5120,7 +5142,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret-head > .a11y-dn-bar {
   display: flex; align-items: center; gap: var(--cds-spacing-04); width: 100%; min-height: 56px; margin: 0; padding: var(--cds-spacing-03) var(--cds-spacing-07); box-sizing: border-box;
   border: 0; border-radius: 999px; background: none; color: var(--ink); text-align: start; cursor: pointer;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: inherit; font-weight: 200; line-height: 1.1; letter-spacing: inherit;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: inherit; font-weight: 200; line-height: 1.1; letter-spacing: inherit;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret[data-open] .a11y-dn-caret-head > .a11y-dn-bar { margin: 0 calc(var(--cds-spacing-07) * -1) var(--cds-spacing-03); width: calc(100% + 2 * var(--cds-spacing-07)); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret-head > .a11y-dn-bar:enabled:hover { background: none; border-color: transparent; color: var(--ink); }
@@ -5296,7 +5318,7 @@
 /* The title in capitals, as Email me this report. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] > .a11y-tester-name {
   margin: 0 0 var(--cds-spacing-06); color: #000; font-size: inherit; font-weight: 400; line-height: 1.1; letter-spacing: 0.04em;
-  text-transform: uppercase; font-feature-settings: "case";
+  text-transform: uppercase; font-feature-settings: "ss04", "ss05", "case";
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] > .a11y-tester-sub {
   position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
@@ -5405,7 +5427,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login-legend {
   float: left; width: 100%; margin: var(--cds-spacing-03) 0 0; padding: 0 var(--cds-spacing-09); color: #000;
-  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.04em; text-transform: uppercase; font-feature-settings: "case";
+  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.04em; text-transform: uppercase; font-feature-settings: "ss04", "ss05", "case";
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login-legend + * { clear: both; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login-close {
@@ -5484,7 +5506,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head[class] > span:first-of-type { flex: 1 1 0; min-width: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr .a11y-accordion-title .a11y-accordion-head[class] > .a11y-status-chip {
   margin: 0 0 0 auto; padding: 0; border: 0; border-radius: 0; background: none; rotate: none; color: var(--word-red, #b42800);
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: inherit; font-weight: 200; line-height: inherit; letter-spacing: inherit; white-space: normal;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: inherit; font-weight: 200; line-height: inherit; letter-spacing: inherit; white-space: normal;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section:is(.a11y-sr, .a11y-acr) > :not(.a11y-section-head),
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section:is(.a11y-sr, .a11y-acr) > .a11y-section-head > :not(.a11y-accordion-row) {
@@ -5736,7 +5758,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-toggle {
   display: flex; align-items: baseline; width: 100%; min-height: 0; margin: 0; padding: 0; border: 0; border-radius: 0;
   background: none; color: var(--ink); text-align: start; cursor: pointer;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: inherit; font-weight: 200; line-height: 1.1; letter-spacing: inherit;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: inherit; font-weight: 200; line-height: 1.1; letter-spacing: inherit;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-toggle:enabled:hover { background: none; color: var(--ink); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-toggle::before {
@@ -5878,7 +5900,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-toggle {
   display: flex; align-items: baseline; gap: 0; width: 100%; min-height: 0; margin: 0; padding: 0; border: 0; border-radius: 0;
   background: none; color: var(--ink); text-align: start; cursor: pointer;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: inherit; font-weight: 200; line-height: 1.1; letter-spacing: inherit;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: inherit; font-weight: 200; line-height: 1.1; letter-spacing: inherit;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-toggle:enabled:hover { background: none; color: var(--ink); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-toggle::before {
@@ -5979,7 +6001,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form > * { box-sizing: border-box; max-width: 100%; margin: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form > .a11y-stmt-step { margin: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form .a11y-stmt-step-head {
-  justify-content: flex-start; color: #000; text-transform: uppercase; font-feature-settings: "case";
+  justify-content: flex-start; color: #000; text-transform: uppercase; font-feature-settings: "ss04", "ss05", "case";
   font-size: inherit; line-height: 1.1; letter-spacing: 0.04em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form > .a11y-stmt-fields {
@@ -6223,7 +6245,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] h2.a11y-section-title:not(.a11y-accordion-title)[class] {
   margin: var(--cds-spacing-03) 0 0; color: #000; font-size: inherit; font-weight: 200; line-height: 1.1; letter-spacing: inherit;
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-synthesis: none;
-  text-align: start; text-transform: uppercase; font-feature-settings: "case";
+  text-align: start; text-transform: uppercase; font-feature-settings: "ss04", "ss05", "case";
 }
 /* Play, the transport, the status, the keys: set left under the bar.
    Every control in the panel is a grey pill (user's reference, 25 Nov
@@ -6284,7 +6306,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-log { container: a11y-srlog / inline-size; margin: var(--cds-spacing-08) 0 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-log > .a11y-sr-log-heads {
   display: block; margin: 0 0 var(--cds-spacing-05); padding-inline-start: var(--cds-spacing-07); color: #000; font-size: 16px; line-height: 1.4; letter-spacing: 0.04em;
-  text-align: start; text-transform: uppercase; font-feature-settings: "case";
+  text-align: start; text-transform: uppercase; font-feature-settings: "ss04", "ss05", "case";
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-log > .a11y-sr-log-heads > :not(:nth-child(2)) { display: none; }
 
@@ -6829,7 +6851,7 @@
   padding: var(--cds-spacing-06) 28px; border: 0; border-radius: 12px;
   background: var(--yellow-note); color: #000; text-align: left;
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
-  font-size: 21px; font-weight: 200; font-synthesis: none; line-height: 1.35; letter-spacing: 0.02em;
+  font-size: 22px; font-weight: 200; font-synthesis: none; line-height: 1.35; letter-spacing: 0.02em;
   overflow-wrap: anywhere;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-notes > .a11y-sum-card[class][class] { margin: 0; }
@@ -6946,7 +6968,7 @@
   font-size: 43px; font-weight: 500; line-height: 1.1; letter-spacing: 0;
 }
 @media (max-width: 671px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-principle-group .a11y-principle-title { font-size: 26px; line-height: 1.1; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-principle-group .a11y-principle-title { font-size: 29px; line-height: 1.1; }
 }
 
 /* ═══ THE CHAT BOX AS A ROUND BAR OF GREY PILLS (user's reference, 25 Nov
@@ -7041,7 +7063,7 @@
   display: inline-grid; place-items: center; flex: none; box-sizing: border-box;
   min-width: 44px; width: auto; height: 44px; padding: 0 var(--cds-spacing-03);
   border: 1px solid currentColor; border-radius: 22px; background: none; color: inherit;
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 200; font-synthesis: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 200; font-synthesis: none;
   line-height: 1; letter-spacing: 0.025em; font-variant-numeric: tabular-nums;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-no[class][class] { margin-top: 0; }
@@ -7198,7 +7220,7 @@
   .a11y-report-actions .a11y-ra-head
 )[class] {
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-style: normal; font-synthesis: none;
-  font-variant-numeric: lining-nums; font-kerning: normal; font-feature-settings: "kern", "liga";
+  font-variant-numeric: lining-nums; font-kerning: normal; font-feature-settings: "kern", "liga", "ss04", "ss05";
   text-transform: none; text-align: left; line-height: 1.15; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(
@@ -7309,7 +7331,7 @@
   font-style: normal; font-weight: 200; font-synthesis: none; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q[class][class] > .a11y-prompt-label { font-size: 18px; line-height: 1.2; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q[class][class] > .a11y-prompt-ask { font-size: 24px; line-height: 1.15; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q[class][class] > .a11y-prompt-ask { font-size: 22px; line-height: 1.15; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt > .a11y-prompt-wcag[class][class] {
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
   font-style: normal; font-weight: 200; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em;
@@ -7332,7 +7354,7 @@
   font-weight: 200; font-synthesis: none; letter-spacing: 0; font-size: 18px;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-row[class] > .a11y-chats-item[class][class] .a11y-chats-open {
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; letter-spacing: 0.025em;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; letter-spacing: 0.025em;
 }
 
 /* ═══ CENTRED CALLOUTS IN THE POSTER'S COLOURS (user's reference, 25 Nov
@@ -7428,7 +7450,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-heading[class] {
   margin: 0 0 var(--cds-spacing-03); padding: 0; border: 0; color: inherit; text-align: start;
-  font-size: 1.15em; font-weight: 200; line-height: 1.1; letter-spacing: inherit;
+  font-size: inherit; font-weight: 200; line-height: 1.1; letter-spacing: inherit;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] {
   display: block; justify-self: stretch; width: auto; max-width: none; margin: 0; padding: 0; border: 0;
@@ -7438,7 +7460,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] > .a11y-settings-label[class] {
   display: block; justify-self: stretch; width: auto; margin: 0 0 var(--cds-spacing-04); color: inherit; text-align: start;
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-synthesis: none;
-  font-size: 21px; font-weight: 200; line-height: 1.4; letter-spacing: 0.025em; text-transform: uppercase; font-feature-settings: "case";
+  font-size: 22px; font-weight: 200; line-height: 1.4; letter-spacing: 0.025em; text-transform: uppercase; font-feature-settings: "ss04", "ss05", "case";
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] > :is(.a11y-select2, .a11y-input) { display: block; max-width: none; }
 /* The account field's own label says "Account key" right under the row's
@@ -7488,7 +7510,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-select2 .a11y-select2-field.a11y-select2-field:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; box-shadow: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] :is(.a11y-select2-help, .a11y-input-help, .a11y-settings-state)[class][class] {
-  display: block; justify-self: stretch; width: auto; margin: var(--cds-spacing-04) 0 0; color: inherit; text-align: start; font-size: 21px; line-height: 1.4; letter-spacing: 0.025em;
+  display: block; justify-self: stretch; width: auto; margin: var(--cds-spacing-04) 0 0; color: inherit; text-align: start; font-size: 22px; line-height: 1.4; letter-spacing: 0.025em;
   font-family: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-weight: 200; font-synthesis: none;
 }
 
@@ -7722,7 +7744,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-runs > .a11y-hist-year[class][class] { margin: 0 0 var(--cds-spacing-03); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-run > :is(.a11y-hist-date, .a11y-hist-times, .a11y-hist-note)[class][class] { position: relative; top: -7px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-run > .a11y-hist-score[class][class] {
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-weight: 200;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 200;
   font-size: 43px; line-height: 1.05; letter-spacing: 0; font-variant-numeric: tabular-nums; white-space: nowrap;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-card[class][class] { gap: var(--cds-spacing-03); }
@@ -7741,7 +7763,7 @@
   min-width: 0; font-size: inherit; font-weight: 200; line-height: 1.1; letter-spacing: inherit; overflow-wrap: anywhere;
 }
 @media (max-width: 671px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-run > .a11y-hist-score[class][class] { font-size: 26px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-run > .a11y-hist-score[class][class] { font-size: 29px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-run > :is(.a11y-hist-date, .a11y-hist-times, .a11y-hist-note)[class][class] { top: -3px; font-size: 18px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-facts > li > .a11y-hist-fact-value[class][class] { font-size: inherit; letter-spacing: inherit; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-facts > li > .a11y-hist-fact-label[class][class] { top: -1px; font-size: 18px; }
@@ -7973,7 +7995,7 @@
    part's paragraph or list stands from the next (it was 48px above a
    title and 8px under it). A title never ends a column on its own. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card .a11y-stmt-text[class] {
-  columns: 2; column-gap: var(--cds-spacing-09); font-size: 19px; line-height: 1.4; letter-spacing: 0.02em;
+  columns: 2; column-gap: var(--cds-spacing-09); font-size: 18px; line-height: 1.4; letter-spacing: 0.02em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card .a11y-stmt-text[class] > :is(p, ul, ol) { margin: 0 0 var(--cds-spacing-06); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card .a11y-stmt-text[class] > p:has(+ p:not(:has(> strong:only-child))) { margin-bottom: 0; }
@@ -8005,7 +8027,7 @@
    apart under the heading, which spans both; a point never splits across
    them. With the warning beside it, the row is already two columns. One
    column under 672px. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-notes > .a11y-sum-card[class][class][class] { font-size: 21px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-notes > .a11y-sum-card[class][class][class] { font-size: 22px; }
 @media (min-width: 672px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-notes > .a11y-sum-card:only-child > .a11y-sum-card-body[class][class] { display: block; columns: 2; column-gap: var(--cds-spacing-07); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-notes > .a11y-sum-card:only-child > .a11y-sum-card-body > *[class][class][class] { margin: 0 0 1lh; break-inside: avoid; }
@@ -8050,7 +8072,7 @@
    black words (the panel's white had carried into it). */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] .a11y-stmt-card > .a11y-stmt-code[class] { --ink: #000; color: #000; margin-inline-start: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] .a11y-stmt-card > .a11y-stmt-code[class] a { color: #000; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] > .a11y-stmt-step:has(> .a11y-stmt-copy) .a11y-stmt-step-head[class] { text-transform: none; font-feature-settings: normal; letter-spacing: inherit; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] > .a11y-stmt-step:has(> .a11y-stmt-copy) .a11y-stmt-step-head[class] { text-transform: none; font-feature-settings: "ss04", "ss05"; letter-spacing: inherit; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-form[class] > :is(.a11y-stmt-step:has(> .a11y-stmt-copy), .a11y-stmt-card)[class] { align-self: stretch; width: auto; }
 
 /* ═══ THE DESIGNER AND DEVELOPER LIST WITHOUT NUMBERS (user's instruction,
@@ -8103,6 +8125,6 @@
    buttons in this sense and keep their sizes; so do the round delete
    bin and the "Open" mark. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-blockflag-jump, .a11y-copy-btn, .a11y-findings-csv, a.a11y-learn-prompt, .a11y-login-close, .a11y-login-toggle, .a11y-ra-pdf, .a11y-ra-send, .a11y-show-all, .a11y-sim-btn, .a11y-skip-link, .a11y-sr-play, .a11y-undecided-export, .a11y-shell-nav-toggle, .a11y-chat-chip, .a11y-chats-new, .a11y-lang-toggle, .a11y-prompt-go, .a11y-settings-opt, .a11y-stmt-copy)[class][class][class] {
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 18px; font-weight: 200; letter-spacing: 0.025em;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 18px; font-weight: 200; letter-spacing: 0.025em;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-ra-send, .a11y-ra-pdf, .a11y-chats-new, .a11y-lang-toggle, .a11y-prompt-go)[class][class][class] :is(span, strong):not(.a11y-sr-only) { font-size: inherit; letter-spacing: inherit; }
