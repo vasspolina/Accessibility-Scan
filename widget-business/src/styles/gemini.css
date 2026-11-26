@@ -1110,10 +1110,11 @@
 }
 
 /* A notice highlighted with colour (user's "highlight with color", 26
-   Nov 2026, on the overlay notice): a pale yellow panel, 14px corners, the
+   Nov 2026, on the overlay notice): a pale yellow panel, square ("do not do
+   round corners on it"), the
    words in black (19:1), no rule. Dark mode takes the lighter teal. */
 .a11y-widget-biz .a11y-note.a11y-yellow-note {
-  padding: 16px 20px 18px; border: 0; border-radius: 14px; background: var(--open); color: var(--ink);
+  padding: 16px 20px 18px; border: 0; border-radius: 0; background: var(--open); color: var(--ink);
 }
 .a11y-widget-biz .a11y-yellow-note .a11y-note-title { margin: 0 0 8px; }
 .a11y-widget-biz .a11y-yellow-note .a11y-note-sub { color: var(--ink); overflow-wrap: anywhere; }
