@@ -285,7 +285,6 @@
   display: block; flex: 1 1 auto; min-width: 0; width: 100%;
   min-height: var(--row); padding: 6px 0 7px; text-align: start;
 }
-.a11y-widget-biz .g-list-btn:hover:not(:disabled) { text-decoration: underline; text-underline-offset: 3px; }
 .a11y-widget-biz .g-list-ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .a11y-widget-biz .g-list-quiet { color: var(--ink-2); }
 .a11y-widget-biz .g-list-row[data-current] .g-list-btn { color: var(--accent); }
@@ -436,7 +435,6 @@
 
 /* Findings and their marks. */
 .a11y-widget-biz .a11y-findings-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px; }
-.a11y-widget-biz .a11y-datatable tr:hover > td { background: var(--hover); }
 .a11y-widget-biz .a11y-dt-toggle { display: inline-flex; gap: 6px; padding: 0; text-align: start; }
 .a11y-widget-biz .a11y-dt-toggle [data-open="true"] { transform: rotate(90deg); }
 .a11y-widget-biz .a11y-dt-expand-row > td { padding: 0 0 13px; }
@@ -590,7 +588,6 @@
 .a11y-widget-biz .a11y-finding-header > .a11y-shot { grid-row: 1 / span 3; margin: 0; }
 .a11y-widget-biz .a11y-finding-header .a11y-shot-img { max-height: 64px; }
 .a11y-widget-biz .a11y-finding-header .a11y-shot-bubble { display: none; }
-.a11y-widget-biz .a11y-finding-header:hover .a11y-finding-desc { text-decoration: underline; text-underline-offset: 3px; }
 .a11y-widget-biz .a11y-finding-desc { font-size: 16px; line-height: 19px; }
 .a11y-widget-biz .a11y-finding-criterion { margin-inline-start: 0.5em; font-size: 13px; line-height: 16px; color: var(--ink-2); white-space: nowrap; }
 .a11y-widget-biz .a11y-finding-meta { display: flex; flex-wrap: wrap; gap: 4px; margin: 0; }
@@ -677,6 +674,38 @@
 .a11y-widget-biz .a11y-note-body p { margin: 0; font-size: 13px; line-height: 16px; color: var(--ink); }
 .a11y-widget-biz .a11y-sum-point + .a11y-sum-point,
 .a11y-widget-biz .a11y-note-body p + p { margin-top: 13px; }
+
+/* Hover on a row (user's "make hover like here", 26 Nov 2026, on the
+   current Recent row): the whole row fills red-orange and its words turn
+   black, every secondary word and status colour with them (black on
+   #ff3200 5.7:1). Findings rows, Recent, the starter questions, the legal,
+   designer-and-developer and screen-reader rows, the technical version. */
+.a11y-widget-biz :is(
+  .a11y-datatable tr:not(.a11y-dt-expand-row):has(.a11y-dt-toggle):hover > td,
+  .g-list > li:hover,
+  .a11y-findings-list > .a11y-finding > .a11y-finding-header:hover,
+  .a11y-legal-row:hover,
+  .a11y-undecided-cell:hover,
+  .a11y-sr-list > li:hover,
+  .a11y-tech-details > summary:hover,
+  .a11y-accordion-row:hover,
+  .a11y-w22-head:hover
+) {
+  background: var(--accent);
+  color: var(--on-accent);
+  --ink: var(--on-accent);
+  --ink-2: var(--on-accent);
+  --link: var(--on-accent);
+  --error: var(--on-accent);
+  --warn: var(--on-accent);
+  --ok: var(--on-accent);
+}
+.a11y-widget-biz .a11y-datatable tr:not(.a11y-dt-expand-row):has(.a11y-dt-toggle) { cursor: pointer; }
+.a11y-widget-biz .g-list > li:hover .g-list-btn,
+.a11y-widget-biz .g-list > li:hover .g-list-quiet { color: var(--on-accent); }
+.a11y-widget-biz .g-list > li:hover { padding-inline: 4px; margin-inline: -4px; }
+.a11y-widget-biz .g-nav-recent .g-list > li:hover { padding-inline: 4px; margin-inline: 0; }
+.a11y-widget-biz .a11y-findings-list > .a11y-finding > .a11y-finding-header:hover { padding-inline: 4px; }
 
 /* The form's report (a page behind a login) keeps the product shell. */
 .a11y-widget-biz .a11y-shell-with-nav > .a11y-shell-main { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 10px; padding: 13px; }
