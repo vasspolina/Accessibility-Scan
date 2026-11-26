@@ -39,6 +39,14 @@
 .a11y-widget-biz .a11y-poster,
 .a11y-widget-biz .a11y-sum-spec-go { display: none; }
 
+/* The findings as cards are for print only, as in the product: on screen
+   the table is the one list (without this every finding showed twice, and
+   the closed table rows read as white stripes between the two). */
+.a11y-widget-biz .a11y-print-cards { display: none; }
+@media print {
+  .a11y-widget-biz .a11y-print-cards { display: block; }
+  .a11y-widget-biz .a11y-findings-table { display: none; }
+}
 .a11y-widget-biz .a11y-ra-send-words { display: inline-grid; }
 .a11y-widget-biz .a11y-ra-send-word { grid-area: 1 / 1; }
 .a11y-widget-biz .a11y-ra-send-word[data-off] { visibility: hidden; }
