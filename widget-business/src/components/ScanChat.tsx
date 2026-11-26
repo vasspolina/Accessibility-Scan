@@ -1564,13 +1564,11 @@ export function ScanChat({
               <Icon name="image" size={16} />
             </button>
             <VoiceControl iconOnly />
-            {/* Send appears once there is something to send; Enter still
-                submits the form without it. */}
-            {canSend && (
-              <button type="submit" className="g-pill g-pill-accent g-send" disabled={busy || loading}>
-                {t("Send")}
-              </button>
-            )}
+            {/* Send is the bar's action at the right, as the reference's
+                Proceed: a word, quiet until there is something to send. */}
+            <button type="submit" className="g-send" disabled={!canSend || busy || loading}>
+              {t("Send")}
+            </button>
           </div>
         </div>
         {attached.length > 0 && (
@@ -1618,6 +1616,40 @@ export function ScanChat({
             </button>
           )}
           <GeminiLanguage value={language} onChange={onLanguageChange} />
+          {/* Recent, in the margin under the pills (user's instruction, 26 Nov 2026: "move recent ... underneath buttons"). */}
+          {chats.length > 0 && (
+            <section className="g-nav-recent" aria-labelledby="g-recent-title">
+              <h3 className="g-nav-title" id="g-recent-title">
+                {t("Recent")}
+              </h3>
+              {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
+              <ul className="g-list" role="list">
+                {chats.map((c) => (
+                  <li key={c.id} className="g-list-row" data-current={c.id === chatId ? "" : undefined}>
+                    <button
+                      type="button"
+                      className="g-list-btn g-list-ellipsis"
+                      aria-current={c.id === chatId ? "page" : undefined}
+                      disabled={switchLocked && c.id !== chatId}
+                      onClick={() => openChat(c)}
+                    >
+                      {c.title}
+                    </button>
+                    <button
+                      type="button"
+                      className="g-icon-btn g-list-delete"
+                      aria-label={tf("Delete {title}", { title: c.title })}
+                      data-tip={t("Delete")}
+                      disabled={switchLocked && c.id === chatId}
+                      onClick={() => removeChat(c)}
+                    >
+                      <Icon name="trash-can" size={14} />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
         </nav>
 
         <div className="g-page" ref={rootRef} onFocus={keepFocusClear}>
@@ -1799,9 +1831,12 @@ export function ScanChat({
               )}
             </section>
 
-            <aside className="g-col g-col-side" aria-label={t("Conversations")}>
-              {opening && (
-                <section aria-labelledby="g-questions-title">
+            {/* The starter questions beside the box, only before the
+                conversation starts; after that the conversation takes the
+                width. */}
+            {opening && (
+              <aside className="g-col g-col-side" aria-labelledby="g-questions-title">
+                <section>
                   <h3 className="g-col-title" id="g-questions-title">
                     {t("Questions to start with")}
                   </h3>
@@ -1822,41 +1857,8 @@ export function ScanChat({
                     </li>
                   </ul>
                 </section>
-              )}
-              {chats.length > 0 && (
-                <section aria-labelledby="g-recent-title">
-                  <h3 className="g-col-title" id="g-recent-title">
-                    {t("Recent")}
-                  </h3>
-                  {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
-                  <ul className="g-list" role="list">
-                    {chats.map((c) => (
-                      <li key={c.id} className="g-list-row" data-current={c.id === chatId ? "" : undefined}>
-                        <button
-                          type="button"
-                          className="g-list-btn g-list-ellipsis"
-                          aria-current={c.id === chatId ? "page" : undefined}
-                          disabled={switchLocked && c.id !== chatId}
-                          onClick={() => openChat(c)}
-                        >
-                          {c.title}
-                        </button>
-                        <button
-                          type="button"
-                          className="g-icon-btn g-list-delete"
-                          aria-label={tf("Delete {title}", { title: c.title })}
-                          data-tip={t("Delete")}
-                          disabled={switchLocked && c.id === chatId}
-                          onClick={() => removeChat(c)}
-                        >
-                          <Icon name="trash-can" size={14} />
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-              )}
-            </aside>
+              </aside>
+            )}
           </div>
           <p className="a11y-sr-only" role="status">
             {announcement}

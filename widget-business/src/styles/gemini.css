@@ -59,27 +59,31 @@
    192px from the left. The face is the product's Jokker, not the reference's.
    Colours stay the demo's.
 
-   Measured text pairs: ink #1f1f1f on white 16.4:1; secondary #444746 on
-   white 9.7:1; pill words white on #1f1f1f 16.4:1; on the accent #0b57d0
-   6.5:1. Dark: #e3e3e3 on #131314 14.8:1; #c4c7c5 9.9:1; pill words
-   #131314 on #e3e3e3 14.8:1, #062e6f on #a8c7fa 7.5:1. */
+   Colours follow the reference too (user's instruction, the same day, "a
+   bit more close to reference"): pink paper, black ink, dark teal pills
+   with pink words, the current pill red-orange. Two of its pairs fail and
+   are changed: pink words on the red-orange (2.7:1) are black (5.7:1), and
+   the pale words of the other tabs (1.4:1) are a muted rose (6.1:1).
+   Measured: black on #ffd2d3 15.4:1; #ffd2d3 on #113739 9.5:1; #000 on
+   #ff3200 5.7:1; #6b4446 on #ffd2d3 6.1:1. */
 .a11y-widget-biz {
-  --bg: #ffffff;
-  --ink: #1f1f1f;
-  --ink-2: #444746;
-  --rule: #1f1f1f;
-  --rule-soft: #c4c7c5;
-  --fill: #f0f4f9;
-  --hover: rgb(31 31 31 / 0.06);
-  --pill: #1f1f1f;
-  --on-pill: #ffffff;
-  --accent: #0b57d0;
-  --on-accent: #ffffff;
-  --error: #b3261e;
-  --warn: #8a5300;
-  --ok: #146c2e;
-  --tip-bg: #1f1f1f;
-  --tip-ink: #ffffff;
+  --bg: #ffd2d3;
+  --ink: #000000;
+  --ink-2: #6b4446;
+  --rule: #000000;
+  --rule-soft: #ffa5a7;
+  --fill: #ffa5a7;
+  --hover: rgb(0 0 0 / 0.05);
+  --pill: #113739;
+  --on-pill: #ffd2d3;
+  --accent: #ff3200;
+  --on-accent: #000000;
+  --error: #9e1f22;
+  --warn: #6b3a00;
+  --ok: #1d4f2a;
+  --link: #113739;
+  --tip-bg: #113739;
+  --tip-ink: #ffd2d3;
   --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 2px 6px 2px rgb(0 0 0 / 0.15);
   --row: 32px;
   --margin: 192px;
@@ -101,18 +105,18 @@
   min-height: 100vh;
 }
 .a11y-widget-biz[data-theme="dark"] {
-  --bg: #131314; --ink: #e3e3e3; --ink-2: #c4c7c5; --rule: #e3e3e3; --rule-soft: #444746;
-  --fill: #1e1f20; --hover: rgb(227 227 227 / 0.08); --pill: #e3e3e3; --on-pill: #131314;
-  --accent: #a8c7fa; --on-accent: #062e6f; --error: #f2b8b5; --warn: #f6d36b; --ok: #6dd58c;
-  --tip-bg: #e3e3e3; --tip-ink: #131314;
+  --bg: #113739; --ink: #ffd2d3; --ink-2: #ffa5a7; --rule: #ffd2d3; --rule-soft: #2d5a5c;
+  --fill: #2d5a5c; --hover: rgb(255 210 211 / 0.08); --pill: #ffd2d3; --on-pill: #113739;
+  --accent: #ff3200; --on-accent: #000000; --error: #ffb4ab; --warn: #ffd59a; --ok: #a6e3b5; --link: #ffd2d3;
+  --tip-bg: #ffd2d3; --tip-ink: #113739;
   color-scheme: dark;
 }
 @media (prefers-color-scheme: dark) {
   .a11y-widget-biz:not([data-theme="light"]) {
-    --bg: #131314; --ink: #e3e3e3; --ink-2: #c4c7c5; --rule: #e3e3e3; --rule-soft: #444746;
-    --fill: #1e1f20; --hover: rgb(227 227 227 / 0.08); --pill: #e3e3e3; --on-pill: #131314;
-    --accent: #a8c7fa; --on-accent: #062e6f; --error: #f2b8b5; --warn: #f6d36b; --ok: #6dd58c;
-    --tip-bg: #e3e3e3; --tip-ink: #131314;
+    --bg: #113739; --ink: #ffd2d3; --ink-2: #ffa5a7; --rule: #ffd2d3; --rule-soft: #2d5a5c;
+    --fill: #2d5a5c; --hover: rgb(255 210 211 / 0.08); --pill: #ffd2d3; --on-pill: #113739;
+    --accent: #ff3200; --on-accent: #000000; --error: #ffb4ab; --warn: #ffd59a; --ok: #a6e3b5; --link: #ffd2d3;
+    --tip-bg: #ffd2d3; --tip-ink: #113739;
     color-scheme: dark;
   }
 }
@@ -128,7 +132,7 @@
 .a11y-widget-biz :is(strong, b, th, legend, dt) { font-weight: 400; }
 .a11y-widget-biz em { font-style: normal; }
 .a11y-widget-biz :is(small, figcaption, caption) { font-size: 13px; line-height: 16px; color: var(--ink-2); }
-.a11y-widget-biz a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.a11y-widget-biz a { color: var(--link); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 .a11y-widget-biz a:hover { text-decoration-thickness: 2px; }
 .a11y-widget-biz :is(code, kbd, pre) { font-family: inherit; font-size: 13px; line-height: 16px; }
 .a11y-widget-biz kbd { padding: 0 4px; border: 1px solid var(--rule-soft); border-radius: 2px; }
@@ -166,7 +170,7 @@
 }
 .a11y-widget-biz :is(.a11y-btn, .a11y-seg, .a11y-show-all, .a11y-sim-btn, .a11y-ra-pdf, .a11y-blockflag-jump, .g-pill):hover:not(:disabled) { background: var(--accent); color: var(--on-accent); }
 .a11y-widget-biz :is(.a11y-btn, .g-pill):disabled { background: var(--fill); color: var(--ink-2); }
-.a11y-widget-biz :is(.a11y-btn-primary, .g-pill-accent, .a11y-seg-on, .a11y-sim-btn-active, [aria-pressed="true"], .g-nav [aria-current]) { background: var(--accent); color: var(--on-accent); }
+.a11y-widget-biz :is(.a11y-btn-primary, .g-pill-accent, .a11y-seg-on, .a11y-sim-btn-active, [aria-pressed="true"], .g-nav > .g-pill[aria-current]) { background: var(--accent); color: var(--on-accent); }
 .a11y-widget-biz .a11y-btn-ghost { background: transparent; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; padding: 0; min-height: 0; }
 .a11y-widget-biz .a11y-btn-ghost:hover:not(:disabled) { background: transparent; color: var(--ink); text-decoration-thickness: 2px; }
 .a11y-widget-biz .a11y-seg:has(> input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -215,6 +219,22 @@
   gap: 2px;
   width: calc(var(--margin) - 26px);
 }
+/* The margin holds the pills, then Recent under them; it keeps to the
+   window's height and the list scrolls inside it. */
+.a11y-widget-biz .g-nav { max-height: calc(100vh - 26px); }
+.a11y-widget-biz .g-nav-recent { display: flex; flex-direction: column; align-self: stretch; min-height: 0; margin-top: 26px; }
+.a11y-widget-biz .g-nav-title {
+  display: flex; align-items: flex-end; min-height: 24px; margin: 0; padding-bottom: 6px;
+  border-bottom: 1px solid var(--rule); font-size: 13px; line-height: 16px;
+}
+.a11y-widget-biz .g-nav-recent .g-list { overflow-y: auto; min-height: 0; }
+.a11y-widget-biz .g-nav-recent .g-list-row { padding: 5px 0; }
+.a11y-widget-biz .g-nav-recent .g-list-btn { min-height: 16px; padding: 0; font-size: 13px; line-height: 16px; }
+.a11y-widget-biz .g-nav-recent .g-list-row[data-current] { background: var(--accent); padding-inline: 4px; }
+.a11y-widget-biz .g-nav-recent .g-list-row[data-current] .g-list-btn { color: var(--on-accent); }
+.a11y-widget-biz .g-nav-recent .g-list-ellipsis { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+.a11y-widget-biz .g-nav-recent .g-list-delete { width: 20px; height: 20px; }
+.a11y-widget-biz .g-nav-recent .g-list-delete svg { width: 10px; height: 10px; }
 .a11y-widget-biz .g-brand { cursor: default; }
 .a11y-widget-biz .g-brand:hover { background: var(--pill) !important; color: var(--on-pill) !important; }
 .a11y-widget-biz .g-lang { position: relative; }
@@ -238,7 +258,7 @@
 .a11y-widget-biz .g-tab {
   display: flex; align-items: center; width: 236px; max-width: 100%;
   min-height: var(--row); margin: 0; padding: 0;
-  border-bottom: 1px solid var(--ink-2); border-radius: 0;
+  border-bottom: 1px solid var(--rule-soft); border-radius: 0;
   font-size: 16px; line-height: 19px; color: var(--ink-2); text-align: start;
 }
 .a11y-widget-biz .g-tab[data-on] { color: var(--ink); border-bottom-color: var(--rule); }
@@ -246,7 +266,7 @@
 
 /* Two columns, 10px apart; each opens on a 13px title over a 1px rule. */
 .a11y-widget-biz .g-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 10px; align-items: start; }
-.a11y-widget-biz .g-app:not([data-opening]) .g-cols { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
+.a11y-widget-biz .g-app:not([data-opening]) .g-cols { grid-template-columns: minmax(0, 1fr); }
 .a11y-widget-biz .g-col { min-width: 0; }
 .a11y-widget-biz .g-col-side > section + section { margin-top: 32px; }
 .a11y-widget-biz .g-col-title {
@@ -300,15 +320,22 @@
 .a11y-widget-biz .g-confirm { margin: 8px 0 0; }
 
 /* The box: a line to write on with its tools at the end. */
-.a11y-widget-biz .g-dock { position: sticky; bottom: 0; z-index: 5; padding: 8px 0 13px; background: var(--bg); }
+.a11y-widget-biz .g-app { padding-bottom: 120px; }
+.a11y-widget-biz .g-dock {
+  position: fixed; z-index: 15; bottom: 0; inset-inline: var(--margin) 26px;
+  padding: 0 0 13px; background: var(--bg); border-top: 1px solid var(--rule);
+}
 .a11y-widget-biz .g-composer { margin: 0; }
-.a11y-widget-biz .g-field { display: flex; align-items: flex-end; gap: 8px; border-bottom: 1px solid var(--rule); }
+.a11y-widget-biz .g-field { display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--rule); }
 .a11y-widget-biz .g-field:focus-within { border-bottom: 2px solid var(--accent); margin-bottom: -1px; }
 .a11y-widget-biz .g-input { flex: 1 1 auto; min-width: 0; min-height: var(--row); max-height: 30vh; padding: 6px 0 7px; border: 0 !important; resize: none; line-height: 19px; }
 .a11y-widget-biz .g-input::placeholder { color: var(--ink-2); opacity: 1; }
 .a11y-widget-biz .g-tools { display: flex; align-items: center; gap: 2px; flex: none; padding-bottom: 1px; }
-.a11y-widget-biz .g-send { animation: a11y-pop 0.15s ease-out; }
-@keyframes a11y-pop { from { opacity: 0; transform: scale(0.8); } }
+/* Send: a word at the bar's right, as the reference's Proceed; the muted
+   rose while there is nothing to send, ink once there is. */
+.a11y-widget-biz .g-send { min-height: var(--row); padding: 0 0 0 13px; color: var(--ink); }
+.a11y-widget-biz .g-send:hover:not(:disabled) { text-decoration: underline; text-underline-offset: 3px; }
+.a11y-widget-biz .g-send:disabled { color: var(--ink-2); }
 .a11y-widget-biz .g-attached { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 0; }
 .a11y-widget-biz .g-attached > li { position: relative; margin: 0; }
 .a11y-widget-biz .g-attached img { display: block; width: 64px; height: 64px; object-fit: cover; }
@@ -384,7 +411,7 @@
 .a11y-widget-biz .a11y-sev { font-size: 13px; line-height: 16px; }
 .a11y-widget-biz .a11y-sev-critical { color: var(--error); }
 .a11y-widget-biz .a11y-sev-serious { color: var(--warn); }
-.a11y-widget-biz .a11y-sev-moderate { color: var(--accent); }
+.a11y-widget-biz .a11y-sev-moderate { color: var(--link); }
 .a11y-widget-biz .a11y-sev-minor { color: var(--ok); }
 .a11y-widget-biz .a11y-finding-meta { font-size: 13px; line-height: 16px; color: var(--ink-2); margin-top: 2px; }
 .a11y-widget-biz :is(.a11y-tag, .a11y-rule-chip, .a11y-pro-chip, .a11y-method-badge, .a11y-level-badge, .a11y-count-badge, .a11y-status-chip, .a11y-undecided-kind, .a11y-sum-chip) {
@@ -432,8 +459,11 @@
 /* Under 960px the pills run in a row at the top, the columns stack, and
    the tabs share the width two to a row. */
 @media (max-width: 960px) {
-  .a11y-widget-biz .g-app { padding: 13px; }
-  .a11y-widget-biz .g-nav { position: static; flex-direction: row; flex-wrap: wrap; width: auto; margin-bottom: 21px; }
+  .a11y-widget-biz .g-app { padding: 13px 13px 120px; }
+  .a11y-widget-biz .g-dock { inset-inline: 13px; }
+  .a11y-widget-biz .g-nav { position: static; flex-direction: row; flex-wrap: wrap; width: auto; max-height: none; margin-bottom: 21px; }
+  .a11y-widget-biz .g-nav-recent { flex: 1 1 100%; margin-top: 13px; }
+  .a11y-widget-biz .g-nav-recent .g-list { max-height: 160px; }
   .a11y-widget-biz .g-cols,
   .a11y-widget-biz .g-app:not([data-opening]) .g-cols { grid-template-columns: minmax(0, 1fr); }
   .a11y-widget-biz .g-col-side { margin-top: 32px; }
