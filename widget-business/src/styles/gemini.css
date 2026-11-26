@@ -1147,6 +1147,10 @@
   border: 1px solid var(--rule-soft); border-radius: 2px; font-size: 14px; line-height: 16px; color: var(--ink);
 }
 
+/* No rule between an opened row and its drawer (user's "this line divider
+   is not needed", 26 Nov 2026): the two read as one yellow block. */
+.a11y-widget-biz .a11y-datatable tr[data-open] > td { border-bottom: 0; }
+
 /* The form's report (a page behind a login) keeps the product shell. */
 .a11y-widget-biz .a11y-shell-with-nav > .a11y-shell-main { display: grid; grid-template-columns: 225px minmax(0, 1fr); gap: 13px; padding: 16px; }
 .a11y-widget-biz .a11y-shell-nav { position: sticky; top: 16px; align-self: start; display: flex; flex-direction: column; gap: 2px; }
