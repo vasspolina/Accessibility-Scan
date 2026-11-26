@@ -8270,3 +8270,15 @@
    the button size. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-answer[class] > :is(.a11y-fd-meta, .a11y-undecided-ask)[class][class],
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-answer[class] > :is(.a11y-fd-meta, .a11y-undecided-ask)[class][class] * { font-size: 22px; line-height: 1.1; letter-spacing: 0; }
+
+/* ═══ ONE 32PX STEP BETWEEN EVERY PIECE OF AN OPENED FINDING (user's
+   instruction, 26 Nov 2026, "make sure all elemnts are have same line
+   height break in between and are on grid", on the gap over The technical
+   version) ═══ The finding is one flex column with a 32px gap (Carbon's
+   spacing-07, the gap between card rows). Three pieces added their own
+   margin on top: the meta line 32px under it (64px to the first cards),
+   the technical version 64px over it (96px under the last cards) and
+   Learn more 16px (48px). They keep none now, so the meta line, every row
+   of cards, the technical version and Learn more stand 32px apart; the
+   panel's 24px inset round them is the grid inset and stays. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > :is(.a11y-fd-meta, .a11y-tech-details, .a11y-fd-learn)[class][class][class] { margin-block: 0; }

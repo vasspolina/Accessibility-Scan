@@ -141,7 +141,6 @@ How to answer: plain English, short paragraphs, no markdown, no headings, no bul
     send.disabled = on || !input.value.trim();
     prompts.querySelectorAll("button").forEach((b) => (b.disabled = on));
   };
-  const grow = () => { input.style.height = "auto"; input.style.height = input.scrollHeight + "px"; };
 
   const ask = async (question) => {
     question = question.trim();
@@ -149,7 +148,7 @@ How to answer: plain English, short paragraphs, no markdown, no headings, no bul
     prompts.hidden = true;
     turn("You", question);
     history.push({ role: "user", content: question });
-    input.value = ""; grow();
+    input.value = "";
     setBusy(true);
     const body = turn("Assistant", "");
     const thinking = document.createElement("p");
@@ -182,7 +181,7 @@ How to answer: plain English, short paragraphs, no markdown, no headings, no bul
   };
 
   form.addEventListener("submit", (e) => { e.preventDefault(); ask(input.value); });
-  input.addEventListener("input", () => { grow(); send.disabled = busy || !input.value.trim(); });
+  input.addEventListener("input", () => { send.disabled = busy || !input.value.trim(); });
   input.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); form.requestSubmit(); }
   });
