@@ -1,672 +1,625 @@
-/* BarrierFreeWeb, set in the Accessible Scan's design (user's instruction,
-   25 Nov 2026: "copy this and use accessible scan design to design this
-   website"). The pages, the copy and app.js are the studio site's in
-   ../barrierfreeweb/, copied as they were; only this file is new. Every
-   value below is taken from the scan widget's own stylesheet
-   (widget-business/src/styles/global.css) as it stood that day:
+/* BarrierFreeWeb, scan-look copy: one stylesheet for all five pages.
 
-   - One face, PP Telegraf Ultralight (200), for everything; PP Lettra Mono
-     Ultralight for the centred callouts, the cards' words and the small
-     keys, as the scan sets "New scan", "Your score" and its opening cards.
-     No bold, no italic, no synthesis.
-   - Sizes 18, 24 and 32px only, each with its tracking and leading:
-     18px +0.025em 1.2, 24px +0.015em 1.15, 32px +0.01em 1.1. The prose is
-     32px, 24px on a phone (under 672px, Carbon's md).
-   - The poster's colours: blue #2848c8 and green #486048 with white words
-     (7.4:1, 6.9:1), red #f03c38 with black words (5.4:1), black; the grey
-     paper #dcdbd5, the cream tile #f4efe2, the pills' grey #e6e6e6 and the
-     pale yellow hover #fff5c2, each with black words. Callout titles in
-     #2848c8 (7.4:1 on white), #7d95ff on black.
-   - Every button a grey pill (999px, 34px tall, 18px words); the main
-     action and the chosen one solid; hover the pale yellow; disabled
-     dashed. A disclosure is a full-width bar with the solid caret, opened
-     a 28px-cornered panel with white cards inside.
-   - Sections open on a 1px ink rule with the title 8px under it.
-   - IBM Carbon's spacing steps for every margin, padding and gap.
-   - Focus is a 2px green line inside the edge (#198038; #6fdc8c in dark),
-     white on the blue, green and black grounds. */
+   History. This copy was first set in the Accessible Scan's design (user's
+   instruction, 25 Nov 2026). On 26 Nov 2026 the About page was stripped of
+   that CSS and set after a reference (user's instruction, "strip all css
+   from about.html and design it like this"); the same day the user asked to
+   "combine it with this design and build every page, use jokker as main
+   font". This file is that combination, written fresh; the old rules are
+   in git.
+
+   What comes from the About redesign: black stock (light is the same page
+   reversed, on the toggle), statements set large and centred, small frosted
+   plates (a grey caption over white capitals), blue capitals for the
+   navigation and outlined links, grey captions over 1px rules, the EAA line
+   as a blue strip, "Stay in touch" as a closing statement, the footer's
+   columns and the name across the foot.
+
+   What comes from the scan look: the statements carousel and the service
+   and question cards in the poster's colours (blue #2848c8 and green
+   #486048 with white words, 7.4:1 and 6.9:1; red #f03c38 with black words,
+   5.4:1); the long pages' rail of sections beside the text; the request
+   form as one outlined row; list items behind a thin cross.
+
+   Type: Jokker VF (trial, ../fonts/JokkerVF-TRIAL.woff2, weight 100 to
+   900) for everything. Five sizes: 15px capitals (captions, nav, buttons),
+   18px small print, 24px reading text, 36px section titles and smaller
+   statements, and the display size (clamp 36 to 60px). Display and titles
+   are weight 300 at -0.03em; reading text 300; capitals 500.
+
+   Colour, measured: white on black 21:1; grey #a3a3a3 8.7:1 on black and
+   6.0:1 on a plate (#262626); blue #6e94ff 7.3:1 on black, 5.3:1 on a
+   plate. Light: grey #5c5c5c 6.7:1 on white; blue #2b57e0 5.6:1 on white.
+
+   Layout rule: a page whose content sits straight in <main> (Home, About)
+   is set as centred statements; a page with the rail (.toc-layout:
+   Services, Accessibility, Newsletters) is set for reading, the words left
+   and the side note as a plate beside them. */
 
 @font-face {
-  font-family: "PP Telegraf";
-  src: url("../fonts/PPTelegraf-Ultralight.otf") format("opentype");
-  font-weight: 100 900; font-style: normal; font-display: swap;
-}
-@font-face {
-  font-family: "PP Lettra Mono";
-  src: url("../fonts/PPLettraMono-Ultralight.otf") format("opentype");
+  font-family: "Jokker";
+  src: url("../fonts/JokkerVF-TRIAL.woff2") format("woff2");
   font-weight: 100 900; font-style: normal; font-display: swap;
 }
 
+/* ---------- Colour ---------- */
 :root {
-  --ink: #000; --paper: #fff;
-  --blue: #2848c8; --green: #486048; --red: #f03c38; --black: #000;
-  --on-blue: #fff; --on-green: #fff; --on-red: #000; --on-black: #fff;
-  --grey-paper: #dcdbd5;       /* the scan form's panel, kept light in dark */
-  --field: #fff;               /* a white field on the grey panel (user's instruction, 25 Nov 2026, "make this white forms"; was #e6e6e6) */
-  --tile: #f4efe2; --tile-ink: #000;
-  --bubble: #e6e6e6; --bubble-ink: #000; --bubble-pill: #fff;
-  --hover: #fff5c2; --hover-ink: #000;
-  --solid: #000; --solid-ink: #fff;
-  --edge: #8e8e93;             /* the chat box's edge, 3.3:1 on white */
-  --callout: #2848c8;
-  --focus: #198038;
-  --r-panel: 28px; --r-card: 20px;
-
-  --s01: 2px; --s02: 4px; --s03: 8px; --s04: 12px; --s05: 16px; --s06: 24px;
-  --s07: 32px; --s08: 40px; --s09: 48px; --s10: 64px; --s11: 80px; --s12: 96px;
-  --gutter: 32px; --gutter-narrow: 16px;
-
-  --mono: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
-  --close: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z'/%3E%3C/svg%3E");
-  --caret-right: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M12 8 22 16 12 24z'/%3E%3C/svg%3E");
-  --caret-down: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M24 12 16 22 8 12z'/%3E%3C/svg%3E");
-  --arrow-right: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M18 6 16.57 7.393 24.15 15 4 15 4 17 24.15 17 16.57 24.573 18 26 28 16 18 6z'/%3E%3C/svg%3E");
-  --arrow-left: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M14 26 15.41 24.59 7.83 17 28 17 28 15 7.83 15 15.41 7.41 14 6 4 16 14 26z'/%3E%3C/svg%3E");
-  color-scheme: light;
-}
-:root[data-theme="dark"] {
-  --ink: #fff; --paper: #000; --black: #2c2c2e;
-  --tile: #1c1c1e; --tile-ink: #fff;
-  --bubble: #1c1c1e; --bubble-ink: #fff; --bubble-pill: #2c2c2e;
-  --solid: #636366; --solid-ink: #fff;
-  --callout: #7d95ff; --focus: #6fdc8c;
+  --bg: #000;
+  --ink: #fff;
+  --grey: #a3a3a3;
+  --rule: #888;
+  --blue: #6e94ff;
+  --plate: rgba(255, 255, 255, 0.15);
+  --plate-edge: rgba(255, 255, 255, 0.15);
+  --focus: #fff;
+  /* The poster's colours, the same in both themes. */
+  --p-blue: #2848c8; --p-green: #486048; --p-red: #f03c38; --p-ink: #1c1c1c;
+  --on-blue: #fff; --on-green: #fff; --on-red: #000; --on-ink: #fff;
   color-scheme: dark;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --ink: #fff; --paper: #000; --black: #2c2c2e;
-    --tile: #1c1c1e; --tile-ink: #fff;
-    --bubble: #1c1c1e; --bubble-ink: #fff; --bubble-pill: #2c2c2e;
-    --solid: #636366; --solid-ink: #fff;
-    --callout: #7d95ff; --focus: #6fdc8c;
-    color-scheme: dark;
-  }
+:root[data-theme="light"] {
+  --bg: #fff;
+  --ink: #000;
+  --grey: #5c5c5c;
+  --rule: #767676;
+  --blue: #2b57e0;
+  --plate: rgba(0, 0, 0, 0.06);
+  --plate-edge: rgba(0, 0, 0, 0.12);
+  --focus: #000;
+  --p-ink: #000;
+  color-scheme: light;
+}
+:root {
+  --font: "Jokker", "Helvetica Neue", Arial, sans-serif;
+  --gutter: 14px;
+  --column: 1070px;
+  --display: clamp(36px, 4.15vw, 60px);
+  --section: clamp(96px, 16vh, 180px);
+  --cross: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z'/%3E%3C/svg%3E");
 }
 
-/* ---------- Type ---------- */
+/* ---------- Base ---------- */
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
-body {
-  margin: 0; background: var(--paper); color: var(--ink);
-  font-family: "PP Telegraf", "DejaVu Sans", sans-serif;
-  font-size: 32px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
-  font-kerning: normal; font-variant-ligatures: common-ligatures; font-synthesis: none;
-  text-rendering: optimizeLegibility; hyphens: manual; overflow-wrap: break-word;
+html {
+  background: var(--bg); color: var(--ink);
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 72px;
 }
-h1, h2, h3, h4, strong, b, dt, th, button, input, textarea, select, label { font-weight: 200; }
-button, input, textarea, select { font-family: inherit; color: inherit; }
-p, ul, ol, dl { margin: 0; }
-h1, h2, h3 { margin: 0; font-size: inherit; line-height: inherit; letter-spacing: inherit; }
-.text p + p, .text p + ul, .text ul + p, .text p + dl, .text dl + p, .text h3 + ul,
-.acc__body p + p, .acc__body p + dl, .chat__text p + p, .card p + p { margin-top: 1lh; }
-
-a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
-a:hover { background: var(--hover); color: var(--hover-ink); }
-:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
-a:focus-visible { outline-offset: 2px; }
-main:focus { outline: none; }
+body {
+  margin: 0;
+  overflow-x: clip;
+  font-family: var(--font);
+  font-size: 15px; font-weight: 300; line-height: 1.2;
+  font-kerning: normal; font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  overflow-wrap: break-word;
+}
+h1, h2, h3, p, ul, ol, dl, dd { margin: 0; padding: 0; }
+h1, h2, h3 { font-size: inherit; font-weight: inherit; }
+ul, ol { list-style: none; }
+a { color: inherit; text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
+button, input, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+main:focus, .request__title:focus { outline: none; }
 
 .sr-only {
   position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden;
   clip-path: inset(50%); white-space: nowrap; border: 0;
 }
 .skip {
-  position: absolute; top: var(--s03); left: var(--s03); z-index: 10; transform: translateY(-200%);
-  display: inline-flex; align-items: center; min-height: 34px; padding: var(--s02) var(--s04);
-  border-radius: 999px; background: var(--solid); color: var(--solid-ink);
-  font-size: 18px; letter-spacing: 0.025em; text-decoration: none;
+  position: absolute; top: var(--gutter); left: var(--gutter); z-index: 20;
+  padding: 4px 14px; border: 1px solid var(--blue); border-radius: 5px;
+  background: var(--bg); color: var(--blue);
+  font-weight: 500; text-transform: uppercase; text-decoration: none;
+  transform: translateY(-200%);
 }
 .skip:focus { transform: none; }
 
-/* ---------- The page ---------- */
-.wrap { max-width: 1312px; margin-inline: auto; padding-inline: var(--s07); }
-main.wrap { padding-top: var(--s10); }
+.wrap { padding-inline: var(--gutter); }
 
-/* ---------- Pills: one shape for every button ---------- */
-.nav a, .toc a, .plates__btn, .theme, .btn, .signup__btn, .chat__send, .request__link {
-  display: inline-flex; align-items: center; justify-content: center; gap: var(--s03);
-  min-height: 34px; padding: var(--s02) var(--s04);
-  border: 1px solid var(--bubble); border-radius: 999px; background: var(--bubble); color: var(--bubble-ink);
-  font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; text-decoration: none; cursor: pointer;
-}
-.btn, .signup__btn, .chat__send:enabled, .nav a[aria-current], .toc a[aria-current] {
-  border-color: var(--solid); background: var(--solid); color: var(--solid-ink);
-}
-:is(.nav a, .toc a, .plates__btn, .theme, .btn, .signup__btn, .request__link):hover,
-.chat__send:enabled:hover {
-  border-color: var(--hover); background: var(--hover); color: var(--hover-ink);
-}
-:is(.plates__btn, .theme, .signup__btn, .chat__send, .chat__prompt):disabled {
-  border: 1px dashed var(--ink); background: transparent; color: var(--ink); cursor: default;
-}
-/* The arrow after a button's words is the scan's icon set's, drawn as a mask. */
-.signup__arrow { display: none; }
-.signup__btn::after, .plates__btn::before, .news__btn::before {
-  content: ""; display: inline-block; width: 1em; height: 1em; flex: none; background: currentColor;
-  -webkit-mask: var(--arrow-right) center / contain no-repeat; mask: var(--arrow-right) center / contain no-repeat;
-}
-.request__row .signup__btn::after, .request__send .signup__btn::after, .request__mail::after { content: none; }
+/* ---------- Pieces used on every page ---------- */
 
-/* ---------- Header: the brand, the crumb, the pages as pills ---------- */
+/* Capitals: captions, nav, buttons. */
+.caps,
+.nav, .crumb, .toc, .btn, .signup__btn, .request__link, .chat__send, .plates__btn, .plates__count,
+.theme, .notice, .foot, .terms dt, .text h3, .slogan__label, .chat__who, .request__note,
+.signup__field label, .news__input, .request__consent {
+  font-size: 15px; line-height: 1.15; letter-spacing: 0.01em; text-transform: uppercase;
+}
+
+/* The outlined blue button. */
+.btn, .signup__btn, .request__link, .chat__send, .plates__btn, .theme, .news__btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 30px; padding: 4px 14px;
+  border: 1px solid var(--blue); border-radius: 5px; background: transparent;
+  font-weight: 500; color: var(--blue); text-decoration: none; cursor: pointer;
+}
+:is(.btn, .signup__btn, .request__link, .chat__send, .plates__btn, .theme, .news__btn):is(:hover, :focus-visible):not(:disabled) {
+  background: var(--blue); color: var(--bg);
+}
+:is(.signup__btn, .chat__send, .plates__btn, .request__link):disabled {
+  border-style: dashed; border-color: var(--grey); color: var(--grey); cursor: default;
+}
+.btn { text-wrap: nowrap; }
+
+/* The plate: a small frosted card, grey caption over white capitals. */
+.plate-box,
+.title h1, .related__label, .cols .card, .request {
+  border: 1px solid var(--plate-edge);
+  border-radius: 9px;
+  background: var(--plate);
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+}
+
+/* A running number as the plate's caption: drawn, so it is not read. */
+main { counter-reset: plate; }
+.title h1::before, .related__label::before, .cols > .text > h2:first-child::before {
+  counter-increment: plate;
+  content: "\2116\00a0" counter(plate, decimal-leading-zero) / "";
+  display: block;
+  margin-bottom: 4px;
+  font-size: 15px; font-weight: 400; line-height: 1.15; letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+
+/* Links inside running words: blue, underlined. */
+.text a:not(.btn), .card a:not(.btn, .offer__link), .chat__label a, .chat__text a {
+  color: var(--blue);
+}
+.text a:not(.btn):hover, .card a:not(.btn):hover { text-decoration-thickness: 2px; }
+
+/* ---------- Header: the name at the left, the pages at the right, all in
+   blue capitals, comma-separated; the crumb a grey line under them. ---------- */
+header.wrap { position: sticky; top: 0; z-index: 10; background: var(--bg); }
 .top {
-  display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: var(--s05);
-  padding-block: var(--s06);
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+  gap: 6px 24px;
+  padding-block: 12px;
+  color: var(--blue);
 }
 .brand {
-  display: inline-flex; align-items: center; gap: var(--s03); justify-self: start;
-  font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 18px; font-weight: 500; line-height: 1; text-transform: uppercase; text-decoration: none;
 }
-.brand__logo { width: 32px; height: 32px; flex: none; }
-.brand__petal-a { fill: var(--blue); }
-.brand__petal-b { fill: var(--green); }
-.brand__petal-c { fill: var(--red); }
+.brand__logo { width: 16px; height: 16px; flex: none; }
+.brand__petal-a { fill: var(--p-blue); }
+.brand__petal-b { fill: var(--p-green); }
+.brand__petal-c { fill: var(--p-red); }
 .brand__petal-d { fill: var(--ink); }
-.crumb { font-family: var(--mono); font-size: 18px; line-height: 1.2; letter-spacing: 0; }
-.crumb ol { display: flex; flex-wrap: wrap; margin: 0; padding: 0; list-style: none; }
+.nav { order: 1; font-size: 18px; font-weight: 500; line-height: 1; }
+.nav ul { display: flex; flex-wrap: wrap; gap: 0 0.3em; }
+.nav li:not(:last-child)::after { content: "," / ""; }
+.nav a { text-decoration: none; }
+.nav a:hover, .nav a[aria-current="page"] { text-decoration: underline; }
+.crumb { order: 2; flex-basis: 100%; color: var(--grey); }
+.crumb ol { display: flex; flex-wrap: wrap; }
 .crumb li + li::before { content: "\2009/\2009"; }
-.crumb [aria-current] { color: var(--callout); }
-.nav { justify-self: end; }
-.nav ul { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--s02); margin: 0; padding: 0; list-style: none; }
+.crumb a { text-decoration: none; }
+.crumb a:hover { text-decoration: underline; }
 
-/* ---------- The page's title: a centred callout, as "New scan" ---------- */
-.title, .title h1 {
-  font-family: var(--mono); font-size: 32px; line-height: 1.15; letter-spacing: 0;
-  text-align: center; color: var(--callout);
+/* ---------- The page's title ---------- */
+/* A title that is the statement itself (Home, Services, Accessibility,
+   Newsletters): display size, centred, in the first screen's upper part. */
+.title {
+  max-width: 18em;
+  margin: 0 auto;
+  padding-block: clamp(80px, 18vh, 200px);
+  font-size: var(--display); font-weight: 300; line-height: 1.05; letter-spacing: -0.03em;
+  text-align: center; text-wrap: balance;
 }
-.title { max-width: 30ch; margin: 0 auto var(--s10); text-wrap: balance; }
-.title__sub { margin-top: var(--s05); color: var(--ink); font-size: 24px; }
-/* The home page's lede at a tester's size (user's reference, 25 Nov 2026,
-   "design this like this", a type foundry's specimen line; then, the same
-   day, "make text blue and no black background"): the page's blue Lettra
-   callout on the paper, Ultralight at 56px, 1.15, no tracking, centred
-   across the column's width; #2848c8 on white 7.4:1, #7d95ff on black.
-   No panel. The phone takes 32px. */
-.title--lede { max-width: none; margin: 0 0 var(--s10); font-size: 56px; line-height: 1.15; }
-@media (max-width: 671px) {
-  .title.title--lede { font-size: 32px; }
+.title--lede { min-height: calc(70svh - 60px); display: grid; place-content: center; }
+/* About's title holds an h1 and a statement under it: the h1 is the plate,
+   the statement the display line, both in the first screen. */
+.title:has(> h1) {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 40px;
+  max-width: none; min-height: calc(100svh - 80px);
+  padding-block: 64px;
 }
+.title h1 {
+  width: fit-content; min-width: min(374px, 100%); max-width: 100%;
+  padding: 14px 22px;
+  font-size: 15px; font-weight: 500; line-height: 1.1; letter-spacing: 0.01em;
+  text-transform: uppercase; text-wrap: wrap;
+}
+.title__sub { max-width: 18em; }
 
-/* ---------- The request form: the scan form's grey panel ---------- */
-.signup, .request {
-  /* The panel stays light in dark, so its pills keep the light theme's. */
-  --ink: #000; --focus: #198038; --solid: #000; --solid-ink: #fff;
-  display: grid; gap: var(--s05);
-  margin: 0 0 var(--s10); padding: var(--s09) var(--s10);
-  border-radius: var(--r-panel); background: var(--grey-paper); color: #000;
-}
-.signup { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
-.signup__field {
-  display: flex; flex-direction: column; gap: var(--s03); min-width: 0;
-  padding: var(--s05) var(--s06); border-radius: var(--r-card); background: var(--field); color: #000;
-}
-.signup__field:focus-within { outline: 2px solid var(--focus); outline-offset: -2px; }
-.signup__field label { font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; }
-.signup__input {
-  width: 100%; min-width: 0; min-height: 32px; margin: 0; padding: var(--s01) 0; border: 0; border-radius: 0;
-  background: transparent; color: #000; font-size: 24px; line-height: 1.2; letter-spacing: 0.015em;
-}
-.signup__input:focus-visible { outline: none; }
-.signup__trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
-/* The home page's request form as one outlined row (user's instructions,
-   25 Nov 2026, "delete background on form as well", then "form can look
-   like this", a row of two outlined fields and an outlined Send request on
-   a dark panel): no grey ground, the page's own paper and words in both
-   themes. Email, Your request and Send request side by side, 8px apart,
-   centred in at most 980px; each 56px tall, 12px corners, a 1px edge in
-   the chat box's #8e8e93 (3.3:1 on white, 6.2:1 on black), no fill. Each
-   field's label stays visible, at its left on the field's line at 18px,
-   the typed words after it. Send request is the same outline with the
-   arrow; hover the pale yellow. One column on a phone. form.signup
-   out-ranks the shared .signup rules and their phone padding. */
-form.signup {
-  --ink: inherit; --focus: inherit; --solid: inherit; --solid-ink: inherit;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) auto; gap: var(--s03); align-items: stretch;
-  max-width: 980px; margin-inline: auto; padding: 0; border-radius: 0; background: none; color: inherit;
-}
-form.signup .signup__field {
-  flex-direction: row; align-items: center; gap: var(--s04); min-height: 56px; padding: 0 var(--s05);
-  border: 1px solid var(--edge); border-radius: var(--s04); background: transparent; color: inherit;
-}
-form.signup .signup__field label { flex: none; }
-form.signup .signup__input { flex: 1 1 auto; min-height: 0; color: inherit; font-size: 18px; letter-spacing: 0.025em; }
-form.signup > .signup__btn {
-  grid-column: auto; justify-self: stretch; margin-top: 0; min-height: 56px; padding: 0 var(--s05);
-  border: 1px solid var(--edge); border-radius: var(--s04); background: transparent; color: var(--ink);
-  font-size: 18px; letter-spacing: 0.025em;
-}
-form.signup > .signup__btn:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
-@media (max-width: 671px) {
-  form.signup { grid-template-columns: minmax(0, 1fr); padding: 0; }
-}
-.signup > .signup__btn {
-  grid-column: 1 / -1; justify-self: center; margin-top: var(--s03);
-  min-height: 56px; padding: 0 var(--s06); font-size: 24px; letter-spacing: 0.015em;
-}
-
-/* The questions that follow, in the same panel. */
-.request { justify-items: center; text-align: center; }
-.request[hidden] { display: none; }
-.request__note, .request__status { font-family: var(--mono); font-size: 18px; line-height: 1.2; letter-spacing: 0; }
-.request__title { font-family: var(--mono); font-size: 32px; line-height: 1.15; letter-spacing: 0; color: #2848c8; max-width: 30ch; }
-.request__title:focus { outline: none; }
-.request__row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--s03); width: 100%; }
-.request__input {
-  min-height: 56px; padding: var(--s03) var(--s06); border-radius: 999px; background: var(--field);
-}
-.request__input:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
-.request__link { border-color: #fff; background: #fff; color: #000; }
-.request__brief {
-  display: grid; gap: var(--s03); width: 100%; margin: 0; text-align: start;
-}
-.request__brief > div {
-  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: var(--s05);
-  padding: var(--s05) var(--s06); border-radius: var(--r-card); background: #fff;
-}
-.request__brief dt { font-family: var(--mono); font-size: 18px; line-height: 1.2; letter-spacing: 0; padding-top: var(--s01); }
-.request__brief dd { margin: 0; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
-.request__send { display: grid; justify-items: center; gap: var(--s05); }
-.request__consent { display: inline-flex; align-items: flex-start; gap: var(--s04); max-width: 40ch; text-align: start; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; cursor: pointer; }
-.request__consent input {
-  appearance: none; flex: none; width: 28px; height: 28px; margin: 0; border: 1px solid #000; border-radius: 50%; background: #fff; cursor: pointer;
-}
-.request__consent input:checked {
-  background: #000 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23fff' d='M13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z'/%3E%3C/svg%3E") center / 18px no-repeat;
-}
-.request__consent input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
-
-/* ---------- The statements: cards in the poster's colours, in turn ---------- */
-.plates { margin: 0 0 var(--s10); }
-.plates__track {
-  display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; cursor: pointer;
-  border-radius: var(--r-panel);
-}
-.plates__track::-webkit-scrollbar { display: none; }
-.plates__track:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
-.plate {
-  --on: var(--on-blue);
-  flex: 0 0 100%; scroll-snap-align: start; display: grid; place-items: center;
-  min-height: 360px; padding: var(--s09); border-radius: var(--r-panel);
-  background: var(--blue); color: var(--on);
-}
-.plate:nth-child(4n + 2) { background: var(--green); --on: var(--on-green); }
-.plate:nth-child(4n + 3) { background: var(--red); --on: var(--on-red); }
-.plate:nth-child(4n + 4) { background: var(--black); --on: var(--on-black); }
-.plate p { max-width: 24ch; font-family: var(--mono); font-size: 32px; line-height: 1.15; letter-spacing: 0; text-align: center; text-wrap: balance; }
-/* The statements full screen, like cards (user's instruction, 25 Nov 2026,
-   "make this slide full screen like cards", on the red "Accessibility is a
-   human right." slide): the track breaks out of the 1312px column to the
-   window's width less 8px each side, so the 28px corners still read as a
-   card, and each slide is the window's height less the arrows' bar
-   (104px: their 16px gap, 34px and air). The body clips sideways so the
-   breakout never scrolls the page. */
-body { overflow-x: clip; }
-.plates .plates__track { width: calc(100vw - 2 * var(--s03)); margin-left: calc(50% - 50vw + var(--s03)); }
-.plates .plate { min-height: calc(100svh - 104px); }
-.plates__bar { display: flex; align-items: center; justify-content: center; gap: var(--s03); margin-top: var(--s05); }
-.plates__btn { width: 48px; padding: 0; font-size: 0; }
-.plates__btn::before { width: 18px; height: 18px; }
-.plates__btn[data-prev]::before { -webkit-mask-image: var(--arrow-left); mask-image: var(--arrow-left); }
-.plates__count { min-width: 4ch; font-family: var(--mono); font-size: 18px; line-height: 1.2; letter-spacing: 0; text-align: center; font-variant-numeric: lining-nums; }
-
-/* ---------- Sections: a page of text ---------- */
-.content { container: content / inline-size; min-width: 0; }
+/* ---------- Sections, as statements (no rail): the words centred in the
+   display face's smaller size, the h2 a plate, the side note a plate under
+   them. ---------- */
 .cols {
-  display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--gutter); align-items: start;
+  display: flex; flex-direction: column; align-items: center; gap: 48px;
+  padding-block: var(--section);
 }
-.cols + .cols { margin-top: var(--s10); }
-.cols:has(> .text > h2:first-child) { padding-top: var(--s03); border-top: 1px solid var(--ink); }
-@container content (max-width: 760px) {
-  .cols { grid-template-columns: minmax(0, 1fr); gap: var(--s06); }
+.text {
+  display: flex; flex-direction: column; align-items: center; gap: 28px;
+  max-width: var(--column);
+  text-align: center;
 }
-/* The column's words 10% under the body's 32px (user's instruction, 25 Nov
-   2026, "make this font 10% smaller", on Why not just fix your current
-   site?): 29px, the title with them; then 15% under that (the same day,
-   "make this font 15% smaller", on the same passage): 25px. The phone
-   keeps its 24px. */
-.text { font-size: 25px; }
-.text h2, .card h2 { margin-bottom: var(--s05); }
-.text h3 { margin: 1lh 0 var(--s03); letter-spacing: 0.02em; text-transform: uppercase; }
-/* A list in the column (user's reference, 25 Nov 2026, "typesetting need to
-   look like this", on a programme of upcoming lectures): the heading in
-   capitals in the body face at the prose size, each item behind a thin
-   cross (Carbon's close, as a mask) set inside the column, not hung in the
-   margin where the en dash used to sit against the window's edge. The
-   cross is 0.7em, centred on the item's first line; the words start 1.15em in. */
-.text ul { padding: 0; list-style: none; }
-.text li { position: relative; padding-left: 1.15em; }
-.text li::before {
-  content: ""; position: absolute; left: 0; top: calc((1lh - 0.7em) / 2); width: 0.7em; height: 0.7em; background: currentColor;
-  -webkit-mask: var(--close) center / contain no-repeat; mask: var(--close) center / contain no-repeat;
+.text > p {
+  max-width: 24em;
+  font-size: clamp(24px, 2.5vw, 36px); line-height: 1.12; letter-spacing: -0.02em;
+  text-wrap: pretty;
 }
-
-/* The side note: a cream card. */
-.card {
-  padding: var(--s06); border-radius: var(--r-card); background: var(--tile); color: var(--tile-ink);
-  font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+.cols > .text > h2:first-child {
+  width: fit-content; min-width: min(374px, 100%); max-width: 100%;
+  padding: 14px 22px;
+  border: 1px solid var(--plate-edge); border-radius: 9px; background: var(--plate);
+  font-size: 15px; font-weight: 500; line-height: 1.1; letter-spacing: 0.01em; text-transform: uppercase;
 }
-.card h2 { font-size: 24px; }
-.card .action { margin-top: var(--s05); }
-.offer { padding: 0; list-style: none; display: grid; gap: var(--s02); }
-.offer__link { text-decoration: none; }
-.offer__link::before {
-  content: ""; display: inline-block; width: 0.75em; height: 0.75em; margin-right: var(--s03); background: currentColor;
-  -webkit-mask: var(--caret-right) center / contain no-repeat; mask: var(--caret-right) center / contain no-repeat;
-}
-.offer__link:hover { text-decoration: underline; }
-.action { margin-top: 1lh; }
-
-/* Terms as labelled paragraphs (user's reference, 25 Nov 2026, a foundry's
-   contact page: "SUPPORT & TECH HELP:" over its words; the user chose it
-   over the cross rows of the same afternoon): each term over its meaning,
-   one empty line between terms. */
-.terms { display: grid; gap: 1lh; margin: 0; }
-.terms dd { margin: 0; }
-/* The term as a callout in Lettra (user's instruction, 25 Nov 2026, "put
-   call outs in letra", beside the scan's outlined pills "1.1.1", "Fix soon",
-   "2 places"): PP Lettra Mono, sentence case, no tracking, a 1px edge in the
-   words' colour round it with round ends, 0.83em of the words beside it
-   (24px in the 29px column), 0.3em over its meaning. Replaces the capitals
-   and colon of the same afternoon. */
-.terms dt {
-  display: inline-block; margin-bottom: 0.3em; padding: 0.15em 0.6em 0.1em; border: 1px solid currentColor; border-radius: 999px;
-  font-family: var(--mono); font-size: 0.83em; line-height: 1.2; letter-spacing: 0;
-}
-/* The What we offer panels' terms two to a row (user's instruction, 25 Nov
-   2026, "make it two columns", on Copywriting): read across, row by row,
-   the gutter between them, one column where the panel's words are under
-   560px wide. The lists in the text column stay one column.
-   Each term centred in its column, the pill over its words (the same
-   day, "now center pillows"). */
-@container content (min-width: 560px) {
-  .acc__body .terms { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--gutter); align-items: start; }
-}
-/* The What we offer terms as a type foundry's info and credits columns
-   (user's reference, 25 Nov 2026, "design this like this", its INFO and
-   CREDITS panes): the term a small capital label centred over its
-   column, Telegraf at 18px tracked +0.04em with no pill; its meaning set
-   left under it at the column's 24px, one 16px step down; 32px between
-   rows, two lines of the words. Replaces the centred Lettra pills of the
-   same day, in these panels only; the text column's lists keep theirs. */
-.acc__body .terms { row-gap: var(--s07); }
-.acc__body .terms dt {
-  display: block; margin-bottom: var(--s05); padding: 0; border: 0; border-radius: 0;
-  font-family: inherit; font-size: 18px; line-height: 1.2; letter-spacing: 0.04em;
+.cols .card {
+  display: grid; justify-items: center; gap: 12px;
+  width: fit-content; min-width: min(374px, 100%); max-width: min(560px, 100%);
+  padding: 16px 22px;
+  font-size: 15px; font-weight: 500; line-height: 1.25; letter-spacing: 0.01em;
   text-transform: uppercase; text-align: center;
 }
-.acc__body .terms dd { text-align: start; }
-
-/* Links in the column and the cards on a pale yellow highlight (the same
-   reference: its addresses on a pale yellow, no underline). Black words on
-   #fff5c2 in both themes; hover adds the underline. Buttons and the offer
-   list keep their own look. */
-.text a:not(.btn), .card p a:not(.btn) {
-  padding: 0 0.08em; border-radius: 4px; background: var(--hover); color: var(--hover-ink);
-  text-decoration: none; -webkit-box-decoration-break: clone; box-decoration-break: clone;
+.cols .card h2 { font-weight: 400; color: var(--grey); }
+.cols .card a:not(.btn, .offer__link) {
+  display: inline-block; padding: 2px 10px;
+  border: 1px solid var(--blue); border-radius: 5px; text-decoration: none;
 }
-.text a:not(.btn):hover, .card p a:not(.btn):hover { text-decoration: underline; text-decoration-thickness: 1px; }
+.cols .card a:not(.btn, .offer__link):is(:hover, :focus-visible) { background: var(--blue); color: var(--bg); }
+.action { margin-top: 8px; }
 
-/* ---------- On this page: the scan's rail, as pills ---------- */
-.toc-layout { display: grid; grid-template-columns: minmax(200px, 1fr) minmax(0, 3fr); gap: var(--gutter); align-items: start; }
-.toc { position: sticky; top: var(--s07); }
-.toc ul { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s02); margin: 0; padding: 0; list-style: none; }
-/* A long section name runs to two lines: half the pill's height keeps one
-   line round-ended and two a rounded block, not a lozenge. */
-.toc a { justify-content: flex-start; text-align: start; border-radius: 17px; }
-@media (max-width: 1055px) {
-  .toc-layout { grid-template-columns: minmax(0, 1fr); gap: var(--s07); }
-  .toc { position: static; }
-  .toc ul { flex-direction: row; flex-wrap: wrap; }
+/* ---------- The long pages: the rail of sections, the words for reading
+   ---------- */
+.toc-layout {
+  display: grid; grid-template-columns: minmax(180px, 1fr) minmax(0, 3fr); gap: 24px;
+  align-items: start;
+  padding-top: 40px;
+}
+.toc { position: sticky; top: 72px; padding-top: 18px; border-top: 1px solid var(--rule); }
+.toc ul { display: grid; gap: 10px; }
+.toc a { color: var(--blue); font-weight: 500; text-decoration: none; }
+.toc a:hover, .toc a[aria-current] { text-decoration: underline; }
+/* No container here: a size container scopes CSS counters, and every
+   section heading then counted "No 01". The column folds by the window. */
+.toc-layout .content { min-width: 0; }
+
+.toc-layout .cols {
+  display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 24px 40px;
+  align-items: start;
+  padding-block: 18px 120px;
+  border-top: 1px solid var(--rule);
+}
+.toc-layout .text {
+  display: block; text-align: start; max-width: none;
+}
+.toc-layout .text > * + * { margin-top: 1.3em; }
+.toc-layout .text > p, .toc-layout .text li, .toc-layout .text dd {
+  max-width: 34em;
+  font-size: 24px; line-height: 1.3; letter-spacing: 0;
+}
+.toc-layout .text > p { text-wrap: wrap; }
+.toc-layout .cols > .text > h2:first-child {
+  width: auto; min-width: 0; max-width: 16em;
+  margin-bottom: 40px; padding: 0;
+  border: 0; border-radius: 0; background: none;
+  font-size: 36px; font-weight: 300; line-height: 1.05; letter-spacing: -0.03em; text-transform: none;
+}
+/* Beside running text the side note reads as text: sentence case at 18px,
+   its title a grey caption, its links plain blue. Capitals stay for the
+   short plates of the statement pages. */
+.toc-layout .cols .card {
+  justify-items: start; width: auto; min-width: 0; max-width: none;
+  font-size: 18px; font-weight: 300; line-height: 1.3; letter-spacing: 0;
+  text-transform: none; text-align: start;
+  position: sticky; top: 72px;
+}
+.toc-layout .cols .card h2 {
+  font-size: 15px; font-weight: 500; line-height: 1.15; letter-spacing: 0.01em; text-transform: uppercase;
+}
+.toc-layout .cols .card a:not(.btn, .offer__link) {
+  display: inline; padding: 0; border: 0; border-radius: 0;
+  text-decoration: underline;
+}
+.toc-layout .cols .card a:not(.btn, .offer__link):is(:hover, :focus-visible) {
+  background: none; color: var(--blue); text-decoration-thickness: 2px;
+}
+.toc-layout .card .offer__link { font-size: 15px; font-weight: 500; letter-spacing: 0.01em; text-transform: uppercase; }
+.text h3 { margin-top: 2em; font-weight: 500; color: var(--grey); }
+.text h3 + ul { margin-top: 12px; }
+/* A list behind a thin cross, set inside the column. */
+.text ul { display: grid; gap: 4px; }
+.text li { position: relative; padding-left: 1.1em; }
+.text li::before {
+  content: ""; position: absolute; left: 0; top: calc((1lh - 0.6em) / 2);
+  width: 0.6em; height: 0.6em; background: var(--blue);
+  -webkit-mask: var(--cross) center / contain no-repeat; mask: var(--cross) center / contain no-repeat;
+}
+@media (max-width: 800px) {
+  .toc-layout .cols { grid-template-columns: minmax(0, 1fr); }
+  .toc-layout .cols .card { position: static; }
 }
 
-/* ---------- Four services: the scan's opening cards ---------- */
+/* Terms: a grey caption over a rule, the meaning under it; two columns
+   where there is room. */
+.terms { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 32px; text-align: start; }
+.terms dt {
+  margin-bottom: 6px; padding-top: 8px; border-top: 1px solid var(--rule);
+  font-weight: 500; color: var(--grey);
+}
+.terms dd { font-size: 18px; line-height: 1.3; }
+.toc-layout .text .terms dd { font-size: 18px; }
+
+/* The Services card that lists the six services: numbered rows on rules. */
+.toc-layout .cols .card:has(> .offer) { justify-items: stretch; }
+.offer { counter-reset: offer; width: 100%; border-bottom: 1px solid var(--rule); }
+.offer li { counter-increment: offer; border-top: 1px solid var(--rule); }
+.offer__link {
+  display: flex; justify-content: space-between; gap: 16px;
+  padding: 10px 0;
+  color: var(--ink); text-decoration: none;
+}
+.offer__link::after { content: counter(offer, decimal-leading-zero) / ""; color: var(--grey); }
+.card .offer__link:is(:hover, :focus-visible) { color: var(--blue); }
+
+/* ---------- Coloured cards: the statements, the four services, the chat's
+   opening questions. Blue, green, red, then ink, in turn. ---------- */
+.plates { padding-block: 24px var(--section); }
+.plates__track {
+  display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; cursor: pointer;
+  width: calc(100vw - 16px); margin-left: calc(50% - 50vw + 8px);
+  border-radius: 9px;
+}
+.plates__track::-webkit-scrollbar { display: none; }
+.plate {
+  flex: 0 0 100%; scroll-snap-align: start;
+  display: grid; place-items: center;
+  min-height: calc(100svh - 140px); padding: 48px;
+  border-radius: 9px;
+  background: var(--p-blue); color: var(--on-blue);
+}
+.plate:nth-child(4n + 2) { background: var(--p-green); color: var(--on-green); }
+.plate:nth-child(4n + 3) { background: var(--p-red); color: var(--on-red); }
+.plate:nth-child(4n + 4) { background: var(--p-ink); color: var(--on-ink); }
+.plate p {
+  max-width: 16em;
+  font-size: var(--display); font-weight: 300; line-height: 1.05; letter-spacing: -0.03em;
+  text-align: center; text-wrap: balance;
+}
+.plates__bar { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 14px; }
+.plates__btn { width: 44px; padding: 0; }
+.plates__count { min-width: 4ch; text-align: center; color: var(--grey); font-variant-numeric: tabular-nums; }
+
 .slogans {
-  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gutter-narrow);
-  margin: 0 0 var(--s10); padding: 0; list-style: none;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px;
+  padding-bottom: var(--section);
 }
 .slogan { display: flex; }
 .slogan__link, .chat__prompt {
-  --on: var(--on-blue);
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--s03);
-  width: 100%; min-height: 220px; padding: var(--s06); border: 0; border-radius: var(--r-panel);
-  background: var(--blue); color: var(--on); text-align: center; text-decoration: none;
-  font-family: var(--mono); letter-spacing: 0;
+  display: flex; flex-direction: column; justify-content: space-between; gap: 40px;
+  width: 100%; min-height: 280px; padding: 18px 20px 22px;
+  border: 0; border-radius: 9px;
+  background: var(--p-blue); color: var(--on-blue);
+  text-align: start; text-decoration: none; cursor: pointer;
 }
-.slogan:nth-child(4n + 2) .slogan__link, .chat__prompt:nth-child(3n + 2) { background: var(--green); --on: var(--on-green); }
-.slogan:nth-child(4n + 3) .slogan__link, .chat__prompt:nth-child(3n + 3) { background: var(--red); --on: var(--on-red); }
-.slogan:nth-child(4n + 4) .slogan__link { background: var(--black); --on: var(--on-black); }
-.slogan__label { font-size: 18px; line-height: 1.2; }
-.slogan__link p { font-size: 24px; line-height: 1.15; }
-:is(.slogan__link, .chat__prompt):is(:hover, :focus-visible):not(:disabled) { background: var(--tile); color: var(--tile-ink); }
-@media (max-width: 1055px) { .slogans { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 671px) { .slogans { grid-template-columns: minmax(0, 1fr); } .slogan__link { min-height: 0; } }
+.slogan:nth-child(4n + 2) .slogan__link, .chat__prompt:nth-child(3n + 2) { background: var(--p-green); color: var(--on-green); }
+.slogan:nth-child(4n + 3) .slogan__link, .chat__prompt:nth-child(3n + 3) { background: var(--p-red); color: var(--on-red); }
+.slogan:nth-child(4n + 4) .slogan__link { background: var(--p-ink); color: var(--on-ink); }
+.slogan__label { font-weight: 500; }
+.slogan__link p, .chat__prompt {
+  font-size: 24px; line-height: 1.12; letter-spacing: -0.01em;
+}
+:is(.slogan__link, .chat__prompt):hover:not(:disabled) p,
+.chat__prompt:hover:not(:disabled) { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+.chat__prompt:disabled { opacity: 1; cursor: default; filter: saturate(0.4); }
 
-/* ---------- The scanner invite: a message bubble on the right ---------- */
-.bubble { display: flex; justify-content: flex-end; margin: var(--s10) 0; }
+/* ---------- Home: the request form, one outlined row ---------- */
+form.signup {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto; gap: 6px;
+  max-width: var(--column); margin: 0 auto;
+}
+.signup__field {
+  display: flex; align-items: center; gap: 12px; min-width: 0; min-height: 44px; padding: 0 14px;
+  border: 1px solid var(--rule); border-radius: 5px;
+}
+.signup__field:focus-within { outline: 2px solid var(--focus); outline-offset: 3px; }
+.signup__field label { flex: none; font-weight: 500; color: var(--grey); }
+.signup__input {
+  flex: 1 1 auto; min-width: 0; padding: 0; border: 0; background: transparent;
+  font-size: 18px;
+}
+.signup__input:focus-visible { outline: none; }
+.signup__trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+form.signup > .signup__btn { min-height: 44px; padding-inline: 20px; }
+.signup__arrow { font-weight: 400; }
+
+/* The questions that follow: a plate panel. */
+.request {
+  display: grid; justify-items: center; gap: 18px;
+  max-width: var(--column); margin: 24px auto 0; padding: 32px 24px;
+  text-align: center;
+}
+.request[hidden] { display: none; }
+.request__title { max-width: 20em; font-size: 36px; font-weight: 300; line-height: 1.05; letter-spacing: -0.03em; }
+.request__status { font-size: 18px; color: var(--grey); }
+.request__note { color: var(--grey); }
+.request__row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px; width: 100%; max-width: 720px; }
+.request__input {
+  min-height: 44px; padding: 0 14px; border: 1px solid var(--rule); border-radius: 5px; background: transparent;
+}
+.request__input:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.request__brief { display: grid; gap: 0; width: 100%; max-width: 720px; text-align: start; border-bottom: 1px solid var(--rule); }
+.request__brief > div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 16px; padding: 10px 0; border-top: 1px solid var(--rule); }
+.request__brief dt { font-size: 15px; font-weight: 500; letter-spacing: 0.01em; text-transform: uppercase; color: var(--grey); }
+.request__brief dd { font-size: 18px; line-height: 1.3; }
+.request__send { display: grid; justify-items: center; gap: 16px; }
+.request__consent { display: inline-flex; align-items: flex-start; gap: 10px; max-width: 40ch; text-align: start; cursor: pointer; }
+.request__consent input {
+  appearance: none; flex: none; width: 22px; height: 22px; margin: 0;
+  border: 1px solid var(--ink); border-radius: 4px; background: transparent; cursor: pointer;
+}
+.request__consent input:checked {
+  background: var(--blue) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23000' d='M13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z'/%3E%3C/svg%3E") center / 16px no-repeat;
+  border-color: var(--blue);
+}
+.request__consent input:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+
+/* ---------- Home: the scanner invite and the chat ---------- */
+.bubble { display: flex; justify-content: flex-end; max-width: var(--column); margin: 0 auto; padding-block: 24px var(--section); }
 .bubble__msg {
-  max-width: min(36ch, 80%); padding: var(--s05) var(--s06); border-radius: 24px;
-  background: var(--bubble); color: var(--bubble-ink); text-decoration: none;
-  font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+  max-width: min(30em, 85%); padding: 14px 20px;
+  border: 1px solid var(--plate-edge); border-radius: 18px 18px 4px 18px; background: var(--plate);
+  font-size: 18px; line-height: 1.3; text-decoration: none;
 }
+.bubble__msg:hover { text-decoration: underline; }
 
-/* ---------- The chat ---------- */
-.chat, .related { margin-top: var(--s10); padding-top: var(--s03); border-top: 1px solid var(--ink); }
-.chat__label, .related__label { margin-bottom: var(--s06); }
-.chat__prompts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gutter-narrow); margin-bottom: var(--s06); }
+.chat { max-width: var(--column); margin: 0 auto; padding-bottom: var(--section); }
+.chat__label {
+  max-width: 20em; margin: 0 auto 40px;
+  font-size: clamp(28px, 2.9vw, 42px); font-weight: 300; line-height: 1.08; letter-spacing: -0.03em;
+  text-align: center; text-wrap: balance;
+}
+.chat__prompts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 24px; }
 .chat__prompts[hidden] { display: none; }
-.chat__prompt { min-height: 160px; font-size: 24px; line-height: 1.15; cursor: pointer; }
-.chat__prompt:focus-visible { outline-color: var(--focus); }
-@media (max-width: 671px) { .chat__prompts { grid-template-columns: minmax(0, 1fr); } .chat__prompt { min-height: 0; } }
-.chat__thread { display: grid; gap: 2lh; margin: 0 0 var(--s07); padding: 0; list-style: none; }
+.chat__prompt { min-height: 180px; justify-content: flex-end; }
+.chat__thread { display: grid; gap: 32px; margin-bottom: 32px; }
 .chat__thread[hidden] { display: none; }
-.chat__who { margin-bottom: var(--s02); font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; }
+.chat__who { margin-bottom: 6px; font-weight: 500; color: var(--grey); }
+.chat__text { font-size: 24px; line-height: 1.3; }
+.chat__text p + p { margin-top: 0.8em; }
 .chat__turn:nth-child(odd) { display: flex; flex-direction: column; align-items: flex-end; }
 .chat__turn:nth-child(odd) .chat__text {
-  max-width: min(36ch, 80%); padding: var(--s05) var(--s06); border-radius: 24px;
-  background: var(--bubble); color: var(--bubble-ink); font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+  max-width: min(30em, 85%); padding: 14px 20px;
+  border: 1px solid var(--plate-edge); border-radius: 18px 18px 4px 18px; background: var(--plate);
+  font-size: 18px;
 }
-.chat__thinking { font-size: 24px; }
+.chat__thinking { font-size: 18px; color: var(--grey); }
 .chat__box {
-  display: grid; gap: var(--s03); padding: var(--s05) var(--s06);
-  border: 1px solid var(--edge); border-radius: 32px; background: var(--paper);
+  display: grid; gap: 10px; padding: 14px 16px;
+  border: 1px solid var(--rule); border-radius: 9px;
 }
-.chat__box:focus-within { outline: 2px solid var(--focus); outline-offset: -2px; }
+.chat__box:focus-within { outline: 2px solid var(--focus); outline-offset: 3px; }
 .chat__box textarea {
-  width: 100%; min-height: 2.3em; margin: 0; padding: 0; border: 0; background: transparent; resize: none;
-  font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+  width: 100%; min-height: 2.6em; padding: 0; border: 0; background: transparent; resize: none;
+  font-size: 18px; line-height: 1.3;
 }
-.chat__box textarea::placeholder { color: var(--ink); opacity: 1; }
+.chat__box textarea::placeholder { color: var(--grey); opacity: 1; }
 .chat__box textarea:focus-visible { outline: none; }
 .chat__row { display: flex; justify-content: flex-end; }
 
-/* ---------- What we offer: carets as full bars ---------- */
-.acc { display: grid; gap: var(--s03); }
-.acc__head { margin: 0; }
+/* ---------- What we offer: a plate heading over ruled rows ---------- */
+.related { padding-block: clamp(64px, 12vh, 140px) var(--section); }
+.related__label {
+  display: block; width: fit-content; min-width: min(374px, 100%); max-width: 100%;
+  margin: 0 auto 48px; padding: 14px 22px;
+  font-size: 15px; font-weight: 500; line-height: 1.1; letter-spacing: 0.01em;
+  text-transform: uppercase; text-align: center;
+}
+.acc { max-width: var(--column); margin-inline: auto; border-bottom: 1px solid var(--rule); }
+.acc__row { border-top: 1px solid var(--rule); }
 .acc__btn {
-  display: flex; align-items: center; gap: var(--s05); width: 100%; min-height: 64px; margin: 0;
-  padding: var(--s04) var(--s07); border: 1px solid var(--bubble); border-radius: 999px;
-  background: var(--bubble); color: var(--bubble-ink); text-align: start; cursor: pointer;
-  font-size: 32px; line-height: 1.1; letter-spacing: 0.01em;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  width: 100%; padding: 14px 0 16px;
+  border: 0; background: none; cursor: pointer;
+  font-size: 36px; font-weight: 300; line-height: 1.05; letter-spacing: -0.03em;
+  text-align: left;
 }
-/* No caret and no box inside the opened panel (user's instruction, 25 Nov
-   2026, "do not add dots and box inside of box for this element"): the
-   bar opening into its panel shows the state; aria-expanded says it. */
-.acc__btn:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
-.acc__row:has(> .acc__head [aria-expanded="true"]) { border-radius: var(--r-panel); background: var(--bubble); color: var(--bubble-ink); }
-.acc__row:has(> .acc__head [aria-expanded="true"]) .acc__btn { border-radius: var(--r-panel); }
-/* Three times the space between an opened service's lede and its terms
-   (user's instruction, 25 Nov 2026, "add 3 times more paragraph break
-   here"): 16px became 48px. The panel holds only those two. */
-.acc__panel { display: grid; gap: var(--s09); padding: var(--s03) var(--s07) var(--s07); }
+.acc__btn::after {
+  content: "+" / ""; flex: none;
+  font-size: 32px; font-weight: 200; line-height: 1; color: var(--blue);
+}
+.acc__btn[aria-expanded="true"]::after { content: "\2212" / ""; }
+.acc__btn:hover { color: var(--blue); }
+.acc__panel { padding: 8px 0 40px; }
 .acc__panel[hidden] { display: none; }
-.acc__lede { font-size: 32px; }
-.acc__body {
-  container: content / inline-size;
-  font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+.acc__lede {
+  max-width: 22em; margin-bottom: 32px;
+  font-size: 24px; line-height: 1.15; letter-spacing: -0.01em; color: var(--grey);
 }
+.acc__body { display: grid; gap: 16px; max-width: 46em; }
+.acc__body > p { font-size: 18px; line-height: 1.3; }
 
 /* ---------- Footer ---------- */
-footer.wrap { margin-top: var(--s12); padding-bottom: var(--s07); }
-/* The EAA notice in Lettra, centred (user's instructions, 25 Nov 2026,
-   "letra", "centered"): PP Lettra Mono, no tracking, 1.15 leading, every
-   line centred and the box centred in the column. */
+footer.wrap { padding-bottom: var(--gutter); container-type: inline-size; }
+
+/* The EAA line: a blue run of capitals between two rules, set still. */
 .notice {
-  width: fit-content; max-width: 100%; margin-inline: auto; padding: var(--s05) var(--s06); border-radius: var(--r-card);
-  background: var(--hover); color: var(--hover-ink); font-family: var(--mono); font-size: 24px; line-height: 1.15; letter-spacing: 0;
+  padding-block: 12px;
+  border-block: 1px solid var(--rule);
+  font-weight: 500; text-align: center; color: var(--blue);
+}
+
+/* Stay in touch: the closing statement, its line, one outlined row. */
+.news {
+  display: flex; flex-direction: column; align-items: center; gap: 24px;
+  padding-block: var(--section);
   text-align: center;
 }
-
-/* Stay in touch: the scan's "Email me this report", the green panel. */
-.news {
-  --focus: #fff;
-  display: flex; flex-direction: column; align-items: center; gap: var(--s06);
-  margin-top: var(--s07); padding: var(--s09) var(--s10);
-  border-radius: var(--r-panel); background: var(--green); color: var(--on-green); text-align: center;
-}
-.news__title { font-family: var(--mono); font-size: 32px; line-height: 1.15; letter-spacing: 0; }
-.news__text { max-width: 40ch; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
-.news__form { display: flex; gap: var(--s03); width: min(560px, 100%); }
+.news__title { font-size: var(--display); font-weight: 300; line-height: 1.05; letter-spacing: -0.03em; }
+.news__text { max-width: 30em; font-size: 18px; line-height: 1.3; color: var(--grey); }
+.news__form { display: flex; gap: 6px; width: min(374px, 100%); }
 .news__input {
-  flex: 1 1 auto; min-width: 0; min-height: 56px; padding: 0 var(--s06);
-  border: 1px solid currentColor; border-radius: 999px; background: transparent; color: inherit;
-  font-size: 24px; letter-spacing: 0.015em;
+  flex: 1 1 auto; min-width: 0; height: 34px; padding: 4px 12px;
+  border: 1px solid var(--rule); border-radius: 5px; background: transparent;
 }
-.news__input::placeholder { color: inherit; opacity: 1; }
-/* Flex, not grid (user's instruction, 25 Nov 2026, "center"): as a grid the
-   hidden arrow character made a second row (39px and 15px) and the drawn
-   arrow sat in the upper one. */
-.news__btn {
-  display: inline-flex; align-items: center; justify-content: center; line-height: 0; flex: none; width: 56px; height: 56px; padding: 0;
-  border: 1px solid currentColor; border-radius: 50%; background: transparent; color: inherit; font-size: 0; cursor: pointer;
-}
-.news__btn::before { width: 24px; height: 24px; }
-.news__btn:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
-.news :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.news__input::placeholder { color: var(--grey); opacity: 1; }
+.news__btn { flex: none; width: 44px; height: 34px; padding: 0; }
 
-.foot { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gutter); margin-top: var(--s10); }
-.foot__label {
-  margin: 0 0 var(--s04); padding-bottom: var(--s03); border-bottom: 1px solid var(--ink);
-  font-family: var(--mono); font-size: 18px; line-height: 1.2; letter-spacing: 0; text-transform: uppercase;
+/* The columns: grey captions over one rule across the width. */
+.foot {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px 24px;
+  padding-top: 18px; border-top: 1px solid var(--rule);
 }
-.foot__col { font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
-.foot__col p + p { margin-top: 1lh; }
-.foot__col ul { display: grid; gap: var(--s02); margin: 0; padding: 0; list-style: none; }
-.foot__base { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: var(--s05); margin-top: var(--s09); }
-.foot__logo { width: 64px; height: 64px; }
+.foot__label { margin-bottom: 10px; font-weight: 400; color: var(--grey); }
+.foot__col { display: grid; align-content: start; gap: 14px; font-weight: 400; }
+.foot__col ul { display: grid; gap: 4px; }
+.foot__col a { text-decoration: none; }
+.foot__col a:hover { text-decoration: underline; }
+.foot__base {
+  grid-column: 1 / -1;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  padding-top: 24px;
+}
+.foot__logo { width: 32px; height: 32px; }
 .theme[hidden] { display: none; }
 
-/* ---------- A phone ---------- */
+/* The name across the foot, edge to edge; aria-hidden in the markup.
+   Jokker 300 capitals at -0.04em measure 7.66em for the word; 7.72 leaves a
+   hair so it never clips. */
+.foot__mark {
+  margin-top: 48px;
+  font-size: calc(100cqw / 7.72); font-weight: 300; line-height: 0.8; letter-spacing: -0.04em;
+  text-transform: uppercase; white-space: nowrap; overflow: hidden;
+}
+
+/* ---------- Narrower windows ---------- */
 @media (max-width: 1055px) {
-  .top { grid-template-columns: minmax(0, 1fr) auto; }
-  .crumb { grid-column: 1 / -1; grid-row: 2; }
+  .toc-layout { grid-template-columns: minmax(0, 1fr); }
+  .toc { position: static; }
+  .toc ul { display: flex; flex-wrap: wrap; gap: 6px 18px; }
+  .slogans { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-@media (max-width: 671px) {
-  body { font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
-  .text { font-size: 24px; }
-  .wrap { padding-inline: var(--s05); }
-  main.wrap { padding-top: var(--s07); }
-  .top { grid-template-columns: minmax(0, 1fr); gap: var(--s04); }
-  .nav { justify-self: start; }
-  .nav ul { justify-content: flex-start; }
-  .crumb { grid-row: auto; }
-  .title, .title h1, .request__title, .news__title, .plate p { font-size: 24px; }
-  .title__sub { font-size: 18px; letter-spacing: 0.025em; }
-  .title { margin-bottom: var(--s07); }
-  .signup, .request { grid-template-columns: minmax(0, 1fr); padding: var(--s06) var(--s05); }
+@media (max-width: 900px) {
+  .foot { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  html { scroll-padding-top: 16px; }
+  header.wrap { position: static; }
+  .brand, .nav { font-size: 15px; }
+  .nav { flex-basis: 100%; }
+  .title:has(> h1) { min-height: calc(100svh - 100px); gap: 32px; }
+  .title--lede { min-height: 0; }
+  form.signup { grid-template-columns: minmax(0, 1fr); }
   .request__row, .request__brief > div { grid-template-columns: minmax(0, 1fr); }
-  .request__row .signup__btn { justify-self: center; }
-  .request__brief > div { gap: var(--s02); }
-  .plate { min-height: 240px; padding: var(--s06); }
-  .acc__btn { min-height: 56px; padding: var(--s03) var(--s05); font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
-  .acc__panel { padding: var(--s03) var(--s05) var(--s05); }
-  .acc__lede { font-size: 24px; }
-  .news { padding: var(--s06) var(--s05); }
-  .foot { grid-template-columns: minmax(0, 1fr); gap: var(--s07); }
-  .bubble__msg, .chat__turn:nth-child(odd) .chat__text { max-width: 90%; }
-  .card, .bubble__msg, .chat__box textarea, .notice, .foot__col, .news__text, .acc__body, .chat__turn:nth-child(odd) .chat__text { font-size: 18px; letter-spacing: 0.025em; line-height: 1.2; }
-  .notice { letter-spacing: 0; }
+  .plate { min-height: 60svh; padding: 24px; }
+  .slogans, .chat__prompts { grid-template-columns: minmax(0, 1fr); }
+  .slogan__link, .chat__prompt { min-height: 0; gap: 24px; }
+  .toc-layout .text > p, .toc-layout .text li, .chat__text { font-size: 20px; }
+  .toc-layout .cols > .text > h2:first-child { font-size: 30px; margin-bottom: 24px; }
+  .toc-layout .cols .card { position: static; }
+  .terms { grid-template-columns: minmax(0, 1fr); }
+  .acc__btn { font-size: 28px; }
+  .acc__lede { font-size: 20px; }
+  .foot { grid-template-columns: minmax(0, 1fr); }
+  .foot__mark { margin-top: 32px; }
 }
 
-/* ---------- Forced colours ---------- */
 @media (forced-colors: active) {
-  .signup, .request, .plate, .card, .slogan__link, .chat__prompt, .bubble__msg, .acc__btn, .acc__row, .notice, .news,
-  .nav a, .toc a, .plates__btn, .theme, .btn, .signup__btn, .chat__send, .request__link, .signup__field { border: 1px solid CanvasText; }
-  .signup__btn::after, .plates__btn::before, .news__btn::before, .offer__link::before, .text li::before { background: ButtonText; forced-color-adjust: none; }
-}
-
-/* ---------- More air between the pieces (user's instruction, 25 Nov 2026,
-   "add more space between content", on the home page's EAA section, the
-   scanner invite and the chat). Everything here stood one step of 64px
-   apart, the title 8px under its rule, and the chat's title, cards and box
-   24px apart, so the sections read as one run. On a desktop the sections
-   now stand 96px apart (the scale's top step), a title sits 16px under its
-   rule with 24px under it, and the chat's parts are 40px apart. A phone
-   keeps 64px between sections and takes 32px inside the chat. ---------- */
-.plates { margin-bottom: var(--s12); }
-.cols + .cols { margin-top: var(--s12); }
-.cols:has(> .text > h2:first-child), .chat, .related { padding-top: var(--s05); }
-.text h2, .card h2 { margin-bottom: var(--s06); }
-.bubble { margin-block: var(--s12); }
-.chat, .related { margin-top: var(--s12); }
-.chat__label, .related__label { margin-bottom: var(--s08); }
-.chat__prompts { margin-bottom: var(--s08); }
-@media (max-width: 671px) {
-  .plates, .bubble { margin-bottom: var(--s10); }
-  .cols + .cols, .bubble, .chat, .related { margin-top: var(--s10); }
-  .chat__label, .related__label, .chat__prompts { margin-bottom: var(--s07); }
-}
-
-/* ---------- The Services page's "What we offer" card as a numbered list
-   in a bubble (user's reference, 25 Nov 2026, a packaging box, "keep it in
-   buble"; then, on the terracotta version, "keep this but put on yellow
-   beige and in lettra font"). The card keeps its rounded shape on the pale
-   yellow #fff5c2 with black words (19.1:1), in both themes. Everything in it
-   is PP Lettra Mono Ultralight: on top "What we offer" at 18px over a 1px
-   rule; then the six services, each with its number at the right, between
-   1px rules. In lower case, as written, no tracking (user's instruction,
-   the same day, "lower case", on the card in capitals). The number is drawn with alt text
-   "" so a link's name stays the service. No marker triangles. ---------- */
-.card:has(> .offer) {
-  --ink: #000; --focus: #198038;
-  padding: var(--s06); border-radius: var(--r-card); background: #fff5c2; color: #000;
-  font-family: var(--mono); letter-spacing: 0;
-}
-.card:has(> .offer) > h2 {
-  margin: 0; padding-bottom: var(--s03); border-bottom: 1px solid currentColor;
-  font-family: var(--mono); font-size: 18px; line-height: 1.2; letter-spacing: 0;
-}
-.card > .offer { gap: 0; counter-reset: offer-card; }
-.card > .offer > li { counter-increment: offer-card; border-bottom: 1px solid currentColor; }
-.card .offer__link {
-  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; column-gap: var(--s05);
-  padding: var(--s04) 0; color: inherit; text-decoration: none;
-  font-family: var(--mono); font-size: 24px; line-height: 1.15; letter-spacing: 0;
-}
-.card .offer__link::before { content: none; }
-.card .offer__link::after { content: counter(offer-card, decimal-leading-zero) / ""; font-size: 18px; }
-.card .offer__link:hover { background: transparent; color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.12em; }
-.card .offer__link:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
-@media (max-width: 671px) {
-  .card .offer__link { font-size: 18px; line-height: 1.2; }
-}
-@media (forced-colors: active) {
-  .card:has(> .offer) { border: 1px solid CanvasText; }
-}
-
-/* ---------- The other cream side cards in Lettra (user's reference, 25 Nov
-   2026, "this need to go in letra", on "The four principles behind it").
-   PP Lettra Mono Ultralight, no tracking, 1.15 leading. Set left, the
-   button with it (user's instruction, the same day, "left align", on the
-   exemption card of services.html; they were centred as a programme that
-   morning). The card's cream, corners and 24px size stay. ---------- */
-/* Lettra 15% smaller in these cards (user's instruction, the same day,
-   "make lettra font be smaller 15%", on the exemption card): 24px became
-   20px, the phone's 18px 15px; the button keeps its own size. */
-.card:not(:has(> .offer)) {
-  font-family: var(--mono); font-size: 20px; letter-spacing: 0; line-height: 1.15;
-}
-.card:not(:has(> .offer)) h2 { font-family: var(--mono); font-size: 20px; letter-spacing: 0; }
-/* Buttons stay in the body face, as every pill in the scan. */
-.card:not(:has(> .offer)) .btn { font-family: "PP Telegraf", "DejaVu Sans", sans-serif; letter-spacing: 0.025em; line-height: 1.2; text-wrap: nowrap; }
-@media (max-width: 671px) {
-  .card:not(:has(> .offer)) { font-size: 15px; letter-spacing: 0; line-height: 1.2; }
+  .plate-box, .title h1, .related__label, .cols .card, .request, .plate, .slogan__link, .chat__prompt,
+  .bubble__msg, .chat__turn:nth-child(odd) .chat__text { border: 1px solid CanvasText; }
+  .text li::before { background: CanvasText; forced-color-adjust: none; }
 }

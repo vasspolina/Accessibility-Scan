@@ -8,7 +8,7 @@
 <meta name="description" content="We&#x27;re a design studio in Berlin building websites that work for everyone.">
 <link rel="icon" href="logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="styles.css">
-<script>try{var t=localStorage.getItem("bfw-theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t}catch(e){}</script>
+<script>var t="dark";try{var s=localStorage.getItem("bfw-theme");if(s==="dark"||s==="light")t=s}catch(e){}document.documentElement.dataset.theme=t</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -55,6 +55,7 @@
       <button type="button" class="theme" data-theme-toggle hidden>Dark mode</button>
     </div>
   </div>
+  <p class="foot__mark" aria-hidden="true">BarrierFreeWeb</p>
 </footer>
 <script src="app.js" defer></script>
 </body>
