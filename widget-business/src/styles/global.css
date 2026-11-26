@@ -8208,3 +8208,39 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps)[class][class][class][class] > * + * + * { margin-top: calc(var(--cds-spacing-06) - var(--cds-spacing-04)); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps)[class][class][class][class] :is(ul, ol)[class] > li + li,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col > .a11y-finding-steps[class][class][class][class] > ul > li + li { margin-top: var(--cds-spacing-06); }
+
+/* ═══ THE OPENED FINDING'S LABELS ON THE CARD'S TOP EDGE (user's
+   instruction, 26 Nov 2026, "ad this badge on top of top line in buble",
+   on the "What we found" pill, with a foundry's card whose "Early access"
+   badge sits across its top edge) ═══ Each part's label pill (Who fixes
+   this, What we found, What to do, Affected element and their siblings)
+   is pinned across the card's top edge, its middle on the edge, so half
+   stands over the grey bubble and half on the card. It keeps its outline
+   and its centred place, and takes the card's own fill so the bubble does
+   not show through it. Out of the flow, so the words start 40px down
+   (half the 34px pill, then the 12px it stood over them before, on the
+   4px grid), and the cards stand 32px apart (were 16px) so a pill never
+   meets the card above it. It stays first in the markup, so a screen
+   reader still hears the label before the words. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] { row-gap: var(--cds-spacing-07); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col:not(:empty)[class] { row-gap: var(--cds-spacing-07); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps, .a11y-affected)[class][class][class] {
+  position: relative; overflow: visible; padding-top: var(--cds-spacing-08);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo)[class][class][class] > strong:first-child,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class][class][class] > p:first-child,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class][class] > .a11y-affected-label {
+  position: absolute; top: 0; inset-inline-start: 50%; transform: translate(-50%, -50%); z-index: 1; margin: 0;
+  grid-row: auto; grid-column: auto; /* in a grid, an absolute child placed in a row takes that row as its frame, not the card */
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo)[class][class][class] > strong:first-child,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class][class][class] > p:first-child > strong,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class][class] > .a11y-affected-label > strong {
+  background: var(--bubble-pill, #fff);
+}
+/* The steps' and the affected element's label is a wrapper round the pill;
+   as tall as its line it sat 4px high on the edge, so it hugs the pill. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class][class][class] > p:first-child,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class][class] > .a11y-affected-label { display: flex; height: auto; min-height: 0; padding: 0; line-height: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class][class] > .a11y-affected-label > strong,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class][class][class] > p:first-child > strong { margin: 0; }
