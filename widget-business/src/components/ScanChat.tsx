@@ -1561,7 +1561,7 @@ export function ScanChat({
               disabled={attached.length >= MAX_IMAGES_PER_MESSAGE}
               onClick={() => fileRef.current?.click()}
             >
-              <Icon name="image" size={16} />
+              <Icon name="add" size={20} />
             </button>
             <VoiceControl iconOnly />
             {/* Send as in a Gemini chat box (user's "design as chat like

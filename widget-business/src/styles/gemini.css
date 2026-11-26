@@ -96,6 +96,7 @@
   --row-hover: #ffeb7a;
   --chat-box: #f0f0f0;
   --box-edge: #e0e0e0;
+  --box-edge-rest: #cfcfcf;
   --box-edge-focus: #8a8a8a;
   --icon-caret: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M12 8 22 16 12 24z'/%3E%3C/svg%3E");
   --margin: 240px;
@@ -124,7 +125,7 @@
   --bg: #113739; --ink: #ffd2d3; --ink-2: #ffa5a7; --rule: #ffd2d3; --rule-soft: #2d5a5c;
   --fill: #2d5a5c; --hover: rgb(255 210 211 / 0.08); --pill: #ffd2d3; --on-pill: #113739;
   --accent: #34c759; --on-accent: #000000; --focus: #6fdc8c; --error: #ffb4ab; --warn: #ffd59a; --ok: #a6e3b5; --link: #ffd2d3;
-  --tip-bg: #ffd2d3; --tip-ink: #113739; --open: #1f4a4c; --row-hover: #ffeb7a; --chat-box: #1f4a4c; --box-edge: #2d5a5c; --box-edge-focus: #ffa5a7;
+  --tip-bg: #ffd2d3; --tip-ink: #113739; --open: #1f4a4c; --row-hover: #ffeb7a; --chat-box: #1f4a4c; --box-edge: #2d5a5c; --box-edge-rest: #3d6a6c; --box-edge-focus: #ffa5a7;
   color-scheme: dark;
 }
 @media (prefers-color-scheme: dark) {
@@ -132,7 +133,7 @@
     --bg: #113739; --ink: #ffd2d3; --ink-2: #ffa5a7; --rule: #ffd2d3; --rule-soft: #2d5a5c;
     --fill: #2d5a5c; --hover: rgb(255 210 211 / 0.08); --pill: #ffd2d3; --on-pill: #113739;
     --accent: #34c759; --on-accent: #000000; --focus: #6fdc8c; --error: #ffb4ab; --warn: #ffd59a; --ok: #a6e3b5; --link: #ffd2d3;
-    --tip-bg: #ffd2d3; --tip-ink: #113739; --open: #1f4a4c; --row-hover: #ffeb7a; --chat-box: #1f4a4c; --box-edge: #2d5a5c; --box-edge-focus: #ffa5a7;
+    --tip-bg: #ffd2d3; --tip-ink: #113739; --open: #1f4a4c; --row-hover: #ffeb7a; --chat-box: #1f4a4c; --box-edge: #2d5a5c; --box-edge-rest: #3d6a6c; --box-edge-focus: #ffa5a7;
     color-scheme: dark;
   }
 }
@@ -986,6 +987,44 @@
 
 /* Badges may wrap: the long level names ran 100px past a phone's edge. */
 .a11y-widget-biz :is(.a11y-tag, .a11y-rule-chip, .a11y-pro-chip, .a11y-method-badge, .a11y-level-badge, .a11y-count-badge, .a11y-status-chip, .a11y-undecided-kind, .a11y-sum-chip) { white-space: normal; max-width: 100%; }
+
+/* The chat as Claude's (user's "actually design chat like claude chat",
+   26 Nov 2026). Your words in a rounded grey bubble at the right; the
+   assistant's plain, full width; the speaker labels kept for screen
+   readers only; Copy under a reply a small icon and word. The box white
+   with a light edge and a soft shadow, 20px corners; the plus and the
+   microphone outlined rounded squares at its left, Send a filled rounded
+   square at its right once there is text. */
+.a11y-widget-biz .g-who { position: absolute !important; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.a11y-widget-biz .g-row-you { display: flex; justify-content: flex-end; }
+.a11y-widget-biz .g-row-you .g-text {
+  max-width: min(75%, 640px); padding: 12px 18px; border-radius: 20px;
+  background: var(--chat-box); font-size: 16px; line-height: 22px;
+}
+.a11y-widget-biz .g-row:not(.g-row-you) .g-text { font-size: 16px; line-height: 24px; }
+.a11y-widget-biz .g-row + .g-row:not(.g-row-cont) { margin-top: 8px; }
+.a11y-widget-biz .g-actions { margin-top: 6px; }
+.a11y-widget-biz .g-actions .g-text-btn {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 30px; padding: 0 8px; margin-inline-start: -8px;
+  border-radius: 8px; color: var(--ink-2); text-decoration: none; font-size: 14px;
+}
+.a11y-widget-biz .g-actions .g-text-btn::before {
+  content: ""; width: 15px; height: 15px; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M28,10V28H10V10H28m0-2H10a2,2,0,0,0-2,2V28a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V10a2,2,0,0,0-2-2Z'/%3E%3Cpath d='M4,18H2V4A2,2,0,0,1,4,2H18V4H4Z'/%3E%3C/svg%3E") center / 15px no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M28,10V28H10V10H28m0-2H10a2,2,0,0,0-2,2V28a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V10a2,2,0,0,0-2-2Z'/%3E%3Cpath d='M4,18H2V4A2,2,0,0,1,4,2H18V4H4Z'/%3E%3C/svg%3E") center / 15px no-repeat;
+}
+.a11y-widget-biz .g-actions .g-text-btn:hover { background: var(--hover); color: var(--ink); }
+.a11y-widget-biz .g-field { background: var(--bg); box-shadow: inset 0 0 0 1px var(--box-edge-rest), 0 2px 10px rgb(0 0 0 / 0.04); }
+.a11y-widget-biz .g-field:focus-within { box-shadow: inset 0 0 0 1px var(--box-edge-focus), 0 4px 18px rgb(0 0 0 / 0.08); }
+.a11y-widget-biz .g-tools { gap: 6px; margin-inline-start: -10px; }
+.a11y-widget-biz .g-tools .g-icon-btn {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--box-edge-rest);
+}
+.a11y-widget-biz .g-tools .g-icon-btn:hover:not(:disabled) { background: var(--hover); color: var(--ink); }
+.a11y-widget-biz .g-tools .g-icon-btn svg { width: 20px; height: 20px; }
+.a11y-widget-biz .g-send { width: 36px; height: 36px; border-radius: 10px; background: var(--accent); color: var(--on-accent); }
+.a11y-widget-biz .g-send:hover:not(:disabled) { background: var(--pill); color: var(--on-pill); }
+.a11y-widget-biz .g-send svg { width: 20px; height: 20px; }
 
 /* The form's report (a page behind a login) keeps the product shell. */
 .a11y-widget-biz .a11y-shell-with-nav > .a11y-shell-main { display: grid; grid-template-columns: 225px minmax(0, 1fr); gap: 13px; padding: 16px; }
