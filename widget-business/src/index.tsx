@@ -64,6 +64,27 @@ function injectFonts(apiBase: string) {
   font-style: normal;
   font-display: swap;
 }`;
+  // The Gemini-style demo (`vite build --mode gemini`) is set in PP Telegraf
+  // (user's instruction, 26 Nov 2026, "use pp telegraph font"): Regular for
+  // 400 and Medium for 500 up, from the files beside Jokker. A build-time
+  // constant, so the product bundle declares Jokker only.
+  if (import.meta.env.MODE === "gemini") {
+    style.textContent += `
+@font-face {
+  font-family: "PP Telegraf";
+  src: url("${base}/fonts/PPTelegraf-Regular.otf") format("opentype");
+  font-weight: 100 499;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PP Telegraf";
+  src: url("${base}/fonts/PPTelegraf-Medium.otf") format("opentype");
+  font-weight: 500 900;
+  font-style: normal;
+  font-display: swap;
+}`;
+  }
   document.head.appendChild(style);
 }
 

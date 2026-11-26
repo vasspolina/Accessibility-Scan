@@ -107,9 +107,11 @@
      at slant 0, pinned, with the alternate letterforms on (ss04, ss05,
      as the product sets them; the user's "use alternatives"); no
      synthesized bold or slope. */
-  font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-variation-settings: "wght" 400, "slnt" 0;
-  font-feature-settings: "ss04", "ss05";
+  /* PP Telegraf Regular since the user's "use pp telegraph font" (26 Nov
+     2026); its files are static cuts, so no variation settings, and
+     Jokker's stylistic sets do not apply (Telegraf's are other glyphs). */
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif;
+  font-feature-settings: normal;
   font-kerning: normal;
   font-synthesis: none;
   font-size: 20px;
