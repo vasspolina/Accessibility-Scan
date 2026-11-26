@@ -368,12 +368,16 @@
    on a fade, no rules; the words on top, one line until something is
    typed; the image and microphone as plain icons under them at the left,
    Send a round arrow at the right once there is text. */
-.a11y-widget-biz .g-app { padding-bottom: 160px; }
 .a11y-widget-biz .g-dock {
-  position: fixed; z-index: 15; bottom: 0; inset-inline: var(--margin) 26px;
-  padding: 26px 0 13px; border: 0;
+  position: sticky; z-index: 15; bottom: 0;
+  margin-top: 13px; padding: 26px 0 13px; border: 0;
   background: linear-gradient(to bottom, transparent, var(--bg) 26px);
 }
+/* The report's sections under the box once a scan has run: one wrapping
+   row of underlined 16px words, 20px apart, so the docked box stays short. */
+.a11y-widget-biz .g-dock .g-tabs { display: flex; flex-wrap: wrap; gap: 2px 20px; margin: 8px 0 0; padding: 0 4px; }
+.a11y-widget-biz .g-dock .g-tab { width: auto; min-height: 26px; border-bottom: 1px solid var(--rule-soft); color: var(--ink); }
+.a11y-widget-biz .g-dock .g-tab:hover { border-bottom-color: var(--rule); background: transparent; }
 .a11y-widget-biz .g-composer { margin: 0; }
 .a11y-widget-biz .g-field {
   display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px;
@@ -910,8 +914,7 @@
 /* Under 960px the pills run in a row at the top, the columns stack, and
    the tabs share the width two to a row. */
 @media (max-width: 960px) {
-  .a11y-widget-biz .g-app { padding: 13px 13px 120px; }
-  .a11y-widget-biz .g-dock { inset-inline: 13px; }
+  .a11y-widget-biz .g-app { padding: 13px; }
   .a11y-widget-biz .g-nav { position: static; flex-direction: row; flex-wrap: wrap; width: auto; max-height: none; margin-bottom: 21px; }
   .a11y-widget-biz .g-nav-recent { flex: 1 1 100%; margin-top: 13px; }
   .a11y-widget-biz .g-nav-recent .g-list { max-height: 160px; }

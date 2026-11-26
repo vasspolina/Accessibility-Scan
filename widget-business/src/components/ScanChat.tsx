@@ -1659,21 +1659,10 @@ export function ScanChat({
         <div className="g-page" ref={rootRef} onFocus={keepFocusClear}>
           {/* The page's title is for screen readers only, and so is the
               conversation column's (user's "delete this", 26 Nov 2026, on
-              both): the outline stays, nothing is drawn. The tabs are the
-              report's sections, once a scan has run; each adds its block to
-              the thread. */}
+              both): the outline stays, nothing is drawn. */}
           <h2 className="a11y-sr-only" id="a11y-newscan-title">
             {t("New scan")}
           </h2>
-          {!barrier && offered.length > 0 && (
-            <div className="g-tabs" role="group" aria-label={t("Show from the report")}>
-              {offered.map((s) => (
-                <button key={s.key} type="button" className="g-tab" onClick={() => showSection(s.key, { takeFocus: true })}>
-                  {s.label()}
-                </button>
-              ))}
-            </div>
-          )}
 
           <div className="g-cols">
             <section className="g-col g-col-main" aria-labelledby="g-col-main-title">
@@ -1831,6 +1820,19 @@ export function ScanChat({
                   )}
                   <div className="g-dock" ref={dockRef}>
                     {composer}
+                    {/* The report's sections under the box once a scan has
+                        run (user's "this can go underneath chat when scan
+                        was done", 26 Nov 2026); each adds its block to the
+                        thread. */}
+                    {offered.length > 0 && (
+                      <div className="g-tabs" role="group" aria-label={t("Show from the report")}>
+                        {offered.map((sec) => (
+                          <button key={sec.key} type="button" className="g-tab" onClick={() => showSection(sec.key, { takeFocus: true })}>
+                            {sec.label()}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </>
               )}
