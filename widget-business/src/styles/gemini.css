@@ -1126,6 +1126,10 @@
 .a11y-widget-biz .a11y-yellow-note .a11y-note-title { margin: 0 0 10px; font-size: 20px; line-height: 24px; }
 .a11y-widget-biz .a11y-yellow-note .a11y-note-sub { font-size: 20px; line-height: 24px; color: var(--on-accent); overflow-wrap: anywhere; }
 
+/* No rule under the last of the score's issues (user's "delete line under
+   this", 26 Nov 2026); the rules between them stay. */
+.a11y-widget-biz .a11y-sum-specs > li:last-child { border-bottom: 0; }
+
 /* The form's report (a page behind a login) keeps the product shell. */
 .a11y-widget-biz .a11y-shell-with-nav > .a11y-shell-main { display: grid; grid-template-columns: 225px minmax(0, 1fr); gap: 13px; padding: 16px; }
 .a11y-widget-biz .a11y-shell-nav { position: sticky; top: 16px; align-self: start; display: flex; flex-direction: column; gap: 2px; }
