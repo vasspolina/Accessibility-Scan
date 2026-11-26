@@ -1130,6 +1130,15 @@
    this", 26 Nov 2026); the rules between them stay. */
 .a11y-widget-biz .a11y-sum-specs > li:last-child { border-bottom: 0; }
 
+/* The drawer's facts line as the cards' tags (user's "this need to be
+   designed like this", 26 Nov 2026): each fact a small outlined tag, no
+   rules above or below the line. */
+.a11y-widget-biz .a11y-fd > .a11y-fd-meta { gap: 5px; padding: 10px 0 0; border: 0; }
+.a11y-widget-biz .a11y-fd > .a11y-fd-meta > span {
+  display: inline-flex; align-items: center; min-height: 23px; padding: 0 5px; margin: 0;
+  border: 1px solid var(--rule-soft); border-radius: 2px; font-size: 14px; line-height: 16px; color: var(--ink);
+}
+
 /* The form's report (a page behind a login) keeps the product shell. */
 .a11y-widget-biz .a11y-shell-with-nav > .a11y-shell-main { display: grid; grid-template-columns: 225px minmax(0, 1fr); gap: 13px; padding: 16px; }
 .a11y-widget-biz .a11y-shell-nav { position: sticky; top: 16px; align-self: start; display: flex; flex-direction: column; gap: 2px; }
