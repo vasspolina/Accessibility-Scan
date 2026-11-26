@@ -93,7 +93,7 @@
   --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 2px 8px 2px rgb(0 0 0 / 0.15);
   --row: 40px;
   --open: #fff5c2;
-  --row-hover: #ffeb7a;
+  --row-hover: #fff5c2;
   --chat-box: #f0f0f0;
   --box-edge: #e0e0e0;
   --box-edge-rest: #cfcfcf;
@@ -127,7 +127,7 @@
   --bg: #113739; --ink: #ffd2d3; --ink-2: #ffa5a7; --rule: #ffd2d3; --rule-soft: #2d5a5c;
   --fill: #2d5a5c; --hover: rgb(255 210 211 / 0.08); --pill: #ffd2d3; --on-pill: #113739;
   --accent: #34c759; --on-accent: #000000; --focus: #6fdc8c; --error: #ffb4ab; --warn: #ffd59a; --ok: #a6e3b5; --link: #ffd2d3;
-  --tip-bg: #ffd2d3; --tip-ink: #113739; --open: #1f4a4c; --row-hover: #ffeb7a; --chat-box: #1f4a4c; --box-edge: #2d5a5c; --box-edge-rest: #3d6a6c; --box-edge-focus: #ffa5a7;
+  --tip-bg: #ffd2d3; --tip-ink: #113739; --open: #1f4a4c; --row-hover: #fff5c2; --chat-box: #1f4a4c; --box-edge: #2d5a5c; --box-edge-rest: #3d6a6c; --box-edge-focus: #ffa5a7;
   color-scheme: dark;
 }
 @media (prefers-color-scheme: dark) {
@@ -135,7 +135,7 @@
     --bg: #113739; --ink: #ffd2d3; --ink-2: #ffa5a7; --rule: #ffd2d3; --rule-soft: #2d5a5c;
     --fill: #2d5a5c; --hover: rgb(255 210 211 / 0.08); --pill: #ffd2d3; --on-pill: #113739;
     --accent: #34c759; --on-accent: #000000; --focus: #6fdc8c; --error: #ffb4ab; --warn: #ffd59a; --ok: #a6e3b5; --link: #ffd2d3;
-    --tip-bg: #ffd2d3; --tip-ink: #113739; --open: #1f4a4c; --row-hover: #ffeb7a; --chat-box: #1f4a4c; --box-edge: #2d5a5c; --box-edge-rest: #3d6a6c; --box-edge-focus: #ffa5a7;
+    --tip-bg: #ffd2d3; --tip-ink: #113739; --open: #1f4a4c; --row-hover: #fff5c2; --chat-box: #1f4a4c; --box-edge: #2d5a5c; --box-edge-rest: #3d6a6c; --box-edge-focus: #ffa5a7;
     color-scheme: dark;
   }
 }
@@ -754,8 +754,9 @@
   .a11y-accordion-row:hover,
   .a11y-w22-head:hover
 ) {
-  /* Yellow since the user's "make this hover yellow" (26 Nov 2026), a
-     shade stronger than the open drawers' #fff5c2; black words 18:1. */
+  /* Yellow since the user's "make this hover yellow" (26 Nov 2026), the
+     open drawers' pale #fff5c2 since "yellow hover should be like this";
+     black words 19:1. */
   background: var(--row-hover);
   color: #000;
   --ink: #000;
@@ -768,9 +769,11 @@
 .a11y-widget-biz .a11y-datatable tr:not(.a11y-dt-expand-row):has(.a11y-dt-toggle) { cursor: pointer; }
 .a11y-widget-biz .g-list > li:hover .g-list-btn,
 .a11y-widget-biz .g-list > li:hover .g-list-quiet { color: #000; }
-.a11y-widget-biz .g-list > li:hover { padding-inline: 5px; margin-inline: -5px; }
-.a11y-widget-biz .g-nav-recent .g-list > li:hover { padding-inline: 5px; margin-inline: 0; }
-.a11y-widget-biz .a11y-findings-list > .a11y-finding > .a11y-finding-header:hover { padding-inline: 5px; }
+/* No jump on hover (user's "do not make it jump on hover"): the rows keep
+   their 5px sides all the time, so hover changes the colour only. */
+.a11y-widget-biz .g-list > li { padding-inline: 5px; margin-inline: -5px; }
+.a11y-widget-biz .g-nav-recent .g-list > li { margin-inline: 0; }
+.a11y-widget-biz .a11y-findings-list > .a11y-finding > .a11y-finding-header { padding-inline: 5px; }
 
 /* The drawer's icon on a finding card (user's "make drawer icon"): the
    icon set's solid caret in a 20px column at the row's start, as the
@@ -850,7 +853,7 @@
   border: 0; border-bottom: 1px solid var(--rule); border-radius: 0;
   background: transparent; color: var(--ink); font-size: 20px; line-height: 24px;
 }
-.a11y-widget-biz :is(.a11y-ra-send, .a11y-report-actions .a11y-ra-pdf):hover:not(:disabled) { background: var(--accent); color: var(--on-accent); padding-inline: 5px; }
+.a11y-widget-biz :is(.a11y-ra-send, .a11y-report-actions .a11y-ra-pdf):hover:not(:disabled) { background: var(--accent); color: var(--on-accent); }
 .a11y-widget-biz :is(.a11y-ra-send, .a11y-report-actions .a11y-ra-pdf) > svg {
   order: -1; flex: none; box-sizing: content-box; width: 15px; height: 15px; padding: 6px;
   border: 1px solid currentColor; border-radius: 50%;
@@ -1064,14 +1067,14 @@
   grid-area: input; justify-self: end; align-self: center; width: auto; min-height: 42px; margin: 0 7px 0 0;
   padding: 0 14px; border: 0; border-radius: 10px; background: var(--accent); color: var(--on-accent);
 }
-.a11y-widget-biz .a11y-report-actions .a11y-ra-send:hover:not(:disabled) { background: var(--pill); color: var(--on-pill); padding-inline: 14px; }
+.a11y-widget-biz .a11y-report-actions .a11y-ra-send:hover:not(:disabled) { background: var(--pill); color: var(--on-pill); }
 .a11y-widget-biz .a11y-report-actions .a11y-ra-send > svg { padding: 0; border: 0; width: 18px; height: 18px; }
 .a11y-widget-biz .a11y-ra-note { grid-area: note; }
 .a11y-widget-biz .a11y-report-actions .a11y-ra-pdf {
   width: auto; min-height: 42px; margin: 16px 0 0; padding: 0 14px; border: 0; border-radius: 10px;
   background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--box-edge-rest);
 }
-.a11y-widget-biz .a11y-report-actions .a11y-ra-pdf:hover:not(:disabled) { background: var(--hover); color: var(--ink); padding-inline: 14px; }
+.a11y-widget-biz .a11y-report-actions .a11y-ra-pdf:hover:not(:disabled) { background: var(--hover); color: var(--ink); }
 .a11y-widget-biz .a11y-report-actions .a11y-ra-pdf > svg { padding: 0; border: 0; width: 18px; height: 18px; }
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-report-actions .a11y-ra-email-form input.a11y-ra-email-input[type] { padding-inline-end: 18px !important; }
@@ -1113,11 +1116,15 @@
    Nov 2026, on the overlay notice): a pale yellow panel, square ("do not do
    round corners on it"), the
    words in black (19:1), no rule. Dark mode takes the lighter teal. */
+/* Then set exactly as the Start here banner (user's "should be like
+   this", on it): the green ground, black words at the banner's sizes, its
+   10px inside and 2px corners. */
 .a11y-widget-biz .a11y-note.a11y-yellow-note {
-  padding: 16px 20px 18px; border: 0; border-radius: 0; background: var(--open); color: var(--ink);
+  padding: 10px; border: 0; border-radius: 2px; background: var(--accent); color: var(--on-accent);
+  --ink: var(--on-accent); --ink-2: var(--on-accent);
 }
-.a11y-widget-biz .a11y-yellow-note .a11y-note-title { margin: 0 0 8px; }
-.a11y-widget-biz .a11y-yellow-note .a11y-note-sub { color: var(--ink); overflow-wrap: anywhere; }
+.a11y-widget-biz .a11y-yellow-note .a11y-note-title { margin: 0 0 10px; font-size: 20px; line-height: 24px; }
+.a11y-widget-biz .a11y-yellow-note .a11y-note-sub { font-size: 20px; line-height: 24px; color: var(--on-accent); overflow-wrap: anywhere; }
 
 /* The form's report (a page behind a login) keeps the product shell. */
 .a11y-widget-biz .a11y-shell-with-nav > .a11y-shell-main { display: grid; grid-template-columns: 225px minmax(0, 1fr); gap: 13px; padding: 16px; }
