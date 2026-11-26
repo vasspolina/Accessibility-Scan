@@ -8282,3 +8282,59 @@
    of cards, the technical version and Learn more stand 32px apart; the
    panel's 24px inset round them is the grid inset and stays. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > :is(.a11y-fd-meta, .a11y-tech-details, .a11y-fd-learn)[class][class][class] { margin-block: 0; }
+
+/* ═══ EVERY CARD AS THE SCORE'S ISSUE CARDS (user's reference, 26 Nov
+   2026, "design all cards similar to this", on the yellow issue cards
+   under "N issues found") ═══ The other cards take the issue cards' look:
+   the marker cream (--hl-cap-a #fff5c2) with black words in both themes
+   (19.6:1), 20px corners, 24px inside (16px on a phone), and small
+   outlined pills (1px black, 999px corners) where a card carries a pill.
+   Cards that act take the issue cards' hover: the poster's blue
+   (--hl-blue #2848c8, white words 7.4:1), pill edges white, the action pill
+   white with black words, focus white inside the blue.
+   - The score's notes (How the score works, the warning) and the overlay
+     note: the bright #fff500 with 12px corners became the cream, 20px.
+   - The opened finding's cards (Who fixes this, What we found, What to do,
+     Affected element and their siblings): white became the cream, black
+     words in dark too; the label pills stay across the top edge (26 Nov)
+     and take the cream so the bubble does not show through.
+   - The opening questions: the plates in turn and Report a barrier's
+     green became the cream; the criterion is an outlined pill; hover and
+     focus are the blue with "Ask this" white. Report a barrier keeps its
+     "Start a report" pill showing, black on the cream.
+   The legal head's cards were already set this way. Bars, panels and
+   fields (the design notes' bars, the report actions, the statement and
+   scan forms, the screen reader panel) are not cards and are unchanged. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-notes > .a11y-sum-card, .a11y-note.a11y-yellow-note)[class][class][class] {
+  --yellow-note: var(--hl-cap-a);
+  padding: var(--cds-spacing-06); border-radius: 20px;
+}
+@media (max-width: 671px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-notes > .a11y-sum-card, .a11y-note.a11y-yellow-note)[class][class][class] { padding: var(--cds-spacing-05); }
+}
+
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps, .a11y-affected)[class][class][class][class][class] {
+  --ink: #000; --paper: var(--hl-cap-a); --bubble-pill: var(--hl-cap-a); --tile: var(--hl-cap-a); --tile-ink: #000; --focus: #0a3d1a;
+  border-radius: 20px; background: var(--hl-cap-a); color: #000;
+}
+
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt[class][class][class][class][class][class][class][class] {
+  --ink: #000; --paper: var(--hl-cap-a); --note: var(--hl-cap-a); --note-ink: #000; --focus: #0a3d1a;
+  border: 0; border-radius: 20px; outline: 0; box-shadow: none;
+  background: var(--hl-cap-a); color: #000;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt[class][class][class][class][class][class][class][class]:has(> .a11y-prompt-q:enabled):is(:hover, :has(> .a11y-prompt-q:focus-visible)) {
+  --ink: #fff; --paper: var(--hl-blue); --focus: #fff;
+  background: var(--hl-blue); color: var(--hl-blue-ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt[class][class][class][class][class][class][class][class] > .a11y-prompt-wcag[class] {
+  min-height: 0; padding: var(--cds-spacing-01) var(--cds-spacing-04);
+  border: 1px solid currentColor; border-radius: 999px; background: none; color: inherit;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt[class][class][class][class][class][class][class][class] > .a11y-prompt-wcag[class]:enabled:hover { background: #fff; color: #000; border-color: #fff; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt[class][class][class][class][class][class][class][class] .a11y-prompt-go[class] { background: #000; color: #fff; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt[class][class][class][class][class][class][class][class]:has(> .a11y-prompt-q:enabled):is(:hover, :has(> .a11y-prompt-q:focus-visible)) .a11y-prompt-go[class] { background: #fff; color: #000; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt[class][class][class][class][class][class][class][class]:has(> .a11y-prompt-q:disabled) { outline: 1px dashed #000; outline-offset: -1px; }
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt[class][class][class][class][class][class][class][class] { border: 1px solid CanvasText; }
+}
