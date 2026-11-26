@@ -1388,8 +1388,8 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
     ask: "Open the page on a phone and turn it both ways. Everything should still work, for people whose phone is fixed to a wheelchair or a stand.",
   },
   "interaction-no-status-region": {
-    what: "Nothing here announces changes made without a reload, such as a filtered list or a ‘Saved’ message. A screen reader stays silent while they happen.",
-    ask: "Ask your developer whether anything here updates without a page load. If it does, that update needs a live region so it is spoken as well as shown.",
+    what: "The page has buttons or forms, but nothing set up to read changes aloud. If a list filters or ‘Saved’ appears without a reload, a screen reader says nothing.",
+    ask: "Use the page’s buttons and forms and watch for anything that changes without a reload. If something does, ask your developer to put that message in a live region, so a screen reader says it.",
   },
   "interaction-acts-on-change": {
     what: "Menus or tick boxes whose code suggests they act the moment you set them, without a button. We did not try them, as that could place a real order.",
