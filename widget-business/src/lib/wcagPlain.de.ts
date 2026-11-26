@@ -1064,8 +1064,8 @@ export const UNDECIDED_DE: Record<string, { what: string; ask: string }> = {
     ask: "Öffnen Sie die Seite auf dem Handy und drehen Sie es in beide Richtungen. Alles sollte weiter funktionieren, für Menschen mit einem Handy fest am Rollstuhl oder in einer Halterung.",
   },
   "interaction-no-status-region": {
-    what: "Nichts auf dieser Seite ist dafür eingerichtet, Änderungen ohne Neuladen anzusagen, etwa eine gefilterte Liste oder die Meldung „Gespeichert“. Ein Screenreader bleibt dabei stumm.",
-    ask: "Fragen Sie Ihr Entwicklungsteam, ob sich hier etwas ohne Neuladen ändert. Wenn ja, braucht diese Änderung einen Live-Bereich, damit sie nicht nur gezeigt, sondern auch gesprochen wird.",
+    what: "Die Seite hat Schaltflächen oder Formulare, aber nichts, das Änderungen vorliest. Filtert sich eine Liste oder erscheint „Gespeichert“ ohne Neuladen, sagt ein Screenreader nichts.",
+    ask: "Bedienen Sie die Schaltflächen und Formulare der Seite und achten Sie darauf, ob sich etwas ohne Neuladen ändert. Wenn ja, bitten Sie Ihr Entwicklungsteam, diese Meldung in einen Live-Bereich zu setzen, damit ein Screenreader sie vorliest.",
   },
   "interaction-acts-on-change": {
     what: "Menüs oder Kästchen, deren Code nahelegt, dass sie sofort beim Setzen handeln, ohne Button. Wir haben sie nicht ausprobiert, das könnte eine echte Bestellung auslösen.",
