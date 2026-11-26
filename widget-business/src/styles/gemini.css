@@ -1109,6 +1109,15 @@
   .a11y-widget-biz .a11y-sum-spec > .a11y-sum-spec-shot { grid-column: 1; grid-row: 4; justify-self: start; margin-top: 6px; }
 }
 
+/* A notice highlighted with colour (user's "highlight with color", 26
+   Nov 2026, on the overlay notice): a pale yellow panel, 14px corners, the
+   words in black (19:1), no rule. Dark mode takes the lighter teal. */
+.a11y-widget-biz .a11y-note.a11y-yellow-note {
+  padding: 16px 20px 18px; border: 0; border-radius: 14px; background: var(--open); color: var(--ink);
+}
+.a11y-widget-biz .a11y-yellow-note .a11y-note-title { margin: 0 0 8px; }
+.a11y-widget-biz .a11y-yellow-note .a11y-note-sub { color: var(--ink); overflow-wrap: anywhere; }
+
 /* The form's report (a page behind a login) keeps the product shell. */
 .a11y-widget-biz .a11y-shell-with-nav > .a11y-shell-main { display: grid; grid-template-columns: 225px minmax(0, 1fr); gap: 13px; padding: 16px; }
 .a11y-widget-biz .a11y-shell-nav { position: sticky; top: 16px; align-self: start; display: flex; flex-direction: column; gap: 2px; }
