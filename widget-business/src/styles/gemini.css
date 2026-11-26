@@ -625,6 +625,26 @@
 .a11y-widget-biz .a11y-finding-sev-minor { color: var(--ok); }
 .a11y-widget-biz td[data-col="issue"] .a11y-finding-meta-line { display: block; margin-top: 2px; font-size: 13px; line-height: 16px; color: var(--ink-2); }
 
+/* The score's notes (How the score works, Warning) and the report's other
+   notes, set as the reference's article column (user's "typeset this", 26
+   Nov 2026): a 1px rule, the title at 16px 8px under it, then the text a
+   size down, 13px on 16px in ink, paragraphs one blank line apart. No
+   icon: the title says what it is. The warning's title takes the red. */
+.a11y-widget-biz .a11y-sum-notes { gap: 10px; align-items: start; }
+.a11y-widget-biz .a11y-sum-card,
+.a11y-widget-biz .a11y-note { display: block; padding: 8px 0 0; border-top: 1px solid var(--rule); font-size: 13px; line-height: 16px; color: var(--ink); }
+.a11y-widget-biz .a11y-sum-card-pic,
+.a11y-widget-biz .a11y-note > svg,
+.a11y-widget-biz .a11y-note-icon { display: none; }
+.a11y-widget-biz .a11y-sum-card .a11y-sum-label,
+.a11y-widget-biz .a11y-note-title { margin: 0 0 13px; font-size: 16px; line-height: 19px; color: var(--ink); }
+.a11y-widget-biz .a11y-sum-warning .a11y-sum-label { color: var(--error); }
+.a11y-widget-biz .a11y-sum-point,
+.a11y-widget-biz .a11y-note-sub,
+.a11y-widget-biz .a11y-note-body p { margin: 0; font-size: 13px; line-height: 16px; color: var(--ink); }
+.a11y-widget-biz .a11y-sum-point + .a11y-sum-point,
+.a11y-widget-biz .a11y-note-body p + p { margin-top: 13px; }
+
 /* The form's report (a page behind a login) keeps the product shell. */
 .a11y-widget-biz .a11y-shell-with-nav > .a11y-shell-main { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 10px; padding: 13px; }
 .a11y-widget-biz .a11y-shell-nav { position: sticky; top: 13px; align-self: start; display: flex; flex-direction: column; gap: 2px; }
