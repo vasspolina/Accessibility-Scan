@@ -86,6 +86,7 @@
   --tip-ink: #ffd2d3;
   --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 2px 6px 2px rgb(0 0 0 / 0.15);
   --row: 32px;
+  --icon-caret: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M12 8 22 16 12 24z'/%3E%3C/svg%3E");
   --margin: 192px;
 
   /* Jokker Regular (user's instructions, 26 Nov 2026, "use jokker", then
@@ -481,26 +482,26 @@
 .a11y-widget-biz .a11y-fd {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  column-gap: 10px;
+  column-gap: 26px;
   align-items: start;
   padding: 0 0 13px;
   border-top: 0;
 }
 .a11y-widget-biz .a11y-datatable tr:has(.a11y-fd):hover > td,
 .a11y-widget-biz .a11y-dt-expand-row:hover > td { background: transparent; }
-.a11y-widget-biz .a11y-fd > *,
-.a11y-widget-biz .a11y-fd-col > * { grid-column: 2; }
-.a11y-widget-biz .a11y-fd-col { display: contents; }
+/* The drawer's two columns are the markup's own two groups (user's "put
+   drawer content in two columns", 26 Nov 2026): the short parts at the
+   left, what to do and the affected elements at the right; the facts line
+   across the top, the technical version and Learn more across the foot. */
+.a11y-widget-biz .a11y-fd > * { grid-column: 1 / -1; }
+.a11y-widget-biz .a11y-fd > .a11y-fd-col { grid-column: auto; display: block; min-width: 0; padding-top: 13px; }
 .a11y-widget-biz .a11y-fd-meta {
-  grid-column: 1;
-  grid-row: 1 / span 40;
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-  border-top: 1px solid var(--rule);
+  display: flex; flex-wrap: wrap; gap: 2px 26px; margin: 0;
+  padding: 8px 0; border-bottom: 1px solid var(--rule);
+  font-size: 13px; line-height: 16px;
 }
-.a11y-widget-biz .a11y-fd-meta > span { display: flex; align-items: center; min-height: var(--row); padding: 6px 0 7px; border-bottom: 1px solid var(--rule); font-size: 16px; line-height: 19px; }
-.a11y-widget-biz .a11y-fd-col:first-of-type > :first-child { padding-top: 8px; border-top: 1px solid var(--rule); }
+.a11y-widget-biz .a11y-fd-meta > span { display: inline; }
+.a11y-widget-biz .a11y-finding-level-fold { margin: 0 0 13px; font-size: 13px; line-height: 16px; color: var(--ink-2); }
 .a11y-widget-biz .a11y-fd :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-steps, .a11y-affected, .a11y-fd-col > div) {
   margin: 0 0 13px; padding: 0; border: 0;
   font-size: 13px; line-height: 16px;
@@ -519,8 +520,7 @@
 
 @media (max-width: 640px) {
   .a11y-widget-biz .a11y-fd { grid-template-columns: minmax(0, 1fr); }
-  .a11y-widget-biz .a11y-fd > *, .a11y-widget-biz .a11y-fd-col > *, .a11y-widget-biz .a11y-fd-meta { grid-column: 1; grid-row: auto; }
-  .a11y-widget-biz .a11y-fd-meta { margin-bottom: 13px; }
+  .a11y-widget-biz .a11y-fd > *, .a11y-widget-biz .a11y-fd > .a11y-fd-col { grid-column: 1; }
 }
 
 /* Affected elements: each element a block under a soft rule, its name at
@@ -706,6 +706,49 @@
 .a11y-widget-biz .g-list > li:hover { padding-inline: 4px; margin-inline: -4px; }
 .a11y-widget-biz .g-nav-recent .g-list > li:hover { padding-inline: 4px; margin-inline: 0; }
 .a11y-widget-biz .a11y-findings-list > .a11y-finding > .a11y-finding-header:hover { padding-inline: 4px; }
+
+/* The drawer's icon on a finding card (user's "make drawer icon"): the
+   icon set's solid caret in a 16px column at the row's start, as the
+   findings table has it; right while shut, down while open. */
+.a11y-widget-biz .a11y-finding-header { grid-template-columns: 16px minmax(0, 1fr); column-gap: 8px; }
+.a11y-widget-biz .a11y-finding-header:has(> .a11y-shot) { grid-template-columns: 16px 96px minmax(0, 1fr); column-gap: 8px; }
+.a11y-widget-biz .a11y-finding-header::before {
+  content: ""; grid-column: 1; grid-row: 1 / span 3; align-self: start;
+  width: 16px; height: 16px; margin-top: 1px; background: currentColor;
+  -webkit-mask: var(--icon-caret) center / 16px no-repeat; mask: var(--icon-caret) center / 16px no-repeat;
+  transition: transform 0.15s ease;
+}
+.a11y-widget-biz .a11y-finding-header[aria-expanded="true"]::before { transform: rotate(90deg); }
+.a11y-widget-biz .a11y-finding-header > .a11y-shot { grid-column: 2; }
+.a11y-widget-biz .a11y-finding-header > :not(.a11y-shot) { grid-column: -2 / -1; }
+
+/* The legal section's head (user's "allign and do not do this content",
+   26 Nov 2026, on its three panels): the "'Nothing found' is not a pass"
+   panel is left out of the demo, and the standard and the questions stand
+   as two article columns on one top rule, each a 16px title over 13px
+   lines; the questions one to a line with a hanging dash. */
+.a11y-widget-biz .a11y-legal-band { display: none; }
+.a11y-widget-biz .a11y-legal-cards { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 26px; align-items: start; margin: 0 0 26px; }
+.a11y-widget-biz .a11y-legal-cards > * { margin: 0 !important; padding: 8px 0 0; border-top: 1px solid var(--rule); }
+.a11y-widget-biz .a11y-legal-standard,
+.a11y-widget-biz .a11y-legal-cards .a11y-legal-eyebrow { display: block; margin: 0 0 13px; font-size: 16px; line-height: 19px; color: var(--ink); }
+.a11y-widget-biz .a11y-legal-intro,
+.a11y-widget-biz .a11y-legal-lead { margin: 0; font-size: 13px; line-height: 16px; color: var(--ink); }
+.a11y-widget-biz .a11y-legal-questions { display: flex; flex-direction: column; gap: 4px; font-size: 13px; line-height: 16px; }
+.a11y-widget-biz .a11y-legal-q { position: relative; display: block; padding-inline-start: 14px; }
+.a11y-widget-biz .a11y-legal-qdash { position: absolute; inset-inline-start: 0; }
+.a11y-widget-biz .a11y-legal-q-more { margin-top: 9px; color: var(--ink-2); }
+.a11y-widget-biz .a11y-legal-q-more strong { color: var(--ink); }
+@media (max-width: 640px) { .a11y-widget-biz .a11y-legal-cards { grid-template-columns: minmax(0, 1fr); gap: 26px; } }
+
+/* The automated check results: the result at the left, its count in a
+   right-hand column, the marks under it; the table head left out as the
+   product leaves it out. */
+.a11y-widget-biz .a11y-legal-thead { display: none; }
+.a11y-widget-biz .a11y-legal-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 13px; align-items: baseline; }
+.a11y-widget-biz .a11y-legal-row > .a11y-legal-count { grid-column: 2; grid-row: 1; font-size: 16px; line-height: 19px; text-align: end; }
+.a11y-widget-biz .a11y-legal-row > .a11y-legal-col-result { grid-column: 1; grid-row: 1; margin: 0; }
+.a11y-widget-biz .a11y-legal-row > .a11y-legal-row-desc { grid-column: 1 / -1; }
 
 /* The form's report (a page behind a login) keeps the product shell. */
 .a11y-widget-biz .a11y-shell-with-nav > .a11y-shell-main { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 10px; padding: 13px; }
