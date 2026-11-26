@@ -1,54 +1,30 @@
 /* BarrierFreeWeb, scan-look copy: one stylesheet for all five pages.
 
-   History. This copy was first set in the Accessible Scan's design (user's
-   instruction, 25 Nov 2026). On 26 Nov 2026 the About page was stripped of
-   that CSS and set after a reference (user's instruction, "strip all css
-   from about.html and design it like this"); the same day the user asked to
-   "combine it with this design and build every page, use jokker as main
-   font". This file is that combination, written fresh; the old rules are
-   in git.
+   Set after a reference (user's instruction, 26 Nov 2026: "stripp all
+   css", then a studio's case-study page as the design to follow). The
+   earlier designs of the same day are in git (ef50b259 and before).
 
-   What comes from the About redesign: black stock (light is the same page
-   reversed, on the toggle), statements set large and centred, small frosted
-   plates (a grey caption over white capitals), blue capitals for the
-   navigation and outlined links, grey captions over 1px rules, the EAA line
-   as a blue strip, "Stay in touch" as a closing statement, the footer's
-   columns and the name across the foot.
+   Measured on the reference at 1440 x 900:
+   - Paper #ededed, ink #1d1d1f (14.4:1); one grotesque at a book weight;
+     16px text, a 45px headline set top left on a 1.2 line at -0.014em.
+   - Media as full-bleed panels 12px apart and 12px from the window's
+     edges, black and white in turn, huge capitals centred in them.
+   - Outlined stadium shapes and circled figures as the type's motif.
+   - The menu as a fixed bar of frosted pills along the foot: 40px tall,
+     12px inside, 5px corners, rgba(237,237,237,.6) over an 80px blur,
+     6px apart, 24px from the window's left and foot; a place and date
+     as the last pill.
+   Left out: the reference's moving ticker (WCAG 2.2.2).
 
-   What comes from the scan look: the statements carousel and the service
-   and question cards in the poster's colours (blue #2848c8 and green
-   #486048 with white words, 7.4:1 and 6.9:1; red #f03c38 with black words,
-   5.4:1); the long pages' rail of sections beside the text; the request
-   form as one outlined row; list items behind a thin cross.
+   Here: PP Telegraf Regular for everything (the nearest book-weight
+   grotesque on the server), Medium for the posters' capitals. Sizes: 16px
+   text and controls, 28px a statement page's paragraphs and the cards'
+   words, 45px headings, and the posters' capitals (clamp 44 to 120px).
+   Secondary words #5c5c61 (5.7:1 on the paper; the reference's #6e6e73
+   is 4.4:1). Dark is the same page reversed (paper #1d1d1f, ink #ededed,
+   secondary #a1a1a6, 6.6:1). On a phone the menu bar stands at the top
+   and scrolls away, since six pills wrap to three rows there. */
 
-   Type: PP Telegraf for everything (user's instruction, 26 Nov 2026, "use
-   pp telegraph", replacing Jokker the same day): Ultralight 200, Light
-   300, Regular 400 and Medium 500 from ../fonts/. The family on the server
-   has nothing heavier than Medium and no italic, so the statement slides
-   are Medium upright; nothing is synthesized. Five sizes: 15px capitals (captions, nav, buttons),
-   18px small print, 24px reading text, 36px section titles and smaller
-   statements, and the display size (clamp 36 to 60px). Display and titles
-   are weight 300 at -0.03em; reading text 300; capitals 500.
-
-   Colour, measured: white on black 21:1; grey #a3a3a3 8.7:1 on black and
-   6.0:1 on a plate (#262626); blue #6e94ff 7.3:1 on black, 5.3:1 on a
-   plate. Light: grey #5c5c5c 6.7:1 on white; blue #2b57e0 5.6:1 on white.
-
-   Layout rule: a page whose content sits straight in <main> (Home, About)
-   is set as centred statements; a page with the rail (.toc-layout:
-   Services, Accessibility, Newsletters) is set for reading, the words left
-   and the side note as a plate beside them. */
-
-@font-face {
-  font-family: "PP Telegraf";
-  src: url("../fonts/PPTelegraf-Ultralight.otf") format("opentype");
-  font-weight: 200; font-style: normal; font-display: swap;
-}
-@font-face {
-  font-family: "PP Telegraf";
-  src: url("../fonts/PPTelegraf-Light.otf") format("opentype");
-  font-weight: 300; font-style: normal; font-display: swap;
-}
 @font-face {
   font-family: "PP Telegraf";
   src: url("../fonts/PPTelegraf-Regular.otf") format("opentype");
@@ -59,62 +35,56 @@
   src: url("../fonts/PPTelegraf-Medium.otf") format("opentype");
   font-weight: 500 900; font-style: normal; font-display: swap;
 }
-@font-face {
-  font-family: "PP Lettra Mono";
-  src: url("../fonts/PPLettraMono-Medium.otf") format("opentype");
-  font-weight: 100 900; font-style: normal; font-display: swap;
-}
 
 /* ---------- Colour ---------- */
 :root {
-  --bg: #000;
-  --ink: #fff;
-  --grey: #a3a3a3;
-  --rule: #888;
-  --blue: #6e94ff;
-  --plate: rgba(255, 255, 255, 0.15);
-  --plate-edge: rgba(255, 255, 255, 0.15);
-  --focus: #fff;
-  /* The poster's colours, the same in both themes. */
-  --p-blue: #2848c8; --p-green: #486048; --p-red: #f03c38; --p-ink: #1c1c1c;
-  --on-blue: #fff; --on-green: #fff; --on-red: #000; --on-ink: #fff;
-  color-scheme: dark;
-}
-:root[data-theme="light"] {
-  --bg: #fff;
-  --ink: #000;
-  --grey: #5c5c5c;
-  --rule: #767676;
-  --blue: #2b57e0;
-  --plate: rgba(0, 0, 0, 0.06);
-  --plate-edge: rgba(0, 0, 0, 0.12);
-  --focus: #000;
-  --p-ink: #000;
+  --paper: #ededed;
+  --ink: #1d1d1f;
+  --soft: #5c5c61;
+  --panel: #fff;
+  --frost: rgba(237, 237, 237, 0.6);
+  --line: rgba(29, 29, 31, 0.18);
+  --focus: #1d1d1f;
+  --slide-focus: #0a6cff;
   color-scheme: light;
+}
+:root[data-theme="dark"] {
+  --paper: #1d1d1f;
+  --ink: #ededed;
+  --soft: #a1a1a6;
+  --panel: #2c2c2e;
+  --frost: rgba(29, 29, 31, 0.6);
+  --line: rgba(237, 237, 237, 0.2);
+  --focus: #ededed;
+  color-scheme: dark;
 }
 :root {
   --font: "PP Telegraf", "Helvetica Neue", Arial, sans-serif;
-  --gutter: 14px;
-  --column: 1070px;
-  --display: clamp(36px, 4.15vw, 60px);
-  --section: clamp(96px, 16vh, 180px);
-  --caret-right: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M12 8 22 16 12 24z'/%3E%3C/svg%3E");
-  --caret-down: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M24 12 16 22 8 12z'/%3E%3C/svg%3E");
-  --cross: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z'/%3E%3C/svg%3E");
+  --edge: 24px;
+  --gap: 12px;
+  --head: 45px;
+  --lead: 28px;
+  --poster: clamp(44px, 7.4vw, 120px);
+  --section: clamp(96px, 14vh, 160px);
+  --caret: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M12 8 22 16 12 24z'/%3E%3C/svg%3E");
 }
 
 /* ---------- Base ---------- */
 *, *::before, *::after { box-sizing: border-box; }
 html {
-  background: var(--bg); color: var(--ink);
+  background: var(--paper); color: var(--ink);
   -webkit-text-size-adjust: 100%;
-  scroll-padding-top: 72px;
+  scroll-padding-top: 24px;
+  /* The menu bar is fixed over the foot of the window: keep a focused or
+     linked-to element clear of it (WCAG 2.4.11). */
+  scroll-padding-bottom: 96px;
 }
 body {
   margin: 0;
+  padding-bottom: 88px;
   overflow-x: clip;
   font-family: var(--font);
-  font-size: 15px; font-weight: 300; line-height: 1.2;
+  font-size: 16px; font-weight: 400; line-height: 1.35; letter-spacing: -0.01em;
   font-kerning: normal; font-synthesis: none;
   -webkit-font-smoothing: antialiased;
   overflow-wrap: break-word;
@@ -123,7 +93,7 @@ h1, h2, h3, p, ul, ol, dl, dd { margin: 0; padding: 0; }
 h1, h2, h3 { font-size: inherit; font-weight: inherit; }
 ul, ol { list-style: none; }
 a { color: inherit; text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
-button, input, textarea { font: inherit; color: inherit; }
+button, input, textarea { font: inherit; color: inherit; letter-spacing: inherit; }
 :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 main:focus, .request__title:focus { outline: none; }
 
@@ -132,613 +102,341 @@ main:focus, .request__title:focus { outline: none; }
   clip-path: inset(50%); white-space: nowrap; border: 0;
 }
 .skip {
-  position: absolute; top: var(--gutter); left: var(--gutter); z-index: 20;
-  padding: 4px 14px; border: 1px solid var(--blue); border-radius: 5px;
-  background: var(--bg); color: var(--blue);
-  font-weight: 500; text-transform: uppercase; text-decoration: none;
-  transform: translateY(-200%);
+  position: absolute; top: var(--edge); left: var(--edge); z-index: 30;
+  display: inline-flex; align-items: center; min-height: 40px; padding: 0 12px;
+  border-radius: 5px; background: var(--ink); color: var(--paper); text-decoration: none;
+  transform: translateY(-300%);
 }
 .skip:focus { transform: none; }
 
-.wrap { padding-inline: var(--gutter); }
+.wrap { padding-inline: var(--edge); }
+main.wrap { padding-top: var(--edge); }
 
-/* ---------- Pieces used on every page ---------- */
-
-/* Capitals: captions, nav, buttons. */
-.caps,
-.nav, .crumb, .toc, .btn, .signup__btn, .request__link, .chat__send, .plates__btn, .plates__count,
-.theme, .notice, .foot, .terms dt, .text h3, .slogan__label, .chat__who, .request__note,
-.signup__field label, .news__input, .request__consent {
-  font-size: 15px; line-height: 1.15; letter-spacing: 0.01em; text-transform: uppercase;
+/* ---------- Pills: the menu's frosted shape, used for every control ---------- */
+.pill-shape,
+.brand, .nav a, .crumb ol, .toc a, .theme, .plates__btn, .request__link, .notice {
+  display: inline-flex; align-items: center; gap: 8px;
+  min-height: 40px; padding: 0 12px;
+  border: 0; border-radius: 5px;
+  background: var(--frost);
+  -webkit-backdrop-filter: blur(80px); backdrop-filter: blur(80px);
+  color: var(--ink); text-decoration: none; cursor: pointer;
 }
-
-/* The outlined blue button. */
-.btn, .signup__btn, .request__link, .chat__send, .plates__btn, .theme, .news__btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  min-height: 30px; padding: 4px 14px;
-  border: 1px solid var(--blue); border-radius: 5px; background: transparent;
-  font-weight: 500; color: var(--blue); text-decoration: none; cursor: pointer;
+:is(.brand, .nav a, .toc a, .theme, .plates__btn, .request__link):hover { background: var(--panel); }
+.nav a[aria-current="page"], .toc a[aria-current] { background: var(--ink); color: var(--paper); }
+/* The main action: ink, the same shape. */
+.btn, .signup__btn, .chat__send, .news__btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 40px; padding: 0 16px;
+  border: 0; border-radius: 5px; background: var(--ink); color: var(--paper);
+  text-decoration: none; cursor: pointer;
 }
-:is(.btn, .signup__btn, .request__link, .chat__send, .plates__btn, .theme, .news__btn):is(:hover, :focus-visible):not(:disabled) {
-  background: var(--blue); color: var(--bg);
-}
+:is(.btn, .signup__btn, .chat__send, .news__btn):is(:hover, :focus-visible):not(:disabled) { background: var(--soft); color: var(--paper); }
 :is(.signup__btn, .chat__send, .plates__btn, .request__link):disabled {
-  border-style: dashed; border-color: var(--grey); color: var(--grey); cursor: default;
-}
-.btn { text-wrap: nowrap; }
-
-/* The plate: a small frosted card, grey caption over white capitals. */
-.plate-box,
-.title h1, .related__label, .cols .card, .request {
-  border: 1px solid var(--plate-edge);
-  border-radius: 9px;
-  background: var(--plate);
-  -webkit-backdrop-filter: blur(7px);
-  backdrop-filter: blur(7px);
+  background: transparent; outline: 1px dashed var(--soft); outline-offset: -1px; color: var(--soft); cursor: default;
 }
 
-/* A running number as the plate's caption: drawn, so it is not read. */
-main { counter-reset: plate; }
-.title h1::before, .related__label::before, .cols > .text > h2:first-child::before {
-  counter-increment: plate;
-  content: "\2116\00a0" counter(plate, decimal-leading-zero) / "";
-  display: block;
-  margin-bottom: 4px;
-  font-size: 15px; font-weight: 400; line-height: 1.15; letter-spacing: 0.01em;
-  text-transform: uppercase;
-  color: var(--grey);
+/* ---------- The menu bar, fixed along the foot ---------- */
+header.wrap {
+  position: fixed; left: 0; right: 0; bottom: var(--edge); z-index: 20;
+  padding-inline: var(--edge);
+  pointer-events: none;
 }
-
-/* Links inside running words: blue, underlined. */
-.text a:not(.btn), .card a:not(.btn, .offer__link), .chat__label a, .chat__text a {
-  color: var(--blue);
-}
-.text a:not(.btn):hover, .card a:not(.btn):hover { text-decoration-thickness: 2px; }
-
-/* ---------- Header: the name at the left, the pages at the right, all in
-   blue capitals, comma-separated; the crumb a grey line under them. ---------- */
-header.wrap { position: sticky; top: 0; z-index: 10; background: var(--bg); }
-.top {
-  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
-  gap: 6px 24px;
-  padding-block: 12px;
-  color: var(--blue);
-}
-.brand {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 18px; font-weight: 500; line-height: 1; text-transform: uppercase; text-decoration: none;
-}
+.top { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.top > * { pointer-events: auto; }
 .brand__logo { width: 16px; height: 16px; flex: none; }
-.brand__petal-a { fill: var(--p-blue); }
-.brand__petal-b { fill: var(--p-green); }
-.brand__petal-c { fill: var(--p-red); }
+.brand__petal-a { fill: #2848c8; }
+.brand__petal-b { fill: #486048; }
+.brand__petal-c { fill: #f03c38; }
 .brand__petal-d { fill: var(--ink); }
-.nav { order: 1; font-size: 18px; font-weight: 500; line-height: 1; }
-.nav ul { display: flex; flex-wrap: wrap; gap: 0 0.3em; }
-.nav li:not(:last-child)::after { content: "," / ""; }
-.nav a { text-decoration: none; }
-.nav a:hover, .nav a[aria-current="page"] { text-decoration: underline; }
-.crumb { order: 2; flex-basis: 100%; color: var(--grey); }
-.crumb ol { display: flex; flex-wrap: wrap; }
-.crumb li + li::before { content: "\2009/\2009"; }
+.nav ul { display: flex; flex-wrap: wrap; gap: 6px; }
+.crumb { order: 3; }
+.crumb ol { cursor: default; }
+.crumb li + li::before { content: "\2009/\2009"; color: var(--soft); }
 .crumb a { text-decoration: none; }
 .crumb a:hover { text-decoration: underline; }
 
-/* ---------- The page's title ---------- */
-/* A title that is the statement itself (Home, Services, Accessibility,
-   Newsletters): display size, centred, in the first screen's upper part. */
+/* ---------- The page's title, top left ---------- */
 .title {
-  max-width: 18em;
-  margin: 0 auto;
-  padding-block: clamp(80px, 18vh, 200px);
-  font-size: var(--display); font-weight: 300; line-height: 1.05; letter-spacing: -0.03em;
-  text-align: center; text-wrap: balance;
-}
-.title--lede { min-height: calc(70svh - 60px); display: grid; place-content: center; }
-/* About's title holds an h1 and a statement under it: the h1 is the plate,
-   the statement the display line, both in the first screen. */
-.title:has(> h1) {
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 40px;
-  max-width: none; min-height: calc(100svh - 80px);
-  padding-block: 64px;
-}
-.title h1 {
-  width: fit-content; min-width: min(374px, 100%); max-width: 100%;
-  padding: 14px 22px;
-  font-size: 15px; font-weight: 500; line-height: 1.1; letter-spacing: 0.01em;
-  text-transform: uppercase; text-wrap: wrap;
-}
-.title__sub { max-width: 18em; }
-
-/* ---------- Sections, as statements (no rail): the words centred in the
-   display face's smaller size, the h2 a plate, the side note a plate under
-   them. ---------- */
-.cols {
-  display: flex; flex-direction: column; align-items: center; gap: 48px;
-  padding-block: var(--section);
-}
-.text {
-  display: flex; flex-direction: column; align-items: center; gap: 28px;
-  max-width: var(--column);
-  text-align: center;
-}
-.text > p {
   max-width: 24em;
-  font-size: clamp(24px, 2.5vw, 36px); line-height: 1.12; letter-spacing: -0.02em;
-  text-wrap: pretty;
+  padding: 0 0 var(--section);
+  font-size: var(--head); line-height: 1.2; letter-spacing: -0.014em;
 }
-.cols > .text > h2:first-child {
-  width: fit-content; min-width: min(374px, 100%); max-width: 100%;
-  padding: 14px 22px;
-  border: 1px solid var(--plate-edge); border-radius: 9px; background: var(--plate);
-  font-size: 15px; font-weight: 500; line-height: 1.1; letter-spacing: 0.01em; text-transform: uppercase;
-}
-.cols .card {
-  display: grid; justify-items: center; gap: 12px;
-  width: fit-content; min-width: min(374px, 100%); max-width: min(560px, 100%);
-  padding: 16px 22px;
-  font-size: 15px; font-weight: 500; line-height: 1.25; letter-spacing: 0.01em;
-  text-transform: uppercase; text-align: center;
-}
-.cols .card h2 { font-weight: 400; color: var(--grey); }
-.cols .card a:not(.btn, .offer__link) {
-  display: inline-block; padding: 2px 10px;
-  border: 1px solid var(--blue); border-radius: 5px; text-decoration: none;
-}
-.cols .card a:not(.btn, .offer__link):is(:hover, :focus-visible) { background: var(--blue); color: var(--bg); }
-.action { margin-top: 8px; }
+.title h1 { display: inline; }
+.title:has(> h1) h1::after { content: " "; }
+.title__sub { display: inline; color: var(--soft); }
 
-/* ---------- The long pages: the sections as a row of grey pills over the
-   words (user's reference, 26 Nov 2026, "add elements from this web ... but
-   make them full bleed": a centred row of grey filter pills), the words
-   then running the full width. Was a sticky rail at the left. ---------- */
-.toc-layout {
-  display: grid; grid-template-columns: minmax(0, 1fr); gap: 48px;
-  padding-top: 8px;
-}
-.toc { padding-bottom: 8px; }
-.toc ul { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
-.toc a {
-  display: inline-flex; align-items: center; min-height: 32px; padding: 4px 14px;
-  border-radius: 999px; background: #e6e6e6; color: #000;
-  font-size: 15px; font-weight: 400; letter-spacing: 0; text-transform: none; text-decoration: none;
-}
-.toc a:hover { background: #ffea00; }
-.toc a[aria-current] { background: var(--ink); color: var(--bg); }
-/* No container here: a size container scopes CSS counters, and every
-   section heading then counted "No 01". The column folds by the window. */
-.toc-layout .content { min-width: 0; }
-
-.toc-layout .cols {
-  display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 24px 40px;
-  align-items: start;
-  padding-block: 18px 120px;
-  border-top: 1px solid var(--rule);
-}
-.toc-layout .text {
-  display: block; text-align: start; max-width: none;
-}
-.toc-layout .text > * + * { margin-top: 1.3em; }
-.toc-layout .text > p, .toc-layout .text li, .toc-layout .text dd {
-  max-width: 34em;
-  font-size: 24px; line-height: 1.3; letter-spacing: 0;
-}
-.toc-layout .text > p { text-wrap: wrap; }
-.toc-layout .cols > .text > h2:first-child {
-  width: auto; min-width: 0; max-width: 16em;
-  margin-bottom: 40px; padding: 0;
-  border: 0; border-radius: 0; background: none;
-  font-size: 36px; font-weight: 300; line-height: 1.05; letter-spacing: -0.03em; text-transform: none;
-}
-/* Beside running text the side note reads as text: sentence case at 18px,
-   its title a grey caption, its links plain blue. Capitals stay for the
-   short plates of the statement pages. */
-.toc-layout .cols .card {
-  justify-items: start; width: auto; min-width: 0; max-width: none;
-  font-size: 18px; font-weight: 300; line-height: 1.3; letter-spacing: 0;
-  text-transform: none; text-align: start;
-  position: sticky; top: 72px;
-}
-.toc-layout .cols .card h2 {
-  font-size: 15px; font-weight: 500; line-height: 1.15; letter-spacing: 0.01em; text-transform: uppercase;
-}
-.toc-layout .cols .card a:not(.btn, .offer__link) {
-  display: inline; padding: 0; border: 0; border-radius: 0;
-  text-decoration: underline;
-}
-.toc-layout .cols .card a:not(.btn, .offer__link):is(:hover, :focus-visible) {
-  background: none; color: var(--blue); text-decoration-thickness: 2px;
-}
-.toc-layout .card .offer__link { font-size: 15px; font-weight: 500; letter-spacing: 0.01em; text-transform: uppercase; }
-.text h3 { margin-top: 2em; font-weight: 500; color: var(--grey); }
-.text h3 + ul { margin-top: 12px; }
-/* A list behind a thin cross, set inside the column. */
-.text ul { display: grid; gap: 4px; }
-.text li { position: relative; padding-left: 1.1em; }
-.text li::before {
-  content: ""; position: absolute; left: 0; top: calc((1lh - 0.6em) / 2);
-  width: 0.6em; height: 0.6em; background: var(--blue);
-  -webkit-mask: var(--cross) center / contain no-repeat; mask: var(--cross) center / contain no-repeat;
-}
-@media (max-width: 800px) {
-  .toc-layout .cols { grid-template-columns: minmax(0, 1fr); }
-  .toc-layout .cols .card { position: static; }
-}
-
-/* Terms: a grey caption over a rule, the meaning under it; two columns
-   where there is room. */
-.terms { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 32px; text-align: start; }
-.terms dt {
-  margin-bottom: 6px; padding-top: 8px; border-top: 1px solid var(--rule);
-  font-weight: 500; color: var(--grey);
-}
-.terms dd { font-size: 18px; line-height: 1.3; }
-.toc-layout .text .terms dd { font-size: 18px; }
-
-/* The Services card that lists the six services: numbered rows on rules. */
-.toc-layout .cols .card:has(> .offer) { justify-items: stretch; }
-.offer { counter-reset: offer; width: 100%; border-bottom: 1px solid var(--rule); }
-.offer li { counter-increment: offer; border-top: 1px solid var(--rule); }
-.offer__link {
-  display: flex; justify-content: space-between; gap: 16px;
-  padding: 10px 0;
-  color: var(--ink); text-decoration: none;
-}
-.offer__link::after { content: counter(offer, decimal-leading-zero) / ""; color: var(--grey); }
-.card .offer__link:is(:hover, :focus-visible) { color: var(--blue); }
-
-/* ---------- The statements: full-bleed slides, black then white in turn
-   (user's reference, 26 Nov 2026, "lets combine with this design": two
-   slides, white words on black and black on white, the statement in a
-   heavy slanted face across the width, its count "1/4" a small pill
-   above it in the opposite colours). Telegraf has no heavy or italic cut
-   here, so the statement is its Medium, upright, set large and tight. The count is drawn per slide (alt
-   "", each slide is already labelled "1 of 4"); the bar's count under the
-   arrows is dropped so it is not said twice on screen. ---------- */
-.plates { padding-block: 24px var(--section); }
-.plates__track {
-  display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; cursor: pointer;
+/* ---------- Full-bleed panels: shared by the statements and the four
+   services ---------- */
+.bleed {
   width: 100vw; margin-left: calc(50% - 50vw);
+  padding-inline: var(--gap);
+}
+
+/* The statements: panels black then white, half the window each on a
+   desktop, the capitals centred, the count an outlined stadium above. */
+.plates { padding-bottom: var(--section); }
+.plates__track {
+  display: flex; gap: var(--gap); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; cursor: pointer;
+  width: 100vw; margin-left: calc(50% - 50vw); padding-inline: var(--gap);
+  scroll-padding-inline: var(--gap);
   counter-reset: slide;
 }
 .plates__track::-webkit-scrollbar { display: none; }
-.plates__track:focus-visible { outline: 4px solid var(--p-blue); outline-offset: -4px; }
+.plates__track:focus-visible { outline: 3px solid var(--slide-focus); outline-offset: -3px; }
 .plate {
-  --slide-bg: #000; --slide-ink: #fff;
-  flex: 0 0 100%; scroll-snap-align: start; counter-increment: slide;
-  display: grid; justify-items: center; align-content: center; gap: clamp(32px, 5vh, 64px);
-  min-height: calc(100svh - 120px); padding: 48px var(--gutter);
-  background: var(--slide-bg); color: var(--slide-ink);
+  --bg: #000; --fg: #fff;
+  flex: 0 0 calc(50% - var(--gap) / 2); scroll-snap-align: start; counter-increment: slide;
+  display: grid; justify-items: center; align-content: center; gap: 40px;
+  min-height: min(78svh, 880px); padding: 48px 32px;
+  background: var(--bg); color: var(--fg);
 }
-.plate:nth-child(even) { --slide-bg: #fff; --slide-ink: #000; }
+.plate:nth-child(even) { --bg: #fff; --fg: #000; }
 .plate::before {
   content: counter(slide) "/4" / "";
-  padding: 6px 12px; border-radius: 6px;
-  background: var(--slide-ink); color: var(--slide-bg);
-  font-size: 18px; font-weight: 400; line-height: 1.1; letter-spacing: 0.02em;
-  font-variant-numeric: tabular-nums;
+  padding: 2px 16px; border: 2px solid currentColor; border-radius: 999px;
+  font-size: 22px; font-weight: 500; line-height: 1.2; letter-spacing: 0;
 }
+/* The capitals take the slide's own width: "ACCESSIBILITY", the longest
+   word, is about 8.6em in Telegraf Medium capitals, so 10.5% of the
+   slide keeps it inside the padding at every width. */
+.plate { container-type: inline-size; }
 .plate p {
-  max-width: 11em;
-  font-size: clamp(44px, 8.6vw, 150px); font-weight: 500; line-height: 0.95; letter-spacing: -0.035em;
-  text-align: center; text-wrap: balance;
+  max-width: 9em;
+  font-size: clamp(30px, 10.5cqi, 120px); font-weight: 500; line-height: 0.95; letter-spacing: -0.02em;
+  text-transform: uppercase; text-align: center; text-wrap: balance;
 }
-.plates__bar { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 14px; }
-.plates__btn { width: 44px; padding: 0; }
+.plates__bar { display: flex; align-items: center; gap: 6px; margin-top: var(--gap); }
+.plates__btn { width: 40px; justify-content: center; padding: 0; font-size: 18px; }
+/* Each slide carries its count in its stadium; the bar's own count would
+   say it twice (it is aria-hidden already; the status line speaks). */
 .plates__count { display: none; }
 
-/* ---------- Coloured cards: the four services and the chat's opening
-   questions, blue, green, red, then ink, in turn. ---------- */
+/* The four services: panels in turn, the name an outlined stadium at the
+   top, the line at the foot. */
 .slogans {
-  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px;
-  padding-bottom: var(--section);
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap);
+  width: 100vw; margin-left: calc(50% - 50vw); padding: 0 var(--gap) var(--section);
 }
 .slogan { display: flex; }
-.slogan__link, .chat__prompt {
-  display: flex; flex-direction: column; justify-content: space-between; gap: 40px;
-  width: 100%; min-height: 280px; padding: 18px 20px 22px;
-  border: 0; border-radius: 9px;
-  background: var(--p-blue); color: var(--on-blue);
-  text-align: start; text-decoration: none; cursor: pointer;
+.slogan__link {
+  --bg: #000; --fg: #fff;
+  display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; gap: 48px;
+  width: 100%; min-height: 440px; padding: 20px;
+  background: var(--bg); color: var(--fg); text-decoration: none;
 }
-.slogan:nth-child(4n + 2) .slogan__link, .chat__prompt:nth-child(3n + 2) { background: var(--p-green); color: var(--on-green); }
-.slogan:nth-child(4n + 3) .slogan__link, .chat__prompt:nth-child(3n + 3) { background: var(--p-red); color: var(--on-red); }
-.slogan:nth-child(4n + 4) .slogan__link { background: var(--p-ink); color: var(--on-ink); }
-.slogan__label { font-weight: 500; }
-.slogan__link p, .chat__prompt {
-  font-size: 24px; line-height: 1.12; letter-spacing: -0.01em;
+.slogan:nth-child(even) .slogan__link { --bg: #fff; --fg: #000; }
+.slogan__label {
+  padding: 2px 14px; border: 2px solid currentColor; border-radius: 999px;
+  font-weight: 500; text-transform: uppercase; letter-spacing: 0;
 }
-:is(.slogan__link, .chat__prompt):hover:not(:disabled) p,
-.chat__prompt:hover:not(:disabled) { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
-.chat__prompt:disabled { opacity: 1; cursor: default; filter: saturate(0.4); }
+.slogan__link p { font-size: var(--lead); line-height: 1.12; letter-spacing: -0.014em; }
+.slogan__link:hover p { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.12em; }
 
-/* ---------- Home: the request form, one outlined row ---------- */
+/* ---------- Sections ---------- */
+.cols {
+  display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--gap) 48px; align-items: start;
+  padding-bottom: var(--section);
+}
+.text > * + * { margin-top: 1em; }
+.text > h2:first-child { margin-bottom: 0.6em; font-size: var(--head); line-height: 1.1; letter-spacing: -0.014em; }
+main > .content > .cols .text > p { max-width: 26em; font-size: var(--lead); line-height: 1.15; letter-spacing: -0.014em; }
+.toc-layout .text > p, .toc-layout .text li, .acc__body > p { max-width: 42em; }
+.text h3 { margin-top: 2em; color: var(--soft); }
+.text ul { display: grid; gap: 2px; }
+.text li { padding-left: 1.2em; text-indent: -1.2em; }
+.text li::before { content: "\2013\00a0\00a0"; color: var(--soft); }
+.text a:not(.btn), .card a:not(.btn, .offer__link) { text-decoration-thickness: 1px; }
+.text a:not(.btn):hover, .card a:not(.btn, .offer__link):hover { text-decoration-thickness: 2px; }
+.action { margin-top: 1.5em; }
+
+/* The side note: a white panel. */
+.card {
+  display: grid; gap: 1em; padding: 16px;
+  border-radius: 5px; background: var(--panel);
+}
+.card h2 { color: var(--soft); }
+
+/* Terms: the name an outlined stadium, the meaning under it. */
+.terms { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 32px; }
+.terms dt {
+  display: inline-block; margin-bottom: 8px; padding: 1px 12px; border: 1.5px solid currentColor; border-radius: 999px;
+  font-weight: 500; text-transform: uppercase; letter-spacing: 0;
+}
+.terms dd { color: var(--ink); }
+
+/* The Services card that lists the six services: rows with a circled
+   figure at the end. */
+.offer { counter-reset: offer; }
+.offer li { counter-increment: offer; border-top: 1px solid var(--line); }
+.offer li:last-child { border-bottom: 1px solid var(--line); }
+.offer__link { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 8px 0; text-decoration: none; }
+.offer__link::after {
+  content: counter(offer) / ""; flex: none;
+  display: inline-grid; place-items: center; width: 24px; height: 24px;
+  border: 1.5px solid currentColor; border-radius: 50%;
+  font-size: 13px; font-weight: 500; letter-spacing: 0;
+}
+.offer__link:hover { text-decoration: underline; }
+
+/* ---------- The long pages: the sections as a row of pills, then the words ---------- */
+.toc-layout { display: grid; gap: 48px; }
+.toc ul { display: flex; flex-wrap: wrap; gap: 6px; }
+.toc-layout .cols { padding-bottom: 96px; }
+.toc-layout .card { position: sticky; top: var(--edge); }
+
+/* ---------- Home: the request form ---------- */
 form.signup {
   display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto; gap: 6px;
-  max-width: var(--column); margin: 0 auto;
+  max-width: 1000px; margin-bottom: var(--section);
 }
 .signup__field {
-  display: flex; align-items: center; gap: 12px; min-width: 0; min-height: 44px; padding: 0 14px;
-  border: 1px solid var(--rule); border-radius: 5px;
+  display: flex; align-items: center; gap: 12px; min-width: 0; min-height: 40px; padding: 0 12px;
+  border-radius: 5px; background: var(--panel);
 }
 .signup__field:focus-within { outline: 2px solid var(--focus); outline-offset: 3px; }
-.signup__field label { flex: none; font-weight: 500; color: var(--grey); }
-.signup__input {
-  flex: 1 1 auto; min-width: 0; padding: 0; border: 0; background: transparent;
-  font-size: 18px;
-}
+.signup__field label { flex: none; color: var(--soft); }
+.signup__input { flex: 1 1 auto; min-width: 0; padding: 0; border: 0; background: transparent; }
 .signup__input:focus-visible { outline: none; }
 .signup__trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
-form.signup > .signup__btn { min-height: 44px; padding-inline: 20px; }
-.signup__arrow { font-weight: 400; }
 
-/* The questions that follow: a plate panel. */
 .request {
-  display: grid; justify-items: center; gap: 18px;
-  max-width: var(--column); margin: 24px auto 0; padding: 32px 24px;
-  text-align: center;
+  display: grid; gap: 16px; max-width: 1000px; margin: -120px 0 var(--section); padding: 24px;
+  border-radius: 5px; background: var(--panel);
 }
 .request[hidden] { display: none; }
-.request__title { max-width: 20em; font-size: 36px; font-weight: 300; line-height: 1.05; letter-spacing: -0.03em; }
-.request__status { font-size: 18px; color: var(--grey); }
-.request__note { color: var(--grey); }
-.request__row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px; width: 100%; max-width: 720px; }
-.request__input {
-  min-height: 44px; padding: 0 14px; border: 1px solid var(--rule); border-radius: 5px; background: transparent;
-}
+.request__title { font-size: var(--lead); line-height: 1.15; letter-spacing: -0.014em; }
+.request__status, .request__note { color: var(--soft); }
+.request__row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px; }
+.request__input { min-height: 40px; padding: 0 12px; border: 1px solid var(--line); border-radius: 5px; background: transparent; }
 .request__input:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
-.request__brief { display: grid; gap: 0; width: 100%; max-width: 720px; text-align: start; border-bottom: 1px solid var(--rule); }
-.request__brief > div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 16px; padding: 10px 0; border-top: 1px solid var(--rule); }
-.request__brief dt { font-size: 15px; font-weight: 500; letter-spacing: 0.01em; text-transform: uppercase; color: var(--grey); }
-.request__brief dd { font-size: 18px; line-height: 1.3; }
-.request__send { display: grid; justify-items: center; gap: 16px; }
-.request__consent { display: inline-flex; align-items: flex-start; gap: 10px; max-width: 40ch; text-align: start; cursor: pointer; }
-.request__consent input {
-  appearance: none; flex: none; width: 22px; height: 22px; margin: 0;
-  border: 1px solid var(--ink); border-radius: 4px; background: transparent; cursor: pointer;
-}
-.request__consent input:checked {
-  background: var(--blue) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23000' d='M13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z'/%3E%3C/svg%3E") center / 16px no-repeat;
-  border-color: var(--blue);
-}
-.request__consent input:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.request__brief { display: grid; }
+.request__brief > div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 16px; padding: 8px 0; border-top: 1px solid var(--line); }
+.request__brief dt { color: var(--soft); }
+.request__send { display: grid; justify-items: start; gap: 12px; }
+.request__consent { display: inline-flex; align-items: flex-start; gap: 10px; cursor: pointer; }
+.request__consent input { width: 20px; height: 20px; margin: 0; accent-color: var(--ink); }
 
 /* ---------- Home: the scanner invite and the chat ---------- */
-.bubble { display: flex; justify-content: flex-end; max-width: var(--column); margin: 0 auto; padding-block: 24px var(--section); }
+.bubble { display: flex; justify-content: flex-end; padding-bottom: 48px; }
 .bubble__msg {
-  max-width: min(30em, 85%); padding: 14px 20px;
-  border: 1px solid var(--plate-edge); border-radius: 18px 18px 4px 18px; background: var(--plate);
-  font-size: 18px; line-height: 1.3; text-decoration: none;
+  max-width: min(30em, 85%); padding: 12px 16px; border-radius: 5px;
+  background: var(--panel); text-decoration: none;
 }
 .bubble__msg:hover { text-decoration: underline; }
-
-.chat { max-width: var(--column); margin: 0 auto; padding-bottom: var(--section); }
-.chat__label {
-  max-width: 20em; margin: 0 auto 40px;
-  font-size: clamp(28px, 2.9vw, 42px); font-weight: 300; line-height: 1.08; letter-spacing: -0.03em;
-  text-align: center; text-wrap: balance;
-}
-.chat__prompts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 24px; }
+.chat { padding-bottom: var(--section); }
+.chat__label { max-width: 20em; margin-bottom: 32px; font-size: var(--head); line-height: 1.1; letter-spacing: -0.014em; }
+.chat__prompts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gap); margin-bottom: var(--gap); }
 .chat__prompts[hidden] { display: none; }
-.chat__prompt { min-height: 180px; justify-content: flex-end; }
-.chat__thread { display: grid; gap: 32px; margin-bottom: 32px; }
+.chat__prompt {
+  display: flex; align-items: flex-end; min-height: 200px; padding: 16px;
+  border: 0; border-radius: 5px; background: var(--panel); color: var(--ink);
+  font-size: var(--lead); line-height: 1.12; letter-spacing: -0.014em; text-align: start; cursor: pointer;
+}
+.chat__prompt:hover:not(:disabled) { background: var(--ink); color: var(--paper); }
+.chat__prompt:disabled { color: var(--soft); cursor: default; }
+.chat__thread { display: grid; gap: 24px; margin-bottom: 24px; }
 .chat__thread[hidden] { display: none; }
-.chat__who { margin-bottom: 6px; font-weight: 500; color: var(--grey); }
-.chat__text { font-size: 24px; line-height: 1.3; }
+.chat__who { margin-bottom: 4px; color: var(--soft); }
 .chat__text p + p { margin-top: 0.8em; }
 .chat__turn:nth-child(odd) { display: flex; flex-direction: column; align-items: flex-end; }
-.chat__turn:nth-child(odd) .chat__text {
-  max-width: min(30em, 85%); padding: 14px 20px;
-  border: 1px solid var(--plate-edge); border-radius: 18px 18px 4px 18px; background: var(--plate);
-  font-size: 18px;
-}
-.chat__thinking { font-size: 18px; color: var(--grey); }
-.chat__box {
-  display: grid; gap: 10px; padding: 14px 16px;
-  border: 1px solid var(--rule); border-radius: 9px;
-}
+.chat__turn:nth-child(odd) .chat__text { max-width: min(30em, 85%); padding: 12px 16px; border-radius: 5px; background: var(--panel); }
+.chat__thinking { color: var(--soft); }
+.chat__box { display: grid; gap: 8px; padding: 12px; border-radius: 5px; background: var(--panel); }
 .chat__box:focus-within { outline: 2px solid var(--focus); outline-offset: 3px; }
-.chat__box textarea {
-  width: 100%; min-height: 2.6em; padding: 0; border: 0; background: transparent; resize: none;
-  font-size: 18px; line-height: 1.3;
-}
-.chat__box textarea::placeholder { color: var(--grey); opacity: 1; }
+.chat__box textarea { width: 100%; min-height: 2.7em; padding: 0; border: 0; background: transparent; resize: none; }
+.chat__box textarea::placeholder { color: var(--soft); opacity: 1; }
 .chat__box textarea:focus-visible { outline: none; }
 .chat__row { display: flex; justify-content: flex-end; }
 
-/* ---------- What we offer: a plate heading over ruled rows ---------- */
-.related { padding-block: clamp(64px, 12vh, 140px) var(--section); }
-.related__label {
-  display: block; width: fit-content; min-width: min(374px, 100%); max-width: 100%;
-  margin: 0 auto 48px; padding: 14px 22px;
-  font-size: 15px; font-weight: 500; line-height: 1.1; letter-spacing: 0.01em;
-  text-transform: uppercase; text-align: center;
-}
-/* What we offer as full-bleed caret rows (user's instruction, 26 Nov
-   2026, "make these into carrets and full bleed"): each rule runs the
-   window's width, the solid caret first (right shut, down open), the
-   title beside it on the page's gutter; the panel lines up with the title. */
-.acc { width: 100vw; margin-left: calc(50% - 50vw); border-bottom: 1px solid var(--rule); }
-.acc__row { border-top: 1px solid var(--rule); }
+/* ---------- What we offer: full-bleed rows, the caret in a ring ---------- */
+.related { padding-bottom: var(--section); }
+.related__label { margin-bottom: 24px; font-size: var(--head); line-height: 1.1; letter-spacing: -0.014em; }
+.acc { width: 100vw; margin-left: calc(50% - 50vw); border-bottom: 1px solid var(--line); }
+.acc__row { border-top: 1px solid var(--line); }
 .acc__btn {
-  display: flex; align-items: center; gap: 18px;
-  width: 100%; padding: 14px var(--gutter) 16px;
+  display: flex; align-items: center; gap: 16px;
+  width: 100%; padding: 12px var(--edge);
   border: 0; background: none; cursor: pointer;
-  font-size: 36px; font-weight: 300; line-height: 1.05; letter-spacing: -0.03em;
-  text-align: left;
+  font-size: var(--head); line-height: 1.1; letter-spacing: -0.014em; text-align: left;
 }
 .acc__btn::before {
-  content: ""; flex: none; width: 0.5em; height: 0.5em; background: var(--blue);
-  -webkit-mask: var(--caret-right) center / contain no-repeat; mask: var(--caret-right) center / contain no-repeat;
+  content: ""; flex: none; width: 36px; height: 36px;
+  border: 1.5px solid currentColor; border-radius: 50%;
 }
-.acc__btn[aria-expanded="true"]::before { -webkit-mask-image: var(--caret-down); mask-image: var(--caret-down); }
-.acc__btn:hover { color: var(--blue); }
+/* The caret, laid in the ring: as an absolute child of the flex row it
+   takes the row's start, centred; 11px in centres 14px in 36px. */
+.acc__btn::after {
+  content: ""; position: absolute; width: 14px; height: 14px; margin-left: 11px; background: currentColor;
+  -webkit-mask: var(--caret) center / contain no-repeat; mask: var(--caret) center / contain no-repeat;
+}
+.acc__head { position: relative; }
+.acc__btn[aria-expanded="true"]::after { transform: rotate(90deg); }
+.acc__btn:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.12em; }
 .acc__btn:focus-visible { outline-offset: -3px; }
-.acc__panel { padding: 8px var(--gutter) 40px calc(var(--gutter) + 36px); }
+.acc__panel { display: grid; gap: 24px; padding: 8px var(--edge) 40px calc(var(--edge) + 52px); }
 .acc__panel[hidden] { display: none; }
-.acc__lede {
-  max-width: 22em; margin-bottom: 32px;
-  font-size: 24px; line-height: 1.15; letter-spacing: -0.01em; color: var(--grey);
-}
-.acc__body { display: grid; gap: 16px; max-width: 46em; }
-.acc__body > p { font-size: 18px; line-height: 1.3; }
+.acc__lede { max-width: 26em; font-size: var(--lead); line-height: 1.15; letter-spacing: -0.014em; color: var(--soft); }
+.acc__body { display: grid; gap: 16px; }
 
 /* ---------- Footer ---------- */
-footer.wrap { padding-bottom: var(--gutter); container-type: inline-size; }
-
-/* The EAA line: a blue run of capitals between two rules, set still. */
-.notice {
-  padding-block: 12px;
-  border-block: 1px solid var(--rule);
-  font-weight: 500; text-align: center; color: var(--blue);
-}
-
-/* Stay in touch: the closing statement, its line, one outlined row. */
-.news {
-  display: flex; flex-direction: column; align-items: center; gap: 24px;
-  padding-block: var(--section);
-  text-align: center;
-}
-.news__title { font-size: var(--display); font-weight: 300; line-height: 1.05; letter-spacing: -0.03em; }
-.news__text { max-width: 30em; font-size: 18px; line-height: 1.3; color: var(--grey); }
-.news__form { display: flex; gap: 6px; width: min(374px, 100%); }
+footer.wrap { padding-bottom: var(--edge); }
+.notice { cursor: default; }
+.news { display: grid; justify-items: start; gap: 16px; padding-block: var(--section); }
+.news__title { font-size: var(--head); line-height: 1.1; letter-spacing: -0.014em; }
+.news__text { max-width: 34em; color: var(--soft); }
+.news__form { display: flex; gap: 6px; width: min(440px, 100%); }
 .news__input {
-  flex: 1 1 auto; min-width: 0; height: 34px; padding: 4px 12px;
-  border: 1px solid var(--rule); border-radius: 5px; background: transparent;
+  flex: 1 1 auto; min-width: 0; height: 40px; padding: 0 12px;
+  border: 0; border-radius: 5px; background: var(--panel);
 }
-.news__input::placeholder { color: var(--grey); opacity: 1; }
-.news__btn { flex: none; width: 44px; height: 34px; padding: 0; }
-
-/* The columns: grey captions over one rule across the width. */
+.news__input::placeholder { color: var(--soft); opacity: 1; }
+.news__btn { flex: none; width: 48px; padding: 0; font-size: 18px; }
 .foot {
-  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px 24px;
-  padding-top: 18px; border-top: 1px solid var(--rule);
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px var(--gap);
+  padding-top: 16px; border-top: 1px solid var(--line);
 }
-.foot__label { margin-bottom: 10px; font-weight: 400; color: var(--grey); }
-.foot__col { display: grid; align-content: start; gap: 14px; font-weight: 400; }
-.foot__col ul { display: grid; gap: 4px; }
+.foot__label { margin-bottom: 8px; color: var(--soft); }
+.foot__col { display: grid; align-content: start; gap: 12px; }
 .foot__col a { text-decoration: none; }
 .foot__col a:hover { text-decoration: underline; }
-.foot__base {
-  grid-column: 1 / -1;
-  display: flex; align-items: center; justify-content: space-between; gap: 24px;
-  padding-top: 24px;
-}
+.foot__base { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .foot__logo { width: 32px; height: 32px; }
 .theme[hidden] { display: none; }
-
-/* The name across the foot, edge to edge; aria-hidden in the markup.
-   Telegraf Light capitals at -0.04em measure 8.24em for the word; 8.3 leaves a
-   hair so it never clips. */
-.foot__mark {
-  margin-top: 48px;
-  font-size: calc(100cqw / 8.3); font-weight: 300; line-height: 0.8; letter-spacing: -0.04em;
-  text-transform: uppercase; white-space: nowrap; overflow: hidden;
-}
+.foot__mark { display: none; }
 
 /* ---------- Narrower windows ---------- */
 @media (max-width: 1055px) {
-  .toc-layout { grid-template-columns: minmax(0, 1fr); }
-  .toc { position: static; }
-  .toc ul { display: flex; flex-wrap: wrap; gap: 6px 18px; }
+  .plate { flex-basis: 100%; }
   .slogans { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (max-width: 900px) {
   .foot { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-@media (max-width: 640px) {
-  html { scroll-padding-top: 16px; }
-  header.wrap { position: static; }
-  .brand, .nav { font-size: 15px; }
-  .nav { flex-basis: 100%; }
-  .title:has(> h1) { min-height: calc(100svh - 100px); gap: 32px; }
-  .title--lede { min-height: 0; }
-  form.signup { grid-template-columns: minmax(0, 1fr); }
-  .request__row, .request__brief > div { grid-template-columns: minmax(0, 1fr); }
-  .plate { min-height: 70svh; padding: 32px var(--gutter); }
-  .slogans, .chat__prompts { grid-template-columns: minmax(0, 1fr); }
-  .slogan__link, .chat__prompt { min-height: 0; gap: 24px; }
-  .toc-layout .text > p, .toc-layout .text li, .chat__text { font-size: 20px; }
-  .toc-layout .cols > .text > h2:first-child { font-size: 30px; margin-bottom: 24px; }
-  .toc-layout .cols .card { position: static; }
+@media (max-width: 800px) {
+  .cols { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .toc-layout .card { position: static; }
   .terms { grid-template-columns: minmax(0, 1fr); }
-  .acc__btn { font-size: 28px; }
-  .acc__panel { padding-left: calc(var(--gutter) + 32px); }
-  .acc__lede { font-size: 20px; }
-  .foot { grid-template-columns: minmax(0, 1fr); }
-  .foot__mark { margin-top: 32px; }
+  .chat__prompts { grid-template-columns: minmax(0, 1fr); }
+  .chat__prompt { min-height: 0; }
 }
-
-/* ---------- Full-bleed bands, yellow notes and the call-to-action pill
-   (user's reference, 26 Nov 2026, "add elements from this web ... but make
-   them full bleed"). Measured there: bands #ffea00 and #03c502 across the
-   window, about 110px over their content, a centred capital title, words
-   in a column under it; small notes on a bright yellow in a mono face; a
-   tall black pill as the main action.
-
-   Bands: on Home and About each section and the chat stand on a band the
-   window's width, yellow, then green, in turn. Black words on both (18.6:1
-   and 8.9:1; the reference's white on that green is 2.2:1, so it is not
-   used). Inside a band every colour token is reset to black, so links,
-   rules, captions and focus follow. A band's heading is a centred capital
-   title; its number a small black pill above it. */
-main > .content > .cols, main > .chat {
-  --ink: #000; --grey: #000; --rule: #000; --blue: #000; --focus: #000;
-  --plate: rgba(255, 255, 255, 0.55); --plate-edge: rgba(0, 0, 0, 0.2);
-  width: 100vw; max-width: none; margin-left: calc(50% - 50vw);
-  padding: clamp(80px, 12vh, 112px) var(--gutter);
-  background: #ffea00; color: #000;
+@media (max-width: 671px) {
+  :root { --edge: 12px; --head: 32px; --lead: 22px; }
+  html { scroll-padding-bottom: 16px; }
+  body { padding-bottom: 0; }
+  header.wrap { position: static; padding-block: var(--edge); }
+  main.wrap { padding-top: 8px; }
+  form.signup, .request__row, .request__brief > div { grid-template-columns: minmax(0, 1fr); }
+  .request { margin-top: calc(-1 * var(--section) + 24px); }
+  .plate { min-height: 64svh; padding: 32px 16px; }
+  .slogans, .foot { grid-template-columns: minmax(0, 1fr); }
+  .slogan__link { min-height: 280px; }
+  .acc__btn::before { width: 30px; height: 30px; }
+  .acc__btn::after { width: 12px; height: 12px; margin-left: 9px; }
+  .acc__panel { padding-left: var(--edge); }
 }
-main > .content > .cols:nth-child(even), main > .chat { background: #03c502; }
-main > .chat > * { max-width: var(--column); margin-inline: auto; }
-main > .content > .cols > .text > h2:first-child {
-  min-width: 0; padding: 0; border: 0; background: none;
-  -webkit-backdrop-filter: none; backdrop-filter: none;
-  font-size: clamp(36px, 4vw, 58px); font-weight: 400; line-height: 1; letter-spacing: -0.01em;
-}
-main > .content > .cols > .text > h2:first-child::before {
-  width: fit-content; margin: 0 auto 20px; padding: 6px 12px; border-radius: 999px;
-  background: #000; color: #ffea00;
-  font-size: 15px; font-weight: 400; letter-spacing: 0; text-transform: none;
-}
-main > .content > .cols:nth-child(even) > .text > h2:first-child::before { color: #03c502; }
-main > .content > .cols .card {
-  border: 0; border-radius: 12px; background: #fff;
-  -webkit-backdrop-filter: none; backdrop-filter: none;
-}
-main > .content > .cols .card h2 { color: #000; }
-main > .content > .cols .card a:not(.btn, .offer__link) { border-color: #000; color: #000; }
-main > .content > .cols .card a:not(.btn, .offer__link):is(:hover, :focus-visible) { background: #000; color: #fff; }
-main > .chat .chat__label { color: #000; }
-main > .chat .chat__box { background: #fff; border-color: #000; }
-main > .chat .chat__box textarea::placeholder { color: #3d3d3d; }
-main > .chat .chat__send:enabled { border-color: #000; background: #000; color: #fff; }
-.bubble { padding-bottom: 48px; }
-
-/* The long pages' side notes as yellow notes: bright yellow, black words
-   in PP Lettra Mono Medium, 12px corners, no blur. */
-.toc-layout .cols .card {
-  --ink: #000; --grey: #000; --rule: #000; --blue: #000; --focus: #000;
-  border: 0; border-radius: 12px; background: #ffea00; color: #000;
-  -webkit-backdrop-filter: none; backdrop-filter: none;
-  font-family: "PP Lettra Mono", ui-monospace, monospace; font-size: 15px; font-weight: 500; line-height: 1.35;
-}
-.toc-layout .cols .card h2, .toc-layout .card .offer__link { font-family: inherit; }
-
-/* The main action as a tall pill in ink: black on white, white on black. */
-.btn {
-  min-height: 52px; padding: 12px 26px; border: 0; border-radius: 999px;
-  background: var(--ink); color: var(--bg);
-  font-size: 18px; font-weight: 400; letter-spacing: 0; text-transform: none;
-}
-main > .content > .cols .btn, .toc-layout .cols .card .btn { background: #000; color: #fff; font-family: var(--font); }
-.toc-layout .cols .card .btn:is(:hover, :focus-visible) { background: #fff; color: #000; }
-.btn:is(:hover, :focus-visible) { background: var(--blue); color: var(--bg); }
-main > .content > .cols .btn:is(:hover, :focus-visible) { background: #fff; color: #000; outline-color: #000; }
 
 @media (forced-colors: active) {
-  main > .content > .cols, main > .chat, .toc a, .btn { border: 1px solid CanvasText; }
-  .plate-box, .title h1, .related__label, .cols .card, .request, .plate, .slogan__link, .chat__prompt,
-  .bubble__msg, .chat__turn:nth-child(odd) .chat__text { border: 1px solid CanvasText; }
-  .text li::before, .acc__btn::before { background: CanvasText; forced-color-adjust: none; }
+  .brand, .nav a, .crumb ol, .toc a, .theme, .plates__btn, .request__link, .notice,
+  .btn, .signup__btn, .chat__send, .news__btn, .card, .plate, .slogan__link, .chat__prompt,
+  .bubble__msg, .chat__box, .signup__field, .news__input { border: 1px solid CanvasText; }
+  .acc__btn::after { background: CanvasText; forced-color-adjust: none; }
 }
