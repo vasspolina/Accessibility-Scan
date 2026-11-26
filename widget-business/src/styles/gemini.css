@@ -60,19 +60,21 @@
    Colours stay the demo's.
 
    Colours follow the reference too (user's instruction, the same day, "a
-   bit more close to reference"): pink paper, black ink, dark teal pills
+   bit more close to reference"): black ink, dark teal pills
    with pink words, the current pill red-orange. Two of its pairs fail and
    are changed: pink words on the red-orange (2.7:1) are black (5.7:1), and
    the pale words of the other tabs (1.4:1) are a muted rose (6.1:1).
-   Measured: black on #ffd2d3 15.4:1; #ffd2d3 on #113739 9.5:1; #000 on
+   The paper is white since the user's "delete pink background" (the
+   same day), the pink-derived tints neutral greys: #5c5c5c on white 6.7:1.
+   Measured: black on white 21:1; #ffd2d3 on #113739 9.5:1; #000 on
    #ff3200 5.7:1; #6b4446 on #ffd2d3 6.1:1. */
 .a11y-widget-biz {
-  --bg: #ffd2d3;
+  --bg: #ffffff;
   --ink: #000000;
-  --ink-2: #6b4446;
+  --ink-2: #5c5c5c;
   --rule: #000000;
-  --rule-soft: #ffa5a7;
-  --fill: #ffa5a7;
+  --rule-soft: #d0d0d0;
+  --fill: #e6e6e6;
   --hover: rgb(0 0 0 / 0.05);
   --pill: #113739;
   --on-pill: #ffd2d3;
@@ -86,6 +88,8 @@
   --tip-ink: #ffd2d3;
   --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 2px 6px 2px rgb(0 0 0 / 0.15);
   --row: 32px;
+  --open: #fff5c2;
+  --chat-box: #f0f0f0;
   --icon-caret: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M12 8 22 16 12 24z'/%3E%3C/svg%3E");
   --margin: 192px;
 
@@ -112,7 +116,7 @@
   --bg: #113739; --ink: #ffd2d3; --ink-2: #ffa5a7; --rule: #ffd2d3; --rule-soft: #2d5a5c;
   --fill: #2d5a5c; --hover: rgb(255 210 211 / 0.08); --pill: #ffd2d3; --on-pill: #113739;
   --accent: #ff3200; --on-accent: #000000; --error: #ffb4ab; --warn: #ffd59a; --ok: #a6e3b5; --link: #ffd2d3;
-  --tip-bg: #ffd2d3; --tip-ink: #113739;
+  --tip-bg: #ffd2d3; --tip-ink: #113739; --open: #1f4a4c; --chat-box: #1f4a4c;
   color-scheme: dark;
 }
 @media (prefers-color-scheme: dark) {
@@ -120,7 +124,7 @@
     --bg: #113739; --ink: #ffd2d3; --ink-2: #ffa5a7; --rule: #ffd2d3; --rule-soft: #2d5a5c;
     --fill: #2d5a5c; --hover: rgb(255 210 211 / 0.08); --pill: #ffd2d3; --on-pill: #113739;
     --accent: #ff3200; --on-accent: #000000; --error: #ffb4ab; --warn: #ffd59a; --ok: #a6e3b5; --link: #ffd2d3;
-    --tip-bg: #ffd2d3; --tip-ink: #113739;
+    --tip-bg: #ffd2d3; --tip-ink: #113739; --open: #1f4a4c; --chat-box: #1f4a4c;
     color-scheme: dark;
   }
 }
@@ -352,23 +356,44 @@
 .a11y-widget-biz .g-actions { margin-top: 8px; }
 .a11y-widget-biz .g-confirm { margin: 8px 0 0; }
 
-/* The box: a line to write on with its tools at the end. */
-.a11y-widget-biz .g-app { padding-bottom: 120px; }
+/* The box, as a Gemini chat box (user's "design as chat like gemini
+   chat", 26 Nov 2026): a rounded grey field floating at the window's foot
+   on a fade, no rules; the words on top, one line until something is
+   typed; the image and microphone as plain icons under them at the left,
+   Send a round arrow at the right once there is text. */
+.a11y-widget-biz .g-app { padding-bottom: 160px; }
 .a11y-widget-biz .g-dock {
   position: fixed; z-index: 15; bottom: 0; inset-inline: var(--margin) 26px;
-  padding: 0 0 13px; background: var(--bg); border-top: 1px solid var(--rule);
+  padding: 26px 0 13px; border: 0;
+  background: linear-gradient(to bottom, transparent, var(--bg) 26px);
 }
 .a11y-widget-biz .g-composer { margin: 0; }
-.a11y-widget-biz .g-field { display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--rule); }
-.a11y-widget-biz .g-field:focus-within { border-bottom: 2px solid var(--accent); margin-bottom: -1px; }
-.a11y-widget-biz .g-input { flex: 1 1 auto; min-width: 0; min-height: var(--row); max-height: 30vh; padding: 6px 0 7px; border: 0 !important; resize: none; line-height: 19px; }
+.a11y-widget-biz .g-field {
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px;
+  padding: 13px 10px 8px 20px; border: 0; border-radius: 28px;
+  background: var(--chat-box);
+  transition: box-shadow 0.15s ease;
+}
+.a11y-widget-biz .g-field:focus-within { box-shadow: inset 0 0 0 2px var(--accent); margin: 0; }
+.a11y-widget-biz .g-input {
+  min-width: 0; min-height: 24px; max-height: 30vh; padding: 2px 0;
+  border: 0 !important; background: transparent; resize: none; font-size: 16px; line-height: 19px;
+}
+.a11y-widget-biz .g-input:focus-visible { outline: none; padding-bottom: 2px; }
 .a11y-widget-biz .g-input::placeholder { color: var(--ink-2); opacity: 1; }
-.a11y-widget-biz .g-tools { display: flex; align-items: center; gap: 2px; flex: none; padding-bottom: 1px; }
-/* Send: a word at the bar's right, as the reference's Proceed; the muted
-   rose while there is nothing to send, ink once there is. */
-.a11y-widget-biz .g-send { min-height: var(--row); padding: 0 0 0 13px; color: var(--ink); }
-.a11y-widget-biz .g-send:hover:not(:disabled) { text-decoration: underline; text-underline-offset: 3px; }
-.a11y-widget-biz .g-send:disabled { color: var(--ink-2); }
+.a11y-widget-biz .g-tools { display: flex; align-items: center; gap: 2px; margin-inline-start: -10px; padding: 0; }
+.a11y-widget-biz .g-tools .g-icon-btn { width: 36px; height: 36px; background: transparent; color: var(--ink-2); }
+.a11y-widget-biz .g-tools .g-icon-btn:hover:not(:disabled) { background: var(--hover); color: var(--ink); }
+.a11y-widget-biz .g-tools .g-icon-btn svg { width: 20px; height: 20px; }
+.a11y-widget-biz .g-tools .g-pill { min-height: 28px; }
+.a11y-widget-biz .g-send {
+  display: inline-grid; place-items: center; width: 36px; height: 36px; margin-inline-start: auto; padding: 0;
+  border-radius: 50%; background: var(--pill); color: var(--on-pill);
+  animation: a11y-pop 0.15s ease-out;
+}
+.a11y-widget-biz .g-send:hover:not(:disabled) { background: var(--accent); color: var(--on-accent); }
+.a11y-widget-biz .g-send svg { width: 18px; height: 18px; }
+@keyframes a11y-pop { from { opacity: 0; transform: scale(0.7); } }
 .a11y-widget-biz .g-attached { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 0; }
 .a11y-widget-biz .g-attached > li { position: relative; margin: 0; }
 .a11y-widget-biz .g-attached img { display: block; width: 64px; height: 64px; object-fit: cover; }
@@ -801,6 +826,23 @@
 .a11y-widget-biz .a11y-undecided-ask { margin: 0 0 13px; font-size: 13px; line-height: 16px; color: var(--ink); }
 .a11y-widget-biz .a11y-undecided-answer .a11y-learn-more { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; line-height: 16px; }
 .a11y-widget-biz .a11y-undecided-answer .a11y-learn-more svg { width: 12px; height: 12px; }
+
+/* An open drawer stands on a light yellow ground (user's "make light
+   yellow on open", 26 Nov 2026): the row and what it opens, 8px in from
+   the ground's edges. Black on #fff5c2 measures 19:1, the grey 6.1:1;
+   dark mode takes a lighter teal under the pink words. */
+.a11y-widget-biz :is(
+  .a11y-undecided-cell[data-open],
+  .a11y-findings-list > .a11y-finding:has(> .a11y-finding-header[aria-expanded="true"]),
+  .a11y-tech-details[open]
+) { background: var(--open); padding-inline: 8px; }
+.a11y-widget-biz .a11y-datatable tr[data-open] > td,
+.a11y-widget-biz .a11y-datatable tr[data-open] + tr > td { background: var(--open); }
+.a11y-widget-biz .a11y-datatable tr[data-open] > td:first-child,
+.a11y-widget-biz .a11y-datatable tr[data-open] + tr > td:first-child { padding-inline-start: 8px; }
+.a11y-widget-biz .a11y-datatable tr[data-open] > td:last-child,
+.a11y-widget-biz .a11y-datatable tr[data-open] + tr > td:last-child { padding-inline-end: 8px; }
+.a11y-widget-biz .a11y-datatable tr[data-open] + tr:hover > td { background: var(--open); }
 
 /* The form's report (a page behind a login) keeps the product shell. */
 .a11y-widget-biz .a11y-shell-with-nav > .a11y-shell-main { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 10px; padding: 13px; }

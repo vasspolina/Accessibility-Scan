@@ -1564,11 +1564,15 @@ export function ScanChat({
               <Icon name="image" size={16} />
             </button>
             <VoiceControl iconOnly />
-            {/* Send is the bar's action at the right, as the reference's
-                Proceed: a word, quiet until there is something to send. */}
-            <button type="submit" className="g-send" disabled={!canSend || busy || loading}>
-              {t("Send")}
-            </button>
+            {/* Send as in a Gemini chat box (user's "design as chat like
+                gemini chat", 26 Nov 2026): a round arrow at the right that
+                appears once there is something to send; Enter still submits
+                the form without it. */}
+            {canSend && (
+              <button type="submit" className="g-send" aria-label={t("Send")} data-tip={t("Send")} disabled={busy || loading}>
+                <Icon name="arrow--up" size={18} />
+              </button>
+            )}
           </div>
         </div>
         {attached.length > 0 && (
@@ -1653,26 +1657,27 @@ export function ScanChat({
         </nav>
 
         <div className="g-page" ref={rootRef} onFocus={keepFocusClear}>
-          {/* The tabs: the page's title, then the report's sections once a
-              scan has run, each a tab that adds its block to the thread. */}
-          <div className="g-tabs">
-            <h2 className="g-tab" data-on="" id="a11y-newscan-title">
-              {t("New scan")}
-            </h2>
-            {!barrier && offered.length > 0 && (
-              <div className="g-tab-group" role="group" aria-label={t("Show from the report")}>
-                {offered.map((s) => (
-                  <button key={s.key} type="button" className="g-tab" onClick={() => showSection(s.key, { takeFocus: true })}>
-                    {s.label()}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          {/* The page's title is for screen readers only, and so is the
+              conversation column's (user's "delete this", 26 Nov 2026, on
+              both): the outline stays, nothing is drawn. The tabs are the
+              report's sections, once a scan has run; each adds its block to
+              the thread. */}
+          <h2 className="a11y-sr-only" id="a11y-newscan-title">
+            {t("New scan")}
+          </h2>
+          {!barrier && offered.length > 0 && (
+            <div className="g-tabs" role="group" aria-label={t("Show from the report")}>
+              {offered.map((s) => (
+                <button key={s.key} type="button" className="g-tab" onClick={() => showSection(s.key, { takeFocus: true })}>
+                  {s.label()}
+                </button>
+              ))}
+            </div>
+          )}
 
           <div className="g-cols">
             <section className="g-col g-col-main" aria-labelledby="g-col-main-title">
-              <h3 className="g-col-title" id="g-col-main-title">
+              <h3 className="a11y-sr-only" id="g-col-main-title">
                 {barrier ? t("Report a barrier") : t("Conversation")}
               </h3>
               {barrier ? (
