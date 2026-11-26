@@ -21,8 +21,11 @@
    5.4:1); the long pages' rail of sections beside the text; the request
    form as one outlined row; list items behind a thin cross.
 
-   Type: Jokker VF (trial, ../fonts/JokkerVF-TRIAL.woff2, weight 100 to
-   900) for everything. Five sizes: 15px capitals (captions, nav, buttons),
+   Type: PP Telegraf for everything (user's instruction, 26 Nov 2026, "use
+   pp telegraph", replacing Jokker the same day): Ultralight 200, Light
+   300, Regular 400 and Medium 500 from ../fonts/. The family on the server
+   has nothing heavier than Medium and no italic, so the statement slides
+   are Medium upright; nothing is synthesized. Five sizes: 15px capitals (captions, nav, buttons),
    18px small print, 24px reading text, 36px section titles and smaller
    statements, and the display size (clamp 36 to 60px). Display and titles
    are weight 300 at -0.03em; reading text 300; capitals 500.
@@ -37,8 +40,28 @@
    and the side note as a plate beside them. */
 
 @font-face {
-  font-family: "Jokker";
-  src: url("../fonts/JokkerVF-TRIAL.woff2") format("woff2");
+  font-family: "PP Telegraf";
+  src: url("../fonts/PPTelegraf-Ultralight.otf") format("opentype");
+  font-weight: 200; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "PP Telegraf";
+  src: url("../fonts/PPTelegraf-Light.otf") format("opentype");
+  font-weight: 300; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "PP Telegraf";
+  src: url("../fonts/PPTelegraf-Regular.otf") format("opentype");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "PP Telegraf";
+  src: url("../fonts/PPTelegraf-Medium.otf") format("opentype");
+  font-weight: 500 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "PP Lettra Mono";
+  src: url("../fonts/PPLettraMono-Medium.otf") format("opentype");
   font-weight: 100 900; font-style: normal; font-display: swap;
 }
 
@@ -70,11 +93,13 @@
   color-scheme: light;
 }
 :root {
-  --font: "Jokker", "Helvetica Neue", Arial, sans-serif;
+  --font: "PP Telegraf", "Helvetica Neue", Arial, sans-serif;
   --gutter: 14px;
   --column: 1070px;
   --display: clamp(36px, 4.15vw, 60px);
   --section: clamp(96px, 16vh, 180px);
+  --caret-right: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M12 8 22 16 12 24z'/%3E%3C/svg%3E");
+  --caret-down: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M24 12 16 22 8 12z'/%3E%3C/svg%3E");
   --cross: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z'/%3E%3C/svg%3E");
 }
 
@@ -263,17 +288,23 @@ header.wrap { position: sticky; top: 0; z-index: 10; background: var(--bg); }
 .cols .card a:not(.btn, .offer__link):is(:hover, :focus-visible) { background: var(--blue); color: var(--bg); }
 .action { margin-top: 8px; }
 
-/* ---------- The long pages: the rail of sections, the words for reading
-   ---------- */
+/* ---------- The long pages: the sections as a row of grey pills over the
+   words (user's reference, 26 Nov 2026, "add elements from this web ... but
+   make them full bleed": a centred row of grey filter pills), the words
+   then running the full width. Was a sticky rail at the left. ---------- */
 .toc-layout {
-  display: grid; grid-template-columns: minmax(180px, 1fr) minmax(0, 3fr); gap: 24px;
-  align-items: start;
-  padding-top: 40px;
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 48px;
+  padding-top: 8px;
 }
-.toc { position: sticky; top: 72px; padding-top: 18px; border-top: 1px solid var(--rule); }
-.toc ul { display: grid; gap: 10px; }
-.toc a { color: var(--blue); font-weight: 500; text-decoration: none; }
-.toc a:hover, .toc a[aria-current] { text-decoration: underline; }
+.toc { padding-bottom: 8px; }
+.toc ul { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+.toc a {
+  display: inline-flex; align-items: center; min-height: 32px; padding: 4px 14px;
+  border-radius: 999px; background: #e6e6e6; color: #000;
+  font-size: 15px; font-weight: 400; letter-spacing: 0; text-transform: none; text-decoration: none;
+}
+.toc a:hover { background: #ffea00; }
+.toc a[aria-current] { background: var(--ink); color: var(--bg); }
 /* No container here: a size container scopes CSS counters, and every
    section heading then counted "No 01". The column folds by the window. */
 .toc-layout .content { min-width: 0; }
@@ -356,34 +387,48 @@ header.wrap { position: sticky; top: 0; z-index: 10; background: var(--bg); }
 .offer__link::after { content: counter(offer, decimal-leading-zero) / ""; color: var(--grey); }
 .card .offer__link:is(:hover, :focus-visible) { color: var(--blue); }
 
-/* ---------- Coloured cards: the statements, the four services, the chat's
-   opening questions. Blue, green, red, then ink, in turn. ---------- */
+/* ---------- The statements: full-bleed slides, black then white in turn
+   (user's reference, 26 Nov 2026, "lets combine with this design": two
+   slides, white words on black and black on white, the statement in a
+   heavy slanted face across the width, its count "1/4" a small pill
+   above it in the opposite colours). Telegraf has no heavy or italic cut
+   here, so the statement is its Medium, upright, set large and tight. The count is drawn per slide (alt
+   "", each slide is already labelled "1 of 4"); the bar's count under the
+   arrows is dropped so it is not said twice on screen. ---------- */
 .plates { padding-block: 24px var(--section); }
 .plates__track {
   display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; cursor: pointer;
-  width: calc(100vw - 16px); margin-left: calc(50% - 50vw + 8px);
-  border-radius: 9px;
+  width: 100vw; margin-left: calc(50% - 50vw);
+  counter-reset: slide;
 }
 .plates__track::-webkit-scrollbar { display: none; }
+.plates__track:focus-visible { outline: 4px solid var(--p-blue); outline-offset: -4px; }
 .plate {
-  flex: 0 0 100%; scroll-snap-align: start;
-  display: grid; place-items: center;
-  min-height: calc(100svh - 140px); padding: 48px;
-  border-radius: 9px;
-  background: var(--p-blue); color: var(--on-blue);
+  --slide-bg: #000; --slide-ink: #fff;
+  flex: 0 0 100%; scroll-snap-align: start; counter-increment: slide;
+  display: grid; justify-items: center; align-content: center; gap: clamp(32px, 5vh, 64px);
+  min-height: calc(100svh - 120px); padding: 48px var(--gutter);
+  background: var(--slide-bg); color: var(--slide-ink);
 }
-.plate:nth-child(4n + 2) { background: var(--p-green); color: var(--on-green); }
-.plate:nth-child(4n + 3) { background: var(--p-red); color: var(--on-red); }
-.plate:nth-child(4n + 4) { background: var(--p-ink); color: var(--on-ink); }
+.plate:nth-child(even) { --slide-bg: #fff; --slide-ink: #000; }
+.plate::before {
+  content: counter(slide) "/4" / "";
+  padding: 6px 12px; border-radius: 6px;
+  background: var(--slide-ink); color: var(--slide-bg);
+  font-size: 18px; font-weight: 400; line-height: 1.1; letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
 .plate p {
-  max-width: 16em;
-  font-size: var(--display); font-weight: 300; line-height: 1.05; letter-spacing: -0.03em;
+  max-width: 11em;
+  font-size: clamp(44px, 8.6vw, 150px); font-weight: 500; line-height: 0.95; letter-spacing: -0.035em;
   text-align: center; text-wrap: balance;
 }
 .plates__bar { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 14px; }
 .plates__btn { width: 44px; padding: 0; }
-.plates__count { min-width: 4ch; text-align: center; color: var(--grey); font-variant-numeric: tabular-nums; }
+.plates__count { display: none; }
 
+/* ---------- Coloured cards: the four services and the chat's opening
+   questions, blue, green, red, then ink, in turn. ---------- */
 .slogans {
   display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px;
   padding-bottom: var(--section);
@@ -509,22 +554,27 @@ form.signup > .signup__btn { min-height: 44px; padding-inline: 20px; }
   font-size: 15px; font-weight: 500; line-height: 1.1; letter-spacing: 0.01em;
   text-transform: uppercase; text-align: center;
 }
-.acc { max-width: var(--column); margin-inline: auto; border-bottom: 1px solid var(--rule); }
+/* What we offer as full-bleed caret rows (user's instruction, 26 Nov
+   2026, "make these into carrets and full bleed"): each rule runs the
+   window's width, the solid caret first (right shut, down open), the
+   title beside it on the page's gutter; the panel lines up with the title. */
+.acc { width: 100vw; margin-left: calc(50% - 50vw); border-bottom: 1px solid var(--rule); }
 .acc__row { border-top: 1px solid var(--rule); }
 .acc__btn {
-  display: flex; align-items: center; justify-content: space-between; gap: 24px;
-  width: 100%; padding: 14px 0 16px;
+  display: flex; align-items: center; gap: 18px;
+  width: 100%; padding: 14px var(--gutter) 16px;
   border: 0; background: none; cursor: pointer;
   font-size: 36px; font-weight: 300; line-height: 1.05; letter-spacing: -0.03em;
   text-align: left;
 }
-.acc__btn::after {
-  content: "+" / ""; flex: none;
-  font-size: 32px; font-weight: 200; line-height: 1; color: var(--blue);
+.acc__btn::before {
+  content: ""; flex: none; width: 0.5em; height: 0.5em; background: var(--blue);
+  -webkit-mask: var(--caret-right) center / contain no-repeat; mask: var(--caret-right) center / contain no-repeat;
 }
-.acc__btn[aria-expanded="true"]::after { content: "\2212" / ""; }
+.acc__btn[aria-expanded="true"]::before { -webkit-mask-image: var(--caret-down); mask-image: var(--caret-down); }
 .acc__btn:hover { color: var(--blue); }
-.acc__panel { padding: 8px 0 40px; }
+.acc__btn:focus-visible { outline-offset: -3px; }
+.acc__panel { padding: 8px var(--gutter) 40px calc(var(--gutter) + 36px); }
 .acc__panel[hidden] { display: none; }
 .acc__lede {
   max-width: 22em; margin-bottom: 32px;
@@ -578,11 +628,11 @@ footer.wrap { padding-bottom: var(--gutter); container-type: inline-size; }
 .theme[hidden] { display: none; }
 
 /* The name across the foot, edge to edge; aria-hidden in the markup.
-   Jokker 300 capitals at -0.04em measure 7.66em for the word; 7.72 leaves a
+   Telegraf Light capitals at -0.04em measure 8.24em for the word; 8.3 leaves a
    hair so it never clips. */
 .foot__mark {
   margin-top: 48px;
-  font-size: calc(100cqw / 7.72); font-weight: 300; line-height: 0.8; letter-spacing: -0.04em;
+  font-size: calc(100cqw / 8.3); font-weight: 300; line-height: 0.8; letter-spacing: -0.04em;
   text-transform: uppercase; white-space: nowrap; overflow: hidden;
 }
 
@@ -605,7 +655,7 @@ footer.wrap { padding-bottom: var(--gutter); container-type: inline-size; }
   .title--lede { min-height: 0; }
   form.signup { grid-template-columns: minmax(0, 1fr); }
   .request__row, .request__brief > div { grid-template-columns: minmax(0, 1fr); }
-  .plate { min-height: 60svh; padding: 24px; }
+  .plate { min-height: 70svh; padding: 32px var(--gutter); }
   .slogans, .chat__prompts { grid-template-columns: minmax(0, 1fr); }
   .slogan__link, .chat__prompt { min-height: 0; gap: 24px; }
   .toc-layout .text > p, .toc-layout .text li, .chat__text { font-size: 20px; }
@@ -613,13 +663,82 @@ footer.wrap { padding-bottom: var(--gutter); container-type: inline-size; }
   .toc-layout .cols .card { position: static; }
   .terms { grid-template-columns: minmax(0, 1fr); }
   .acc__btn { font-size: 28px; }
+  .acc__panel { padding-left: calc(var(--gutter) + 32px); }
   .acc__lede { font-size: 20px; }
   .foot { grid-template-columns: minmax(0, 1fr); }
   .foot__mark { margin-top: 32px; }
 }
 
+/* ---------- Full-bleed bands, yellow notes and the call-to-action pill
+   (user's reference, 26 Nov 2026, "add elements from this web ... but make
+   them full bleed"). Measured there: bands #ffea00 and #03c502 across the
+   window, about 110px over their content, a centred capital title, words
+   in a column under it; small notes on a bright yellow in a mono face; a
+   tall black pill as the main action.
+
+   Bands: on Home and About each section and the chat stand on a band the
+   window's width, yellow, then green, in turn. Black words on both (18.6:1
+   and 8.9:1; the reference's white on that green is 2.2:1, so it is not
+   used). Inside a band every colour token is reset to black, so links,
+   rules, captions and focus follow. A band's heading is a centred capital
+   title; its number a small black pill above it. */
+main > .content > .cols, main > .chat {
+  --ink: #000; --grey: #000; --rule: #000; --blue: #000; --focus: #000;
+  --plate: rgba(255, 255, 255, 0.55); --plate-edge: rgba(0, 0, 0, 0.2);
+  width: 100vw; max-width: none; margin-left: calc(50% - 50vw);
+  padding: clamp(80px, 12vh, 112px) var(--gutter);
+  background: #ffea00; color: #000;
+}
+main > .content > .cols:nth-child(even), main > .chat { background: #03c502; }
+main > .chat > * { max-width: var(--column); margin-inline: auto; }
+main > .content > .cols > .text > h2:first-child {
+  min-width: 0; padding: 0; border: 0; background: none;
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+  font-size: clamp(36px, 4vw, 58px); font-weight: 400; line-height: 1; letter-spacing: -0.01em;
+}
+main > .content > .cols > .text > h2:first-child::before {
+  width: fit-content; margin: 0 auto 20px; padding: 6px 12px; border-radius: 999px;
+  background: #000; color: #ffea00;
+  font-size: 15px; font-weight: 400; letter-spacing: 0; text-transform: none;
+}
+main > .content > .cols:nth-child(even) > .text > h2:first-child::before { color: #03c502; }
+main > .content > .cols .card {
+  border: 0; border-radius: 12px; background: #fff;
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+}
+main > .content > .cols .card h2 { color: #000; }
+main > .content > .cols .card a:not(.btn, .offer__link) { border-color: #000; color: #000; }
+main > .content > .cols .card a:not(.btn, .offer__link):is(:hover, :focus-visible) { background: #000; color: #fff; }
+main > .chat .chat__label { color: #000; }
+main > .chat .chat__box { background: #fff; border-color: #000; }
+main > .chat .chat__box textarea::placeholder { color: #3d3d3d; }
+main > .chat .chat__send:enabled { border-color: #000; background: #000; color: #fff; }
+.bubble { padding-bottom: 48px; }
+
+/* The long pages' side notes as yellow notes: bright yellow, black words
+   in PP Lettra Mono Medium, 12px corners, no blur. */
+.toc-layout .cols .card {
+  --ink: #000; --grey: #000; --rule: #000; --blue: #000; --focus: #000;
+  border: 0; border-radius: 12px; background: #ffea00; color: #000;
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+  font-family: "PP Lettra Mono", ui-monospace, monospace; font-size: 15px; font-weight: 500; line-height: 1.35;
+}
+.toc-layout .cols .card h2, .toc-layout .card .offer__link { font-family: inherit; }
+
+/* The main action as a tall pill in ink: black on white, white on black. */
+.btn {
+  min-height: 52px; padding: 12px 26px; border: 0; border-radius: 999px;
+  background: var(--ink); color: var(--bg);
+  font-size: 18px; font-weight: 400; letter-spacing: 0; text-transform: none;
+}
+main > .content > .cols .btn, .toc-layout .cols .card .btn { background: #000; color: #fff; font-family: var(--font); }
+.toc-layout .cols .card .btn:is(:hover, :focus-visible) { background: #fff; color: #000; }
+.btn:is(:hover, :focus-visible) { background: var(--blue); color: var(--bg); }
+main > .content > .cols .btn:is(:hover, :focus-visible) { background: #fff; color: #000; outline-color: #000; }
+
 @media (forced-colors: active) {
+  main > .content > .cols, main > .chat, .toc a, .btn { border: 1px solid CanvasText; }
   .plate-box, .title h1, .related__label, .cols .card, .request, .plate, .slogan__link, .chat__prompt,
   .bubble__msg, .chat__turn:nth-child(odd) .chat__text { border: 1px solid CanvasText; }
-  .text li::before { background: CanvasText; forced-color-adjust: none; }
+  .text li::before, .acc__btn::before { background: CanvasText; forced-color-adjust: none; }
 }
