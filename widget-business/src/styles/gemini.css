@@ -848,6 +848,43 @@
 .a11y-widget-biz .a11y-datatable tr[data-open] + tr > td:last-child { padding-inline-end: 8px; }
 .a11y-widget-biz .a11y-datatable tr[data-open] + tr:hover > td { background: var(--open); }
 
+/* The opened finding's type, set properly (user's "typeset this
+   properly", 26 Nov 2026): labels in the grey so they read as labels, the
+   words under them in ink; the points of one part 4px apart (a blank line
+   between them made each read as its own paragraph); the parts 20px apart;
+   in the affected elements, code at the text's size, the two colours as
+   small swatches, Copy a small underlined link, the note in the grey, and
+   each element 13px from the soft rule between them. */
+.a11y-widget-biz .a11y-fd :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-steps, .a11y-affected, .a11y-fd-col > div) { margin: 0 0 20px; }
+.a11y-widget-biz .a11y-fd :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research) > strong,
+.a11y-widget-biz .a11y-fd :is(.a11y-finding-steps, .a11y-affected) > p:first-child { margin: 0 0 2px; color: var(--ink-2); }
+.a11y-widget-biz .a11y-fd :is(.a11y-fd-points, .a11y-finding-steps > ul) > li + li { margin-top: 4px; }
+.a11y-widget-biz .a11y-fd :is(.a11y-fd-points, .a11y-finding-steps > ul) > li { padding-inline-start: 12px; }
+.a11y-widget-biz .a11y-fd code { font-size: inherit; }
+.a11y-widget-biz .a11y-occurrence-list > li { padding-bottom: 13px; }
+.a11y-widget-biz .a11y-occurrence-list > li + li { padding-top: 13px; }
+.a11y-widget-biz .a11y-occurrence-head,
+.a11y-widget-biz .a11y-occurrence-label,
+.a11y-widget-biz .a11y-shot-bubble { margin: 0 0 6px; font-size: 13px; line-height: 16px; color: var(--ink); }
+.a11y-widget-biz .a11y-colour-fix { margin: 8px 0 0; font-size: 13px; line-height: 16px; }
+.a11y-widget-biz .a11y-colour-fix-line { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin: 0; }
+.a11y-widget-biz .a11y-swatch-pair { display: inline-flex; align-items: center; gap: 4px; }
+.a11y-widget-biz .a11y-swatch { display: inline-block; width: 12px; height: 12px; border: 1px solid var(--rule); border-radius: 2px; }
+.a11y-widget-biz .a11y-colour-fix .a11y-copy-btn,
+.a11y-widget-biz .a11y-fd .a11y-alt-copy {
+  min-height: 0; padding: 0; margin-inline-start: 6px; border: 0; background: transparent; color: var(--ink);
+  font-size: 11px; line-height: 13px; text-decoration: underline; text-underline-offset: 3px;
+}
+.a11y-widget-biz .a11y-colour-fix .a11y-copy-btn:hover,
+.a11y-widget-biz .a11y-fd .a11y-alt-copy:hover:not(:disabled) { background: transparent; color: var(--ink); text-decoration-thickness: 2px; }
+.a11y-widget-biz .a11y-colour-fix-note { margin: 4px 0 0; font-size: 13px; line-height: 16px; color: var(--ink-2); }
+
+/* A row's end word at the title's size (user's "fix soon needs to be same
+   font size as title", 26 Nov 2026): the findings table's severity and the
+   designer list's fix kind, 16px on the title's 19px line. */
+.a11y-widget-biz .a11y-finding-sev-word,
+.a11y-widget-biz .a11y-undecided-q .a11y-undecided-kind { font-size: 16px; line-height: 19px; }
+
 /* The form's report (a page behind a login) keeps the product shell. */
 .a11y-widget-biz .a11y-shell-with-nav > .a11y-shell-main { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 10px; padding: 13px; }
 .a11y-widget-biz .a11y-shell-nav { position: sticky; top: 13px; align-self: start; display: flex; flex-direction: column; gap: 2px; }
