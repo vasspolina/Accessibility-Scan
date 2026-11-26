@@ -107,6 +107,21 @@
 
 .a11y-widget-biz {
   font-family: "Jokker", "DejaVu Sans", sans-serif;
+  /* A FOUNDRY'S CONTACT PAGE ACROSS THE APP (user's instruction, 26 Nov
+     2026, "apply type measurments across the app", after the opened
+     finding's cards were set from that page the same day). Measured there
+     at 1440 x 900: running text 19 to 20px, small text 15 to 16px, the
+     title 46px, every size set solid at 1.1 with no tracking, paragraphs a
+     whole line apart and never indented. So here: the body is 22px on
+     every screen (this root was 29px on a desktop; the phone was 22px
+     already), every line-height that was 1.02 to 1.4 is 1.1 (1, 0 and the
+     px centring values on controls stay), every letter-spacing is 0 (it was
+     +0.01 to +0.08em, tracked capitals included), and paragraphs and lists
+     stand one 22px x 1.1 line apart, 24px, Carbon's spacing-06 (32px
+     before); the chat's answers and the statement draft drop their 1em
+     indent for that space. 16, 18, 22, 29 and 43px stay the sizes; 29px is
+     now used only on a phone, for the principle titles and history scores.
+     The notes below give the steps before. */
   /* FIVE SIZES, 16PX AND UP (user's instruction, 26 Nov 2026, "lets just
      use only 5 font sizes and round everything in between, font sizes on
      desctop need to start from 16 px"). The widget uses these and nothing
@@ -178,7 +193,7 @@
   /* The running text is 29px (22px on a phone): "make main body text 10%
      smaller" took it from 29px to 26px on 25 Nov 2026, and "body font too",
      10% larger again the same evening, brought it back. */
-  font-size: 29px; font-weight: 400; line-height: 1.1; letter-spacing: 0.01em;
+  font-size: 22px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
   font-kerning: normal; font-feature-settings: "ss04", "ss05"; font-variant-ligatures: common-ligatures; text-rendering: optimizeLegibility; font-synthesis: none;
   font-variation-settings: "wght" 400;
   background: var(--paper); color: var(--ink);
@@ -202,7 +217,7 @@
 /* One empty line under each paragraph, list, table and figure (Hochuli:
    paragraph space is a whole line or none, so the text stays in register;
    it was two lines from 4 Nov to 24 Nov 2026). */
-.a11y-widget-biz :is(p, ul, ol, dl, table, figure) { margin: 0 0 var(--cds-spacing-07); }
+.a11y-widget-biz :is(p, ul, ol, dl, table, figure) { margin: 0 0 var(--cds-spacing-06); }
 /* A bullet is an en dash and a word space, hung in the margin (fig. 50),
    wherever a plain list shows: the browser's round disc and hollow circle
    were left on lists that set no marker of their own. Lists with their own
@@ -221,7 +236,7 @@
 
 /* The small print under a title: 15px. */
 .a11y-widget-biz :is(small, .a11y-issue-row-meta, .a11y-conf-cap, .a11y-next-meta, .a11y-input-help, .a11y-input-label) {
-  font-size: 16px; letter-spacing: 0.025em; line-height: 1.2;
+  font-size: 16px; letter-spacing: 0; line-height: 1.1;
 }
 
 /* Controls: pills again (user's instruction, 4 Nov 2026, back from a 10px
@@ -229,7 +244,7 @@
    and a flat marker-yellow fill on hover (black text on --hl-cap-a measures
    better than 7:1). 18px. */
 .a11y-widget-biz :is(button, .a11y-btn) {
-  font: inherit; font-size: 16px; letter-spacing: 0.025em; font-weight: 400;
+  font: inherit; font-size: 16px; letter-spacing: 0; font-weight: 400;
   /* Dotted like the chat box (user's instruction, 20 Nov 2026); a disabled
      button stays dashed, so the two still differ. */
   box-sizing: border-box; min-height: 32px; padding: var(--cds-spacing-04) var(--cds-spacing-06); border: 1px dotted var(--btn-fill, var(--ink)); border-radius: 999px;
@@ -246,7 +261,7 @@
 .a11y-widget-biz .a11y-btn.a11y-btn-primary:enabled { background: var(--solid); color: var(--solid-ink); }
 .a11y-widget-biz .a11y-btn.a11y-btn-primary:enabled:hover { background: var(--hover); border-color: var(--hover); color: var(--hover-ink); }
 .a11y-widget-biz :is(input:not([type="radio"]):not([type="checkbox"]), textarea, select) {
-  font: inherit; font-size: 16px; letter-spacing: 0.025em; padding: var(--cds-spacing-03) var(--cds-spacing-05);
+  font: inherit; font-size: 16px; letter-spacing: 0; padding: var(--cds-spacing-03) var(--cds-spacing-05);
   /* The chat box's look (see FORM FIELDS AS THE CHAT BOX at the end). */
   border: 1px solid var(--ink); border-radius: 10px; background: var(--paper); color: var(--ink);
 }
@@ -393,7 +408,7 @@
 /* The box's label, on screen at the label size: it was a placeholder,
    which is gone as soon as anything is typed (ScanChat.tsx). */
 .a11y-widget-biz .a11y-chat-box > .a11y-chat-label {
-  display: block; margin: 0 0 var(--cds-spacing-02); font-size: 16px; font-weight: 400; letter-spacing: 0.025em; line-height: 1.2;
+  display: block; margin: 0 0 var(--cds-spacing-02); font-size: 16px; font-weight: 400; letter-spacing: 0; line-height: 1.1;
 }
 /* The line Tab would fill in (lib/chatSuggest): the
    key in a small outlined cap, then the words, in ink, not a faded ghost
@@ -406,11 +421,11 @@
 .a11y-widget-biz .a11y-chat-tabhint {
   display: flex; align-items: baseline; gap: var(--cds-spacing-03); max-width: none; margin: 0;
   flex: 1 1 0; min-width: 0; overflow: hidden;
-  font-size: 16px; letter-spacing: 0.025em; line-height: 1.2;
+  font-size: 16px; letter-spacing: 0; line-height: 1.1;
 }
 .a11y-widget-biz .a11y-chat-tabhint > kbd {
   flex: none; padding: var(--cds-spacing-01) var(--cds-spacing-03); border: 1px solid var(--ink); border-radius: 6px;
-  font: inherit; font-size: 16px; letter-spacing: 0.025em; line-height: 1.2;
+  font: inherit; font-size: 16px; letter-spacing: 0; line-height: 1.1;
 }
 .a11y-widget-biz .a11y-chat-tabhint-text { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 /* The report's sections offered under the thread, one pill each, 3px
@@ -422,7 +437,7 @@
    below chat so its not on scroll"): 15px, the label size, on the 34px
    button floor, so a row of five takes one short line under the box. */
 .a11y-widget-biz .a11y-chat-composer .a11y-chat-suggest { margin: var(--cds-spacing-03) 0 0; }
-.a11y-widget-biz .a11y-chat-suggest .a11y-chat-chip { font-size: 16px; letter-spacing: 0.025em; padding: var(--cds-spacing-02) var(--cds-spacing-05); }
+.a11y-widget-biz .a11y-chat-suggest .a11y-chat-chip { font-size: 16px; letter-spacing: 0; padding: var(--cds-spacing-02) var(--cds-spacing-05); }
 /* On a phone ten chips wrapped to seven rows, and the sticky dock then held
    460px of an 812px screen. There they are one line that scrolls sideways;
    each chip is a button, so Tab still reaches and scrolls to every one. */
@@ -445,7 +460,7 @@
   gap: var(--cds-spacing-05); margin-top: var(--cds-spacing-05);
 }
 /* Who is speaking: small print above each turn. */
-.a11y-widget-biz .a11y-chat-who { font-size: 16px; letter-spacing: 0.025em; font-weight: 400; margin: 0 0 var(--cds-spacing-02); }
+.a11y-widget-biz .a11y-chat-who { font-size: 16px; letter-spacing: 0; font-weight: 400; margin: 0 0 var(--cds-spacing-02); }
 /* Paragraph spacing (user's instruction, 4 Nov 2026, replacing "no space between turns" of 18 Oct): one line of
    the 27px text between turns and, since the same day, a full line between
    paragraphs inside one too (was half a line; user asked for twice the room),
@@ -530,20 +545,20 @@
 }
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan-no {
   display: block; margin: 0 0 var(--cds-spacing-03); padding: 0 0 var(--cds-spacing-03); border-bottom: 1px solid var(--ink);
-  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em; font-variant-numeric: tabular-nums;
+  font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0; font-variant-numeric: tabular-nums;
 }
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan-title {
   display: block; margin: 0 0 var(--cds-spacing-03);
   font-size: inherit; font-weight: 400; line-height: 1.1; letter-spacing: inherit;
 }
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan-text {
-  display: block; font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  display: block; font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan > li::before { content: none; }
 .a11y-widget-biz .a11y-chat-text .a11y-chat-plan :is(a, code) { color: inherit; }
 /* Where a searched answer came from: small print under the reply, the
    pages named and linked, each once. */
-.a11y-widget-biz .a11y-chat-sources { font-size: 16px; letter-spacing: 0.025em; line-height: 1.2; margin: 0; overflow-wrap: anywhere; }
+.a11y-widget-biz .a11y-chat-sources { font-size: 16px; letter-spacing: 0; line-height: 1.1; margin: 0; overflow-wrap: anywhere; }
 .a11y-widget-biz .a11y-chat-sources a { color: var(--ink); }
 
 /* ═══ LETTERSPACING AND PUNCTUATION (18 Oct 2026; Hochuli, Detail in
@@ -566,7 +581,7 @@
    emphasis is the Medium cut or nothing. Hyphenation keeps at least
    three letters either side and no more than three lines in a row end in
    a hyphen (p.47). */
-.a11y-widget-biz .a11y-caps { font-size: inherit; letter-spacing: 0.06em; font-feature-settings: "ss04", "ss05", "case"; }
+.a11y-widget-biz .a11y-caps { font-size: inherit; letter-spacing: 0; font-feature-settings: "ss04", "ss05", "case"; }
 /* case (above): Jokker raises hyphens, brackets and dashes to capital
    height, so the punctuation in (WCAG-AA) sits with the capitals around it
    rather than at lowercase height (p.39–40). */
@@ -575,7 +590,7 @@
    capitals stood larger than the words around it ("EN 301 549", "WCAG"),
    the opposite of the rule. A size smaller there is 21px (measured
    18 Nov 2026: the only caps run in the report outside the chat). */
-.a11y-widget-biz .a11y-stmt-code .a11y-caps { font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-stmt-code .a11y-caps { font-size: 16px; letter-spacing: 0; }
 /* A list in the conversation (fig. 50): an en dash and a word space for a
    bullet, hung in the margin; a figure and its point for a count. */
 .a11y-widget-biz .a11y-chat-text :is(ul, ol) { margin: 0 0 var(--cds-spacing-07); }
@@ -609,7 +624,7 @@
   display: grid; place-content: center;
   width: 32px; height: 32px; border-radius: 50%;
   background: var(--solid); color: var(--solid-ink);
-  font-size: 16px; letter-spacing: 0.025em; font-weight: 400; line-height: inherit;
+  font-size: 16px; letter-spacing: 0; font-weight: 400; line-height: inherit;
   font-variant-numeric: tabular-nums;
 }
 .a11y-widget-biz .a11y-chat-text li::marker { font-weight: 400; }
@@ -665,7 +680,7 @@
 /* The account key is a short code, not a line of prose: the field stops at
    a key's length instead of running to the edge of the thread. */
 .a11y-widget-biz .a11y-settings-row > .a11y-input { max-width: 420px; }
-.a11y-widget-biz .a11y-chat-stepfold > summary { font-size: 16px; letter-spacing: 0.025em; margin-top: var(--cds-spacing-02); width: fit-content; }
+.a11y-widget-biz .a11y-chat-stepfold > summary { font-size: 16px; letter-spacing: 0; margin-top: var(--cds-spacing-02); width: fit-content; }
 .a11y-widget-biz .a11y-chat-stepfold[open] > summary { margin-bottom: var(--cds-spacing-03); }
 /* Back and the form link share the start of the box's row. */
 .a11y-widget-biz .a11y-chat-box-start { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cds-spacing-05); }
@@ -716,7 +731,7 @@
    small print under the title, not a suffix welded onto its last word:
    "Pop-up opens without taking focusKeyboard test" shipped on 17 Oct. */
 .a11y-widget-biz .a11y-finding-meta-line,
-.a11y-widget-biz .a11y-finding-meta { display: block; font-size: 16px; letter-spacing: 0.025em; line-height: 1.2; }
+.a11y-widget-biz .a11y-finding-meta { display: block; font-size: 16px; letter-spacing: 0; line-height: 1.1; }
 .a11y-widget-biz .a11y-method-badge { margin-inline-end: var(--cds-spacing-03); }
 
 /* The printed report's own copy of the findings (cards) is in the DOM for
@@ -766,7 +781,7 @@
 .a11y-widget-biz .a11y-accordion-title .a11y-accordion-head:enabled:hover { background: none; color: var(--ink); }
 .a11y-widget-biz .a11y-accordion-chevron { flex: none; width: 0.6em; height: 0.6em; margin-inline-start: auto; }
 .a11y-widget-biz .a11y-accordion-head[aria-expanded="true"] .a11y-accordion-chevron { transform: rotate(180deg); }
-.a11y-widget-biz .a11y-section-count { font-size: 16px; letter-spacing: 0.025em; font-weight: 400; }
+.a11y-widget-biz .a11y-section-count { font-size: 16px; letter-spacing: 0; font-weight: 400; }
 /* A section title's count is a superior figure (user's instruction, 22 Nov
    2026, "design number 1"): raised from the baseline to the title's top,
    so "(1)" reads as a note on the title rather than a word trailing it.
@@ -794,13 +809,13 @@
 .a11y-widget-biz .a11y-stmt-field {
   display: flex; flex-direction: column; gap: var(--cds-spacing-03); padding: var(--cds-spacing-05) var(--cds-spacing-06) var(--cds-spacing-05);
   border: 1px dotted var(--ink); border-radius: 20px; background: transparent; color: inherit;
-  font-size: 16px; letter-spacing: 0.025em; font-weight: 400; line-height: 1.2;
+  font-size: 16px; letter-spacing: 0; font-weight: 400; line-height: 1.1;
 }
 .a11y-widget-biz .a11y-stmt-field:focus-within { outline: 2px solid var(--focus); outline-offset: -2px; }
 .a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-fields > .a11y-stmt-field > input {
   box-sizing: border-box; width: 100%; min-height: 32px; margin: 0; padding: var(--cds-spacing-02) 0;
   border: 0; border-radius: 0; background: transparent; color: var(--tile-ink);
-  font: inherit; font-size: 16px; font-weight: 400; letter-spacing: 0.025em; line-height: 1.2;
+  font: inherit; font-size: 16px; font-weight: 400; letter-spacing: 0; line-height: 1.1;
 }
 .a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-fields > .a11y-stmt-field > input::placeholder { color: var(--tile-ink); opacity: 1; font-weight: 400; }
 .a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-fields > .a11y-stmt-field > input:focus-visible { outline: none; }
@@ -867,9 +882,9 @@
 .a11y-widget-biz .a11y-settings-row > .a11y-select2 { display: contents; }
 .a11y-widget-biz .a11y-settings-row > .a11y-settings-label,
 .a11y-widget-biz .a11y-settings-row > .a11y-select2 > .a11y-select2-label {
-  grid-column: 1; grid-row: 1; margin: 0; font-size: 16px; font-weight: 400; letter-spacing: 0.025em; line-height: 1.2;
+  grid-column: 1; grid-row: 1; margin: 0; font-size: 16px; font-weight: 400; letter-spacing: 0; line-height: 1.1;
 }
-.a11y-widget-biz .a11y-settings-row > .a11y-settings-state { font-size: 16px; letter-spacing: 0.025em; line-height: 1.2; }
+.a11y-widget-biz .a11y-settings-row > .a11y-settings-state { font-size: 16px; letter-spacing: 0; line-height: 1.1; }
 .a11y-widget-biz .a11y-settings-row > .a11y-input { justify-self: stretch; }
 @container a11y-settings (max-width: 480px) {
   .a11y-widget-biz .a11y-settings-row { grid-template-columns: minmax(0, 1fr); }
@@ -896,7 +911,7 @@
    foot of the window), at its own proportion, never stretched; the note
    follows the picture a line down. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sim-controls > .a11y-sim-btn {
-  font-size: 16px; letter-spacing: 0.025em; min-height: 36px; padding: 0 var(--cds-spacing-05);
+  font-size: 16px; letter-spacing: 0; min-height: 36px; padding: 0 var(--cds-spacing-05);
 }
 .a11y-widget-biz .a11y-sim-controls { margin-bottom: var(--cds-spacing-05); }
 .a11y-widget-biz .a11y-sim-frame { max-width: 100%; }
@@ -904,7 +919,7 @@
   display: block; width: auto; height: auto; max-width: 100%; max-height: 55svh;
 }
 .a11y-widget-biz .a11y-sim-frame + .a11y-sim-note { margin-top: var(--cds-spacing-07); }
-.a11y-widget-biz .a11y-select2-label { font-size: 16px; letter-spacing: 0.025em; font-weight: 400; }
+.a11y-widget-biz .a11y-select2-label { font-size: 16px; letter-spacing: 0; font-weight: 400; }
 .a11y-widget-biz .a11y-select2-field { min-width: 12em; max-width: 100%; box-sizing: border-box; }
 /* The native arrow is drawn flush against the box's edge and takes no padding.
    Drawn here instead, in ink so it follows the theme, with room on its right.
@@ -924,7 +939,7 @@
   background-size: 0.4em 0.4em, 0.4em 0.4em;
   background-repeat: no-repeat;
 }
-.a11y-widget-biz .a11y-select2-help { font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-select2-help { font-size: 16px; letter-spacing: 0; }
 
 /* ═══ THE SCAN FORM (3 Nov 2026) ═══════════════════════════════════════════
    The form's parts had no layout rules, so buttons, switch and notes landed
@@ -954,22 +969,22 @@
 .a11y-widget-biz .a11y-input-shell { display: flex; flex-wrap: wrap; align-items: stretch; gap: var(--cds-spacing-05) var(--cds-spacing-05); min-width: 0; }
 .a11y-widget-biz .a11y-input-shell > input { flex: 1 1 14em; min-width: 0; box-sizing: border-box; }
 .a11y-widget-biz .a11y-input-shell > .a11y-login-toggle { flex: none; white-space: nowrap; align-self: center; }
-.a11y-widget-biz .a11y-group-hint { font-size: 16px; letter-spacing: 0.025em; line-height: 1.2; }
+.a11y-widget-biz .a11y-group-hint { font-size: 16px; letter-spacing: 0; line-height: 1.1; }
 .a11y-widget-biz .a11y-url-error { margin: 0; }
-.a11y-widget-biz .a11y-url-error:not(:empty) { font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-url-error:not(:empty) { font-size: 16px; letter-spacing: 0; }
 
 /* The action: the button leads, its note after it, on one baseline. */
 .a11y-widget-biz .a11y-url-submit { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cds-spacing-05) var(--cds-spacing-08); }
-.a11y-widget-biz .a11y-url-submit-note { font-size: 16px; letter-spacing: 0.025em; line-height: 1.2; }
+.a11y-widget-biz .a11y-url-submit-note { font-size: 16px; letter-spacing: 0; line-height: 1.1; }
 
 /* The switch: a track and a round knob in ink and paper, with the word On or
    Off after it. The knob takes the track's text colour, so it inverts with it
    and never disappears; hover keeps the track as it is, since the control
    hover that fills a button would make Off look like On. */
 .a11y-widget-biz .a11y-switch { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0 var(--cds-spacing-06); }
-.a11y-widget-biz .a11y-switch-label { font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-switch-label { font-size: 16px; letter-spacing: 0; }
 .a11y-widget-biz .a11y-switch-controls { display: inline-flex; align-items: center; gap: var(--cds-spacing-05); }
-.a11y-widget-biz .a11y-switch-word { font-size: 16px; letter-spacing: 0.025em; min-width: 2em; }
+.a11y-widget-biz .a11y-switch-word { font-size: 16px; letter-spacing: 0; min-width: 2em; }
 .a11y-widget-biz .a11y-switch-track { position: relative; flex: none; box-sizing: border-box; width: 52px; height: 32px; padding: 0; border-radius: 999px; }
 .a11y-widget-biz .a11y-switch-knob { position: absolute; top: 50%; left: 4px; width: 16px; height: 16px; margin-top: calc(var(--cds-spacing-03) * -1); border-radius: 50%; background: currentColor; }
 .a11y-widget-biz .a11y-switch-track[aria-checked="true"] { background: var(--solid); color: var(--solid-ink); }
@@ -981,9 +996,9 @@
 .a11y-widget-biz .a11y-chat-alt { margin: var(--cds-spacing-07) 0 0; }
 
 /* Name and value pairs: small label, the value under it, the gloss under that. */
-.a11y-widget-biz .a11y-spec-label { font-size: 16px; letter-spacing: 0.025em; font-weight: 400; }
+.a11y-widget-biz .a11y-spec-label { font-size: 16px; letter-spacing: 0; font-weight: 400; }
 .a11y-widget-biz .a11y-spec-value { margin: 0; }
-.a11y-widget-biz .a11y-spec-gloss { display: block; font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-spec-gloss { display: block; font-size: 16px; letter-spacing: 0; }
 
 /* The draft is the text to take, so it sits in one filled frame like a
    field (21 Nov 2026, "design this"): the tile ground, 14px corners, its
@@ -1020,7 +1035,7 @@
 .a11y-widget-biz .a11y-pro-point {
   display: grid; grid-template-columns: 2.4em minmax(0, 1fr); align-items: baseline; margin: 0 0 var(--cds-spacing-05);
 }
-.a11y-widget-biz .a11y-pro-point-num { font-size: 16px; letter-spacing: 0.025em; font-weight: 400; }
+.a11y-widget-biz .a11y-pro-point-num { font-size: 16px; letter-spacing: 0; font-weight: 400; }
 
 /* The three worst findings next to the dial: number, title with its marks under it, count. */
 
@@ -1028,7 +1043,7 @@
 
 /* The legal checklist's questions and the result rows. */
 .a11y-widget-biz .a11y-legal-q { display: grid; grid-template-columns: 1.6em minmax(0, 1fr); align-items: baseline; margin: 0 0 var(--cds-spacing-04); }
-.a11y-widget-biz .a11y-legal-qnum { font-size: 16px; letter-spacing: 0.025em; font-weight: 400; }
+.a11y-widget-biz .a11y-legal-qnum { font-size: 16px; letter-spacing: 0; font-weight: 400; }
 .a11y-widget-biz .a11y-legal-thead { display: none; }
 /* The result rows (We found problems 3, We checked 19, ...): one line each,
    in four columns that line up from row to row: the title, its small print,
@@ -1052,7 +1067,7 @@
 }
 .a11y-widget-biz :is(.a11y-legal-row-label, .a11y-legal-row-meaning) { display: block; }
 .a11y-widget-biz .a11y-legal-row-label { font-weight: 400; }
-.a11y-widget-biz .a11y-legal-row-meaning { font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-legal-row-meaning { font-size: 16px; letter-spacing: 0; }
 .a11y-widget-biz .a11y-legal-count { font-size: inherit; letter-spacing: inherit; font-weight: 400; }
 .a11y-widget-biz .a11y-radio-group { display: flex; flex-wrap: wrap; gap: var(--cds-spacing-03) var(--cds-spacing-08); border: 0; padding: 0; margin: 0 0 var(--cds-spacing-07); }
 /* Radio dots: black and white only, a 1px line, three times the browser's 13px
@@ -1072,21 +1087,21 @@
 }
 .a11y-widget-biz input[type="radio"]:checked::before { transform: scale(1); }
 .a11y-widget-biz input[type="radio"]:disabled { border-style: dashed; cursor: not-allowed; }
-.a11y-widget-biz .a11y-radio { display: inline-flex; align-items: center; gap: var(--cds-spacing-03); font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-radio { display: inline-flex; align-items: center; gap: var(--cds-spacing-03); font-size: 16px; letter-spacing: 0; }
 
 /* The checklist rows: criterion, the question with its official name under it, the status under that. */
 .a11y-widget-biz .a11y-conf-list { list-style: none; padding: 0; margin: 0 0 var(--cds-spacing-07); }
 .a11y-widget-biz .a11y-conf-row { display: grid; grid-template-columns: 4em minmax(0, 1fr); gap: var(--cds-spacing-03) var(--cds-spacing-06); margin: 0 0 var(--cds-spacing-07); }
 .a11y-widget-biz .a11y-conf-row .a11y-conf-status { grid-column: 2; justify-self: start; }
-.a11y-widget-biz .a11y-conf-id { font-size: 16px; letter-spacing: 0.025em; font-weight: 400; }
+.a11y-widget-biz .a11y-conf-id { font-size: 16px; letter-spacing: 0; font-weight: 400; }
 .a11y-widget-biz .a11y-conf-id em { font-style: normal; }
 .a11y-widget-biz .a11y-conf-body { display: block; }
-.a11y-widget-biz .a11y-conf-plain { display: block; font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-conf-plain { display: block; font-size: 16px; letter-spacing: 0; }
 .a11y-widget-biz .a11y-conf-row[hidden] { display: none; }
 
 /* WCAG 2.2 panel head: the standard, its date, what would fail today. */
 .a11y-widget-biz .a11y-next-toggle { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--cds-spacing-03) var(--cds-spacing-06); text-align: start; }
-.a11y-widget-biz .a11y-next-count { font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-next-count { font-size: 16px; letter-spacing: 0; }
 .a11y-widget-biz :is(.a11y-next-title, .a11y-next-meta, .a11y-next-status) { display: block; }
 
 /* For your designer and developer: number, what the checker saw, what to ask for, the call. */
@@ -1094,8 +1109,8 @@
 .a11y-widget-biz .a11y-undecided-table { list-style: none; padding: 0; margin: 0 0 var(--cds-spacing-07); }
 .a11y-widget-biz .a11y-undecided-cell { display: grid; grid-template-columns: 2em minmax(0, 1fr); gap: var(--cds-spacing-05) var(--cds-spacing-04); margin: 0 0 var(--cds-spacing-09); }
 .a11y-widget-biz .a11y-undecided-cell > :not(.a11y-undecided-no) { grid-column: 2; margin: 0; }
-.a11y-widget-biz .a11y-undecided-no { font-size: 16px; letter-spacing: 0.025em; font-weight: 400; grid-row: 1; }
-.a11y-widget-biz .a11y-undecided-call { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--cds-spacing-03) var(--cds-spacing-05); font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-undecided-no { font-size: 16px; letter-spacing: 0; font-weight: 400; grid-row: 1; }
+.a11y-widget-biz .a11y-undecided-call { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--cds-spacing-03) var(--cds-spacing-05); font-size: 16px; letter-spacing: 0; }
 .a11y-widget-biz .a11y-undecided-table .a11y-undecided-folded { display: none; }
 @media print { .a11y-widget-biz .a11y-undecided-table .a11y-undecided-folded { display: grid; } }
 
@@ -1109,9 +1124,9 @@
 }
 .a11y-widget-biz .a11y-sr-row:enabled:hover { background: none; color: var(--ink); }
 .a11y-widget-biz .a11y-sr-row[aria-current="true"] { text-decoration: underline; text-underline-offset: 0.15em; }
-.a11y-widget-biz .a11y-sr-num { font-size: 16px; letter-spacing: 0.025em; font-weight: 400; }
-.a11y-widget-biz .a11y-sr-issue { grid-column: 2; font-size: 16px; letter-spacing: 0.025em; }
-.a11y-widget-biz .a11y-sr-status { font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-sr-num { font-size: 16px; letter-spacing: 0; font-weight: 400; }
+.a11y-widget-biz .a11y-sr-issue { grid-column: 2; font-size: 16px; letter-spacing: 0; }
+.a11y-widget-biz .a11y-sr-status { font-size: 16px; letter-spacing: 0; }
 
 /* The score dial: one thick ink stroke shaped like a C, the number inside
    it (user's reference, 25 Nov 2026; it was a solid arc on a dotted track).
@@ -1208,13 +1223,13 @@
 .a11y-widget-biz .a11y-prompts .a11y-prompt-q:focus-visible { outline: none; }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-q:focus-visible::after { outline: 2px solid var(--focus); outline-offset: -2px; }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-label {
-  font-size: 16px; font-weight: 400; letter-spacing: 0.025em; line-height: 1.2;
+  font-size: 16px; font-weight: 400; letter-spacing: 0; line-height: 1.1;
 }
 /* 15px, 15% under the 18px it was (user's instruction, 21 Nov 2026, "make
    this text 15% smaller", on the four cards in a row): 15.3 rounds to the
    smaller of the two label sizes. */
 .a11y-widget-biz .a11y-prompts .a11y-prompt-ask {
-  font-size: 16px; font-weight: 400; letter-spacing: 0.025em; line-height: 1.2;
+  font-size: 16px; font-weight: 400; letter-spacing: 0; line-height: 1.1;
 }
 /* The criterion number at the foot. It sits above the question's
    stretched ::after, so a press on it explains the criterion instead of
@@ -1231,7 +1246,7 @@
   margin-top: auto; min-height: 0; padding: 0;
   border: 0; border-radius: 0; cursor: pointer;
   color: var(--ink); background: none;
-  font: inherit; font-size: 16px; font-weight: 400; letter-spacing: 0.025em; line-height: 1.2;
+  font: inherit; font-size: 16px; font-weight: 400; letter-spacing: 0; line-height: 1.1;
   font-variant-numeric: tabular-nums;
 }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-wcag:enabled:hover { background: var(--hover); color: var(--hover-ink); }
@@ -1240,7 +1255,7 @@
   position: absolute; right: var(--cds-spacing-06); bottom: var(--cds-spacing-06);
   display: flex; align-items: center; justify-content: center; min-height: 32px; padding: 0 var(--cds-spacing-05);
   border-radius: 999px; background: var(--tile-fill); color: var(--tile-ink);
-  font-size: 16px; letter-spacing: 0.025em; line-height: 1.2;
+  font-size: 16px; letter-spacing: 0; line-height: 1.1;
   visibility: hidden;
 }
 .a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:enabled:is(:hover, :focus-visible)) {
@@ -1252,17 +1267,17 @@
 .a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:disabled) { border: 1px dashed var(--ink); }
 .a11y-widget-biz .a11y-prompts .a11y-prompt-q:disabled { cursor: default; }
 .a11y-widget-biz .a11y-prompt-more { text-align: left; margin: var(--cds-spacing-07) 0 0; }
-.a11y-widget-biz .a11y-status-chip { font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-status-chip { font-size: 16px; letter-spacing: 0; }
 .a11y-widget-biz .a11y-accordion-title .a11y-accordion-head > span:first-child { flex: 0 1 auto; }
 
 /* A notice: its mark hangs, its title and the line under it beside it. */
 .a11y-widget-biz .a11y-note { display: grid; grid-template-columns: minmax(0, 1fr); align-items: baseline; margin: 0 0 var(--cds-spacing-07); }
 .a11y-widget-biz .a11y-note-title { font-weight: 400; }
-.a11y-widget-biz .a11y-note-sub { font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-note-sub { font-size: 16px; letter-spacing: 0; }
 
 /* The legal result marks are the severity highlight, same words, same colours. */
 .a11y-widget-biz .a11y-legal-mark {
-  display: inline-block; margin-top: var(--cds-spacing-02); font-size: 16px; letter-spacing: 0.025em; color: var(--hl-green-ink); background: var(--hl-green);
+  display: inline-block; margin-top: var(--cds-spacing-02); font-size: 16px; letter-spacing: 0; color: var(--hl-green-ink); background: var(--hl-green);
   padding: 0 var(--cds-spacing-02); border-radius: 0.9em 0.45em 0.9em 0.55em / 0.7em 0.5em 0.7em 0.5em;
   box-shadow: 0.14em 0 0 var(--hl-cap-a), -0.14em 0 0 var(--hl-cap-b);
 }
@@ -1273,23 +1288,23 @@
 
 /* The Sections rail: small print, no bullets, the current section in Medium. */
 .a11y-widget-biz .a11y-shell-nav ul { list-style: none; padding: 0; margin: 0; }
-.a11y-widget-biz .a11y-shell-nav-head { margin: 0 0 var(--cds-spacing-03); font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-shell-nav-head { margin: 0 0 var(--cds-spacing-03); font-size: 16px; letter-spacing: 0; }
 .a11y-widget-biz .a11y-shell-nav-toggle {
-  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--cds-spacing-05); font: inherit; font-size: 16px; letter-spacing: 0.025em; text-align: start;
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--cds-spacing-05); font: inherit; font-size: 16px; letter-spacing: 0; text-align: start;
   padding: 0; border: 0; border-radius: 0; background: none; color: var(--ink);
 }
 .a11y-widget-biz .a11y-shell-nav-toggle:enabled:hover { background: none; color: var(--ink); }
 .a11y-widget-biz .a11y-shell-nav-heading { font-weight: 400; }
-.a11y-widget-biz .a11y-shell-nav-count { font-size: 16px; letter-spacing: 0.025em; font-weight: 400; }
+.a11y-widget-biz .a11y-shell-nav-count { font-size: 16px; letter-spacing: 0; font-weight: 400; }
 .a11y-widget-biz .a11y-shell-nav-group { margin: 0 0 var(--cds-spacing-06); }
-.a11y-widget-biz .a11y-shell-nav-group-label { display: block; font-size: 16px; letter-spacing: 0.025em; font-weight: 400; }
-.a11y-widget-biz .a11y-shell-nav-link { font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-shell-nav-group-label { display: block; font-size: 16px; letter-spacing: 0; font-weight: 400; }
+.a11y-widget-biz .a11y-shell-nav-link { font-size: 16px; letter-spacing: 0; }
 /* The rail's host and date line is small print like the links above it. */
-.a11y-widget-biz .a11y-shell-nav-meta { font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-shell-nav-meta { font-size: 16px; letter-spacing: 0; }
 .a11y-widget-biz .a11y-shell-nav-link[aria-current="true"] { font-weight: 400; }
 
 .a11y-widget-biz .a11y-status-chip-critical { background: var(--hl-orange); }
-.a11y-widget-biz .a11y-ai-toggle { display: flex; align-items: center; gap: var(--cds-spacing-04); font-size: 16px; letter-spacing: 0.025em; margin: 0 0 var(--cds-spacing-05); }
+.a11y-widget-biz .a11y-ai-toggle { display: flex; align-items: center; gap: var(--cds-spacing-04); font-size: 16px; letter-spacing: 0; margin: 0 0 var(--cds-spacing-05); }
 
 /* The severity badge over each finding's title stays on one line. */
 .a11y-widget-biz .a11y-finding-sev-fold .a11y-sev { white-space: nowrap; }
@@ -1308,11 +1323,11 @@
 /* An expanded finding: each part is a small label over its sentence. */
 .a11y-widget-biz :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo) > strong:first-child,
 .a11y-widget-biz .a11y-finding-steps > p > strong,
-.a11y-widget-biz .a11y-affected-label > strong { display: block; font-size: 16px; letter-spacing: 0.025em; font-weight: 400; }
+.a11y-widget-biz .a11y-affected-label > strong { display: block; font-size: 16px; letter-spacing: 0; font-weight: 400; }
 .a11y-widget-biz .a11y-finding-steps ul { margin: 0 0 var(--cds-spacing-07); }
 .a11y-widget-biz .a11y-occurrence-list { list-style: none; padding: 0; margin: 0 0 var(--cds-spacing-07); }
 .a11y-widget-biz .a11y-occurrence { margin: 0 0 var(--cds-spacing-05); }
-.a11y-widget-biz .a11y-occurrence-count { margin-inline-start: var(--cds-spacing-03); font-size: 16px; letter-spacing: 0.025em; font-weight: 400; }
+.a11y-widget-biz .a11y-occurrence-count { margin-inline-start: var(--cds-spacing-03); font-size: 16px; letter-spacing: 0; font-weight: 400; }
 
 /* ═══ THE EXPANDED FINDING AS ONE RULED BLOCK ══════════════════════════════
    User's instruction, 4 Nov 2026: a heavy ink rule across the top, one
@@ -1362,8 +1377,8 @@
 .a11y-widget-biz .a11y-fd .a11y-finding-steps > p > strong,
 .a11y-widget-biz .a11y-fd .a11y-affected-label > strong {
   display: block; margin: 0 0 var(--cds-spacing-03); padding-bottom: var(--cds-spacing-04); border-bottom: 1px solid var(--ink);
-  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-size: 16px; line-height: 1.2;
-  letter-spacing: 0.04em; text-transform: uppercase;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-size: 16px; line-height: 1.1;
+  letter-spacing: 0; text-transform: uppercase;
 }
 .a11y-widget-biz .a11y-fd .a11y-fix-once > strong { font-weight: 400; }
 /* The short parts as cards (user's instruction, 17 Nov 2026: "too many
@@ -1416,7 +1431,7 @@
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-points > li:last-child { margin-bottom: 0; }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > * > strong:first-child {
   flex: none; margin: 0; padding: 0 0 var(--cds-spacing-03); border: 0; border-bottom: 1px solid var(--ink); border-radius: 0; background: none; color: inherit;
-  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; text-transform: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-size: 16px; line-height: 1.1; letter-spacing: 0; text-transform: none;
 }
 .a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child .a11y-fd-body {
   display: block; margin-block: 0; max-width: 100%;}
@@ -1489,12 +1504,12 @@
 }
 .a11y-widget-biz .a11y-fd .a11y-pro-line:not(:has(> strong:first-child)) { text-indent: 0; }
 .a11y-widget-biz .a11y-fd .a11y-pro-block > .a11y-pro-snippet { margin: var(--cds-spacing-03) 0 var(--cds-spacing-03) 288px; }
-.a11y-widget-biz .a11y-fd .a11y-finding-level-fold { font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-size: 16px; letter-spacing: 0.025em; line-height: 1.2; margin-bottom: var(--cds-spacing-06); }
+.a11y-widget-biz .a11y-fd .a11y-finding-level-fold { font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-size: 16px; letter-spacing: 0; line-height: 1.1; margin-bottom: var(--cds-spacing-06); }
 /* Learn more at the size of What to do above it, 32px (user's instruction,
    24 Nov 2026, "same size text as text above it"). */
 .a11y-widget-biz .a11y-fd .a11y-fd-learn { font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-size: inherit; line-height: 1.1; letter-spacing: inherit; }
-.a11y-widget-biz .a11y-fd .a11y-occurrence-list { font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-size: 16px; letter-spacing: 0.025em; }
-.a11y-widget-biz .a11y-fd .a11y-tech-details > summary { font-size: 16px; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; }
+.a11y-widget-biz .a11y-fd .a11y-occurrence-list { font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-size: 16px; letter-spacing: 0; }
+.a11y-widget-biz .a11y-fd .a11y-tech-details > summary { font-size: 16px; text-transform: uppercase; letter-spacing: 0; cursor: pointer; }
 /* The affected elements, two to a row (user's instruction, 18 Nov 2026,
    "put into cards so its two per row"). The cards' #f0efe8 ground and 20px
    corners went with the finding's own cards (user's word, 20 Nov 2026,
@@ -1531,10 +1546,10 @@
 /* The professional score: the number is the big word, the rest small print under it. */
 .a11y-widget-biz .a11y-pro-score { display: flex; align-items: baseline; gap: var(--cds-spacing-04); margin: 0 0 var(--cds-spacing-04); }
 .a11y-widget-biz .a11y-pro-score-num { font-size: 43px; letter-spacing: 0; font-weight: 400; line-height: 1; }
-.a11y-widget-biz .a11y-pro-score-of { font-size: 16px; letter-spacing: 0.025em; }
-.a11y-widget-biz .a11y-pro-eyebrow { font-size: 16px; letter-spacing: 0.025em; font-weight: 400; margin: 0 0 var(--cds-spacing-03); }
-.a11y-widget-biz .a11y-pro-count { font-size: 16px; letter-spacing: 0.025em; }
-.a11y-widget-biz .a11y-pro-chips { display: flex; flex-wrap: wrap; gap: var(--cds-spacing-03) var(--cds-spacing-05); margin: 0 0 var(--cds-spacing-05); font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-pro-score-of { font-size: 16px; letter-spacing: 0; }
+.a11y-widget-biz .a11y-pro-eyebrow { font-size: 16px; letter-spacing: 0; font-weight: 400; margin: 0 0 var(--cds-spacing-03); }
+.a11y-widget-biz .a11y-pro-count { font-size: 16px; letter-spacing: 0; }
+.a11y-widget-biz .a11y-pro-chips { display: flex; flex-wrap: wrap; gap: var(--cds-spacing-03) var(--cds-spacing-05); margin: 0 0 var(--cds-spacing-05); font-size: 16px; letter-spacing: 0; }
 .a11y-widget-biz .a11y-pro-jump { display: inline-flex; align-items: baseline; gap: var(--cds-spacing-04); }
 
 /* ═══ SPECIMEN TILES FOR THE REPORT'S GROUPS (user's instruction, 4 Nov 2026) ═
@@ -1608,7 +1623,7 @@
 .a11y-widget-biz .a11y-pro-row > span:first-child,
 .a11y-widget-biz .a11y-manual-row > .a11y-conf-id {
   display: block; margin: 0 0 var(--cds-spacing-03); padding: 0 0 var(--cds-spacing-03); border-bottom: 1px solid var(--ink); text-align: start;
-  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
   text-transform: none;
 }
 /* The lines: Jokker 18px, the rows of a ruled column. */
@@ -1628,7 +1643,7 @@
 }
 /* Small print under the words stays Jokker at 15px or 18px. */
 .a11y-widget-biz .a11y-spec-card > .a11y-spec-value > .a11y-spec-gloss { margin-top: var(--cds-spacing-05); font-family: "Jokker", "DejaVu Sans", sans-serif; }
-.a11y-widget-biz .a11y-manual-row > .a11y-conf-body > .a11y-conf-plain { display: block; margin-top: var(--cds-spacing-03); font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-manual-row > .a11y-conf-body > .a11y-conf-plain { display: block; margin-top: var(--cds-spacing-03); font-size: 16px; letter-spacing: 0; }
 .a11y-widget-biz .a11y-manual-row > :is(.a11y-conf-body, .a11y-manual-actions) { display: block; }
 .a11y-widget-biz .a11y-manual-row > .a11y-manual-actions { margin-top: var(--cds-spacing-07); }
 
@@ -1636,7 +1651,7 @@
 .a11y-widget-biz .a11y-next-list > li:has(> .a11y-next-crit) {
   display: grid; grid-template-columns: auto minmax(0, 1fr); align-content: start; column-gap: var(--cds-spacing-05);
 }
-.a11y-widget-biz .a11y-next-list > li > .a11y-next-level { grid-row: 1; grid-column: 2; font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-next-list > li > .a11y-next-level { grid-row: 1; grid-column: 2; font-size: 16px; letter-spacing: 0; }
 .a11y-widget-biz .a11y-next-list > li > .a11y-next-title { grid-column: 1 / -1; }
 
 /* The whole line is the control. Hover underlines the title; the open
@@ -1704,7 +1719,7 @@
   .a11y-widget-biz .a11y-acr .a11y-accordion-head:enabled:hover > span { text-decoration: underline; text-underline-offset: 0.12em; text-decoration-thickness: 1px; }
 }
 .a11y-widget-biz .a11y-acr .a11y-accordion-head .a11y-section-count {
-  display: block; margin-top: var(--cds-spacing-03); font-size: 16px; font-weight: 400; letter-spacing: 0.025em; line-height: 1.2;
+  display: block; margin-top: var(--cds-spacing-03); font-size: 16px; font-weight: 400; letter-spacing: 0; line-height: 1.1;
   text-decoration: none;
 }
 .a11y-widget-biz .a11y-acr .a11y-section-head > :not(.a11y-accordion-row),
@@ -1764,7 +1779,7 @@
    Everything spaced in em (paragraphs, turns, the speaker gutter) follows the
    new body size on its own. */
 @media (max-width: 671px) {
-  .a11y-widget-biz { font-size: 22px; letter-spacing: 0.015em; padding: var(--cds-spacing-05); }
+  .a11y-widget-biz { font-size: 22px; letter-spacing: 0; padding: var(--cds-spacing-05); }
   .a11y-widget-biz :is(h1, h2, h3, h4) { font-size: inherit; letter-spacing: inherit; line-height: 1.1; }
   .a11y-widget-biz .a11y-legal-count { font-size: inherit; letter-spacing: inherit; }
   .a11y-widget-biz .a11y-dn-link { font-size: inherit; letter-spacing: inherit; }
@@ -1820,7 +1835,7 @@
 }
 .a11y-widget-biz .a11y-print-cards .a11y-finding-header > * { min-width: 0; max-width: 100%; }
 .a11y-widget-biz .a11y-print-cards .a11y-finding-header > .a11y-sev {
-  margin-inline: var(--cds-spacing-03); padding-block: var(--cds-spacing-01); line-height: 1.25; white-space: normal;
+  margin-inline: var(--cds-spacing-03); padding-block: var(--cds-spacing-01); line-height: 1.1; white-space: normal;
 }
 .a11y-widget-biz .a11y-print-cards .a11y-finding-desc {
   display: block; font-size: inherit; font-weight: 400; line-height: 1.1; letter-spacing: inherit;
@@ -1829,7 +1844,7 @@
 /* The criterion is small print under the title, on its own line: set after the
    title on the same line it welded onto the title's last word. */
 .a11y-widget-biz .a11y-print-cards .a11y-finding-criterion {
-  display: block; margin-top: var(--cds-spacing-03); font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  display: block; margin-top: var(--cds-spacing-03); font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz .a11y-print-cards .a11y-finding-meta {
   display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--cds-spacing-04) var(--cds-spacing-07);
@@ -1884,9 +1899,9 @@
    (pictureShows), then the selector in the professional view. Each its own
    line, at the label size. */
 .a11y-widget-biz .a11y-shot-caption { display: block; margin-top: var(--cds-spacing-04); }
-.a11y-widget-biz .a11y-shot-shows { display: block; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-shot-shows { display: block; font-size: 16px; line-height: 1.1; letter-spacing: 0; }
 .a11y-widget-biz .a11y-shot-locator {
-  display: block; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; overflow-wrap: anywhere;
+  display: block; font-size: 16px; line-height: 1.1; letter-spacing: 0; overflow-wrap: anywhere;
 }
 .a11y-widget-biz .a11y-shot-shows + .a11y-shot-locator { margin-top: var(--cds-spacing-04); }
 .a11y-widget-biz .a11y-shot-locator strong { font-weight: 400; }
@@ -1920,7 +1935,7 @@
   position: relative; z-index: 1; display: block; width: fit-content; max-width: 85%;
   box-sizing: border-box; margin: 0 var(--cds-spacing-05) calc(var(--cds-spacing-05) * -1) auto; padding: var(--cds-spacing-03) var(--cds-spacing-05) var(--cds-spacing-04);
   border: 1px solid transparent; border-radius: 22px; background: var(--tile); color: var(--tile-ink);
-  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em; overflow-wrap: anywhere;
+  font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0; overflow-wrap: anywhere;
   transform: rotate(2deg); transform-origin: 100% 100%;
 }
 .a11y-widget-biz .a11y-shot-bubble::after {
@@ -1932,7 +1947,7 @@
   .a11y-widget-biz .a11y-shot-bubble::after { display: none; }
 }
 @media (max-width: 671px) {
-  .a11y-widget-biz .a11y-shot-bubble { margin-right: var(--cds-spacing-03); padding: var(--cds-spacing-03) var(--cds-spacing-05) var(--cds-spacing-03); font-size: 16px; letter-spacing: 0.025em; }
+  .a11y-widget-biz .a11y-shot-bubble { margin-right: var(--cds-spacing-03); padding: var(--cds-spacing-03) var(--cds-spacing-05) var(--cds-spacing-03); font-size: 16px; letter-spacing: 0; }
 }
 /* The AI fix (CodeFixSuggestion): the expanded finding's own parts at small
    size. A 15px uppercase label over a 1px ink rule, the note at 18px, then the
@@ -1945,12 +1960,12 @@
    the label, the note and the first key, a code block and the next key or
    the Copy button). A key stays close over its own code block, 0.4em, so
    each key reads with the markup it names. */
-.a11y-widget-biz .a11y-code-fix { margin: var(--cds-spacing-07) 0 0; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; }
-.a11y-widget-biz .a11y-code-fix-label { margin: 0 0 var(--cds-spacing-06); padding-bottom: var(--cds-spacing-04); border-bottom: 1px solid var(--ink); font-size: 16px; letter-spacing: 0.025em; }
-.a11y-widget-biz .a11y-code-fix-label > strong { font-weight: 400; text-transform: uppercase; letter-spacing: 0.04em; margin-inline-end: var(--cds-spacing-04); }
+.a11y-widget-biz .a11y-code-fix { margin: var(--cds-spacing-07) 0 0; font-size: 16px; line-height: 1.1; letter-spacing: 0; }
+.a11y-widget-biz .a11y-code-fix-label { margin: 0 0 var(--cds-spacing-06); padding-bottom: var(--cds-spacing-04); border-bottom: 1px solid var(--ink); font-size: 16px; letter-spacing: 0; }
+.a11y-widget-biz .a11y-code-fix-label > strong { font-weight: 400; text-transform: uppercase; letter-spacing: 0; margin-inline-end: var(--cds-spacing-04); }
 .a11y-widget-biz .a11y-code-fix-note { margin: 0 0 var(--cds-spacing-08); overflow-wrap: break-word; hyphens: manual; }
-.a11y-widget-biz .a11y-code-fix-key { margin: var(--cds-spacing-06) 0 var(--cds-spacing-03); font-size: 16px; letter-spacing: 0.025em; }
-.a11y-widget-biz .a11y-code-fix-pre { margin: 0; padding: var(--cds-spacing-03) var(--cds-spacing-04); border: 1px solid var(--ink); font-size: 16px; letter-spacing: 0.025em; line-height: 1.2; white-space: pre-wrap; overflow-wrap: anywhere; }
+.a11y-widget-biz .a11y-code-fix-key { margin: var(--cds-spacing-06) 0 var(--cds-spacing-03); font-size: 16px; letter-spacing: 0; }
+.a11y-widget-biz .a11y-code-fix-pre { margin: 0; padding: var(--cds-spacing-03) var(--cds-spacing-04); border: 1px solid var(--ink); font-size: 16px; letter-spacing: 0; line-height: 1.1; white-space: pre-wrap; overflow-wrap: anywhere; }
 .a11y-widget-biz .a11y-code-fix-after { border-width: 2px; }
 .a11y-widget-biz .a11y-code-fix > .a11y-copy-btn { margin-top: var(--cds-spacing-08); }
 
@@ -2063,7 +2078,7 @@
 @media (max-width: 671px) {
   .a11y-widget-biz .a11y-input-shell > .a11y-login-toggle { flex: 0 1 auto; min-width: 0; white-space: normal; }
   .a11y-widget-biz .a11y-legal-mark { white-space: normal; max-width: 100%; }
-  .a11y-widget-biz .a11y-datatable-schedule th { font-size: 16px; letter-spacing: 0.025em; }
+  .a11y-widget-biz .a11y-datatable-schedule th { font-size: 16px; letter-spacing: 0; }
 }
 
 /* ═══ THE CONVERSATION ON A PHONE (user's instruction, 17 Nov 2026,
@@ -2100,19 +2115,19 @@
     aspect-ratio: auto; min-height: 0; padding: var(--cds-spacing-05) var(--cds-spacing-05); gap: var(--cds-spacing-03); border-radius: 18px;
     scroll-snap-align: start;
   }
-  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-label { font-size: 16px; letter-spacing: 0.025em; }
-  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-ask { margin-top: 0; font-size: 16px; letter-spacing: 0.025em; line-height: 1.2; }
+  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-label { font-size: 16px; letter-spacing: 0; }
+  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-ask { margin-top: 0; font-size: 16px; letter-spacing: 0; line-height: 1.1; }
   .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-go { display: none; }
-  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-wcag { margin-top: var(--cds-spacing-03); font-size: 16px; letter-spacing: 0.025em; line-height: 1.2; }
+  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-wcag { margin-top: var(--cds-spacing-03); font-size: 16px; letter-spacing: 0; line-height: 1.1; }
   .a11y-widget-biz .a11y-chat .a11y-prompt-more { text-align: start; margin: var(--cds-spacing-03) 0 0; }
-  .a11y-widget-biz .a11y-chat .a11y-prompt-more .a11y-btn { font-size: 16px; letter-spacing: 0.025em; }
+  .a11y-widget-biz .a11y-chat .a11y-prompt-more .a11y-btn { font-size: 16px; letter-spacing: 0; }
 
   .a11y-widget-biz .a11y-chat .a11y-chat-dock { padding-block: var(--cds-spacing-03) calc(var(--cds-spacing-03) + env(safe-area-inset-bottom, 0px)); }
   .a11y-widget-biz .a11y-chat .a11y-chat-box { border: 1px dotted var(--ink); border-radius: 24px; padding: var(--cds-spacing-03) var(--cds-spacing-03) var(--cds-spacing-03) var(--cds-spacing-05); }
-  .a11y-widget-biz .a11y-chat-dock .a11y-chat-composer .a11y-chat-box textarea { min-height: 1.4em; font-size: 16px; letter-spacing: 0.025em; line-height: 1.2; }
+  .a11y-widget-biz .a11y-chat-dock .a11y-chat-composer .a11y-chat-box textarea { min-height: 1.4em; font-size: 16px; letter-spacing: 0; line-height: 1.1; }
   .a11y-widget-biz .a11y-chat .a11y-chat-box-row { flex-wrap: nowrap; margin-top: var(--cds-spacing-03); }
   .a11y-widget-biz .a11y-chat .a11y-chat-box-start { min-width: 0; }
-  .a11y-widget-biz .a11y-chat .a11y-chat-box .a11y-btn { font-size: 16px; letter-spacing: 0.025em; min-height: 40px; padding: 0 var(--cds-spacing-05); }
+  .a11y-widget-biz .a11y-chat .a11y-chat-box .a11y-btn { font-size: 16px; letter-spacing: 0; min-height: 40px; padding: 0 var(--cds-spacing-05); }
   .a11y-widget-biz .a11y-chat .a11y-chat-box .a11y-btn[type="submit"] {
     flex: none; display: inline-flex; align-items: center; justify-content: center;
     /* 34px, the height of the box's pills beside it (user's instruction,
@@ -2142,7 +2157,7 @@
   /* While voice control speaks, its note needs the width: the row wraps. */
   .a11y-widget-biz .a11y-chat .a11y-chat-box-start:has(.a11y-voice-note:not(:empty)) { flex-wrap: wrap; overflow-x: visible; }
   .a11y-widget-biz .a11y-chat .a11y-chat-box .a11y-chat-box-start .a11y-btn {
-    flex: none; white-space: nowrap; font-size: 16px; letter-spacing: 0.025em; min-height: 32px; padding: 0 var(--cds-spacing-05);
+    flex: none; white-space: nowrap; font-size: 16px; letter-spacing: 0; min-height: 32px; padding: 0 var(--cds-spacing-05);
   }
   .a11y-widget-biz .a11y-chat .a11y-chat-send-icon { display: block; width: 16px; height: 16px; }
   .a11y-widget-biz .a11y-chat .a11y-chat-send-word,
@@ -2164,9 +2179,9 @@
      centred in the line as above. The plan tiles keep no round. */
   .a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-chat-text ol:not(.a11y-chat-plan) { padding-inline-start: var(--cds-spacing-07); }
   .a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-chat-text ol > li::before {
-    inset-inline-start: -34px; top: calc((1lh - 24px) / 2); width: 24px; height: 24px; font-size: 16px; letter-spacing: 0.025em;
+    inset-inline-start: -34px; top: calc((1lh - 24px) / 2); width: 24px; height: 24px; font-size: 16px; letter-spacing: 0;
   }
-  .a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-caps { font-size: inherit; letter-spacing: 0.05em; }
+  .a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-caps { font-size: inherit; letter-spacing: 0; }
   .a11y-widget-biz .a11y-chat .a11y-chat-thread :is(pre, code) { font-size: inherit; line-height: 1.1; }
   .a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-chat-plan-title { font-size: inherit; letter-spacing: inherit; }
   .a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-chat-plan-text { font-size: inherit; letter-spacing: inherit; }
@@ -2216,7 +2231,7 @@
 .a11y-widget-biz .a11y-chats {
   position: sticky; top: 0; box-sizing: border-box; max-height: 100dvh; overflow-y: auto;
   padding: var(--cds-spacing-05) var(--cds-spacing-05) var(--cds-spacing-05) 0; border-right: 1px solid var(--ink);
-  font-size: 16px; letter-spacing: 0.025em; line-height: 1.2;
+  font-size: 16px; letter-spacing: 0; line-height: 1.1;
 }
 /* 15px, the smaller of the two label sizes (user's instruction, 20 Nov
    2026, "make this font smaller", on a screenshot of the column at 18px):
@@ -2229,12 +2244,12 @@
   align-items: center; gap: var(--cds-spacing-03); box-sizing: border-box; width: 100%; min-height: 40px;
   margin: 0; padding: var(--cds-spacing-03) var(--cds-spacing-04); border: 1px dotted var(--ink); border-radius: 12px;
   background: transparent; color: var(--ink);
-  font-size: 16px; letter-spacing: 0.025em; line-height: 1.2; text-align: start;
+  font-size: 16px; letter-spacing: 0; line-height: 1.1; text-align: start;
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-new { display: flex; font-weight: 400; }
 .a11y-widget-biz .a11y-chats .a11y-chats-toggle { display: none; border-color: transparent; font-weight: 400; }
 .a11y-widget-biz .a11y-chats .a11y-chats-head {
-  margin: var(--cds-spacing-06) 0 var(--cds-spacing-03); padding-inline: var(--cds-spacing-04); font-size: 16px; font-weight: 400; letter-spacing: 0.025em; line-height: 1.2;
+  margin: var(--cds-spacing-06) 0 var(--cds-spacing-03); padding-inline: var(--cds-spacing-04); font-size: 16px; font-weight: 400; letter-spacing: 0; line-height: 1.1;
 }
 .a11y-widget-biz .a11y-chats .a11y-chats-list { list-style: none; margin: 0; padding: 0; }
 /* Titles on two lines (19 Nov 2026, the user's screenshot, "fix this"): on
@@ -2360,17 +2375,17 @@
 }
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-mark {
   order: 1; align-self: center; box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; background: none; box-shadow: none; color: #000;
-  font-size: 16px; letter-spacing: 0.025em; line-height: 1.2; white-space: nowrap; text-align: left;
+  font-size: 16px; letter-spacing: 0; line-height: 1.1; white-space: nowrap; text-align: left;
 }
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count {
   order: 2; margin: var(--cds-spacing-06) 0 var(--cds-spacing-03);
   font-size: inherit; font-weight: 400; line-height: 0.9; letter-spacing: inherit;
 }
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label {
-  order: 3; font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  order: 3; font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-meaning {
-  order: 4; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  order: 4; font-size: 16px; line-height: 1.1; letter-spacing: 0;
 }
 /* A tile under 280px wide (four in a row on a tablet) takes the phone's
    figure and word sizes: at 160px a two-figure count ran out of a 180px
@@ -2378,7 +2393,7 @@
    follows the tile, not the window. */
 @container a11y-legal-tile (max-width: 280px) {
   .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count { margin-top: var(--cds-spacing-04); font-size: inherit; letter-spacing: inherit; }
-  .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label { font-size: 16px; letter-spacing: 0.025em; }
+  .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label { font-size: 16px; letter-spacing: 0; }
 }
 /* The same narrow tiles take 12px sides, not 20px: the copy binds a short
    first word to the next with a no-break space ("We checked,"), and at 22px
@@ -2409,7 +2424,7 @@
     flex: none; min-height: 0; gap: var(--cds-spacing-04); padding: var(--cds-spacing-05) var(--cds-spacing-05) var(--cds-spacing-06);
   }
   .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count { margin-top: var(--cds-spacing-04); font-size: inherit; letter-spacing: inherit; }
-  .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label { font-size: 16px; letter-spacing: 0.025em; }
+  .a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label { font-size: 16px; letter-spacing: 0; }
 }
 
 /* ═══ THE SCAN FORM AS FILLED ROWS (user's instruction, 18 Nov 2026) ═════════
@@ -2440,7 +2455,7 @@
 .a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2:focus-within { outline: 2px solid var(--focus); outline-offset: -2px; }
 .a11y-widget-biz .a11y-tester .a11y-input-label,
 .a11y-widget-biz .a11y-tester .a11y-tester-rows .a11y-select2-label {
-  color: var(--tile-ink); font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  color: var(--tile-ink); font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz .a11y-tester .a11y-input-shell { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cds-spacing-03) var(--cds-spacing-04); min-width: 0; }
 /* 0,5,1 out-ranks the general field rule (0,3,1). The field's size
@@ -2452,7 +2467,7 @@
 }
 .a11y-widget-biz .a11y-tester .a11y-input-shell > input:not([type="radio"]):focus-visible { outline: none; box-shadow: none; }
 .a11y-widget-biz .a11y-tester .a11y-input-shell > input::placeholder { color: var(--tile-ink); opacity: 1; font-weight: 400; }
-.a11y-widget-biz .a11y-tester .a11y-input-shell > .a11y-login-toggle { flex: none; min-height: 36px; padding: 0 var(--cds-spacing-05); font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-tester .a11y-input-shell > .a11y-login-toggle { flex: none; min-height: 36px; padding: 0 var(--cds-spacing-05); font-size: 16px; letter-spacing: 0; }
 /* On a phone the pill may wrap and shrink, as the general rule above lets
    it: this rule's flex: none out-ranked that one, and "Detrás de un inicio
    de sesión" ran 5px past 320 with CI's wide fallback font (21 Nov 2026;
@@ -2468,7 +2483,7 @@
 .a11y-widget-biz .a11y-tester .a11y-seg {
   display: flex; align-items: center; gap: var(--cds-spacing-04); box-sizing: border-box; min-width: 0; min-height: 60px; padding: var(--cds-spacing-04) var(--cds-spacing-05);
   border: 1px dotted var(--tile-ink); border-radius: 20px; background: transparent; color: inherit; cursor: pointer;
-  font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 16px; line-height: 1.1; letter-spacing: 0;
 }
 /* The big toggles of 18 Nov 2026 and the AI review switch are gone: see
    THE SCAN FORM IN THE BUTTON AND FIELD STYLE at the end. */
@@ -2482,7 +2497,7 @@
 .a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2 { display: grid; justify-items: stretch; gap: var(--cds-spacing-02); }
 .a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2 .a11y-select2-field.a11y-select2-field {
   width: 100%; min-width: 0; min-height: 40px; padding: 0 var(--cds-spacing-10) 0 0; border: 0; border-radius: 0;
-  background-color: transparent; color: var(--tile-ink); font-size: 16px; letter-spacing: 0.025em;
+  background-color: transparent; color: var(--tile-ink); font-size: 16px; letter-spacing: 0;
 }
 .a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2 .a11y-select2-field.a11y-select2-field:focus-visible { outline: none; box-shadow: none; }
 /* The action: one wide block, its words large and left; solid (black in
@@ -2492,7 +2507,7 @@
   display: block; width: 100%; min-height: 120px; padding: var(--cds-spacing-05) var(--cds-spacing-06); border-radius: 12px; text-align: start;
   font-size: inherit; font-weight: 400; line-height: 1.1; letter-spacing: inherit;
 }
-.a11y-widget-biz .a11y-tester > .a11y-url-submit > .a11y-url-submit-note { font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-tester > .a11y-url-submit > .a11y-url-submit-note { font-size: 16px; letter-spacing: 0; }
 @media (max-width: 671px) {
   .a11y-widget-biz .a11y-tester > .a11y-tester-name { font-size: inherit; letter-spacing: inherit; }
   .a11y-widget-biz .a11y-tester > .a11y-tester-sub { margin-top: var(--cds-spacing-06); font-size: inherit; letter-spacing: inherit; }
@@ -2507,20 +2522,20 @@
    reads as a link by its place), the hovered row and the current section on
    the #f0efe8 ground with black words in both themes, the current one in
    Medium. (Hover became the marker yellow later the same day.) Group labels at 15px Medium sit over their rows like Recent. */
-.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-toggle { font-size: 16px; letter-spacing: 0.025em; gap: 0 var(--cds-spacing-04); }
-.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-count { font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-toggle { font-size: 16px; letter-spacing: 0; gap: 0 var(--cds-spacing-04); }
+.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-count { font-size: 16px; letter-spacing: 0; }
 /* Where the rail runs the full width (above the report rather than beside
    it), its rows keep to a column, so the current section's ground is a row
    and not a band across the page. */
 .a11y-widget-biz .a11y-shell-nav > ul { max-width: 360px; }
 .a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-group { margin: 0 0 var(--cds-spacing-05); }
 .a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-group-label {
-  margin: 0 0 var(--cds-spacing-02); padding-inline: var(--cds-spacing-04); font-size: 16px; letter-spacing: 0.025em; line-height: 1.2;
+  margin: 0 0 var(--cds-spacing-02); padding-inline: var(--cds-spacing-04); font-size: 16px; letter-spacing: 0; line-height: 1.1;
 }
 .a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-link {
   display: block; margin: 0 0 var(--cds-spacing-01); padding: var(--cds-spacing-03) var(--cds-spacing-04); border-radius: 12px;
   color: var(--ink); text-decoration: none;
-  font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 16px; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-link[aria-current="true"] { background: var(--tile); color: var(--tile-ink); }
 /* Hover is the marker yellow, as on buttons (same day, "make hover yellow"). */
@@ -2542,15 +2557,15 @@
 .a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-toggle {
   display: flex; flex-wrap: wrap; align-items: center; gap: var(--cds-spacing-03) var(--cds-spacing-05); width: auto; min-height: 0; margin: 0; padding: 0;
   border: 0; border-radius: 0; background: none; color: var(--ink);
-  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em; text-align: start;
+  font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0; text-align: start;
 }
 .a11y-widget-biz .a11y-w22 > .a11y-next > .a11y-next-toggle:enabled:hover { background: none; border-color: transparent; color: var(--ink); }
 .a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-standard { display: contents; }
 .a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-standard > strong { font-weight: 400; }
-.a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-count { padding: var(--cds-spacing-01) var(--cds-spacing-03); border-radius: 999px; background: var(--hl-orange); color: #000; font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-count { padding: var(--cds-spacing-01) var(--cds-spacing-03); border-radius: 999px; background: var(--hl-orange); color: #000; font-size: 16px; letter-spacing: 0; }
 .a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-chevron {
   display: inline-grid; place-content: center; box-sizing: border-box; width: 40px; height: 40px;
-  border: 1px solid var(--ink); border-radius: 50%; font-size: 16px; letter-spacing: 0.025em; line-height: 1;
+  border: 1px solid var(--ink); border-radius: 50%; font-size: 16px; letter-spacing: 0; line-height: 1;
 }
 .a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-chevron[data-open="true"] { transform: rotate(180deg); }
 .a11y-widget-biz .a11y-w22 .a11y-next-toggle:enabled:hover > .a11y-next-chevron { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
@@ -2600,7 +2615,7 @@
 /* "Back to the chat" under the form is a way out, not a second action: at
    the 22px button size it stood as large as Start the scan. */
 .a11y-widget-biz .a11y-chat-alt { margin-bottom: var(--cds-spacing-10); }
-.a11y-widget-biz .a11y-chat-alt > .a11y-btn { min-height: 40px; padding: 0 var(--cds-spacing-05); font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-chat-alt > .a11y-btn { min-height: 40px; padding: 0 var(--cds-spacing-05); font-size: 16px; letter-spacing: 0; }
 
 /* VOICE CONTROL: one toggle in the chat's box, beside Back (user's
    instruction, 20 Nov 2026, "move button into chat and no description
@@ -2610,7 +2625,7 @@
    stays in the tree, clipped, so the first thing said is announced. Three
    roots, like the rest of the layout layer. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-voice { display: contents; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-voice-note { flex: 1 0 100%; margin: 0; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; min-width: 0; overflow-wrap: break-word; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-voice-note { flex: 1 0 100%; margin: 0; font-size: 16px; line-height: 1.1; letter-spacing: 0; min-width: 0; overflow-wrap: break-word; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-voice-note:empty { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-voice .a11y-btn[aria-pressed="true"] { background: var(--solid); color: var(--solid-ink); }
 
@@ -2639,7 +2654,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-hist-head {
   align-self: stretch; margin: 0; padding: 0 0 var(--cds-spacing-03); border-bottom: 1px solid var(--ink); border-radius: 0; background: none; color: var(--ink);
-  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist-card > .a11y-hist-facts {
   align-self: stretch; margin: 0; padding: 0; list-style: none;
@@ -2681,10 +2696,10 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar :is(.a11y-sr-play, .a11y-sr-ctl, .a11y-sr-filter, .a11y-skip-link) {
   display: inline-flex; align-items: center; gap: var(--cds-spacing-03); flex: 0 1 auto;
   box-sizing: border-box; min-width: 0; max-width: 100%; min-height: 32px; margin: 0; padding: var(--cds-spacing-02) var(--cds-spacing-05);
-  border-radius: 10px; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  border-radius: 10px; font-size: 16px; line-height: 1.1; letter-spacing: 0;
   white-space: normal; text-align: start;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar :is(.a11y-sr-play, .a11y-sr-ctl) > svg { font-size: 16px; letter-spacing: 0.025em; flex: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar :is(.a11y-sr-play, .a11y-sr-ctl) > svg { font-size: 16px; letter-spacing: 0; flex: none; }
 
 /* THE SCREEN READER TRANSPORT (user's report, 24 Nov 2026: "there is no
    way to stop screen reader from reading page"). While it reads or is
@@ -2699,7 +2714,7 @@
   display: inline-flex; flex-wrap: wrap; gap: var(--cds-spacing-03); min-width: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-keys {
-  flex: 1 1 100%; margin: 0; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  flex: 1 1 100%; margin: 0; font-size: 16px; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar:has(+ .a11y-sr-tools) { margin-bottom: var(--cds-spacing-03); }
 /* A phone has no arrow keys to speak of; the line would only take room
@@ -2714,13 +2729,13 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-ctl {
     justify-content: center; width: 44px; padding-inline: 0;
   }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-ctl > svg { font-size: 16px; letter-spacing: 0.025em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-ctl > svg { font-size: 16px; letter-spacing: 0; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-ctl-word {
     position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); border: 0; white-space: nowrap;
   }
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar .a11y-sr-status {
-  flex: 0 1 auto; min-width: 0; margin: 0 var(--cds-spacing-03); font-size: 16px; letter-spacing: 0.025em; font-variant-numeric: tabular-nums;
+  flex: 0 1 auto; min-width: 0; margin: 0 var(--cds-spacing-03); font-size: 16px; letter-spacing: 0; font-variant-numeric: tabular-nums;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar span.a11y-sr-status:empty { display: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-bar p.a11y-sr-status { flex: 1 1 100%; margin: 0; }
@@ -2799,7 +2814,7 @@
 .a11y-widget-biz .a11y-barrier .a11y-barrier-wait:focus-visible,
 .a11y-widget-biz .a11y-barrier .a11y-chat-text h3:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
 .a11y-widget-biz .a11y-barrier .a11y-chat-text .a11y-barrier-small,
-.a11y-widget-biz .a11y-barrier .a11y-barrier-small { margin: var(--cds-spacing-04) 0 0; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-small { margin: var(--cds-spacing-04) 0 0; font-size: 16px; line-height: 1.1; letter-spacing: 0; }
 .a11y-widget-biz .a11y-barrier .a11y-chat-text h3 { margin: 0 0 var(--cds-spacing-04); font-size: inherit; font-weight: 400; line-height: 1.1; letter-spacing: inherit; }
 /* The report's lead is the assistant's sentence, so it is set as the
    turn's prose (27px/1.2), with a line under it before the report. */
@@ -2815,11 +2830,11 @@
    ruled columns elsewhere. No ground, no box. */
 .a11y-widget-biz .a11y-barrier .a11y-barrier-check { margin: var(--cds-spacing-05) 0 var(--cds-spacing-07); padding: 0; min-width: 0; }
 .a11y-widget-biz .a11y-barrier .a11y-barrier-check > div + div { margin-top: var(--cds-spacing-05); }
-.a11y-widget-biz .a11y-barrier .a11y-barrier-check dt { padding-bottom: var(--cds-spacing-02); border-bottom: 1px solid var(--ink); font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-check dt { padding-bottom: var(--cds-spacing-02); border-bottom: 1px solid var(--ink); font-size: 16px; line-height: 1.1; letter-spacing: 0; }
 .a11y-widget-biz .a11y-barrier .a11y-barrier-check dd { margin: var(--cds-spacing-02) 0 0; hyphens: auto; overflow-wrap: break-word; }
 
 /* Under your answer: what we made of it, and Change. */
-.a11y-widget-biz .a11y-barrier .a11y-barrier-note { margin: var(--cds-spacing-03) 0 0; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; overflow-wrap: anywhere; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-note { margin: var(--cds-spacing-03) 0 0; font-size: 16px; line-height: 1.1; letter-spacing: 0; overflow-wrap: anywhere; }
 .a11y-widget-biz .a11y-barrier .a11y-barrier-change { margin-top: var(--cds-spacing-04); }
 
 /* The answers to pick, under the question: pills in a row, as the chat's
@@ -2830,10 +2845,10 @@
    type: 50px tall became 34px, the buttons' minimum height. The phone, at 18px
    before, comes to 15px too, since 30% off 18 would be under 14px. */
 .a11y-widget-biz .a11y-barrier .a11y-barrier-picks { display: flex; flex-wrap: wrap; gap: var(--cds-spacing-03); margin-top: var(--cds-spacing-05); min-width: 0; }
-.a11y-widget-biz .a11y-barrier .a11y-barrier-pick { font-size: 16px; letter-spacing: 0.025em; max-width: 100%; height: auto; white-space: normal; text-align: start; overflow-wrap: break-word; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-pick { font-size: 16px; letter-spacing: 0; max-width: 100%; height: auto; white-space: normal; text-align: start; overflow-wrap: break-word; }
 
 /* An answer the box refused, said over what you typed. */
-.a11y-widget-biz .a11y-barrier .a11y-barrier-error { margin: 0 0 var(--cds-spacing-02); font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-error { margin: 0 0 var(--cds-spacing-02); font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0; }
 .a11y-widget-biz .a11y-barrier .a11y-barrier-error::before { content: "Error: "; }
 .a11y-widget-biz .a11y-barrier .a11y-chat-box:has(textarea[aria-invalid="true"]) { border-width: 3px; }
 
@@ -2848,7 +2863,7 @@
 .a11y-widget-biz .a11y-barrier .a11y-barrier-doc h4 { margin: 0 0 var(--cds-spacing-06); font-size: inherit; font-weight: 400; line-height: 1.1; letter-spacing: inherit; }
 .a11y-widget-biz .a11y-barrier .a11y-barrier-doc h5 {
   margin: var(--cds-spacing-06) 0 var(--cds-spacing-03); padding: 0 0 var(--cds-spacing-03); border-bottom: 1px solid var(--ink);
-  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz .a11y-barrier .a11y-barrier-doc h4 + h5 { margin-top: 0; }
 .a11y-widget-biz .a11y-barrier .a11y-barrier-doc p,
@@ -2857,7 +2872,7 @@
 .a11y-widget-biz .a11y-barrier .a11y-barrier-doc li { padding: 0; }
 .a11y-widget-biz .a11y-barrier .a11y-barrier-doc li::before { content: none; }
 .a11y-widget-biz .a11y-barrier .a11y-barrier-doc li + li { margin-top: var(--cds-spacing-03); }
-.a11y-widget-biz .a11y-barrier .a11y-barrier-doc .a11y-barrier-doc-note { margin-top: var(--cds-spacing-05); font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-barrier .a11y-barrier-doc .a11y-barrier-doc-note { margin-top: var(--cds-spacing-05); font-size: 16px; line-height: 1.1; letter-spacing: 0; }
 .a11y-widget-biz .a11y-barrier .a11y-barrier-doc .a11y-barrier-doc-note + .a11y-barrier-doc-note { margin-top: var(--cds-spacing-03); }
 
 /* Phone: the chat's phone sizes (19px conversation) come from the chat's
@@ -2923,7 +2938,7 @@
 .a11y-widget-biz .a11y-prompts .a11y-prompt-barrier .a11y-prompt-q:enabled:is(:hover, :focus-visible) .a11y-prompt-go { background: #fff; color: #000; }
 @media (max-width: 671px) {
   .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-grid { grid-template-columns: none; }
-  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-barrier .a11y-prompt-go { display: flex; margin-top: var(--cds-spacing-03); font-size: 16px; letter-spacing: 0.025em; min-height: 32px; }
+  .a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-barrier .a11y-prompt-go { display: flex; margin-top: var(--cds-spacing-03); font-size: 16px; letter-spacing: 0; min-height: 32px; }
 }
 
 /* The result tiles are buttons (user's instruction, 20 Nov 2026, "make this
@@ -2983,7 +2998,7 @@
 .a11y-widget-biz .a11y-chat-layout > .a11y-chats {
   display: flex; flex-direction: column; align-self: stretch; overflow: visible;
 }
-.a11y-widget-biz .a11y-chats > .a11y-chats-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+.a11y-widget-biz .a11y-chats > .a11y-chats-body { flex: 1 1 auto; min-width: 0; min-height: 0; overflow-y: auto; }
 /* No space above the foot's rule (user's instruction, 24 Nov 2026, "delete
    white space above the line"): the conversations scroll right up to it.
    It had 16px over it. */
@@ -2995,7 +3010,7 @@
   display: flex; align-items: center; gap: var(--cds-spacing-03); box-sizing: border-box; width: 100%; min-height: 44px;
   margin: 0; padding: var(--cds-spacing-03) var(--cds-spacing-04); border: 1px dotted transparent; border-radius: 12px;
   background: transparent; color: var(--ink);
-  font-size: 16px; font-weight: 400; letter-spacing: 0.025em; line-height: 1.2; text-align: start;
+  font-size: 16px; font-weight: 400; letter-spacing: 0; line-height: 1.1; text-align: start;
 }
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-current { flex: 1 1 auto; min-width: 0; font-weight: 400; }
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-chevron { flex: none; display: inline-flex; transition: transform 0.15s; }
@@ -3015,14 +3030,14 @@
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-option {
   display: block; width: 100%; min-height: 40px; padding: var(--cds-spacing-03) var(--cds-spacing-04); text-align: start;
   border: 1px dotted transparent; border-radius: 12px; background: transparent; color: var(--ink);
-  font-size: 16px; font-weight: 400; letter-spacing: 0.025em; line-height: 1.2;
+  font-size: 16px; font-weight: 400; letter-spacing: 0; line-height: 1.1;
 }
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-option[aria-pressed="true"] { border-color: var(--ink); font-weight: 400; }
 .a11y-widget-biz .a11y-lang-menu .a11y-lang-option:enabled:hover { background: var(--tile-fill); color: var(--ink); border-color: var(--ink); }
 /* 960px with the panel's fold above, not 640px. */
 @media (max-width: 1055px) {
   .a11y-widget-biz .a11y-chat-layout > .a11y-chats { flex-flow: row wrap; align-items: center; justify-content: space-between; }
-  .a11y-widget-biz .a11y-chats > .a11y-chats-body { order: 3; flex: 1 1 100%; overflow: visible; }
+  .a11y-widget-biz .a11y-chats > .a11y-chats-body { order: 3; flex: 1 1 100%; min-width: 0; overflow: visible; }
   .a11y-widget-biz .a11y-chats > .a11y-chats-foot { margin: 0; padding: 0; border: 0; }
   .a11y-widget-biz .a11y-lang-menu .a11y-lang-toggle { width: auto; }
   .a11y-widget-biz .a11y-lang-menu .a11y-lang-list { top: calc(100% + var(--cds-spacing-03)); bottom: auto; left: auto; min-width: 12em; }
@@ -3161,11 +3176,11 @@
 .a11y-widget-biz .a11y-chat-text > .a11y-chat-copy:last-child { margin-bottom: 0; }
 .a11y-widget-biz .a11y-chat-copy.a11y-chat-copy > .a11y-chat-copy-bar { display: flex; justify-content: flex-end; margin: 0 0 var(--cds-spacing-03); }
 .a11y-widget-biz .a11y-chat-copy.a11y-chat-copy .a11y-chat-copy-btn {
-  min-height: 32px; padding: 0 var(--cds-spacing-05); font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  min-height: 32px; padding: 0 var(--cds-spacing-05); font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz .a11y-chat-copy.a11y-chat-copy > .a11y-chat-pre {
   margin: 0; padding: 0; max-width: none; overflow: visible;
-  font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; white-space: pre-wrap; overflow-wrap: anywhere;
+  font-size: 16px; line-height: 1.1; letter-spacing: 0; white-space: pre-wrap; overflow-wrap: anywhere;
 }
 .a11y-widget-biz .a11y-chat-copy.a11y-chat-copy > .a11y-chat-pre > code { font-size: inherit; line-height: inherit; color: inherit; background: none; }
 @media (max-width: 671px) {
@@ -3184,7 +3199,7 @@
 .a11y-widget-biz .a11y-first-fix { margin: 0 0 var(--cds-spacing-10); padding: 0; }
 .a11y-widget-biz .a11y-first-fix .a11y-first-fix-label {
   margin: 0 0 var(--cds-spacing-05); padding: 0; border: 0; color: var(--ink); text-transform: none;
-  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz .a11y-first-fix .a11y-first-fix-lead {
   max-width: none; margin: 0 0 var(--cds-spacing-05);
@@ -3196,7 +3211,7 @@
 .a11y-widget-biz .a11y-first-fix .a11y-first-fix-lead > a:hover { text-decoration-thickness: 2px; }
 .a11y-widget-biz .a11y-first-fix .a11y-first-fix-how {
   max-width: none; margin: 0;
-  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 @media (max-width: 671px) {
   .a11y-widget-biz .a11y-first-fix .a11y-first-fix-lead { font-size: inherit; letter-spacing: inherit; }
@@ -3241,7 +3256,7 @@
    at 375px and broke "description" inside the word). */
 .a11y-widget-biz .a11y-finding-count-fold { display: none; }
 @container a11y-ftable (max-width: 720px) {
-  .a11y-widget-biz .a11y-finding-count-fold { display: block; margin-top: var(--cds-spacing-02); font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; }
+  .a11y-widget-biz .a11y-finding-count-fold { display: block; margin-top: var(--cds-spacing-02); font-size: 16px; line-height: 1.1; letter-spacing: 0; }
   .a11y-widget-biz :is(td, th):is([data-col="count"]) { display: none; }
   .a11y-widget-biz .a11y-datatable-schedule th[data-col="fix"] { width: 5.4em; }
   .a11y-widget-biz .a11y-datatable-schedule :is(th, td) { padding-inline-end: var(--cds-spacing-04); }
@@ -3272,11 +3287,11 @@
    out by rules that out-rank the general ones, not by one :not(:has()):
    a selector list with a nested :has() is dropped whole. The heading's own
    0.3em under it (the statement rule above, more specific) is untouched. */
-.a11y-widget-biz .a11y-chat-text > p:has(+ p) { margin-bottom: 0; }
-.a11y-widget-biz .a11y-chat-text > p + p { text-indent: 1em; }
-.a11y-widget-biz .a11y-stmt-card .a11y-stmt-text > p:has(+ p) { margin-bottom: 0; }
+.a11y-widget-biz .a11y-chat-text > p:has(+ p) { margin-bottom: var(--cds-spacing-06); }
+.a11y-widget-biz .a11y-chat-text > p + p { text-indent: 0; }
+.a11y-widget-biz .a11y-stmt-card .a11y-stmt-text > p:has(+ p) { margin-bottom: var(--cds-spacing-06); }
 .a11y-widget-biz .a11y-stmt-card .a11y-stmt-text > p:not(:has(> strong:only-child)):has(+ p > strong:only-child) { margin-bottom: var(--cds-spacing-06); }
-.a11y-widget-biz .a11y-stmt-card .a11y-stmt-text > p + p { text-indent: 1em; }
+.a11y-widget-biz .a11y-stmt-card .a11y-stmt-text > p + p { text-indent: 0; }
 .a11y-widget-biz .a11y-stmt-card .a11y-stmt-text > p:has(> strong:only-child) + p,
 .a11y-widget-biz .a11y-stmt-card .a11y-stmt-text > p + p:has(> strong:only-child) { text-indent: 0; }
 .a11y-widget-biz .a11y-chat-text > p + p *,
@@ -3351,7 +3366,7 @@
   display: inline-flex; align-items: center; justify-content: flex-start; gap: var(--cds-spacing-03);
   width: auto; max-width: 100%; min-height: 32px; box-sizing: border-box; padding: var(--cds-spacing-02) var(--cds-spacing-04);
   border: 1px solid var(--btn-fill, var(--ink)); border-radius: 10px;
-  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em; text-align: start; white-space: normal;
+  font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0; text-align: start; white-space: normal;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-acr .a11y-section-head > .a11y-acr-make { width: auto; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester > .a11y-url-submit > .a11y-btn.a11y-btn-primary {
@@ -3371,13 +3386,13 @@
 @media (min-width: 672px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box .a11y-btn {
     min-height: 32px; padding: var(--cds-spacing-02) var(--cds-spacing-04); border: 1px solid var(--btn-fill, var(--ink)); border-radius: 10px;
-    font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+    font-size: 16px; line-height: 1.1; letter-spacing: 0;
   }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-box .a11y-btn:disabled { border-style: dashed; border-color: var(--ink); }
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-chats-new, .a11y-lang-toggle) {
   min-height: 32px; padding: var(--cds-spacing-02) var(--cds-spacing-04); border: 1px solid var(--btn-fill, var(--ink)); border-radius: 10px;
-  font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 16px; line-height: 1.1; letter-spacing: 0;
 }
 @media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester > .a11y-url-submit > .a11y-btn.a11y-btn-primary { min-height: 52px; font-size: inherit; letter-spacing: inherit; }
@@ -3455,18 +3470,18 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:disabled) { border: 0; box-shadow: none; outline: 1px dashed var(--tile-ink); outline-offset: -1px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-q { gap: var(--cds-spacing-05); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-label {
-  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-ask {
-  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-wcag {
-  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt-go {
   right: var(--cds-spacing-06); bottom: var(--cds-spacing-06); min-height: 32px; padding: var(--cds-spacing-02) var(--cds-spacing-04); box-sizing: border-box;
   border-radius: 10px; background: var(--solid); color: var(--solid-ink);
-  font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 16px; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt-barrier {
   --ink: var(--barrier-ink); --paper: var(--barrier);
@@ -3481,9 +3496,9 @@
 @media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt { padding: var(--cds-spacing-05); border-radius: 18px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-q { gap: var(--cds-spacing-03); }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-ask { font-size: 16px; letter-spacing: 0.025em; line-height: 1.2; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-ask { font-size: 16px; letter-spacing: 0; line-height: 1.1; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-go { display: none; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-barrier .a11y-prompt-go { display: flex; margin-top: var(--cds-spacing-03); min-height: 32px; font-size: 16px; letter-spacing: 0.025em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-barrier .a11y-prompt-go { display: flex; margin-top: var(--cds-spacing-03); min-height: 32px; font-size: 16px; letter-spacing: 0; }
 }
 /* 4px between the buttons of a row (user's instruction, 23 Nov 2026, "add
    space between buttons like 4px"): the professional report's filters
@@ -3512,7 +3527,7 @@
   position: relative; display: inline-flex; align-items: center; gap: var(--cds-spacing-03); flex: 0 1 auto;
   box-sizing: border-box; min-width: 0; min-height: 32px; padding: var(--cds-spacing-02) var(--cds-spacing-04);
   border: 1px solid var(--btn-fill, var(--ink)); border-radius: 10px; background: var(--btn-fill, var(--paper)); color: var(--ink);
-  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em; cursor: pointer;
+  font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0; cursor: pointer;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester .a11y-seg > input {
   position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); border: 0; white-space: nowrap;
@@ -3527,7 +3542,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester :is(.a11y-input, .a11y-tester-rows > .a11y-select2) {
   padding: var(--cds-spacing-03) var(--cds-spacing-05) var(--cds-spacing-04); border: 1px solid var(--ink); border-radius: 10px;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester :is(.a11y-input-label, .a11y-tester-rows .a11y-select2-label) { font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tester :is(.a11y-input-label, .a11y-tester-rows .a11y-select2-label) { font-size: 16px; letter-spacing: 0; }
 
 /* ═══ THE CHECKLIST'S STATUS AS SMALL BUBBLES (user's instruction, 23 Nov
    2026, "design these badges randomly sit on related content in small
@@ -3550,7 +3565,7 @@
   max-width: min(80%, 22em); margin: 0; padding: var(--cds-spacing-02) var(--cds-spacing-03) var(--cds-spacing-02); box-sizing: border-box;
   border-radius: 8px; box-shadow: none; color: #000;
   font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-synthesis: none;
-  font-size: 16px; line-height: 1.2; letter-spacing: 0.08em;
+  font-size: 16px; line-height: 1.1; letter-spacing: 0;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-row > .a11y-conf-status[data-status="failed"] { background: var(--hl-orange); }
@@ -3579,7 +3594,7 @@
   display: inline-block; vertical-align: 0.15em; box-sizing: border-box;
   margin-inline: var(--cds-spacing-02); padding: var(--cds-spacing-02) var(--cds-spacing-03) var(--cds-spacing-02); border-radius: 8px; box-shadow: none; color: #000;
   font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-synthesis: none;
-  font-size: 16px; line-height: 1.2; letter-spacing: 0.08em; white-space: nowrap;
+  font-size: 16px; line-height: 1.1; letter-spacing: 0; white-space: nowrap;
   -webkit-box-decoration-break: slice; box-decoration-break: slice;
 }
 /* Rule ids are long ("consent-blocks-reader" is 211px at 15px mono) and
@@ -3649,21 +3664,21 @@
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row-not-measured { --plate-text: var(--plate-1-ink); --paper: var(--plate-1); background: var(--plate-1); }
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-mark {
   align-self: flex-start; color: inherit; background: none;
-  font-size: 16px; font-weight: 400; line-height: 24px; letter-spacing: 0.025em; white-space: normal; text-align: left;
+  font-size: 16px; font-weight: 400; line-height: 24px; letter-spacing: 0; white-space: normal; text-align: left;
 }
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count {
   margin: auto 0 var(--cds-spacing-02); padding-top: var(--cds-spacing-06);
   font-size: inherit; font-weight: 400; line-height: 1; letter-spacing: inherit;
 }
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label {
-  font-size: 16px; font-weight: 400; line-height: 1.02; letter-spacing: 0.025em;
+  font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
   text-decoration-thickness: 2px; text-underline-offset: 0.12em;
 }
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row:nth-child(even) .a11y-legal-row-label {
-  font-family: "Jokker", "DejaVu Sans", sans-serif; font-synthesis: none; letter-spacing: -0.015em;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-synthesis: none; letter-spacing: 0;
 }
 .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-meaning {
-  margin-top: var(--cds-spacing-04); font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  margin-top: var(--cds-spacing-04); font-size: 16px; line-height: 1.1; letter-spacing: 0;
 }
 /* Hover underlines the words on the card's own plate, as the cards were
    first set (user's instruction, 24 Nov 2026, "bring this design back";
@@ -3678,9 +3693,9 @@
 @container a11y-legal-cards (max-width: 480px) {
   .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles { grid-template-columns: minmax(0, 1fr); }
   .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row { min-height: 0; padding: var(--cds-spacing-06) var(--cds-spacing-05) var(--cds-spacing-06); }
-  .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-mark { font-size: 16px; letter-spacing: 0.025em; line-height: 20px; }
+  .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-mark { font-size: 16px; letter-spacing: 0; line-height: 20px; }
   .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-count { font-size: inherit; letter-spacing: inherit; }
-  .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label { font-size: 16px; letter-spacing: 0.025em; }
+  .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row .a11y-legal-row-label { font-size: 16px; letter-spacing: 0; }
 }
 @media (forced-colors: active) {
   .a11y-widget-biz .a11y-legal-results .a11y-legal-tiles > .a11y-legal-row { border: 1px solid CanvasText; }
@@ -3702,7 +3717,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-finding-sev-fold > .a11y-sev.a11y-sev {
   display: inline-block; margin: 0; padding: var(--cds-spacing-02) var(--cds-spacing-03) var(--cds-spacing-02); border-radius: 8px; box-shadow: none;
   font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-synthesis: none;
-  font-size: 16px; line-height: 1.2; letter-spacing: 0.08em; white-space: nowrap;
+  font-size: 16px; line-height: 1.1; letter-spacing: 0; white-space: nowrap;
   rotate: var(--sev-tilt, 0deg);
   background: var(--plate-2); color: var(--plate-text);
 }
@@ -3729,7 +3744,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-new {
   display: inline-flex; width: auto; min-height: 36px; margin: 0 0 var(--cds-spacing-03); padding: var(--cds-spacing-03) var(--cds-spacing-05);
   border: 1px solid var(--ink); border-radius: 14px; background: transparent; color: var(--ink);
-  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em; white-space: nowrap;
+  font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0; white-space: nowrap;
 }
 /* The gap goes only after a button that has another beside it, so a trailing
    margin never pushes the pair onto two lines in the 283px panel. */
@@ -3761,7 +3776,7 @@
   display: inline-block; width: fit-content; padding: var(--cds-spacing-02) var(--cds-spacing-03) var(--cds-spacing-02); border-radius: 8px;
   background: var(--plate-4); color: var(--plate-text);
   font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-synthesis: none;
-  font-size: 16px; line-height: 1.2; letter-spacing: 0.08em;
+  font-size: 16px; line-height: 1.1; letter-spacing: 0;
   max-width: 100%; box-sizing: border-box; white-space: normal; overflow-wrap: break-word;
   rotate: var(--bubble-tilt, -2deg);
 }
@@ -3812,7 +3827,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link[aria-selected="true"] { padding-top: var(--cds-spacing-06); border: 0; box-shadow: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link[aria-selected="true"]:not(:focus-visible) { outline: 2px dotted var(--plate-text); outline-offset: -2px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-list > .a11y-dn-link > .a11y-dn-link-text {
-  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
   text-decoration-thickness: 2px;
 }
 @media (max-width: 671px) {
@@ -3853,7 +3868,7 @@
   align-self: stretch; width: auto; padding: 0; border: 0; border-radius: 0;
   background: none; color: inherit;
   font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-synthesis: none;
-  font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; white-space: normal; rotate: none;
+  font-size: 16px; line-height: 1.1; letter-spacing: 0; white-space: normal; rotate: none;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n+2) { --plate-text: var(--plate-3-ink); --card-plate: var(--plate-3); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt:nth-child(3n) { --plate-text: var(--plate-4-ink); --card-plate: var(--plate-4); }
@@ -3901,11 +3916,11 @@
   position: absolute; top: 0; left: var(--cds-spacing-06); margin: 0; padding: var(--cds-spacing-02) var(--cds-spacing-03) var(--cds-spacing-02); border-radius: 8px;
   background: var(--hl-cap-a); color: #000;
   font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-synthesis: none;
-  font-size: 16px; line-height: 1.2; letter-spacing: 0.08em; white-space: nowrap;
+  font-size: 16px; line-height: 1.1; letter-spacing: 0; white-space: nowrap;
   translate: 0 -50%; rotate: -2deg;
 }
 .a11y-widget-biz.a11y-widget-biz .a11y-note.a11y-note-warning .a11y-note-title { font-size: inherit; line-height: 1.1; letter-spacing: inherit; }
-.a11y-widget-biz.a11y-widget-biz .a11y-note.a11y-note-warning .a11y-note-sub { margin-top: var(--cds-spacing-02); font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; }
+.a11y-widget-biz.a11y-widget-biz .a11y-note.a11y-note-warning .a11y-note-sub { margin-top: var(--cds-spacing-02); font-size: 16px; line-height: 1.1; letter-spacing: 0; }
 @media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz .a11y-note.a11y-note-warning { padding: var(--cds-spacing-06) var(--cds-spacing-05) var(--cds-spacing-05) var(--cds-spacing-05); }
   .a11y-widget-biz.a11y-widget-biz .a11y-note.a11y-note-warning .a11y-note-badge { left: 16px; }
@@ -3960,7 +3975,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > :is(.a11y-method-badge, .a11y-undecided-places, .a11y-undecided-most) {
   display: inline-block; margin: 0; padding: var(--cds-spacing-02) var(--cds-spacing-03) var(--cds-spacing-02); border-radius: 8px;
   font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-synthesis: none;
-  font-size: 16px; line-height: 1.2; letter-spacing: 0.08em;
+  font-size: 16px; line-height: 1.1; letter-spacing: 0;
   background: var(--tile); color: var(--tile-ink);
   rotate: -2deg;
 }
@@ -3977,7 +3992,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-method-badge.a11y-fix-design { --plate-text: var(--plate-3-ink); background: var(--plate-3); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-method-badge.a11y-fix-document { --plate-text: var(--plate-4-ink); background: var(--plate-4); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-undecided-most { --plate-text: var(--plate-4-ink); background: var(--plate-4); color: var(--plate-text); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-learn-more { margin: 0; font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > .a11y-learn-more { margin: 0; font-size: 16px; letter-spacing: 0; }
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-call > * { rotate: none; }
 }
@@ -4003,13 +4018,13 @@
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--cds-spacing-03) var(--cds-spacing-05); margin: 0 0 var(--cds-spacing-04);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-alt-card .a11y-alt-suggestion-label {
-  flex: 1 1 12em; min-width: 0; margin: 0; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  flex: 1 1 12em; min-width: 0; margin: 0; font-size: 16px; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-alt-card .a11y-alt-copy { flex: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-alt-card > .a11y-alt-suggestion-value { margin: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-alt-card > .a11y-alt-suggestion-value > code {
   display: block; padding: 0; background: none; color: inherit;
-  font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; white-space: pre-wrap; overflow-wrap: anywhere;
+  font-size: 16px; line-height: 1.1; letter-spacing: 0; white-space: pre-wrap; overflow-wrap: anywhere;
 }
 @media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-alt-card { padding: var(--cds-spacing-03) var(--cds-spacing-05) var(--cds-spacing-05); }
@@ -4056,7 +4071,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-q { align-items: start; }
 /* The screen reader preview's lines are 26px on a 1.2 line: a 31px round,
    a 23px figure. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row > .a11y-sr-num { align-self: start; width: 32px; height: 32px; margin-top: calc(var(--cds-spacing-01) * -1); font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr-row > .a11y-sr-num { align-self: start; width: 32px; height: 32px; margin-top: calc(var(--cds-spacing-01) * -1); font-size: 16px; letter-spacing: 0; }
 /* The score's run sizes its round with its words; only the fill, the ink
    and the weight change here. */
 @media (forced-colors: active) {
@@ -4115,11 +4130,11 @@
   display: inline-grid; place-content: center; box-sizing: border-box;
   min-width: 32px; height: 32px; padding: 0 var(--cds-spacing-03); margin-inline-start: var(--cds-spacing-01); border-radius: 999px;
   background: var(--plate-4); color: var(--plate-text);
-  font-size: 18px; font-weight: 400; line-height: 1; letter-spacing: 0.025em; font-variant-numeric: tabular-nums;
+  font-size: 18px; font-weight: 400; line-height: 1; letter-spacing: 0; font-variant-numeric: tabular-nums;
   vertical-align: text-top; white-space: nowrap;
 }
 @media (max-width: 671px) {
-  .a11y-widget-biz .a11y-section-title .a11y-section-count.a11y-count-dot { min-width: 24px; height: 24px; padding: 0 var(--cds-spacing-03); font-size: 18px; letter-spacing: 0.025em; }
+  .a11y-widget-biz .a11y-section-title .a11y-section-count.a11y-count-dot { min-width: 24px; height: 24px; padding: 0 var(--cds-spacing-03); font-size: 18px; letter-spacing: 0; }
 }
 @media (forced-colors: active) {
   .a11y-widget-biz .a11y-section-title .a11y-section-count.a11y-count-dot { border: 1px solid CanvasText; }
@@ -4149,12 +4164,12 @@
   margin: 0; padding: var(--cds-spacing-07) 0 var(--cds-spacing-07); border-top: 1px solid var(--ink); color: var(--ink);
 }
 .a11y-widget-biz .a11y-w22-row > :is(.a11y-w22-ref, .a11y-w22-body, .a11y-w22-call) { display: flex; flex-direction: column; min-width: 0; }
-.a11y-widget-biz .a11y-w22-row .a11y-w22-id { font-size: 16px; line-height: 1; letter-spacing: 0.025em; font-variant-numeric: tabular-nums; }
-.a11y-widget-biz .a11y-w22-row .a11y-w22-level { margin-top: var(--cds-spacing-03); font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; }
-.a11y-widget-biz .a11y-w22-row .a11y-w22-name { margin-top: var(--cds-spacing-01); font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-w22-row .a11y-w22-id { font-size: 16px; line-height: 1; letter-spacing: 0; font-variant-numeric: tabular-nums; }
+.a11y-widget-biz .a11y-w22-row .a11y-w22-level { margin-top: var(--cds-spacing-03); font-size: 16px; line-height: 1.1; letter-spacing: 0; }
+.a11y-widget-biz .a11y-w22-row .a11y-w22-name { margin-top: var(--cds-spacing-01); font-size: 16px; line-height: 1.1; letter-spacing: 0; }
 .a11y-widget-biz .a11y-w22-row .a11y-w22-q { font-size: inherit; line-height: 1.1; letter-spacing: inherit; }
-.a11y-widget-biz .a11y-w22-row .a11y-w22-why { margin-top: var(--cds-spacing-03); font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; }
-.a11y-widget-biz .a11y-w22-row .a11y-w22-count { margin-top: var(--cds-spacing-03); font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; }
+.a11y-widget-biz .a11y-w22-row .a11y-w22-why { margin-top: var(--cds-spacing-03); font-size: 16px; line-height: 1.1; letter-spacing: 0; }
+.a11y-widget-biz .a11y-w22-row .a11y-w22-count { margin-top: var(--cds-spacing-03); font-size: 16px; line-height: 1.1; letter-spacing: 0; }
 .a11y-widget-biz .a11y-w22-row > .a11y-w22-call {
   position: absolute; top: 0; left: var(--bubble-x, 50%); z-index: 1;
   max-width: min(80%, 22em); padding: 0; translate: -50% -50%;
@@ -4165,7 +4180,7 @@
 @container a11y-w22 (max-width: 480px) {
   .a11y-widget-biz .a11y-w22-list > .a11y-w22-row { grid-template-columns: minmax(0, 1fr); padding: var(--cds-spacing-06) 0 var(--cds-spacing-06); }
   .a11y-widget-biz .a11y-w22-row > .a11y-w22-ref { flex-flow: row wrap; align-items: baseline; column-gap: var(--cds-spacing-04); }
-  .a11y-widget-biz .a11y-w22-row .a11y-w22-id { font-size: 16px; letter-spacing: 0.025em; }
+  .a11y-widget-biz .a11y-w22-row .a11y-w22-id { font-size: 16px; letter-spacing: 0; }
   .a11y-widget-biz .a11y-w22-row .a11y-w22-level { margin-top: 0; }
   .a11y-widget-biz .a11y-w22-row .a11y-w22-name { flex: 1 1 100%; margin-top: var(--cds-spacing-02); }
   /* Centred on a narrow list: at 70% across, a 230px badge ran past 320px. */
@@ -4214,7 +4229,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-head {
   margin: 0 0 var(--cds-spacing-06); padding: 0; border: 0; color: var(--ink);
-  font-size: inherit; font-weight: 400; line-height: 1.1; letter-spacing: 0.04em;
+  font-size: inherit; font-weight: 400; line-height: 1.1; letter-spacing: 0;
   text-transform: uppercase; font-feature-settings: "ss04", "ss05", "case";
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-field {
@@ -4223,14 +4238,14 @@
   border: 1px solid var(--ink); border-radius: var(--r-card); background: transparent; color: var(--ink); text-align: start;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-field > .a11y-ra-field-label {
-  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 /* input. in the selector: the general field rule (:is(input:not():not()))
    has to be out-ranked to drop the line's own box. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-field > input.a11y-ra-email-input {
   box-sizing: border-box; width: 100%; min-height: 32px; margin: 0; padding: var(--cds-spacing-01) 0;
   border: 0; border-radius: 0; background: transparent; color: var(--tile-ink);
-  font: inherit; font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  font: inherit; font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-field > input.a11y-ra-email-input::placeholder { color: var(--tile-ink); opacity: 1; font-weight: 400; }
 /* The field is the box, so the focus ring goes round the field, 3px out
@@ -4251,7 +4266,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-send-word { grid-area: 1 / 1; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-send-word[data-off] { visibility: hidden; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-note {
-  margin: 0; color: var(--ink); font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  margin: 0; color: var(--ink); font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-note:empty {
   position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
@@ -4259,7 +4274,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions .a11y-ra-pdf {
   justify-content: center; min-height: 40px; padding: var(--cds-spacing-03) var(--cds-spacing-05);
   border: 1px solid var(--ink); border-radius: 999px; background: transparent; color: var(--ink);
-  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 @container a11y-ra (max-width: 560px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report-actions > .a11y-ra-panel { gap: var(--cds-spacing-06); padding: var(--cds-spacing-07) var(--cds-spacing-05) var(--cds-spacing-07); border-radius: var(--r-panel); }
@@ -4363,7 +4378,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-actions > .a11y-sr-only { grid-column: auto; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid .a11y-sum-label {
   grid-column: 1; margin: 0; padding: 0 var(--cds-spacing-05) 0 0; border: 0; background: none; color: var(--ink); text-transform: none;
-  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > :is(.a11y-sum-issues, .a11y-sum-warning) > :where(:not(.a11y-sum-label)) { grid-column: 2 / -1; min-width: 0; }
 
@@ -4391,7 +4406,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table :is(th, td):last-child { padding-inline-end: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table th {
   padding-top: 0; padding-bottom: var(--cds-spacing-03);
-  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em; white-space: nowrap;
+  font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0; white-space: nowrap;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table :is(.a11y-sum-table-wcag, th:nth-child(2)) { width: 1%; white-space: nowrap; }
 /* The badge on top of the title, then the title (user's instruction, 24 Nov
@@ -4419,7 +4434,7 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table tbody tr:has(a:focus-visible) { outline-color: Highlight; }
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-table-count, .a11y-sum-table-wcag) {
-  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 
 /* How the score works, one paragraph to a track. */
@@ -4436,7 +4451,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-warning-badge {
   display: inline-block; padding: var(--cds-spacing-02) var(--cds-spacing-03) var(--cds-spacing-02); border-radius: 8px; background: var(--hl-cap-a); color: #000;
   font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-synthesis: none;
-  font-size: 16px; line-height: 1.2; letter-spacing: 0.08em; white-space: nowrap; rotate: -2deg;
+  font-size: 16px; line-height: 1.1; letter-spacing: 0; white-space: nowrap; rotate: -2deg;
 }
 
 @container a11y-sum (max-width: 760px) {
@@ -4635,7 +4650,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd-meta {
   display: flex; flex-wrap: wrap; column-gap: var(--cds-spacing-09); row-gap: var(--cds-spacing-02); grid-column: 1 / -1; margin: 0 0 var(--cds-spacing-07);
   font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 18px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd-meta > span { white-space: nowrap; }
 @container a11y-ftable (max-width: 640px) {
@@ -4788,22 +4803,22 @@
    font"; it was the mono face for a few hours). */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list > .a11y-conf-row > .a11y-conf-id, .a11y-w22-row .a11y-w22-id, .a11y-w22-row .a11y-w22-level, .a11y-sum-table .a11y-sum-table-wcag) {
   font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em; font-variant-numeric: normal;
+  font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0; font-variant-numeric: normal;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-list > .a11y-conf-row > .a11y-conf-id { padding-top: var(--cds-spacing-03); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-ref { display: flex; flex-flow: row wrap; column-gap: var(--cds-spacing-05); padding-top: var(--cds-spacing-03); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row .a11y-w22-name { flex-basis: 100%; margin-top: var(--cds-spacing-02); font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; overflow-wrap: normal; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row .a11y-w22-name { flex-basis: 100%; margin-top: var(--cds-spacing-02); font-size: 16px; line-height: 1.1; letter-spacing: 0; overflow-wrap: normal; }
 /* The title at the prose size, its small print under it. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-row > .a11y-conf-body > strong, .a11y-w22-row .a11y-w22-q) {
   display: block; font-size: inherit; font-weight: 400; line-height: 1.1; letter-spacing: inherit;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-row .a11y-conf-plain, .a11y-w22-row .a11y-w22-count) { margin-top: var(--cds-spacing-02); font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-row .a11y-conf-plain, .a11y-w22-row .a11y-w22-count) { margin-top: var(--cds-spacing-02); font-size: 16px; line-height: 1.1; letter-spacing: 0; }
 /* The status: a coloured word at the end of the line, right-aligned, no
    plate, no tilt, no place on the rule. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list .a11y-conf-row > .a11y-conf-status, .a11y-w22-list .a11y-w22-row > .a11y-w22-call, .a11y-w22-list .a11y-w22-row .a11y-next-status)[class] {
   position: static; inset: auto; transform: none; rotate: none; translate: none;
   margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none;
-  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
   white-space: normal; text-align: right; justify-self: end; max-width: 260px;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-row > .a11y-conf-status { grid-column: 3; grid-row: 1; }
@@ -4823,7 +4838,7 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list > .a11y-conf-row > .a11y-conf-id, .a11y-w22-list > .a11y-w22-row > .a11y-w22-ref)[class] { grid-area: key; padding-top: 0; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-row > .a11y-conf-body, .a11y-w22-row > .a11y-w22-body) { grid-area: body; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-row > .a11y-conf-status, .a11y-w22-row > .a11y-w22-call) { grid-area: status; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list .a11y-conf-row > .a11y-conf-status, .a11y-w22-list .a11y-w22-row > .a11y-w22-call, .a11y-w22-list .a11y-w22-row .a11y-next-status)[class][class] { font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-list .a11y-conf-row > .a11y-conf-status, .a11y-w22-list .a11y-w22-row > .a11y-w22-call, .a11y-w22-list .a11y-w22-row .a11y-next-status)[class][class] { font-size: 16px; line-height: 1.1; letter-spacing: 0; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-conf-row > .a11y-conf-body > strong, .a11y-w22-row .a11y-w22-q) { font-size: inherit; line-height: 1.1; letter-spacing: inherit; }
 }
 @media (forced-colors: active) {
@@ -4865,7 +4880,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-no {
   display: inline-grid; place-items: center; box-sizing: content-box; width: 28px; height: 28px; padding: var(--cds-spacing-01); margin-top: calc((var(--row-line) - 32px) / 2);
   border-radius: 50%; background: var(--ink); color: var(--paper);
-  font-size: 16px; line-height: 1; letter-spacing: 0.025em; font-variant-numeric: tabular-nums;
+  font-size: 16px; line-height: 1; letter-spacing: 0; font-variant-numeric: tabular-nums;
 }
 /* Every part names its column: an older rule pins the round to row 1,
    and an item with a row is placed before the others. The number stands
@@ -4887,7 +4902,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-answer[hidden] { display: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-answer > .a11y-fd-meta { margin-bottom: var(--cds-spacing-06); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-answer > .a11y-undecided-ask { margin: 0 0 var(--cds-spacing-05); font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-answer > .a11y-undecided-ask { margin: 0 0 var(--cds-spacing-05); font-size: 16px; line-height: 1.1; letter-spacing: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-answer > :last-child { margin-bottom: 0; }
 /* Learn more at the size of the sentence above it (user's instruction, 24
    Nov 2026, "learn more link needs to be same size text as text above
@@ -4898,7 +4913,7 @@
     grid-template-columns: 44px minmax(0, 1fr); grid-template-rows: auto auto auto; row-gap: var(--cds-spacing-02); column-gap: var(--cds-spacing-03); --row-line: calc(24px * 1.15);
     font-size: inherit; line-height: 1.1; letter-spacing: inherit;
   }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-kind { grid-column: 2; grid-row: 3; max-width: none; text-align: left; font-size: 16px; letter-spacing: 0.025em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-kind { grid-column: 2; grid-row: 3; max-width: none; text-align: left; font-size: 16px; letter-spacing: 0; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-no { width: 24px; height: 24px; margin-top: calc((var(--row-line) - 26px) / 2); font-size: 16px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-cell > .a11y-undecided-answer { margin-left: 0; padding: var(--cds-spacing-06) var(--cds-spacing-05) var(--cds-spacing-06); border-radius: var(--r-panel); }
 }
@@ -4969,7 +4984,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row-not-measured .a11y-legal-row-label[class] { background: var(--hl-blue); color: var(--hl-blue-ink); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row :is(.a11y-legal-mark, .a11y-legal-row-meaning)[class] {
   position: static; display: inline; align-self: baseline; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; rotate: none; transform: none;
-  color: var(--ink); font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em; text-transform: none;
+  color: var(--ink); font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0; text-transform: none;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row .a11y-legal-mark[class] { order: 3; margin-left: var(--cds-spacing-04); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-tiles > li > .a11y-legal-row .a11y-legal-row-meaning[class] { order: 4; }
@@ -5085,7 +5100,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue[class] > .a11y-sum-table-badge[class] { order: 2; display: block; margin: 0 0 0 auto; padding-left: var(--cds-spacing-06); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev[class] {
   position: static; display: inline; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; rotate: none; transform: none;
-  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em; text-transform: none; white-space: nowrap;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0; text-transform: none; white-space: nowrap;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev[class]::before,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev[class]::after { content: none; }
@@ -5099,7 +5114,7 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr > .a11y-sum-table-issue[class] { grid-column: 1; grid-row: 2; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table[class] > tbody > tr:not(:has(> .a11y-sum-table-wcag)) > .a11y-sum-table-issue[class] { grid-row: 1; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-issue[class] > .a11y-sum-table-badge[class] { flex-basis: 100%; margin: var(--cds-spacing-01) 0 0; padding-left: 0; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev[class] { font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev[class] { font-size: 16px; line-height: 1.1; letter-spacing: 0; }
 }
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-table-badge[class] > .a11y-sev[class] { color: CanvasText; }
@@ -5191,7 +5206,7 @@
      Barrierefreiheitsprobleme" breaks at its spaces, not inside the word.
      The address typed under it keeps 24px. */
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-fields > .a11y-stmt-field {
-    padding: var(--cds-spacing-05) var(--cds-spacing-05) var(--cds-spacing-04); font-size: 16px; letter-spacing: 0.025em; line-height: 1.4;
+    padding: var(--cds-spacing-05) var(--cds-spacing-05) var(--cds-spacing-04); font-size: 16px; letter-spacing: 0; line-height: 1.1;
   }
   /* The card title keeps room for Copy (about 90px at 12px from the edge),
      not the desktop's 6em, which left "La declaración" 120px and broke it
@@ -5224,7 +5239,7 @@
 @container a11y-ptable (max-width: 720px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz [id="a11y-pro-findings"] :is(th, td):is([data-col="criterion"], [data-col="count"]) { display: none; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz [id="a11y-pro-findings"] .a11y-pro-fold {
-    display: block; margin-top: var(--cds-spacing-03); font-size: inherit; font-weight: 400; line-height: 1.4; letter-spacing: inherit;
+    display: block; margin-top: var(--cds-spacing-03); font-size: inherit; font-weight: 400; line-height: 1.1; letter-spacing: inherit;
   }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz [id="a11y-pro-findings"] .a11y-pro-fold-line { display: block; overflow-wrap: break-word; }
 }
@@ -5259,7 +5274,7 @@
    are not badges and keep their grounds. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-pro-chip, .a11y-conf-status, .a11y-principle-count, .a11y-status-chip, .a11y-next-count, .a11y-sum-warning-badge)[class][class] {
   display: inline; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none;
-  rotate: none; transform: none; color: var(--ink); letter-spacing: 0.025em; vertical-align: baseline;
+  rotate: none; transform: none; color: var(--ink); letter-spacing: 0; vertical-align: baseline;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sev-critical, .a11y-status-chip-critical, .a11y-rule-chip, .a11y-level-badge, .a11y-next-count)[class][class],
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-conf-status[data-status="failed"][class][class] { color: var(--word-red); }
@@ -5289,7 +5304,7 @@
    same size beside it. Code elsewhere keeps the one face. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd-body code {
   font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-size: 16px; font-weight: 400; letter-spacing: 0.025em;
+  font-size: 16px; font-weight: 400; letter-spacing: 0;
 }
 
 /* ═══ EVERY FORM AS THE EMAIL PANEL, EACH IN ITS OWN BRAND COLOUR (user's
@@ -5325,7 +5340,7 @@
 
 /* The title in capitals, as Email me this report. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] > .a11y-tester-name {
-  margin: 0 0 var(--cds-spacing-06); color: #000; font-size: inherit; font-weight: 400; line-height: 1.1; letter-spacing: 0.04em;
+  margin: 0 0 var(--cds-spacing-06); color: #000; font-size: inherit; font-weight: 400; line-height: 1.1; letter-spacing: 0;
   text-transform: uppercase; font-feature-settings: "ss04", "ss05", "case";
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] > .a11y-tester-sub {
@@ -5342,20 +5357,20 @@
   display: grid; gap: var(--cds-spacing-05); width: 100%; margin: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] :is(.a11y-input-label, .a11y-select2-label, .a11y-textarea-label) {
-  color: var(--form-field-ink); font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  color: var(--form-field-ink); font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] :is(.a11y-input-shell > input:not([type="radio"]), .a11y-select2-field.a11y-select2-field, .a11y-textarea > textarea) {
   box-sizing: border-box; width: 100%; min-width: 0; min-height: 32px; margin: 0; padding-block: var(--cds-spacing-01); padding-inline: 0;
   border: 0; border-radius: 0; box-shadow: none; background-color: transparent; color: var(--form-field-ink);
-  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] .a11y-select2-field.a11y-select2-field { padding-inline-end: var(--cds-spacing-11); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] :is(input, textarea)::placeholder { color: var(--form-field-ink); opacity: 1; font-weight: 400; }
 /* The field is the box, so the focus ring goes round the field. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] :is(.a11y-input, .a11y-select2, .a11y-textarea):focus-within { outline: 2px solid var(--focus); outline-offset: -2px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] :is(.a11y-input-shell > input, .a11y-select2-field, .a11y-textarea > textarea):focus-visible { outline: none; box-shadow: none; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] :is(.a11y-input-help, .a11y-select2-help, .a11y-textarea-help) { color: var(--form-field-ink); font-size: 16px; letter-spacing: 0.025em; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] > .a11y-settings-state { font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] :is(.a11y-input-help, .a11y-select2-help, .a11y-textarea-help) { color: var(--form-field-ink); font-size: 16px; letter-spacing: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form)[class] > .a11y-settings-state { font-size: 16px; letter-spacing: 0; }
 
 /* Choices: small --tile pills in a centred row, the chosen one black. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-tester-choices {
@@ -5365,7 +5380,7 @@
   display: inline-flex; align-items: center; justify-content: center; gap: var(--cds-spacing-03); box-sizing: border-box; flex: none;
   min-width: 0; min-height: 40px; max-width: 100%; padding: var(--cds-spacing-03) var(--cds-spacing-05);
   border: 1px solid var(--tile); border-radius: 999px; background: var(--tile); color: var(--tile-ink); box-shadow: none;
-  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-seg.a11y-seg-on { border-color: #000; background: #000; color: #fff; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-seg:not(.a11y-seg-disabled):hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
@@ -5389,14 +5404,14 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-manual-form, .a11y-triage-form)[class] > .a11y-manual-form-actions > :is(.a11y-btn-primary, [type="submit"]):disabled {
   border-style: dashed; border-color: #000; background: transparent; color: #000;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] > .a11y-url-submit > .a11y-url-submit-note { color: #000; font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] > .a11y-url-submit > .a11y-url-submit-note { color: #000; font-size: 16px; letter-spacing: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-manual-form, .a11y-triage-form)[class] > .a11y-manual-form-actions {
   display: flex; flex-direction: column; align-items: flex-start; gap: var(--cds-spacing-05); width: 100%; margin: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-manual-form, .a11y-triage-form)[class] > .a11y-manual-form-actions > .a11y-btn:not(.a11y-btn-primary, [type="submit"]) {
   justify-content: center; min-height: 40px; padding: var(--cds-spacing-03) var(--cds-spacing-05);
   border: 1px solid var(--tile); border-radius: 999px; background: var(--tile); color: var(--tile-ink);
-  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-manual-form, .a11y-triage-form)[class] > .a11y-manual-form-actions > .a11y-btn:not(.a11y-btn-primary, [type="submit"]):enabled:hover {
   border-color: var(--hover); background: var(--hover); color: var(--hover-ink);
@@ -5434,8 +5449,8 @@
   min-width: 0; margin: 0; padding: 0; border: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login-legend {
-  float: left; width: 100%; margin: var(--cds-spacing-03) 0 0; padding: 0 var(--cds-spacing-09); color: #000;
-  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.04em; text-transform: uppercase; font-feature-settings: "ss04", "ss05", "case";
+  float: left; box-sizing: border-box; width: 100%; margin: var(--cds-spacing-03) 0 0; padding: 0 var(--cds-spacing-09); color: #000;
+  font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0; text-transform: uppercase; font-feature-settings: "ss04", "ss05", "case";
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login-legend + * { clear: both; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login-close {
@@ -5445,7 +5460,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login-close:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login-note {
-  margin: 0; color: #000; font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  margin: 0; color: #000; font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login .a11y-stmt-fields {
   display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--cds-spacing-05); width: 100%; margin: 0;
@@ -5453,24 +5468,24 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login .a11y-stmt-field {
   box-sizing: border-box; display: flex; flex-direction: column; gap: var(--cds-spacing-03); width: 100%; min-width: 0; margin: 0; padding: var(--cds-spacing-05) var(--cds-spacing-06) var(--cds-spacing-05);
   border: 0; border-radius: var(--r-card); background: var(--form-field); color: var(--form-field-ink); text-align: start;
-  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login .a11y-stmt-field:focus-within { outline: 2px solid var(--focus); outline-offset: -2px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login .a11y-stmt-field > input {
   box-sizing: border-box; width: 100%; min-width: 0; min-height: 32px; margin: 0; padding: var(--cds-spacing-01) 0;
   border: 0; border-radius: 0; box-shadow: none; background: transparent; color: var(--form-field-ink);
-  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login .a11y-stmt-field > input:focus-visible { outline: none; box-shadow: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login .a11y-stmt-field > input::placeholder { color: var(--form-field-ink); opacity: 1; font-weight: 400; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login-ready { margin: 0; color: #000; font-size: 16px; letter-spacing: 0.025em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login-ready { margin: 0; color: #000; font-size: 16px; letter-spacing: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login-ready:empty {
   position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login-fieldset > .a11y-login-toggle {
   justify-content: center; min-height: 40px; padding: var(--cds-spacing-03) var(--cds-spacing-05);
   border: 1px solid var(--tile); border-radius: 999px; background: var(--tile); color: var(--tile-ink);
-  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-url-form[class] .a11y-login-fieldset > .a11y-login-toggle:enabled:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
 
@@ -5547,7 +5562,7 @@
   padding: 0; border-radius: 0; background: none; color: #000; text-decoration: none;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row :is(.a11y-legal-mark, .a11y-legal-row-meaning)[class][class] {
-  color: #000; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  color: #000; font-size: 16px; line-height: 1.1; letter-spacing: 0;
 }
 /* Three columns after the triangle: the sentence, the count in the middle
    of the row ("numbers can go in the middle"), the small print at the end. */
@@ -5572,7 +5587,7 @@
 @media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret[class][class] { padding: var(--cds-spacing-04) var(--cds-spacing-05); border-radius: var(--r-card); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret[data-open][class][class] { padding: var(--cds-spacing-04) var(--cds-spacing-05) var(--cds-spacing-05); }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row :is(.a11y-legal-mark, .a11y-legal-row-meaning)[class][class] { font-size: 16px; line-height: 1.4; letter-spacing: 0.025em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row :is(.a11y-legal-mark, .a11y-legal-row-meaning)[class][class] { font-size: 16px; line-height: 1.1; letter-spacing: 0; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row[class][class][class][class] { grid-template-columns: var(--caret-col) minmax(0, 1fr) auto; row-gap: var(--cds-spacing-01); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row .a11y-legal-count[class][class] { padding: 0 0 0 var(--cds-spacing-04); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row > .a11y-legal-row-desc { grid-column: 2 / -1; grid-row: 2; justify-self: start; text-align: start; }
@@ -5784,7 +5799,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card > .a11y-stmt-code[hidden] { display: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card .a11y-stmt-text {
-  font-size: 16px; line-height: 1.4; letter-spacing: 0.025em;
+  font-size: 16px; line-height: 1.1; letter-spacing: 0;
 }
 @media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-toggle { font-size: inherit; line-height: 1.1; letter-spacing: inherit; }
@@ -5925,13 +5940,13 @@
   display: block; flex: none; margin: 0 0 0 var(--cds-spacing-06); padding: 0; text-align: end;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-count[class] {
-  display: block; margin: var(--cds-spacing-02) 0 0 var(--caret-col); font-size: 16px; line-height: 1.4; letter-spacing: 0.025em;
+  display: block; margin: var(--cds-spacing-02) 0 0 var(--caret-col); font-size: 16px; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-detail {
   --paper: var(--bubble); margin: var(--cds-spacing-05) 0 0 var(--caret-col); padding: var(--cds-spacing-07); border-radius: var(--r-panel); background: var(--bubble);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-detail[hidden] { display: none; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-detail > p { margin: 0; font-size: inherit; line-height: 1.35; letter-spacing: inherit; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-detail > p { margin: 0; font-size: inherit; line-height: 1.1; letter-spacing: inherit; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-detail > p + p { margin-top: var(--cds-spacing-04); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-detail :is(.a11y-w22-id, .a11y-w22-level, .a11y-w22-name)[class] {
   display: inline; margin: 0; padding: 0; font: inherit; letter-spacing: inherit; white-space: normal;
@@ -5943,7 +5958,7 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-toggle { flex-wrap: wrap; font-size: inherit; line-height: 1.1; letter-spacing: inherit; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-toggle > .a11y-w22-call[class] { flex-basis: calc(100% - var(--caret-col)); min-width: 0; margin: var(--cds-spacing-01) 0 0 var(--caret-col); white-space: normal; text-align: start; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-detail { padding: var(--cds-spacing-05); border-radius: var(--r-panel); }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-detail > p { font-size: inherit; line-height: 1.4; letter-spacing: inherit; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-detail > p { font-size: inherit; line-height: 1.1; letter-spacing: inherit; }
 }
 @media (prefers-reduced-motion: reduce) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-row > .a11y-w22-toggle::before { transition: none; }
@@ -6010,7 +6025,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form > .a11y-stmt-step { margin: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form .a11y-stmt-step-head {
   justify-content: flex-start; color: #000; text-transform: uppercase; font-feature-settings: "ss04", "ss05", "case";
-  font-size: inherit; line-height: 1.1; letter-spacing: 0.04em;
+  font-size: inherit; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form > .a11y-stmt-fields {
   display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--cds-spacing-05); width: 100%;
@@ -6018,14 +6033,14 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form .a11y-stmt-fields > .a11y-stmt-field {
   display: flex; flex-direction: column; align-items: stretch; gap: var(--cds-spacing-03); margin: 0; padding: var(--cds-spacing-05) var(--cds-spacing-06) var(--cds-spacing-05);
   border: 0; border-radius: var(--r-card); background: var(--form-field); color: var(--form-field-ink); text-align: start;
-  font-size: 16px; line-height: 1.4; letter-spacing: 0.025em;
+  font-size: 16px; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form .a11y-stmt-fields > .a11y-stmt-field > input {
-  color: var(--form-field-ink); font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  color: var(--form-field-ink); font-size: 16px; line-height: 1.1; letter-spacing: 0;
 }
 @media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form { gap: var(--cds-spacing-06); padding: var(--cds-spacing-07) var(--cds-spacing-05) var(--cds-spacing-06); border-radius: var(--r-panel); }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form .a11y-stmt-step-head { font-size: inherit; letter-spacing: 0.04em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form .a11y-stmt-step-head { font-size: inherit; letter-spacing: 0; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form .a11y-stmt-fields > .a11y-stmt-field { padding: var(--cds-spacing-05) var(--cds-spacing-05) var(--cds-spacing-04); border-radius: var(--r-card); }
 }
 @media (forced-colors: active) {
@@ -6127,7 +6142,7 @@
   display: inline-block; box-sizing: border-box; padding: var(--cds-spacing-03) var(--cds-spacing-04);
   border: 1px solid currentColor; border-radius: 999px;
   font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-size: 18px; line-height: 1; letter-spacing: 0.025em; text-transform: none; white-space: nowrap; text-align: center; text-box: trim-both cap alphabetic;
+  font-size: 18px; line-height: 1; letter-spacing: 0; text-transform: none; white-space: nowrap; text-align: center; text-box: trim-both cap alphabetic;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-fd-meta[class] { padding-inline: var(--cds-spacing-08); }
 /* The affected elements keep their own setting under the centred pill: a
@@ -6238,7 +6253,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-accordion-title .a11y-accordion-head[class][class]:enabled:hover { background: var(--sr-bar); color: #fff; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-accordion-title .a11y-accordion-head[class][class]::before { align-self: center; margin-top: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-accordion-title .a11y-accordion-head[class][class] > .a11y-status-chip[class] {
-  margin: 0 0 0 auto; padding: 0 0 0 var(--cds-spacing-06); color: #fff; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; text-align: end;
+  margin: 0 0 0 auto; padding: 0 0 0 var(--cds-spacing-06); color: #fff; font-size: 16px; line-height: 1.1; letter-spacing: 0; text-align: end;
 }
 /* The bar is --sr-bar blue (#2848c8) since the periwinkle went, and the
    panel's dark green measured 1.5:1 on it, a ring no one could see
@@ -6278,7 +6293,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-transport { gap: var(--cds-spacing-03); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-play[class]:enabled {
   justify-content: center; min-height: 32px; padding: 0 var(--cds-spacing-04); border: 1px solid #000; border-radius: 999px;
-  background: #000; color: #fff; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; text-align: left;
+  background: #000; color: #fff; font-size: 16px; line-height: 1.1; letter-spacing: 0; text-align: left;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-play[class]:enabled:hover { border-color: var(--sr-pill-hover); background: var(--sr-pill-hover); color: #000; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-play[class]:focus-visible { outline: 2px solid #6fdc8c; outline-offset: -4px; }
@@ -6286,7 +6301,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] :is(.a11y-sr-ctl, .a11y-skip-link)[class],
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-show-all[class] {
   justify-content: center; min-height: 32px; padding: 0 var(--cds-spacing-04); border: 1px solid var(--sr-pill); border-radius: 999px;
-  background: var(--sr-pill); color: #000; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  background: var(--sr-pill); color: #000; font-size: 16px; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] :is(.a11y-sr-ctl, .a11y-skip-link)[class]:enabled:hover,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-show-all[class]:enabled:hover { border-color: var(--sr-pill-hover); background: var(--sr-pill-hover); color: #000; }
@@ -6294,7 +6309,7 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-ctl[class] > svg { display: none; }
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] :is(.a11y-sr-status, .a11y-sr-keys) {
-  flex-basis: 100%; margin: 0; color: #000; font-size: 16px; line-height: 1.4; letter-spacing: 0.025em; text-align: start;
+  flex-basis: 100%; margin: 0; color: #000; font-size: 16px; line-height: 1.1; letter-spacing: 0; text-align: start;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] span.a11y-sr-status:empty { display: none; }
 
@@ -6302,7 +6317,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar.a11y-sr-tools[class] { justify-content: flex-start; gap: var(--cds-spacing-03); margin: var(--cds-spacing-07) 0 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class] {
   position: relative; gap: var(--cds-spacing-03); min-height: 32px; padding: 0 var(--cds-spacing-04); border: 1px solid var(--sr-pill); border-radius: 999px;
-  background: var(--sr-pill); color: #000; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  background: var(--sr-pill); color: #000; font-size: 16px; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class]:has(:checked) { border-color: #000; background: #000; color: #fff; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] .a11y-sr-filter[class] > svg { flex: none; font-size: 16px; color: currentColor; }
@@ -6313,7 +6328,7 @@
 /* "What you'd hear": the capital label over the lines. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-log { container: a11y-srlog / inline-size; margin: var(--cds-spacing-08) 0 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-log > .a11y-sr-log-heads {
-  display: block; margin: 0 0 var(--cds-spacing-05); padding-inline-start: var(--cds-spacing-07); color: #000; font-size: 16px; line-height: 1.4; letter-spacing: 0.04em;
+  display: block; margin: 0 0 var(--cds-spacing-05); padding-inline-start: var(--cds-spacing-07); color: #000; font-size: 16px; line-height: 1.1; letter-spacing: 0;
   text-align: start; text-transform: uppercase; font-feature-settings: "ss04", "ss05", "case";
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-log > .a11y-sr-log-heads > :not(:nth-child(2)) { display: none; }
@@ -6334,7 +6349,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-row[class][class] > .a11y-sr-num[class] {
   grid-column: 1; grid-row: 1; align-self: center; box-sizing: border-box; min-width: 44px; width: auto; height: 44px; margin: 0; padding: 0 var(--cds-spacing-03);
   border: 1px solid currentColor; border-radius: 22px; background: none; color: inherit;
-  font-size: 16px; line-height: 1; letter-spacing: 0.025em;
+  font-size: 16px; line-height: 1; letter-spacing: 0;
 }
 /* The ring holds its figures with air round them (user's word, 25 Nov
    2026, "numbers here need margin"): at 32px a three-figure line number
@@ -6345,7 +6360,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-row[class][class] > .a11y-sr-line-text { grid-column: 2; grid-row: 1; font-size: inherit; line-height: 1.1; letter-spacing: inherit; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-row[class][class] > .a11y-sr-issue[class] {
   grid-column: 2; grid-row: 2; margin: 0; padding: 0; background: none; color: var(--word-red, #b42800);
-  font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 16px; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-row[class][class] > .a11y-sr-flag { grid-column: 3; grid-row: 1; font-size: 16px; color: inherit; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-row[class][class]:is(button):enabled:hover { background: var(--hover); color: var(--hover-ink); }
@@ -6357,7 +6372,7 @@
 
 /* Show all and the truncation note, centred at the foot. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-show-all[class] { display: flex; width: fit-content; margin: var(--cds-spacing-07) 0 0; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-note { margin: var(--cds-spacing-05) 0 0; color: #000; font-size: 16px; line-height: 1.4; letter-spacing: 0.025em; text-align: left; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-note { margin: var(--cds-spacing-05) 0 0; color: #000; font-size: 16px; line-height: 1.1; letter-spacing: 0; text-align: left; }
 
 /* Dark: the pills are the dark field fill, so their focus is the light green. */
 @media (prefers-color-scheme: dark) {
@@ -6372,7 +6387,7 @@
     min-height: 60px; padding: var(--cds-spacing-05) var(--cds-spacing-06); border-radius: 999px; font-size: inherit; line-height: 1.1; letter-spacing: inherit;
   }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-accordion-title .a11y-accordion-head[class][class]::before { align-self: start; margin-top: calc((1lh - 0.68em) / 2); }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-accordion-title .a11y-accordion-head[class][class] > .a11y-status-chip[class] { grid-column: 2; margin: 0; padding: 0; font-size: 16px; letter-spacing: 0.025em; text-align: start; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-accordion-title .a11y-accordion-head[class][class] > .a11y-status-chip[class] { grid-column: 2; margin: 0; padding: 0; font-size: 16px; letter-spacing: 0; text-align: start; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] h2.a11y-section-title:not(.a11y-accordion-title)[class] { font-size: inherit; letter-spacing: inherit; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar[class] { margin-top: var(--cds-spacing-06); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sr[class] .a11y-sr-bar.a11y-sr-tools[class] { margin-top: var(--cds-spacing-06); }
@@ -6464,7 +6479,7 @@
   position: absolute; left: 50%; right: auto; bottom: var(--cds-spacing-06); translate: -50% 0; z-index: 1;
   display: flex; align-items: center; min-height: 32px; margin: 0; padding: 0 var(--cds-spacing-05); box-sizing: border-box;
   border: 0; border-radius: 999px; background: var(--note-pill); color: var(--tile-ink);
-  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-wcag:enabled:hover { background: var(--hover); color: var(--hover-ink); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-go {
@@ -6482,14 +6497,14 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompt-more .a11y-btn[class][class] {
   min-height: 48px; padding: 0 var(--cds-spacing-06); border: 0; border-radius: 999px; background: var(--bubble); color: var(--ink);
-  font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 16px; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompt-more .a11y-btn[class][class]:enabled:hover { background: var(--hover); color: var(--hover-ink); }
 @media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt.a11y-prompt.a11y-prompt { padding-bottom: var(--cds-spacing-10); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt .a11y-prompt-wcag { bottom: 16px; margin: 0; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt.a11y-prompt-barrier .a11y-prompt-go[class] { display: flex; bottom: 16px; min-height: 32px; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompt-more .a11y-btn[class][class] { min-height: 40px; padding: 0 var(--cds-spacing-05); font-size: 16px; letter-spacing: 0.025em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompt-more .a11y-btn[class][class] { min-height: 40px; padding: 0 var(--cds-spacing-05); font-size: 16px; letter-spacing: 0; }
 }
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt.a11y-prompt.a11y-prompt { border: 1px solid CanvasText; }
@@ -6511,7 +6526,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-row[class] > .a11y-chats-item[class] {
   display: flex; align-items: center; gap: var(--cds-spacing-03); min-height: 0; margin: 0; padding: var(--cds-spacing-01) var(--cds-spacing-04); border: 0; border-radius: 0;
-  background: none; color: var(--ink); font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  background: none; color: var(--ink); font-size: 16px; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-row[class] .a11y-chats-title[class] {
   display: block; flex: 0 1 auto; min-width: 0; -webkit-line-clamp: none; line-clamp: none;
@@ -6519,7 +6534,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-open {
   flex: none; padding: 0 var(--cds-spacing-03); border-radius: 999px; background: var(--plate-4); color: var(--plate-text);
-  font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 16px; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-row[class] > .a11y-chats-item:enabled:hover .a11y-chats-title { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.14em; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-row[class] > .a11y-chats-item:disabled .a11y-chats-title { text-decoration: underline dashed; text-decoration-thickness: 1px; text-underline-offset: 0.14em; }
@@ -6570,7 +6585,7 @@
      the yellow).
    How the score works and the warning keep their rows. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score:has(> .a11y-sum-specimen) > h2.a11y-section-title {
-  text-align: center; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  text-align: center; font-size: 16px; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-actions {
   display: flex; justify-content: center; margin: var(--cds-spacing-04) 0 0; padding: 0;
@@ -6596,7 +6611,7 @@
   container: a11y-sum-issues / inline-size;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specimen > .a11y-sum-issues > .a11y-sum-label {
-  margin: 0 0 var(--cds-spacing-07); padding: 0; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  margin: 0 0 var(--cds-spacing-07); padding: 0; font-size: 16px; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs {
   display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--cds-spacing-05) var(--cds-grid-gutter-narrow); margin: 0; padding: 0; list-style: none; text-align: left;
@@ -6618,7 +6633,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-pill {
   display: inline-block; box-sizing: border-box; max-width: 100%; padding: var(--cds-spacing-01) var(--cds-spacing-04); border: 1px solid #000; border-radius: 999px; color: #000;
   font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em; white-space: normal;
+  font-size: 18px; font-weight: 400; line-height: 1.1; letter-spacing: 0; white-space: normal;
 }
 /* The pills held to one line ran past a 320px screen in French and Spanish
    ("À corriger en premier" ended at 390px beside the picture). They stay on
@@ -6632,7 +6647,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title {
   display: block; color: #000; text-decoration: none; overflow-wrap: anywhere;
   font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-size: inherit; font-weight: 400; line-height: 1.35; letter-spacing: inherit;
+  font-size: inherit; font-weight: 400; line-height: 1.1; letter-spacing: inherit;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title::after {
   content: ""; position: absolute; inset: 0; border-radius: 20px;
@@ -6652,7 +6667,7 @@
   position: absolute; left: var(--cds-spacing-06); bottom: var(--cds-spacing-06); visibility: hidden; pointer-events: none;
   display: inline-flex; align-items: center; box-sizing: border-box; min-height: 32px; padding: 0 var(--cds-spacing-04);
   border-radius: 999px; background: #fff; color: #000; white-space: nowrap;
-  font-size: 16px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 16px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec:is(:hover, :has(.a11y-sum-spec-title:focus-visible))[class] {
   --ink: #fff; --paper: var(--hl-blue); --focus: #fff;
@@ -6671,7 +6686,7 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec { gap: var(--cds-spacing-05); padding: var(--cds-spacing-05); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs > .a11y-sum-spec[class] { padding-bottom: calc(var(--cds-spacing-05) + 32px + var(--cds-spacing-05)); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-go { left: var(--cds-spacing-05); bottom: var(--cds-spacing-05); }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title { font-size: inherit; line-height: 1.4; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-spec-title { font-size: inherit; line-height: 1.1; }
 }
 @container a11y-sum-issues (max-width: 760px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-specs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -6720,13 +6735,13 @@
    painted underline and the link blue of the plain Learn more do not
    apply here. In print it is the plain link again. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-fd-learn:has(> .a11y-learn-prompt) {
-  margin: var(--cds-spacing-05) 0 0; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; text-align: start;
+  margin: var(--cds-spacing-05) 0 0; font-size: 16px; line-height: 1.1; letter-spacing: 0; text-align: start;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz a.a11y-learn-more.a11y-learn-prompt[class],
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz a.a11y-learn-more.a11y-learn-prompt[class]:visited {
   display: inline-flex; align-items: center; gap: var(--cds-spacing-03); box-sizing: border-box; min-height: 32px; padding: 0 var(--cds-spacing-05);
   border: 1px solid var(--solid); border-radius: 999px; background: var(--solid); color: var(--solid-ink);
-  font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; text-decoration: none;
+  font-size: 16px; line-height: 1.1; letter-spacing: 0; text-decoration: none;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz a.a11y-learn-more.a11y-learn-prompt[class]:hover {
   border-color: var(--hover); background: var(--hover); color: var(--hover-ink); text-decoration: none;
@@ -6776,7 +6791,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-panel .a11y-dn-bar > .a11y-dn-bar-title { flex: 1 1 auto; min-width: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-panel .a11y-dn-bar > .a11y-dn-bar-count {
   flex: none; margin-inline-start: auto; padding-inline-start: var(--cds-spacing-05); white-space: nowrap;
-  font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; text-decoration: none;
+  font-size: 16px; line-height: 1.1; letter-spacing: 0; text-decoration: none;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-panel .a11y-dn-caret > .a11y-dn-detail[class] {
   --paper: var(--tile-fill); --tile: var(--bubble); --bubble-pill: var(--bubble);
@@ -6859,7 +6874,7 @@
   padding: var(--cds-spacing-06) 28px; border: 0; border-radius: 12px;
   background: var(--yellow-note); color: #000; text-align: left;
   font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-size: 22px; font-weight: 400; font-synthesis: none; line-height: 1.35; letter-spacing: 0.02em;
+  font-size: 22px; font-weight: 400; font-synthesis: none; line-height: 1.1; letter-spacing: 0;
   overflow-wrap: anywhere;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-notes > .a11y-sum-card[class][class] { margin: 0; }
@@ -6940,7 +6955,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-standard, .a11y-legal-eyebrow) {
   display: block; margin: 0 0 var(--cds-spacing-06); padding: 0; border: 0; background: none; color: #000;
   font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em; text-transform: none;
+  font-size: 18px; font-weight: 400; line-height: 1.1; letter-spacing: 0; text-transform: none;
   overflow-wrap: anywhere;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-intro, .a11y-legal-lead, .a11y-legal-q) {
@@ -6951,7 +6966,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards .a11y-legal-q > .a11y-legal-qnum { width: 24px; height: 24px; margin-top: 0; font-size: 16px; }
 @media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards > :is(.a11y-legal-std, .a11y-legal-band, .a11y-legal-panel) { padding: var(--cds-spacing-05); }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-standard, .a11y-legal-eyebrow) { font-size: 16px; line-height: 1.2; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-standard, .a11y-legal-eyebrow) { font-size: 16px; line-height: 1.1; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-intro, .a11y-legal-lead, .a11y-legal-q) { font-size: inherit; line-height: 1.1; letter-spacing: inherit; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards .a11y-legal-q > .a11y-legal-qnum { width: 16px; height: 16px; }
 }
@@ -7009,7 +7024,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-suggest .a11y-chat-chip[class] {
   min-height: 32px; padding: var(--cds-spacing-02) var(--cds-spacing-05); border: 0; border-radius: 999px;
   background: var(--bubble); color: var(--ink);
-  font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 16px; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-suggest .a11y-chat-chip[class]:enabled:hover { background: var(--hover); color: var(--hover-ink); }
 @media (max-width: 671px) {
@@ -7072,7 +7087,7 @@
   min-width: 44px; width: auto; height: 44px; padding: 0 var(--cds-spacing-03);
   border: 1px solid currentColor; border-radius: 22px; background: none; color: inherit;
   font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 16px; font-weight: 400; font-synthesis: none;
-  line-height: 1; letter-spacing: 0.025em; font-variant-numeric: tabular-nums;
+  line-height: 1; letter-spacing: 0; font-variant-numeric: tabular-nums;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-no[class][class] { margin-top: 0; }
 /* The legal questions: a 44px column for the ring, 12px to the words; the
@@ -7088,7 +7103,7 @@
   inset-inline-start: -56px; top: calc((1lh - 44px) / 2); box-sizing: border-box;
   min-width: 44px; width: auto; height: 44px; margin: 0; padding: 0 var(--cds-spacing-03);
   border: 1px solid currentColor; border-radius: 22px; background: none; color: inherit;
-  font-size: 16px; letter-spacing: 0.025em;
+  font-size: 16px; letter-spacing: 0;
 }
 @media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-q > .a11y-legal-qnum[class][class] { margin-top: calc((18px * 1.4 - 44px) / 2); }
@@ -7139,13 +7154,13 @@
   container-type: inline-size;
   box-sizing: border-box; margin: var(--cds-spacing-07) 0 0; padding: var(--cds-spacing-06);
   border-radius: 28px; background: #fff5c2; color: #000;
-  font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 16px; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] > .a11y-code-fix-label {
-  margin: 0; padding: 0; border: 0; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  margin: 0; padding: 0; border: 0; font-size: 16px; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] > .a11y-code-fix-label > strong {
-  display: block; margin: 0; text-transform: none; letter-spacing: 0.015em;
+  display: block; margin: 0; text-transform: none; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] .a11y-code-fix-warn { display: block; color: #c8102e; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] > .a11y-code-fix-note { margin: var(--cds-spacing-07) 0 0; overflow-wrap: break-word; hyphens: manual; }
@@ -7154,19 +7169,19 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] .a11y-code-fix-col { display: flex; flex-direction: column; min-width: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] .a11y-code-fix-col > .a11y-code-fix-key {
-  order: 2; margin: var(--cds-spacing-04) 0 0; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  order: 2; margin: var(--cds-spacing-04) 0 0; font-size: 16px; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] .a11y-code-fix-col > .a11y-code-fix-pre {
   order: 1; flex: 1 1 auto; box-sizing: border-box; margin: 0; padding: var(--cds-spacing-05);
   border: 0; border-radius: 20px; background: #fff; color: #000;
-  font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; white-space: pre-wrap; overflow-wrap: anywhere;
+  font-size: 16px; line-height: 1.1; letter-spacing: 0; white-space: pre-wrap; overflow-wrap: anywhere;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] .a11y-code-fix-col > .a11y-code-fix-pre:focus-visible { outline: 2px solid #198038; outline-offset: -2px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] > .a11y-copy-btn[class] {
   box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: var(--cds-spacing-04);
   width: max-content; max-width: 100%; min-height: 48px; margin: var(--cds-spacing-08) 0 0; padding: 0 var(--cds-spacing-06);
   border: 0; border-radius: 999px; background: #000; color: #fff;
-  font-size: 16px; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 16px; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] > .a11y-copy-btn[class] > svg { flex: none; font-size: 16px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-code-fix[class] > .a11y-copy-btn[class]:hover {
@@ -7229,7 +7244,7 @@
 )[class] {
   font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-style: normal; font-synthesis: none;
   font-variant-numeric: lining-nums; font-kerning: normal; font-feature-settings: "kern", "liga", "ss04", "ss05";
-  text-transform: none; text-align: left; line-height: 1.15; letter-spacing: 0;
+  text-transform: none; text-align: left; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(
   .a11y-url-form[class] > .a11y-tester-name,
@@ -7257,7 +7272,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score:has(> .a11y-sum-specimen) > h2.a11y-section-title[class][class],
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score .a11y-sum-specimen :is(.a11y-sum-run > .a11y-sum-verdict, .a11y-sum-issues > .a11y-sum-label)[class][class] {
   font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-style: normal; font-synthesis: none;
-  text-transform: none; text-align: center; line-height: 1.15; letter-spacing: 0;
+  text-transform: none; text-align: center; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score .a11y-sum-specimen > .a11y-sum-run > .a11y-sum-verdict[class][class] { font-size: inherit; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-score .a11y-sum-specimen > .a11y-sum-issues > .a11y-sum-label[class][class] { font-size: 18px; }
@@ -7338,14 +7353,14 @@
   font-family: "Jokker", "DejaVu Sans", sans-serif;
   font-style: normal; font-weight: 400; font-synthesis: none; letter-spacing: 0;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q[class][class] > .a11y-prompt-label { font-size: 18px; line-height: 1.2; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q[class][class] > .a11y-prompt-ask { font-size: 22px; line-height: 1.15; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q[class][class] > .a11y-prompt-label { font-size: 18px; line-height: 1.1; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q[class][class] > .a11y-prompt-ask { font-size: 22px; line-height: 1.1; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompts .a11y-prompt > .a11y-prompt-wcag[class][class] {
   font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-style: normal; font-weight: 400; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em;
+  font-style: normal; font-weight: 400; font-size: 18px; line-height: 1.1; letter-spacing: 0;
 }
 @media (max-width: 671px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt .a11y-prompt-q[class][class] > .a11y-prompt-ask { font-size: 22px; line-height: 1.15; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt .a11y-prompt-q[class][class] > .a11y-prompt-ask { font-size: 22px; line-height: 1.1; }
 }
 
 /* ═══ THE RECENT CONVERSATIONS IN LETTRA (user's instruction, 25 Nov 2026,
@@ -7362,7 +7377,7 @@
   font-weight: 400; font-synthesis: none; letter-spacing: 0; font-size: 18px;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chats .a11y-chats-row[class] > .a11y-chats-item[class][class] .a11y-chats-open {
-  font-family: "Jokker", "DejaVu Sans", sans-serif; letter-spacing: 0.025em;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; letter-spacing: 0;
 }
 
 /* ═══ CENTRED CALLOUTS IN THE POSTER'S COLOURS (user's reference, 25 Nov
@@ -7468,7 +7483,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] > .a11y-settings-label[class] {
   display: block; justify-self: stretch; width: auto; margin: 0 0 var(--cds-spacing-04); color: inherit; text-align: start;
   font-family: "Jokker", "DejaVu Sans", sans-serif; font-synthesis: none;
-  font-size: 22px; font-weight: 400; line-height: 1.4; letter-spacing: 0.025em; text-transform: uppercase; font-feature-settings: "ss04", "ss05", "case";
+  font-size: 22px; font-weight: 400; line-height: 1.1; letter-spacing: 0; text-transform: uppercase; font-feature-settings: "ss04", "ss05", "case";
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-row[class] > :is(.a11y-select2, .a11y-input) { display: block; max-width: none; }
 /* The account field's own label says "Account key" right under the row's
@@ -7489,7 +7504,7 @@
   display: flex; align-items: center; gap: var(--cds-spacing-05); box-sizing: border-box; width: 100%; min-width: 0; min-height: 64px; margin: 0;
   padding: var(--cds-spacing-03) var(--cds-spacing-06) var(--cds-spacing-03) var(--cds-spacing-05);
   border: 1px solid var(--tile-fill); border-radius: 999px; background: var(--tile-fill); color: var(--tile-ink); text-align: start;
-  font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em;
+  font-size: 18px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-settings-opt[class][class] > .a11y-settings-words { flex: 1 1 auto; min-width: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] button.a11y-settings-opt[class][class]:enabled:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
@@ -7506,7 +7521,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] button.a11y-settings-opt[class][class]:enabled:hover .a11y-settings-ring > svg { color: var(--hover); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-settings-cost[class] {
   flex: none; margin: 0 0 0 auto; padding: var(--cds-spacing-01) var(--cds-spacing-03); border: 1px solid currentColor; border-radius: 999px;
-  font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; white-space: nowrap;
+  font-size: 18px; line-height: 1.1; letter-spacing: 0; white-space: nowrap;
 }
 
 /* The language: a white pill across the panel. */
@@ -7514,11 +7529,11 @@
   --ink: var(--tile-ink); /* the arrow is drawn in --ink: the pill's words, not the panel's */
   box-sizing: border-box; width: 100%; min-width: 0; max-width: none; min-height: 64px; margin: 0;
   padding: 0 var(--cds-spacing-11) 0 var(--cds-spacing-06); border: 1px solid var(--tile-fill); border-radius: 999px;
-  background-color: var(--tile-fill); color: var(--tile-ink); font-size: 18px; line-height: 1.2; letter-spacing: 0.025em;
+  background-color: var(--tile-fill); color: var(--tile-ink); font-size: 18px; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-select2 .a11y-select2-field.a11y-select2-field:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; box-shadow: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] :is(.a11y-select2-help, .a11y-input-help, .a11y-settings-state)[class][class] {
-  display: block; justify-self: stretch; width: auto; margin: var(--cds-spacing-04) 0 0; color: inherit; text-align: start; font-size: 22px; line-height: 1.4; letter-spacing: 0.025em;
+  display: block; justify-self: stretch; width: auto; margin: var(--cds-spacing-04) 0 0; color: inherit; text-align: start; font-size: 22px; line-height: 1.1; letter-spacing: 0;
   font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-synthesis: none;
 }
 
@@ -7527,7 +7542,7 @@
   min-height: 64px; box-sizing: border-box; padding: 0 var(--cds-spacing-06); border: 1px solid var(--tile-fill); border-radius: 999px;
   background: var(--tile-fill); color: var(--tile-ink);
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-input-shell[class] > input { border: 0; background: none; color: inherit; font-size: 18px; letter-spacing: 0.025em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-input-shell[class] > input { border: 0; background: none; color: inherit; font-size: 18px; letter-spacing: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-input-shell[class]:has(> input:focus-visible) { outline: 2px solid var(--focus); outline-offset: -2px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-input-shell[class] > input:focus-visible { outline: none; box-shadow: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] :is(.a11y-settings-row, .a11y-manual-form-actions) > .a11y-btn[class][class] {
@@ -7548,12 +7563,12 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] { gap: var(--cds-spacing-06); padding: var(--cds-spacing-06) var(--cds-spacing-05) var(--cds-spacing-07); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] > .a11y-settings-heading[class] { font-size: inherit; line-height: 1.1; letter-spacing: inherit; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-settings-opt[class][class] {
-    flex-wrap: wrap; gap: var(--cds-spacing-02) var(--cds-spacing-04); min-height: 56px; padding-inline: var(--cds-spacing-04) var(--cds-spacing-05); font-size: 16px; letter-spacing: 0.025em;
+    flex-wrap: wrap; gap: var(--cds-spacing-02) var(--cds-spacing-04); min-height: 56px; padding-inline: var(--cds-spacing-04) var(--cds-spacing-05); font-size: 16px; letter-spacing: 0;
   }
   /* The badge folds under the words, on their left edge (ring 28 + gap 12). */
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-settings-opt[class][class] > .a11y-settings-words { flex: 1 1 calc(100% - 40px); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-settings-cost[class] { margin: 0 0 0 var(--cds-spacing-08); }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-select2 .a11y-select2-field.a11y-select2-field { min-height: 56px; font-size: 16px; letter-spacing: 0.025em; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class] .a11y-select2 .a11y-select2-field.a11y-select2-field { min-height: 56px; font-size: 16px; letter-spacing: 0; }
 }
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-settings[class],
@@ -7699,7 +7714,7 @@
    is centred with it. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section-concern > .a11y-section-tint > :is(h2.a11y-section-title, p.a11y-section-desc)[class][class][class] {
   font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-style: normal; font-synthesis: none;
-  text-align: left; line-height: 1.15; letter-spacing: 0;
+  text-align: left; line-height: 1.1; letter-spacing: 0;
 }
 
 /* THE SECTION COUNT AND THE STATEMENT'S STEPS IN LETTRA (user's
@@ -7747,13 +7762,13 @@
      16px). The raises below are reworked for it: (cap of the large line
      less 0.7 x 22px) / 2. */
   font-family: "Jokker", "DejaVu Sans", sans-serif; font-style: normal; font-weight: 400; font-synthesis: none;
-  font-size: 22px; line-height: 1.2; letter-spacing: 0; font-variant-numeric: lining-nums; text-transform: none;
+  font-size: 22px; line-height: 1.1; letter-spacing: 0; font-variant-numeric: lining-nums; text-transform: none;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-runs > .a11y-hist-year[class][class] { margin: 0 0 var(--cds-spacing-03); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-run > :is(.a11y-hist-date, .a11y-hist-times, .a11y-hist-note)[class][class] { position: relative; top: -7px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-run > .a11y-hist-score[class][class] {
   font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400;
-  font-size: 43px; line-height: 1.05; letter-spacing: 0; font-variant-numeric: tabular-nums; white-space: nowrap;
+  font-size: 43px; line-height: 1.1; letter-spacing: 0; font-variant-numeric: tabular-nums; white-space: nowrap;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-card[class][class] { gap: var(--cds-spacing-03); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-card > .a11y-hist-head[class][class] {
@@ -7930,7 +7945,7 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-attached-remove[type="button"]:hover { background: var(--hover); color: var(--hover-ink); border-color: var(--ink); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-attached-remove[type="button"]:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-attach-note {
-  margin: var(--cds-spacing-03) 0 0; font-size: 16px; line-height: 1.2; letter-spacing: 0.025em; color: var(--word-red, #b81c1c);
+  margin: var(--cds-spacing-03) 0 0; font-size: 16px; line-height: 1.1; letter-spacing: 0; color: var(--word-red, #b81c1c);
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat-images[role="list"] {
   display: flex; flex-wrap: wrap; gap: var(--cds-spacing-03);
@@ -8003,7 +8018,7 @@
    part's paragraph or list stands from the next (it was 48px above a
    title and 8px under it). A title never ends a column on its own. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card .a11y-stmt-text[class] {
-  columns: 2; column-gap: var(--cds-spacing-09); font-size: 18px; line-height: 1.4; letter-spacing: 0.02em;
+  columns: 2; column-gap: var(--cds-spacing-09); font-size: 18px; line-height: 1.1; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card .a11y-stmt-text[class] > :is(p, ul, ol) { margin: 0 0 var(--cds-spacing-06); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-stmt .a11y-stmt-card .a11y-stmt-text[class] > p:has(+ p:not(:has(> strong:only-child))) { margin-bottom: 0; }
@@ -8063,7 +8078,7 @@
    round beside a title keeps its own face. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-section-title[class][class] {
   font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-weight: 400; font-style: normal; font-synthesis: none; letter-spacing: 0; line-height: 1.15;
+  font-weight: 400; font-style: normal; font-synthesis: none; letter-spacing: 0; line-height: 1.1;
 }
 
 /* ═══ THE SCAN SETTINGS SET LEFT, 15% LARGER (user's instructions, 25 Nov
@@ -8133,7 +8148,7 @@
    buttons in this sense and keep their sizes; so do the round delete
    bin and the "Open" mark. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-blockflag-jump, .a11y-copy-btn, .a11y-findings-csv, a.a11y-learn-prompt, .a11y-login-close, .a11y-login-toggle, .a11y-ra-pdf, .a11y-ra-send, .a11y-show-all, .a11y-sim-btn, .a11y-skip-link, .a11y-sr-play, .a11y-undecided-export, .a11y-shell-nav-toggle, .a11y-chat-chip, .a11y-chats-new, .a11y-lang-toggle, .a11y-prompt-go, .a11y-settings-opt, .a11y-stmt-copy)[class][class][class] {
-  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 18px; font-weight: 400; letter-spacing: 0.025em;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 18px; font-weight: 400; letter-spacing: 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-ra-send, .a11y-ra-pdf, .a11y-chats-new, .a11y-lang-toggle, .a11y-prompt-go)[class][class][class] :is(span, strong):not(.a11y-sr-only) { font-size: inherit; letter-spacing: inherit; }
 /* ═══ CONTENT ON ONE GRID (user's instruction, 26 Nov 2026, "make sure all
@@ -8170,3 +8185,62 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-facts > .a11y-hist-fact[class][class][class][class] { column-gap: var(--grid-gap); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist :is(.a11y-hist-run > .a11y-hist-date, .a11y-hist-fact > .a11y-hist-fact-label)[class][class] { flex: 0 0 var(--grid-label); box-sizing: border-box; min-width: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-fact > .a11y-hist-fact-value[class][class] { flex: 1 1 0; min-width: 0; }
+
+/* ═══ THE OPENED FINDING'S WORDS SET AS A FOUNDRY'S CONTACT PAGE (user's
+   instruction, 26 Nov 2026, "this text in buble can go smaller, copy text
+   sizes and line height and paragraph breaks from this website", on What
+   to do's two points, with a type foundry's contact page as the source)
+   ═══ Measured on that page at 1440 x 900: its running text is 19 to 20px
+   (2.8rem on a root that follows the window), set solid at 1.1, no
+   tracking, and its paragraphs are one whole line apart (margin-top equal
+   to the line, no indent). Here every part of an opened finding (Who fixes
+   this, What we found, Why this matters, What the research shows, What to
+   do and their siblings) takes the nearest of the five sizes, 22px (it
+   inherited the 29px body), on 1.1 with no tracking; the phone's body is
+   22px already, so the part reads the same there. Points and paragraphs
+   inside a part stand one line apart, 24px (Carbon's spacing-06, the 22px
+   x 1.1 line rounded onto the scale), where they were 12px; the label pill
+   keeps its 18px and its 12px over the words. The affected elements keep
+   their own setting. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps)[class][class][class][class] {
+  font-size: 22px; line-height: 1.1; letter-spacing: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps)[class][class][class][class] > * + * + * { margin-top: calc(var(--cds-spacing-06) - var(--cds-spacing-04)); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps)[class][class][class][class] :is(ul, ol)[class] > li + li,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col > .a11y-finding-steps[class][class][class][class] > ul > li + li { margin-top: var(--cds-spacing-06); }
+
+/* ═══ THE OPENED FINDING'S LABELS ON THE CARD'S TOP EDGE (user's
+   instruction, 26 Nov 2026, "ad this badge on top of top line in buble",
+   on the "What we found" pill, with a foundry's card whose "Early access"
+   badge sits across its top edge) ═══ Each part's label pill (Who fixes
+   this, What we found, What to do, Affected element and their siblings)
+   is pinned across the card's top edge, its middle on the edge, so half
+   stands over the grey bubble and half on the card. It keeps its outline
+   and its centred place, and takes the card's own fill so the bubble does
+   not show through it. Out of the flow, so the words start 40px down
+   (half the 34px pill, then the 12px it stood over them before, on the
+   4px grid), and the cards stand 32px apart (were 16px) so a pill never
+   meets the card above it. It stays first in the markup, so a screen
+   reader still hears the label before the words. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] { row-gap: var(--cds-spacing-07); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col:not(:empty)[class] { row-gap: var(--cds-spacing-07); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps, .a11y-affected)[class][class][class] {
+  position: relative; overflow: visible; padding-top: var(--cds-spacing-08);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo)[class][class][class] > strong:first-child,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class][class][class] > p:first-child,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class][class] > .a11y-affected-label {
+  position: absolute; top: 0; inset-inline-start: 50%; transform: translate(-50%, -50%); z-index: 1; margin: 0;
+  grid-row: auto; grid-column: auto; /* in a grid, an absolute child placed in a row takes that row as its frame, not the card */
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo)[class][class][class] > strong:first-child,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class][class][class] > p:first-child > strong,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class][class] > .a11y-affected-label > strong {
+  background: var(--bubble-pill, #fff);
+}
+/* The steps' and the affected element's label is a wrapper round the pill;
+   as tall as its line it sat 4px high on the edge, so it hugs the pill. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class][class][class] > p:first-child,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class][class] > .a11y-affected-label { display: flex; height: auto; min-height: 0; padding: 0; line-height: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-affected[class][class][class] > .a11y-affected-label > strong,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps[class][class][class] > p:first-child > strong { margin: 0; }
