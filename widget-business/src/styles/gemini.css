@@ -1085,6 +1085,30 @@
   .a11y-widget-biz .a11y-finding-header > .a11y-shot { grid-column: 2; grid-row: 3; justify-self: start; margin-top: 6px; }
 }
 
+/* The score's issues in the finding cards' columns (user's "images on
+   the middle, fix first on the right", 26 Nov 2026): the title with its
+   criterion and places at the left, the picture centred in a 120px middle
+   column, the severity at the right end at the title's size. The body and
+   caption are flattened (display: contents) so each part takes its cell. */
+.a11y-widget-biz .a11y-sum-spec,
+.a11y-widget-biz .a11y-sum-spec:not(:has(.a11y-sum-spec-shot)) {
+  display: grid; grid-template-columns: minmax(0, 1fr) 120px 160px; column-gap: 16px; row-gap: 2px; align-items: start;
+}
+.a11y-widget-biz .a11y-sum-spec-body,
+.a11y-widget-biz .a11y-sum-spec-cap { display: contents; }
+.a11y-widget-biz .a11y-sum-spec-title { grid-column: 1; grid-row: 1; font-size: 20px; line-height: 24px; }
+.a11y-widget-biz .a11y-sum-spec-crit { grid-column: 1; grid-row: 2; }
+.a11y-widget-biz .a11y-sum-spec-cap > .a11y-sum-spec-pill:has(.a11y-sev) { grid-column: 3; grid-row: 1; justify-self: end; margin: 0; }
+.a11y-widget-biz .a11y-sum-spec-cap > .a11y-sum-spec-pill:last-child:not(:has(.a11y-sev)):not(.a11y-sum-spec-crit) { grid-column: 1; grid-row: 3; }
+.a11y-widget-biz .a11y-sum-spec-pill .a11y-sev { font-size: 20px; line-height: 24px; margin: 0; }
+.a11y-widget-biz .a11y-sum-spec > .a11y-sum-spec-shot { grid-column: 2; grid-row: 1 / span 3; align-self: center; justify-self: center; width: 120px; }
+.a11y-widget-biz .a11y-sum-spec-pill { margin: 0; }
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-sum-spec, .a11y-widget-biz .a11y-sum-spec:not(:has(.a11y-sum-spec-shot)) { grid-template-columns: minmax(0, 1fr) auto; }
+  .a11y-widget-biz .a11y-sum-spec-cap > .a11y-sum-spec-pill:has(.a11y-sev) { grid-column: 2; }
+  .a11y-widget-biz .a11y-sum-spec > .a11y-sum-spec-shot { grid-column: 1; grid-row: 4; justify-self: start; margin-top: 6px; }
+}
+
 /* The form's report (a page behind a login) keeps the product shell. */
 .a11y-widget-biz .a11y-shell-with-nav > .a11y-shell-main { display: grid; grid-template-columns: 225px minmax(0, 1fr); gap: 13px; padding: 16px; }
 .a11y-widget-biz .a11y-shell-nav { position: sticky; top: 16px; align-self: start; display: flex; flex-direction: column; gap: 2px; }
