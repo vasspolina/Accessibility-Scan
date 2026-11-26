@@ -385,9 +385,11 @@
 }
 .a11y-widget-biz .g-input:focus-visible { outline: none; padding-bottom: 2px; }
 .a11y-widget-biz .g-input::placeholder { color: var(--ink-2); opacity: 1; }
-.a11y-widget-biz .g-tools { display: flex; align-items: center; gap: 2px; margin-inline-start: -10px; padding: 0; }
-.a11y-widget-biz .g-tools .g-icon-btn { width: 36px; height: 36px; background: transparent; color: var(--ink-2); }
-.a11y-widget-biz .g-tools .g-icon-btn:hover:not(:disabled) { background: var(--hover); color: var(--ink); }
+.a11y-widget-biz .g-tools { display: flex; align-items: center; gap: 4px; margin-inline-start: -6px; padding: 0; }
+/* The image and microphone as filled rounds, teal with the light icon
+   (user's "add these buttons like this", 26 Nov 2026), green on hover. */
+.a11y-widget-biz .g-tools .g-icon-btn { width: 36px; height: 36px; background: var(--pill); color: var(--on-pill); }
+.a11y-widget-biz .g-tools .g-icon-btn:hover:not(:disabled) { background: var(--accent); color: var(--on-accent); }
 .a11y-widget-biz .g-tools .g-icon-btn svg { width: 20px; height: 20px; }
 .a11y-widget-biz .g-tools .g-pill { min-height: 28px; }
 .a11y-widget-biz .g-send {
