@@ -1151,6 +1151,23 @@
    is not needed", 26 Nov 2026): the two read as one yellow block. */
 .a11y-widget-biz .a11y-datatable tr[data-open] > td { border-bottom: 0; }
 
+/* The drawer's parts flow across both columns in order (user's "strange
+   distribution of content", 26 Nov 2026): the two markup groups are opened
+   (display: contents) so each part takes the next cell, left then right;
+   the affected elements, with their pictures and AI fix, run the full
+   width under them. A single "What to do" sentence is labelled like the
+   others. No rule under the technical version. */
+.a11y-widget-biz .a11y-fd > .a11y-fd-col { display: contents; }
+.a11y-widget-biz .a11y-fd > .a11y-fd-col > * { grid-column: auto; min-width: 0; }
+.a11y-widget-biz .a11y-fd > .a11y-fd-col > .a11y-affected { grid-column: 1 / -1; }
+.a11y-widget-biz .a11y-fd > .a11y-fd-meta { margin-bottom: 16px; }
+.a11y-widget-biz .a11y-fd > .a11y-fd-col > * { margin-top: 0; }
+.a11y-widget-biz .a11y-fd .a11y-finding-todo { margin: 0 0 25px; font-size: 16px; line-height: 20px; }
+.a11y-widget-biz .a11y-fd .a11y-finding-todo > .a11y-fd-title { display: block; margin: 0 0 2px; font-size: 16px; line-height: 20px; color: var(--ink-2); }
+.a11y-widget-biz .a11y-fd .a11y-finding-todo > .a11y-fd-body { display: block; color: var(--ink); }
+.a11y-widget-biz .a11y-tech-details { border-bottom: 0; }
+.a11y-widget-biz .a11y-fd .a11y-code-fix { max-width: 760px; }
+
 /* The form's report (a page behind a login) keeps the product shell. */
 .a11y-widget-biz .a11y-shell-with-nav > .a11y-shell-main { display: grid; grid-template-columns: 225px minmax(0, 1fr); gap: 13px; padding: 16px; }
 .a11y-widget-biz .a11y-shell-nav { position: sticky; top: 16px; align-self: start; display: flex; flex-direction: column; gap: 2px; }
