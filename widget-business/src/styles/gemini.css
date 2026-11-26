@@ -88,10 +88,13 @@
   --row: 32px;
   --margin: 192px;
 
-  /* Jokker Regular, the product face (user's instruction, 26 Nov 2026,
-     "use jokker"), with its ss04/ss05 on as the product sets it; no
-     synthesized bold. */
+  /* Jokker Regular (user's instructions, 26 Nov 2026, "use jokker", then
+     "use jokker regular"): the variable file's Regular instance, wght 400
+     at slant 0, pinned, with the alternate letterforms on (ss04, ss05,
+     as the product sets them; the user's "use alternatives"); no
+     synthesized bold or slope. */
   font-family: "Jokker", "DejaVu Sans", sans-serif;
+  font-variation-settings: "wght" 400, "slnt" 0;
   font-feature-settings: "ss04", "ss05";
   font-kerning: normal;
   font-synthesis: none;
