@@ -278,7 +278,10 @@
 
 /* Two columns, 10px apart; each opens on a 13px title over a 1px rule. */
 .a11y-widget-biz .g-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 10px; align-items: start; }
-.a11y-widget-biz .g-app:not([data-opening]) .g-cols { grid-template-columns: minmax(0, 1fr); }
+/* One column always: the conversation, or before it starts the starter
+   questions across the whole width (user's "stretch through all chat window
+   horizontally", 26 Nov 2026). */
+.a11y-widget-biz .g-app .g-cols { grid-template-columns: minmax(0, 1fr); }
 .a11y-widget-biz .g-col { min-width: 0; }
 .a11y-widget-biz .g-col-side > section + section { margin-top: 32px; }
 .a11y-widget-biz .g-col-title {
