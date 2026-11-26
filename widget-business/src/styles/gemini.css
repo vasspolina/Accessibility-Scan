@@ -1113,6 +1113,16 @@
 .a11y-widget-biz .a11y-fd > .a11y-fd-col > .a11y-affected { margin-top: 16px; padding-top: 16px; }
 @media (max-width: 640px) { .a11y-widget-biz .a11y-fd { columns: 1; } }
 
+/* The score as a black C (user's "make your score like this", 26 Nov
+   2026): one thick ink arc with round ends and no track, its length the
+   score, the opening at the right what is missing; the number in the
+   middle at the title size. */
+.a11y-widget-biz .a11y-sum-dial { width: 200px; background: none; }
+.a11y-widget-biz .a11y-sum-dial circle { stroke: var(--ink); }
+.a11y-widget-biz .a11y-sum-dial-num { font-size: 40px; line-height: 1; }
+.a11y-widget-biz .a11y-sum-run { gap: 33px; }
+@media (max-width: 640px) { .a11y-widget-biz .a11y-sum-dial { width: 150px; } }
+
 /* The form's report (a page behind a login) keeps the product shell. */
 .a11y-widget-biz .a11y-shell-with-nav > .a11y-shell-main { display: grid; grid-template-columns: 225px minmax(0, 1fr); gap: 13px; padding: 16px; }
 .a11y-widget-biz .a11y-shell-nav { position: sticky; top: 16px; align-self: start; display: flex; flex-direction: column; gap: 2px; }
