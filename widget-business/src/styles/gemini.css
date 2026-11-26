@@ -101,18 +101,18 @@
   --margin: 240px;
 
   /* Jokker Regular (user's instructions, 26 Nov 2026, "use jokker", then
-     "use jokker regular", then "use medium font"): the variable file's
-     Medium instance, wght 500 (it was Regular, wght 400)
+     "use jokker regular", "use medium font", then "use regular font"):
+     the variable file's Regular instance, wght 400
      at slant 0, pinned, with the alternate letterforms on (ss04, ss05,
      as the product sets them; the user's "use alternatives"); no
      synthesized bold or slope. */
   font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-variation-settings: "wght" 500, "slnt" 0;
+  font-variation-settings: "wght" 400, "slnt" 0;
   font-feature-settings: "ss04", "ss05";
   font-kerning: normal;
   font-synthesis: none;
   font-size: 20px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 24px;
   letter-spacing: 0.02em;
   color: var(--ink);
@@ -140,12 +140,12 @@
 /* ---------- Elements: three sizes, one weight ---------- */
 
 .a11y-widget-biz *, .a11y-widget-biz *::before, .a11y-widget-biz *::after { box-sizing: border-box; }
-.a11y-widget-biz :is(h1, h2, h3, h4, h5, h6) { font-size: 20px; font-weight: 500; line-height: 24px; letter-spacing: inherit; margin: 0 0 16px; }
+.a11y-widget-biz :is(h1, h2, h3, h4, h5, h6) { font-size: 20px; font-weight: 400; line-height: 24px; letter-spacing: inherit; margin: 0 0 16px; }
 .a11y-widget-biz p { margin: 0 0 16px; }
 .a11y-widget-biz ul, .a11y-widget-biz ol { margin: 0 0 16px; padding-inline-start: 25px; }
 .a11y-widget-biz ul[role="list"], .a11y-widget-biz ol[role="list"] { list-style: none; padding: 0; }
 .a11y-widget-biz li + li { margin-top: 5px; }
-.a11y-widget-biz :is(strong, b, th, legend, dt) { font-weight: 500; }
+.a11y-widget-biz :is(strong, b, th, legend, dt) { font-weight: 400; }
 .a11y-widget-biz em { font-style: normal; }
 .a11y-widget-biz :is(small, figcaption, caption) { font-size: 16px; line-height: 20px; color: var(--ink-2); }
 .a11y-widget-biz a { color: var(--link); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
@@ -396,7 +396,9 @@
 .a11y-widget-biz .g-composer { margin: 0; }
 .a11y-widget-biz .g-field {
   display: grid; grid-template-columns: minmax(0, 1fr); gap: 5px;
-  padding: 16px 13px 10px 25px; border: 0; border-radius: 35px;
+  /* Corners as Claude's message box (user's "make chat corners like
+     claude", 26 Nov 2026): a rounded rectangle, 20px, not a pill. */
+  padding: 16px 13px 10px 25px; border: 0; border-radius: 20px;
   background: var(--chat-box);
   transition: box-shadow 0.15s ease;
 }
