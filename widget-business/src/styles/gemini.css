@@ -336,14 +336,25 @@
 .a11y-widget-biz .g-text code { font-size: inherit; line-height: inherit; }
 .a11y-widget-biz .g-text strong { color: var(--ink); }
 .a11y-widget-biz .g-text a { color: var(--link); }
-/* A code block: a label line with Copy at its end, the code under it at the
-   reply's size, wrapped, no rules. */
-.a11y-widget-biz .a11y-chat-copy { margin: 0 0 13px; }
-.a11y-widget-biz .a11y-chat-copy-bar { display: flex; justify-content: flex-end; margin: 0 0 4px; }
-.a11y-widget-biz .a11y-chat-copy-btn { padding: 0; font-size: 11px; line-height: 13px; color: var(--ink-2); text-decoration: underline; text-underline-offset: 3px; }
-.a11y-widget-biz .a11y-chat-copy-btn:hover { color: var(--ink); }
+/* A code block as a card to copy from, after Claude's (user's "make this
+   into form with copy button like claude but keep current design", 26 Nov
+   2026): the chat box's grey, 12px corners; a header bar with Copy and its
+   icon at the right; the code under it at 13px, wrapped. Jokker and the
+   palette stay. */
+.a11y-widget-biz .a11y-chat-copy { margin: 0 0 13px; border-radius: 12px; background: var(--chat-box); overflow: hidden; }
+.a11y-widget-biz .a11y-chat-copy-bar { display: flex; justify-content: flex-end; align-items: center; margin: 0; padding: 6px 8px 0; }
+.a11y-widget-biz .a11y-chat-copy-btn {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 0 8px;
+  border-radius: 6px; background: transparent; color: var(--ink);
+  font-size: 13px; line-height: 16px; text-decoration: none;
+}
+.a11y-widget-biz .a11y-chat-copy-btn::before {
+  content: ""; width: 14px; height: 14px; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M28,10V28H10V10H28m0-2H10a2,2,0,0,0-2,2V28a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V10a2,2,0,0,0-2-2Z'/%3E%3Cpath d='M4,18H2V4A2,2,0,0,1,4,2H18V4H4Z'/%3E%3C/svg%3E") center / 14px no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M28,10V28H10V10H28m0-2H10a2,2,0,0,0-2,2V28a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V10a2,2,0,0,0-2-2Z'/%3E%3Cpath d='M4,18H2V4A2,2,0,0,1,4,2H18V4H4Z'/%3E%3C/svg%3E") center / 14px no-repeat;
+}
+.a11y-widget-biz .a11y-chat-copy-btn:hover { background: var(--accent); color: var(--on-accent); }
 .a11y-widget-biz .a11y-chat-copy pre,
-.a11y-widget-biz .g-text pre { margin: 0; padding: 0; border: 0; font-size: 13px; line-height: 16px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.a11y-widget-biz .g-text pre { margin: 0; padding: 4px 16px 14px; border: 0; font-size: 13px; line-height: 16px; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--ink); }
 /* A test plan in a reply: numbered steps, the name then its line. */
 .a11y-widget-biz .g-text .a11y-chat-plan { list-style: none; padding: 0; }
 .a11y-widget-biz .a11y-chat-plan > li { position: relative; padding-inline-start: 18px; }
