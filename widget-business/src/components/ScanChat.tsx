@@ -1479,23 +1479,23 @@ export function ScanChat({
   const switchLocked = busy || loading;
 
   if (GEMINI) {
-    // The Gemini-style demo's own markup (user's instructions, 26 Nov 2026:
-    // "dont work around widget markup, rethink that too", and the five fixes
-    // the user approved: three equal one-line chips with no criterion
-    // numbers, a real placeholder in a one-line box, one greeting line, one
-    // left edge, a rail of matching icons with tooltips). The same state and
-    // handlers as the product's view below; only the structure differs.
-    // A grid: the top bar across, the rail and the conversation under it,
-    // so the menu button sits over the rail's icons as in the reference.
+    // The demo's own view (demo-gemini.html), built only in the gemini mode.
+    // Laid out after the user's reference of 26 Nov 2026 (a type foundry's
+    // shop page): small label pills stacked in the left margin, a row of
+    // fixed-width tabs over a 1px rule, then two columns, each a 13px title
+    // over a rule and rows between 1px rules. One face, three sizes (16, 13,
+    // 11px). The chat's behaviour stays: Send only once there is text,
+    // tooltips on icon buttons, Copy under a finished reply. The same state
+    // and handlers as the product's view below.
     const canSend = !!draft.trim() || attached.length > 0;
     const composer = (
       <form className="g-composer" onSubmit={send} aria-label={t("New scan")}>
+        {/* The label is kept for screen readers; the field shows the same
+            words as its placeholder, one line tall until something is typed. */}
+        <label className="a11y-sr-only" htmlFor="a11y-chat-input">
+          {prompt}
+        </label>
         <div className="g-field">
-          {/* The label is kept for screen readers; the box shows the same
-              words as its placeholder, one line tall until something is typed. */}
-          <label className="a11y-sr-only" htmlFor="a11y-chat-input">
-            {prompt}
-          </label>
           <textarea
             id="a11y-chat-input"
             className="g-input"
@@ -1535,347 +1535,329 @@ export function ScanChat({
               }
             }}
           />
-          {attached.length > 0 && (
-            <ul className="g-attached" role="list" aria-label={t("Attached images")}>
-              {attached.map((img) => (
-                <li key={img.id}>
-                  <img src={imageSrc(img)} alt={img.name} />
-                  <button type="button" className="g-icon-btn g-attached-remove" aria-label={tf("Remove {name}", { name: img.name })} onClick={() => removeImage(img)}>
-                    <Icon name="close" size={16} />
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-          {attachNote && <p className="g-attach-note">{attachNote}</p>}
           <div className="g-tools">
-            <div className="g-tools-start">
-              {backTo && (
-                <button type="button" className="g-pill" onClick={goBack}>
-                  <Icon name="arrow--left" size={18} />
-                  {t("Back")}
-                </button>
-              )}
-              <input
-                ref={fileRef}
-                type="file"
-                accept={IMAGE_TYPES.join(",")}
-                multiple
-                hidden
-                onChange={(e) => {
-                  const files = Array.from(e.target.files ?? []);
-                  e.target.value = "";
-                  void attachFiles(files);
-                }}
-              />
-              <button
-                type="button"
-                className="g-icon-btn"
-                aria-label={t("Add an image")}
-                data-tip={t("Add an image")}
-                disabled={attached.length >= MAX_IMAGES_PER_MESSAGE}
-                onClick={() => fileRef.current?.click()}
-              >
-                <Icon name="image" size={20} />
+            {backTo && (
+              <button type="button" className="g-pill g-pill-quiet" onClick={goBack}>
+                {t("Back")}
               </button>
-              <VoiceControl iconOnly />
-              {(addressIn(draft) || (report && report.meta.documentKind !== "pdf")) && (
-                <button type="button" className="g-pill" onClick={onSignInForm}>
-                  {t("Scan a page behind a login")}
-                </button>
-              )}
-            </div>
-            {suggestion && (
-              <p className="g-tabhint" id="a11y-chat-tabhint">
-                <span className="a11y-sr-only">{t("Press Tab to use this suggestion:")} </span>
-                <kbd aria-hidden="true">Tab</kbd>
-                <span className="g-tabhint-text">{smarten(suggestion, getLang())}</span>
-              </p>
             )}
+            <input
+              ref={fileRef}
+              type="file"
+              accept={IMAGE_TYPES.join(",")}
+              multiple
+              hidden
+              onChange={(e) => {
+                const files = Array.from(e.target.files ?? []);
+                e.target.value = "";
+                void attachFiles(files);
+              }}
+            />
+            <button
+              type="button"
+              className="g-icon-btn"
+              aria-label={t("Add an image")}
+              data-tip={t("Add an image")}
+              disabled={attached.length >= MAX_IMAGES_PER_MESSAGE}
+              onClick={() => fileRef.current?.click()}
+            >
+              <Icon name="image" size={16} />
+            </button>
+            <VoiceControl iconOnly />
             {/* Send appears once there is something to send; Enter still
                 submits the form without it. */}
             {canSend && (
-              <button type="submit" className="g-send" aria-label={t("Send")} disabled={busy || loading}>
-                <Icon name="arrow--up" size={22} />
+              <button type="submit" className="g-pill g-pill-accent g-send" disabled={busy || loading}>
+                {t("Send")}
               </button>
             )}
           </div>
         </div>
+        {attached.length > 0 && (
+          <ul className="g-attached" role="list" aria-label={t("Attached images")}>
+            {attached.map((img) => (
+              <li key={img.id}>
+                <img src={imageSrc(img)} alt={img.name} />
+                <button type="button" className="g-icon-btn g-attached-remove" aria-label={tf("Remove {name}", { name: img.name })} onClick={() => removeImage(img)}>
+                  <Icon name="close" size={12} />
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        {attachNote && <p className="g-small">{attachNote}</p>}
+        {suggestion && (
+          <p className="g-small g-tabhint" id="a11y-chat-tabhint">
+            <span className="a11y-sr-only">{t("Press Tab to use this suggestion:")} </span>
+            <kbd aria-hidden="true">Tab</kbd> {smarten(suggestion, getLang())}
+          </p>
+        )}
+        {(addressIn(draft) || (report && report.meta.documentKind !== "pdf")) && (
+          <p className="g-small">
+            <button type="button" className="g-text-btn" onClick={onSignInForm}>
+              {t("Scan a page behind a login")}
+            </button>
+          </p>
+        )}
       </form>
     );
 
-    const avatar = (busyNow: boolean) => <span className="g-avatar" data-busy={busyNow ? "" : undefined} aria-hidden="true" />;
+    const opening = !barrier && turns.length === 0;
 
     return (
-      <div className="g-app" data-rail={panelOpen ? "open" : "shut"}>
-        <header className="g-top">
-          <button
-            type="button"
-            className="g-icon-btn g-menu"
-            aria-expanded={panelOpen}
-            aria-controls="g-side"
-            aria-label={t("Conversations")}
-            data-tip={t("Conversations")}
-            onClick={() => setPanelOpen((open) => !open)}
-          >
-            <Icon name="menu" size={24} />
-          </button>
-          <span className="g-brand">Accessible Scan</span>
-        </header>
-
-        <nav className="g-side" id="g-side" aria-label={t("Conversations")}>
-          <button type="button" className="g-side-btn g-side-new" onClick={newChat} disabled={switchLocked} data-tip={t("New chat")}>
-            <Icon name="add" size={24} />
-            <span className="g-side-word">{t("New chat")}</span>
+      <div className="g-app" data-opening={opening ? "" : undefined}>
+        {/* The left margin: the name and the ways to start, stacked pills. */}
+        <nav className="g-nav" aria-label={t("Conversations")}>
+          <span className="g-pill g-brand">Accessible Scan</span>
+          <button type="button" className="g-pill" onClick={newChat} disabled={switchLocked} aria-current={opening ? "page" : undefined}>
+            {t("New chat")}
           </button>
           {onReportBarrier && (
-            <button type="button" className="g-side-btn" onClick={onReportBarrier} disabled={switchLocked} data-tip={t("Report a barrier")}>
-              <Icon name="flag" size={24} />
-              <span className="g-side-word">{t("Report a barrier")}</span>
+            <button type="button" className="g-pill" onClick={onReportBarrier} disabled={switchLocked} aria-current={barrier ? "page" : undefined}>
+              {t("Report a barrier")}
             </button>
           )}
-          {/* The list only exists while the panel is open: the rail is icons. */}
-          {panelOpen && chats.length > 0 && (
-            <div className="g-recent">
-              <h2 className="g-recent-head" id="g-recent-head">
-                {t("Recent")}
-              </h2>
-              {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
-              <ul className="g-recent-list" role="list" aria-labelledby="g-recent-head">
-                {chats.map((c) => (
-                  <li key={c.id} className="g-recent-row" data-current={c.id === chatId ? "" : undefined}>
-                    <button
-                      type="button"
-                      className="g-recent-item"
-                      aria-current={c.id === chatId ? "page" : undefined}
-                      disabled={switchLocked && c.id !== chatId}
-                      onClick={() => openChat(c)}
-                    >
-                      {c.title}
-                    </button>
-                    <button
-                      type="button"
-                      className="g-icon-btn g-recent-delete"
-                      aria-label={tf("Delete {title}", { title: c.title })}
-                      disabled={switchLocked && c.id === chatId}
-                      onClick={() => removeChat(c)}
-                    >
-                      <Icon name="trash-can" size={18} />
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          <div className="g-side-foot">
-            <GeminiLanguage value={language} onChange={onLanguageChange} />
-          </div>
+          <GeminiLanguage value={language} onChange={onLanguageChange} />
         </nav>
 
-        <div className="g-main" ref={rootRef} onFocus={keepFocusClear}>
-          {barrier ? (
-            <div className="g-column g-barrier">{barrier}</div>
-          ) : turns.length === 0 ? (
-            <div className="g-column g-welcome">
-              <h2 className="g-greeting" id="a11y-newscan-title">
-                {t("New scan")}
-              </h2>
-              {composer}
-              <section className="g-chips" aria-label={t("Questions to start with")}>
-                {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
-                <ul className="g-chip-list" role="list">
-                  {picks.slice(0, 3).map((p) => (
-                    <li key={p.group}>
-                      <button
-                        type="button"
-                        className="g-chip"
-                        disabled={busy || loading}
-                        onClick={() => void ask(t(p.prompt))}
-                      >
-                        <span className="g-chip-mark" aria-hidden="true" />
-                        <span className="g-chip-text">{smarten(t(p.prompt), getLang())}</span>
+        <div className="g-page" ref={rootRef} onFocus={keepFocusClear}>
+          {/* The tabs: the page's title, then the report's sections once a
+              scan has run, each a tab that adds its block to the thread. */}
+          <div className="g-tabs">
+            <h2 className="g-tab" data-on="" id="a11y-newscan-title">
+              {t("New scan")}
+            </h2>
+            {!barrier && offered.length > 0 && (
+              <div className="g-tab-group" role="group" aria-label={t("Show from the report")}>
+                {offered.map((s) => (
+                  <button key={s.key} type="button" className="g-tab" onClick={() => showSection(s.key, { takeFocus: true })}>
+                    {s.label()}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="g-cols">
+            <section className="g-col g-col-main" aria-labelledby="g-col-main-title">
+              <h3 className="g-col-title" id="g-col-main-title">
+                {barrier ? t("Report a barrier") : t("Conversation")}
+              </h3>
+              {barrier ? (
+                <div className="g-barrier">{barrier}</div>
+              ) : (
+                <>
+                  {turns.length > 0 && (
+                    // eslint-disable-next-line jsx-a11y/no-redundant-roles
+                    <ol className="g-thread" role="list" aria-label={t("Conversation")}>
+                      {turns.map((turn, i) => {
+                        const prev = i > 0 ? turns[i - 1] : null;
+                        const cont = !!prev && prev.who !== "you" && prev.who !== "notice" && turn.who !== "you" && turn.who !== "notice";
+                        const label = (
+                          <p className={cont ? "a11y-sr-only" : "g-who"}>{turn.who === "you" ? t("You") : t("Assistant")}</p>
+                        );
+                        const cls = `g-row${turn.who === "you" ? " g-row-you" : ""}${cont ? " g-row-cont" : ""}`;
+                        if (turn.who === "you") {
+                          return (
+                            <li key={turn.id} className={cls}>
+                              {label}
+                              <div className="g-text">
+                                {turn.images && turn.images.length > 0 && (
+                                  <ul className="g-msg-images" role="list">
+                                    {turn.images.map((img) => (
+                                      <li key={img.id}>
+                                        <img src={imageSrc(img)} alt={img.name} />
+                                      </li>
+                                    ))}
+                                  </ul>
+                                )}
+                                {turn.text && <p>{capsWrap(smarten(turn.text, getLang()))}</p>}
+                              </div>
+                            </li>
+                          );
+                        }
+                        if (turn.who === "notice") {
+                          return (
+                            <li key={turn.id} className={cls}>
+                              <BlockedNotice message={turn.message} onSignIn={onSignInForm} />
+                            </li>
+                          );
+                        }
+                        if (turn.who === "scan") {
+                          const running = turn.state === "running";
+                          const steps = running ? milestones : turn.steps;
+                          const current = running ? steps[steps.length - 1] : null;
+                          const fresh = turn.resultKey && turn.resultKey === currentKey && report;
+                          const [before, after] = t(
+                            running ? "Checking {url}." : turn.state === "done" ? "Checked {url}." : "Couldn't check {url}."
+                          ).split("{url}");
+                          return (
+                            <li key={turn.id} className={cls} data-busy={running ? "" : undefined}>
+                              {label}
+                              <div className="g-text">
+                                <p>{urlInSentence(before, turn.url, after)}</p>
+                                {steps.length > 0 && (
+                                  <StepFold folded={turn.state === "done"}>
+                                    <ol className="g-steps" role="list">
+                                      {NARRATION_STEPS.filter((s) => steps.includes(s.id))
+                                        .sort((a, b) => narrationIndex(a.id) - narrationIndex(b.id))
+                                        .map((s) => {
+                                          const result = fresh
+                                            ? stepResult(s.id, fresh)
+                                            : turn.state === "failed" && s.id === steps[steps.length - 1]
+                                              ? t("Did not finish")
+                                              : null;
+                                          return (
+                                            <li key={s.id} className="g-step" data-now={s.id === current ? "" : undefined} aria-current={s.id === current ? "step" : undefined}>
+                                              {narrationLabel(s.id)}
+                                              {result && <span className="g-step-result"> – {result}</span>}
+                                            </li>
+                                          );
+                                        })}
+                                    </ol>
+                                  </StepFold>
+                                )}
+                              </div>
+                            </li>
+                          );
+                        }
+                        if (turn.who === "block") {
+                          const fresh = turn.resultKey === currentKey;
+                          const body = fresh ? renderSection(turn.section) : null;
+                          if (turn.section === "stop" && !body) return null;
+                          return (
+                            <li key={turn.id} id={`a11y-chat-block-${turn.id}`} className={`${cls} g-row-block`}>
+                              {fresh ? (
+                                <>
+                                  {turn.section === "findings" && renderSection("protable")}
+                                  {body}
+                                </>
+                              ) : (
+                                <p className="g-small">
+                                  {sectionLabel(turn.section)} – {t("From an earlier scan. Run it again to see it.")}
+                                </p>
+                              )}
+                            </li>
+                          );
+                        }
+                        // A reply from the assistant.
+                        return (
+                          <li key={turn.id} className={cls} aria-busy={turn.streaming ? true : undefined} data-busy={turn.streaming ? "" : undefined}>
+                            {label}
+                            <div className="g-text">
+                              {turn.text ? renderReply(turn.text, turn.marks) : turn.searching === undefined && waiting(t("Thinking…"))}
+                              {turn.streaming && turn.searching !== undefined && waiting(searchingLine(turn.searching))}
+                            </div>
+                            {!turn.streaming && turn.id === lastReplyId && confirmAddress && (
+                              <p className="g-confirm">
+                                <button type="button" className="g-pill" disabled={busy || loading} onClick={() => void ask(tf("Yes, check {url}", { url: confirmAddress }))}>
+                                  {tf("Check {url}", { url: confirmAddress })}
+                                </button>
+                              </p>
+                            )}
+                            {turn.sources && turn.sources.length > 0 && (
+                              <p className="g-small">
+                                {t("Sources")}:{" "}
+                                {turn.sources.map((s, j) => (
+                                  <span key={s.url}>
+                                    {j > 0 && ", "}
+                                    <a href={s.url} target="_blank" rel="noopener noreferrer">
+                                      {s.title}
+                                    </a>
+                                  </span>
+                                ))}
+                              </p>
+                            )}
+                            {!turn.streaming && turn.text && (
+                              <p className="g-small g-actions">
+                                <button
+                                  type="button"
+                                  className="g-text-btn"
+                                  onClick={async () => {
+                                    try {
+                                      await navigator.clipboard.writeText(turn.text.replace(SENTINELS, ""));
+                                      setCopiedId(turn.id);
+                                      setAnnouncement(t("Copied to clipboard"));
+                                    } catch {
+                                      /* clipboard refused: nothing copied, nothing claimed */
+                                    }
+                                  }}
+                                >
+                                  {copiedId === turn.id ? t("Copied") : t("Copy")}
+                                </button>
+                              </p>
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ol>
+                  )}
+                  <div className="g-dock" ref={dockRef}>
+                    {composer}
+                  </div>
+                </>
+              )}
+            </section>
+
+            <aside className="g-col g-col-side" aria-label={t("Conversations")}>
+              {opening && (
+                <section aria-labelledby="g-questions-title">
+                  <h3 className="g-col-title" id="g-questions-title">
+                    {t("Questions to start with")}
+                  </h3>
+                  {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
+                  <ul className="g-list" role="list">
+                    {picks.slice(0, 3).map((p) => (
+                      <li key={p.group}>
+                        <button type="button" className="g-list-btn" disabled={busy || loading} onClick={() => void ask(t(p.prompt))}>
+                          <span className="a11y-sr-only">{t(p.group)}: </span>
+                          {smarten(t(p.prompt), getLang())}
+                        </button>
+                      </li>
+                    ))}
+                    <li>
+                      <button type="button" className="g-list-btn g-list-quiet" onClick={() => setPicks((last) => pickOpeningPrompts(Math.random, last))}>
+                        {t("Other questions")}
                       </button>
                     </li>
-                  ))}
-                </ul>
-                <button type="button" className="g-text-btn" onClick={() => setPicks((last) => pickOpeningPrompts(Math.random, last))}>
-                  {t("Other questions")}
-                </button>
-              </section>
-            </div>
-          ) : (
-            <>
-              {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
-              <ol className="g-column g-thread" role="list" aria-label={t("Conversation")}>
-                {turns.map((turn, i) => {
-                  const prev = i > 0 ? turns[i - 1] : null;
-                  const cont = !!prev && prev.who !== "you" && prev.who !== "notice" && turn.who !== "you" && turn.who !== "notice";
-                  const who = <p className="a11y-sr-only">{turn.who === "you" ? t("You") : t("Assistant")}</p>;
-                  if (turn.who === "you") {
-                    return (
-                      <li key={turn.id} className="g-msg g-msg-user">
-                        {who}
-                        <div className="g-bubble">
-                          {turn.images && turn.images.length > 0 && (
-                            <ul className="g-msg-images" role="list">
-                              {turn.images.map((img) => (
-                                <li key={img.id}>
-                                  <img src={imageSrc(img)} alt={img.name} />
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                          {turn.text && <p>{capsWrap(smarten(turn.text, getLang()))}</p>}
-                        </div>
-                      </li>
-                    );
-                  }
-                  if (turn.who === "notice") {
-                    return (
-                      <li key={turn.id} className="g-msg g-msg-model">
-                        {avatar(false)}
-                        <div className="g-msg-body">
-                          <BlockedNotice message={turn.message} onSignIn={onSignInForm} />
-                        </div>
-                      </li>
-                    );
-                  }
-                  const cls = `g-msg g-msg-model${cont ? " g-msg-cont" : ""}`;
-                  if (turn.who === "scan") {
-                    const running = turn.state === "running";
-                    const steps = running ? milestones : turn.steps;
-                    const current = running ? steps[steps.length - 1] : null;
-                    const fresh = turn.resultKey && turn.resultKey === currentKey && report;
-                    const [before, after] = t(
-                      running ? "Checking {url}." : turn.state === "done" ? "Checked {url}." : "Couldn't check {url}."
-                    ).split("{url}");
-                    return (
-                      <li key={turn.id} className={cls}>
-                        {!cont && avatar(running)}
-                        <div className="g-msg-body">
-                          {!cont && who}
-                          <p>{urlInSentence(before, turn.url, after)}</p>
-                          {steps.length > 0 && (
-                            <StepFold folded={turn.state === "done"}>
-                              <ol className="g-steps" role="list">
-                                {NARRATION_STEPS.filter((s) => steps.includes(s.id))
-                                  .sort((a, b) => narrationIndex(a.id) - narrationIndex(b.id))
-                                  .map((s) => {
-                                    const result = fresh
-                                      ? stepResult(s.id, fresh)
-                                      : turn.state === "failed" && s.id === steps[steps.length - 1]
-                                        ? t("Did not finish")
-                                        : null;
-                                    return (
-                                      <li key={s.id} className="g-step" data-now={s.id === current ? "" : undefined} aria-current={s.id === current ? "step" : undefined}>
-                                        {narrationLabel(s.id)}
-                                        {result && <span className="g-step-result"> – {result}</span>}
-                                      </li>
-                                    );
-                                  })}
-                              </ol>
-                            </StepFold>
-                          )}
-                        </div>
-                      </li>
-                    );
-                  }
-                  if (turn.who === "block") {
-                    const fresh = turn.resultKey === currentKey;
-                    const body = fresh ? renderSection(turn.section) : null;
-                    if (turn.section === "stop" && !body) return null;
-                    return (
-                      <li key={turn.id} id={`a11y-chat-block-${turn.id}`} className={`${cls} g-msg-block`}>
-                        {!cont && avatar(false)}
-                        <div className="g-msg-body">
-                          {fresh ? (
-                            <>
-                              {turn.section === "findings" && renderSection("protable")}
-                              {body}
-                            </>
-                          ) : (
-                            <p className="g-stale">
-                              {sectionLabel(turn.section)} – {t("From an earlier scan. Run it again to see it.")}
-                            </p>
-                          )}
-                        </div>
-                      </li>
-                    );
-                  }
-                  // A reply from the assistant.
-                  return (
-                    <li key={turn.id} className={cls} aria-busy={turn.streaming ? true : undefined}>
-                      {!cont && avatar(!!turn.streaming)}
-                      <div className="g-msg-body">
-                        {!cont && who}
-                        <div className="g-reply">
-                          {turn.text ? renderReply(turn.text, turn.marks) : turn.searching === undefined && waiting(t("Thinking…"))}
-                          {turn.streaming && turn.searching !== undefined && waiting(searchingLine(turn.searching))}
-                        </div>
-                        {!turn.streaming && turn.id === lastReplyId && confirmAddress && (
-                          <p className="g-confirm">
-                            <button type="button" className="g-pill" disabled={busy || loading} onClick={() => void ask(tf("Yes, check {url}", { url: confirmAddress }))}>
-                              {tf("Check {url}", { url: confirmAddress })}
-                            </button>
-                          </p>
-                        )}
-                        {turn.sources && turn.sources.length > 0 && (
-                          <p className="g-sources">
-                            {t("Sources")}:{" "}
-                            {turn.sources.map((s, j) => (
-                              <span key={s.url}>
-                                {j > 0 && ", "}
-                                <a href={s.url} target="_blank" rel="noopener noreferrer">
-                                  {s.title}
-                                </a>
-                              </span>
-                            ))}
-                          </p>
-                        )}
-                        {/* The actions under a finished reply: Copy, which
-                            copies the reply's words as written. */}
-                        {!turn.streaming && turn.text && (
-                          <div className="g-msg-actions">
-                            <button
-                              type="button"
-                              className="g-icon-btn"
-                              aria-label={copiedId === turn.id ? t("Copied") : t("Copy")}
-                              data-tip={copiedId === turn.id ? t("Copied") : t("Copy")}
-                              onClick={async () => {
-                                try {
-                                  await navigator.clipboard.writeText(turn.text.replace(SENTINELS, ""));
-                                  setCopiedId(turn.id);
-                                  setAnnouncement(t("Copied to clipboard"));
-                                } catch {
-                                  /* clipboard refused: nothing copied, nothing claimed */
-                                }
-                              }}
-                            >
-                              <Icon name={copiedId === turn.id ? "checkmark" : "copy"} size={18} />
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </li>
-                  );
-                })}
-              </ol>
-              <div className="g-dock" ref={dockRef}>
-                <div className="g-column">
-                  {composer}
-                  {offered.length > 0 && (
-                    <div className="g-sections" role="group" aria-label={t("Show from the report")}>
-                      {offered.map((s) => (
-                        <button key={s.key} type="button" className="g-section-chip" onClick={() => showSection(s.key, { takeFocus: true })}>
-                          {s.label()}
+                  </ul>
+                </section>
+              )}
+              {chats.length > 0 && (
+                <section aria-labelledby="g-recent-title">
+                  <h3 className="g-col-title" id="g-recent-title">
+                    {t("Recent")}
+                  </h3>
+                  {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
+                  <ul className="g-list" role="list">
+                    {chats.map((c) => (
+                      <li key={c.id} className="g-list-row" data-current={c.id === chatId ? "" : undefined}>
+                        <button
+                          type="button"
+                          className="g-list-btn g-list-ellipsis"
+                          aria-current={c.id === chatId ? "page" : undefined}
+                          disabled={switchLocked && c.id !== chatId}
+                          onClick={() => openChat(c)}
+                        >
+                          {c.title}
                         </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </>
-          )}
+                        <button
+                          type="button"
+                          className="g-icon-btn g-list-delete"
+                          aria-label={tf("Delete {title}", { title: c.title })}
+                          data-tip={t("Delete")}
+                          disabled={switchLocked && c.id === chatId}
+                          onClick={() => removeChat(c)}
+                        >
+                          <Icon name="trash-can" size={14} />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+            </aside>
+          </div>
           <p className="a11y-sr-only" role="status">
             {announcement}
           </p>
@@ -2420,9 +2402,9 @@ function StepFold({ folded, children }: { folded: boolean; children: ReactNode }
   );
 }
 
-/** The Gemini view's language control: an icon button at the foot of the
- *  rail (its word shown beside the icon while the panel is open), opening a
- *  list of the four languages upward. A disclosure, as LanguageMenu is:
+/** The demo view's language control: a pill in the left margin naming the
+ *  chosen language, opening the four languages under it. A disclosure, as
+ *  LanguageMenu is:
  *  Escape, a press outside and focus leaving close it. */
 function GeminiLanguage({ value, onChange }: { value: Lang; onChange: (lang: Lang) => void }) {
   const [open, setOpen] = useState(false);
@@ -2457,19 +2439,15 @@ function GeminiLanguage({ value, onChange }: { value: Lang; onChange: (lang: Lan
       <button
         type="button"
         ref={toggleRef}
-        className="g-side-btn"
+        className="g-pill"
         aria-expanded={open}
         aria-controls={listId}
-        data-tip={t("Language")}
         onClick={() => setOpen((o) => !o)}
       >
-        <Icon name="translate" size={24} />
-        <span className="g-side-word">
-          {t("Language")}
-          <span className="a11y-sr-only">, </span>
-          <span className="g-lang-current" lang={value}>
-            {LANG_NAMES[value]}
-          </span>
+        {t("Language")}
+        <span className="a11y-sr-only">, </span>
+        <span className="g-lang-current" lang={value}>
+          {LANG_NAMES[value]}
         </span>
       </button>
       <ul className="g-menu-list" id={listId} role="list" hidden={!open}>
