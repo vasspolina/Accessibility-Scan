@@ -8170,3 +8170,26 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-facts > .a11y-hist-fact[class][class][class][class] { column-gap: var(--grid-gap); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist :is(.a11y-hist-run > .a11y-hist-date, .a11y-hist-fact > .a11y-hist-fact-label)[class][class] { flex: 0 0 var(--grid-label); box-sizing: border-box; min-width: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-fact > .a11y-hist-fact-value[class][class] { flex: 1 1 0; min-width: 0; }
+
+/* ═══ THE OPENED FINDING'S WORDS SET AS A FOUNDRY'S CONTACT PAGE (user's
+   instruction, 26 Nov 2026, "this text in buble can go smaller, copy text
+   sizes and line height and paragraph breaks from this website", on What
+   to do's two points, with a type foundry's contact page as the source)
+   ═══ Measured on that page at 1440 x 900: its running text is 19 to 20px
+   (2.8rem on a root that follows the window), set solid at 1.1, no
+   tracking, and its paragraphs are one whole line apart (margin-top equal
+   to the line, no indent). Here every part of an opened finding (Who fixes
+   this, What we found, Why this matters, What the research shows, What to
+   do and their siblings) takes the nearest of the five sizes, 22px (it
+   inherited the 29px body), on 1.1 with no tracking; the phone's body is
+   22px already, so the part reads the same there. Points and paragraphs
+   inside a part stand one line apart, 24px (Carbon's spacing-06, the 22px
+   x 1.1 line rounded onto the scale), where they were 12px; the label pill
+   keeps its 18px and its 12px over the words. The affected elements keep
+   their own setting. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps)[class][class][class][class] {
+  font-size: 22px; line-height: 1.1; letter-spacing: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps)[class][class][class][class] > * + * + * { margin-top: calc(var(--cds-spacing-06) - var(--cds-spacing-04)); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col > :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo, .a11y-finding-steps)[class][class][class][class] :is(ul, ol)[class] > li + li,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd[class][class] > .a11y-fd-col > .a11y-finding-steps[class][class][class][class] > ul > li + li { margin-top: var(--cds-spacing-06); }
