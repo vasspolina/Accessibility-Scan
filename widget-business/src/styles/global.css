@@ -8262,3 +8262,11 @@
    reads as the note's label; it keeps its place first, one line over the
    words. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-card > .a11y-sum-card-body > h3, .a11y-yellow-note > .a11y-note-body > .a11y-note-title)[class][class][class] { font-size: 18px; }
+
+/* ═══ THE DESIGNER-AND-DEVELOPER ANSWER AT THE ROW'S SIZE (user's
+   instruction, 26 Nov 2026, "make text in grey buble same size as above")
+   ═══ The answer's places line and what to ask for were 18px and 16px
+   under a 22px row; both take the row's 22px on 1.1 now. Learn more keeps
+   the button size. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-answer[class] > :is(.a11y-fd-meta, .a11y-undecided-ask)[class][class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-answer[class] > :is(.a11y-fd-meta, .a11y-undecided-ask)[class][class] * { font-size: 22px; line-height: 1.1; letter-spacing: 0; }
