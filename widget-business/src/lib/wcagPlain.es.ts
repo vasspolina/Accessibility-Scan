@@ -381,6 +381,11 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     impact:
       "El tabulador mueve un cursor invisible, y el contorno es lo único que muestra hasta dónde ha llegado. Si es demasiado tenue, quien usa el teclado no sabe qué está a punto de activar. Se cuela en las pruebas porque contorno sí que hay.",
   },
+  "keyboard-focus-order": {
+    plain: "El orden de tabulación salta hacia atrás",
+    impact: "Quien usa el teclado pierde el sitio en cada salto, y puede pasar por alto parte de la página sin saberlo.",
+    found: () => "Al recorrer la página con el tabulador, el foco salta hacia atrás. Llega a un elemento que está más arriba en la página que el anterior.",
+  },
   "keyboard-focus-trap": {
     found: (n) => (n === 1 ? "En un punto, el foco se queda atascado al pulsar el tabulador. Se queda en un elemento o va y viene entre dos, y no llega al resto de la página." : "En {n} puntos, el foco se queda atascado al pulsar el tabulador. Se queda en un elemento o va y viene entre dos, y no llega al resto de la página.".replace("{n}", String(n))),
     plain: "El foco del teclado se queda atrapado",
@@ -802,6 +807,7 @@ export const FIXES_ES: Record<string, string | string[]> = {
     "Pruebe la página en el modo de alto contraste de Windows.",
     "Dé a los botones de solo icono un borde real o texto, para que sobrevivan a ese modo.",
   ],
+  "keyboard-focus-order": "Pida a su equipo de desarrollo que el orden de tabulación siga el orden de la página. Lo habitual es que el CSS reordene el contenido solo a la vista, o que un script mueva el foco.",
   "keyboard-focus-trap": [
     "Asegúrese de que el tabulador siempre puede seguir, y de que Escape siempre saca.",
     "Compruébelo apartando el ratón y usando solo el teclado.",

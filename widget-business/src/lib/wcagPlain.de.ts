@@ -349,6 +349,11 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     plain: "Tastaturmarkierung zu blass zum Sehen",
     impact: "Die Tab-Taste bewegt einen unsichtbaren Zeiger, und nur der Rahmen zeigt, wo er angekommen ist. Ist er zu blass, weiß man an der Tastatur nicht, was man gleich auslöst. Beim Testen rutscht das durch, weil ja wirklich ein Rahmen da ist.",
   },
+  "keyboard-focus-order": {
+    plain: "Tab-Reihenfolge springt zurück",
+    impact: "Wer mit der Tastatur arbeitet, verliert bei jedem Sprung den Überblick. Teile der Seite gehen dabei unbemerkt verloren.",
+    found: () => "Beim Durchgehen mit Tab springt der Fokus zurück. Er landet auf einem Element, das weiter oben auf der Seite steht als das vorige.",
+  },
   "keyboard-focus-trap": {
     found: (n) => (n === 1 ? "An einer Stelle bleibt der Fokus beim Drücken der Tab-Taste hängen. Er bleibt auf einem Element oder pendelt zwischen zweien und erreicht den Rest der Seite nicht." : "An {n} Stellen bleibt der Fokus beim Drücken der Tab-Taste hängen. Er bleibt auf einem Element oder pendelt zwischen zweien und erreicht den Rest der Seite nicht.".replace("{n}", String(n))),
     plain: "Der Tastaturfokus bleibt hängen",
@@ -722,6 +727,7 @@ export const FIXES_DE: Record<string, string | string[]> = {
     "Prüfen Sie die Seite im Windows-Modus für hohen Kontrast.",
     "Geben Sie reinen Symbol-Schaltflächen einen echten Rahmen oder Text, damit sie das überstehen.",
   ],
+  "keyboard-focus-order": "Bitten Sie Ihr Entwicklungsteam, die Tab-Reihenfolge an die Reihenfolge der Seite anzupassen. Meist ordnet CSS Inhalte nur optisch um, oder ein Skript verschiebt den Fokus.",
   "keyboard-focus-trap": [
     "Sorgen Sie dafür, dass Tab immer weiterkommt und Escape immer herausführt.",
     "Prüfen Sie es, indem Sie die Maus beiseitelegen und nur die Tastatur nutzen.",

@@ -69,6 +69,10 @@ const POINTS_TO_DETAILS = new Set(["hidden", "no-usable-image", "too-large", "no
  *  A report saved before the reason was sent has only the English note. */
 export function pictureNoteText(finding: AccessibilityFinding): string | undefined {
   const reason = finding.pictureReason;
+  // The scan's own budget running out is not something the reader can act
+  // on, and the note filled the opened finding where What we found belongs
+  // (user's word, 26 Nov 2026, "this text is a slop"). No note at all.
+  if (reason === "not-attempted") return undefined;
   if (!reason) return finding.pictureNote;
   const note = t(PICTURE_NOTES[reason]);
   if (finding.pictureFrame) {
