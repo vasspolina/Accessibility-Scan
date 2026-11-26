@@ -311,7 +311,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         "A",
         "https://www.w3.org/WAI/WCAG21/Understanding/focus-order.html",
         first.laterStop,
-        `Tabbing through this page jumps backwards ${anomalies.domInversions.length === 1 ? "once" : `${anomalies.domInversions.length} times`}: focus lands on an element that sits EARLIER in the page than the one before it. A keyboard user's sense of where they are breaks at each jump.`,
+        `Tabbing through this page jumps backwards ${anomalies.domInversions.length === 1 ? "once" : `${anomalies.domInversions.length} times`}: focus lands on an element that sits earlier in the page than the one before it.`,
         "Make the tab order follow the page order. The usual causes are CSS that visually reorders content and scripts that move focus. Reorder the markup instead."
       )
     );

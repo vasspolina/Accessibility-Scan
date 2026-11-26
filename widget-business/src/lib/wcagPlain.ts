@@ -500,6 +500,15 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     impact:
       "Tab moves an invisible cursor, and the outline is the only thing showing where it has reached. Too faint, and a keyboard user can't tell what they are about to activate. It slips through testing because there genuinely is an outline there.",
   },
+  // A short title of its own (user's screenshot, 26 Nov 2026): without one
+  // the backend's whole description stood as the title, and the opened
+  // finding had nothing under What we found. No found line on purpose:
+  // English keeps the backend's description, which carries the count.
+  "keyboard-focus-order": {
+    plain: "Tab order jumps backwards",
+    impact:
+      "A keyboard user loses their place at each jump, and can pass over part of the page without knowing it.",
+  },
   "keyboard-focus-trap": {
     plain: "Keyboard focus gets stuck",
     impact:
@@ -979,6 +988,10 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
   "forced-colors-icon-lost": [
     "Test the page in Windows High Contrast mode.",
     "Give icon-only buttons a real border or text so they survive it.",
+  ],
+  "keyboard-focus-order": [
+    "Ask your developer to make the tab order follow the order of the page.",
+    "The usual causes are styles that move content on screen only, and scripts that move focus.",
   ],
   "keyboard-focus-trap": [
     "Make sure Tab can always move on, and Escape always gets out.",

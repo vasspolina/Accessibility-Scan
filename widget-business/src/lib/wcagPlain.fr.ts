@@ -383,6 +383,11 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     impact:
       "Tab déplace un curseur invisible, et le contour est la seule chose qui montre où il est arrivé. S’il est trop pâle, la personne au clavier ne sait pas ce qu’elle s’apprête à activer. Cela passe les tests parce qu’il y a bel et bien un contour.",
   },
+  "keyboard-focus-order": {
+    plain: "L’ordre de tabulation revient en arrière",
+    impact: "Qui navigue au clavier perd le fil à chaque saut, et peut passer à côté d’une partie de la page sans le savoir.",
+    found: () => "En parcourant la page avec Tab, le focus revient en arrière. Il arrive sur un élément placé plus haut dans la page que le précédent.",
+  },
   "keyboard-focus-trap": {
     found: (n) => (n === 1 ? "À un endroit, le focus reste bloqué quand on appuie sur Tab. Il reste sur un élément ou fait l’aller-retour entre deux, sans atteindre le reste de la page." : "À {n} endroits, le focus reste bloqué quand on appuie sur Tab. Il reste sur un élément ou fait l’aller-retour entre deux, sans atteindre le reste de la page.".replace("{n}", String(n))),
     plain: "Le focus clavier reste bloqué",
@@ -804,6 +809,7 @@ export const FIXES_FR: Record<string, string | string[]> = {
     "Testez la page en mode contraste élevé de Windows.",
     "Donnez aux boutons réduits à une icône une vraie bordure ou du texte, pour qu’ils y survivent.",
   ],
+  "keyboard-focus-order": "Demandez à votre équipe de développement que l’ordre de tabulation suive celui de la page. En général, le CSS réordonne le contenu à l’écran seulement, ou un script déplace le focus.",
   "keyboard-focus-trap": [
     "Assurez-vous que Tab peut toujours avancer, et qu’Échap sort toujours.",
     "Testez-le en posant la souris et en n’utilisant que le clavier.",
