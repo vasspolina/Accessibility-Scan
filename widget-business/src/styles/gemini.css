@@ -776,8 +776,11 @@
 .a11y-widget-biz .a11y-finding-header { grid-template-columns: 20px minmax(0, 1fr); column-gap: 10px; }
 /* The picture at the card's right end (user's "image can be aligned to
    right in these cases", 26 Nov 2026): caret, the words, then the picture. */
-.a11y-widget-biz .a11y-finding-header:has(> .a11y-shot) { grid-template-columns: 20px minmax(0, 1fr) 120px auto; column-gap: 16px; }
-.a11y-widget-biz .a11y-finding-header:not(:has(> .a11y-shot)) { grid-template-columns: 20px minmax(0, 1fr) auto; column-gap: 16px; }
+/* Fixed columns so the pictures line up row to row (user's "add third
+   row for images in between text"): caret, the words, a 120px picture
+   column, and a 160px severity column set to its right end. */
+.a11y-widget-biz .a11y-finding-header:has(> .a11y-shot) { grid-template-columns: 20px minmax(0, 1fr) 120px 160px; column-gap: 16px; }
+.a11y-widget-biz .a11y-finding-header:not(:has(> .a11y-shot)) { grid-template-columns: 20px minmax(0, 1fr) 120px 160px; column-gap: 16px; }
 .a11y-widget-biz .a11y-finding-header::before {
   content: ""; grid-column: 1; grid-row: 1 / span 3; align-self: start;
   width: 20px; height: 20px; margin-top: 1px; background: currentColor;
@@ -789,7 +792,7 @@
    the row's right end as in the findings table, the picture centred in the
    row's height just before it, the title and marks after the caret. */
 .a11y-widget-biz .a11y-finding-header > .a11y-shot { grid-column: 3; grid-row: 1 / span 2; align-self: center; justify-self: center; }
-.a11y-widget-biz .a11y-finding-header > .a11y-sev { grid-column: -2 / -1; grid-row: 1; font-size: 20px; line-height: 24px; margin: 0; white-space: nowrap; }
+.a11y-widget-biz .a11y-finding-header > .a11y-sev { grid-column: 4; justify-self: end; text-align: end; grid-row: 1; font-size: 20px; line-height: 24px; margin: 0; white-space: nowrap; }
 .a11y-widget-biz .a11y-finding-header > .a11y-finding-desc { grid-row: 1; }
 .a11y-widget-biz .a11y-finding-header > .a11y-finding-meta { grid-row: 2; }
 .a11y-widget-biz .a11y-finding-header::before { grid-row: 1 / span 2; }
@@ -1072,6 +1075,12 @@
   .a11y-widget-biz .a11y-report-actions .a11y-ra-email-form input.a11y-ra-email-input[type] { padding-inline-end: 18px !important; }
   .a11y-widget-biz .a11y-report-actions .a11y-ra-send { grid-area: note; justify-self: start; margin: 4px 0 0; }
   .a11y-widget-biz .a11y-ra-note { grid-row: 5; }
+}
+
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-finding-header:is(:has(> .a11y-shot), :not(:has(> .a11y-shot))) { grid-template-columns: 20px minmax(0, 1fr) auto; column-gap: 10px; }
+  .a11y-widget-biz .a11y-finding-header > .a11y-sev { grid-column: 3; }
+  .a11y-widget-biz .a11y-finding-header > .a11y-shot { grid-column: 2; grid-row: 3; justify-self: start; margin-top: 6px; }
 }
 
 /* The form's report (a page behind a login) keeps the product shell. */
