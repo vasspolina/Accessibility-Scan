@@ -439,6 +439,192 @@
 .a11y-widget-biz .a11y-error { color: var(--error); }
 .a11y-widget-biz .a11y-loading { padding: 26px 0; color: var(--ink-2); }
 
+/* The opened finding, set as the reference's article page (user's
+   instructions, 26 Nov 2026, "typeset this text properly", then its
+   colophon page as the reference): two columns. At the left the facts
+   (WCAG, level, fix, places) as 16px index rows between 1px rules; at the
+   right the explanation as an article a size down, 13px on 16px, each part
+   a label line over its words, one blank line (13px) between parts, list
+   items as lines with a hanging bullet. On a phone the facts stand over the
+   article. */
+.a11y-widget-biz .a11y-fd {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: 10px;
+  align-items: start;
+  padding: 0 0 13px;
+  border-top: 0;
+}
+.a11y-widget-biz .a11y-datatable tr:has(.a11y-fd):hover > td,
+.a11y-widget-biz .a11y-dt-expand-row:hover > td { background: transparent; }
+.a11y-widget-biz .a11y-fd > *,
+.a11y-widget-biz .a11y-fd-col > * { grid-column: 2; }
+.a11y-widget-biz .a11y-fd-col { display: contents; }
+.a11y-widget-biz .a11y-fd-meta {
+  grid-column: 1;
+  grid-row: 1 / span 40;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  border-top: 1px solid var(--rule);
+}
+.a11y-widget-biz .a11y-fd-meta > span { display: flex; align-items: center; min-height: var(--row); padding: 6px 0 7px; border-bottom: 1px solid var(--rule); font-size: 16px; line-height: 19px; }
+.a11y-widget-biz .a11y-fd-col:first-of-type > :first-child { padding-top: 8px; border-top: 1px solid var(--rule); }
+.a11y-widget-biz .a11y-fd :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-steps, .a11y-affected, .a11y-fd-col > div) {
+  margin: 0 0 13px; padding: 0; border: 0;
+  font-size: 13px; line-height: 16px;
+}
+.a11y-widget-biz .a11y-fd :is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research) > strong,
+.a11y-widget-biz .a11y-fd :is(.a11y-finding-steps, .a11y-affected) > p:first-child {
+  display: block; margin: 0; font-size: 13px; line-height: 16px; color: var(--ink);
+}
+.a11y-widget-biz .a11y-fd :is(.a11y-finding-steps, .a11y-affected) > p:first-child strong { font-size: inherit; }
+.a11y-widget-biz .a11y-fd :is(.a11y-fd-body, .a11y-finding-steps > ul, .a11y-affected > ul) { display: block; margin: 0; font-size: 13px; line-height: 16px; color: var(--ink); }
+.a11y-widget-biz .a11y-fd :is(.a11y-fd-points, .a11y-finding-steps > ul) { list-style: none; padding: 0; margin-top: 0; }
+.a11y-widget-biz .a11y-fd :is(.a11y-fd-points, .a11y-finding-steps > ul) > li { position: relative; margin: 0; padding-inline-start: 12px; }
+.a11y-widget-biz .a11y-fd :is(.a11y-fd-points, .a11y-finding-steps > ul) > li + li { margin-top: 13px; }
+.a11y-widget-biz .a11y-fd :is(.a11y-fd-points, .a11y-finding-steps > ul) > li::before { content: "•" / ""; position: absolute; inset-inline-start: 0; }
+.a11y-widget-biz .a11y-fd a { color: var(--accent-ink, var(--link)); }
+
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-fd { grid-template-columns: minmax(0, 1fr); }
+  .a11y-widget-biz .a11y-fd > *, .a11y-widget-biz .a11y-fd-col > *, .a11y-widget-biz .a11y-fd-meta { grid-column: 1; grid-row: auto; }
+  .a11y-widget-biz .a11y-fd-meta { margin-bottom: 13px; }
+}
+
+/* Affected elements: each element a block under a soft rule, its name at
+   13px, the picture under it, then what to write. */
+.a11y-widget-biz .a11y-occurrence-list > li { margin: 0; padding: 0 0 13px; }
+.a11y-widget-biz .a11y-occurrence-list > li + li { padding-top: 13px; border-top: 1px solid var(--rule-soft); }
+.a11y-widget-biz .a11y-occurrence-head,
+.a11y-widget-biz .a11y-occurrence-label { display: block; margin: 0 0 6px; font-size: 13px; line-height: 16px; color: var(--ink-2); }
+.a11y-widget-biz .a11y-shot { display: block; margin: 0 0 8px; max-width: 100%; }
+.a11y-widget-biz .a11y-shot-bubble { display: block; margin: 0 0 6px; font-size: 13px; line-height: 16px; color: var(--ink-2); }
+.a11y-widget-biz .a11y-shot-frame { position: relative; display: block; width: fit-content; max-width: 100%; line-height: 0; border: 1px solid var(--rule); }
+.a11y-widget-biz .a11y-shot-img { display: block; width: auto; max-width: 100%; max-height: 220px; border-radius: 0; }
+/* The element's place on its picture: ink inside, paper outside, so one
+   ring shows on any photograph. Its position comes from the markup. */
+.a11y-widget-biz .a11y-shot-box { position: absolute; min-width: 8px; min-height: 8px; pointer-events: none; border: 2px solid var(--ink); outline: 2px solid var(--bg); }
+.a11y-widget-biz .a11y-shot-caption { display: block; margin-top: 6px; font-size: 13px; line-height: 16px; color: var(--ink-2); }
+.a11y-widget-biz .a11y-alt-suggestion { margin: 0; font-size: 13px; line-height: 16px; }
+.a11y-widget-biz .a11y-alt-card-head { display: flex; align-items: center; justify-content: space-between; gap: 13px; }
+.a11y-widget-biz .a11y-alt-suggestion-label { margin: 0; font-size: 13px; line-height: 16px; color: var(--ink-2); }
+.a11y-widget-biz .a11y-alt-suggestion-label strong { color: var(--ink); }
+.a11y-widget-biz .a11y-alt-copy { min-height: 24px; padding: 0 6px; font-size: 13px; line-height: 16px; }
+.a11y-widget-biz .a11y-alt-suggestion-value { margin: 6px 0 0; padding: 6px 0 7px; border-top: 1px solid var(--rule-soft); border-bottom: 1px solid var(--rule-soft); }
+.a11y-widget-biz .a11y-alt-suggestion-value code { font-size: 13px; line-height: 16px; color: var(--ink); }
+.a11y-widget-biz .a11y-alt-decorative strong { display: block; margin-bottom: 4px; font-size: 13px; line-height: 16px; color: var(--ink-2); }
+.a11y-widget-biz .a11y-fd code { font-size: 0.85em; }
+
+/* The technical version: a row with its caret, opening to 13px lines. */
+.a11y-widget-biz .a11y-tech-details { margin: 0; border-bottom: 1px solid var(--rule); }
+.a11y-widget-biz .a11y-tech-details > summary {
+  display: flex; align-items: center; gap: 6px; min-height: var(--row); padding: 6px 0 7px;
+  font-size: 13px; line-height: 16px; color: var(--ink); list-style: none;
+}
+.a11y-widget-biz .a11y-tech-details > summary::-webkit-details-marker { display: none; }
+.a11y-widget-biz .a11y-tech-details > summary::before { content: "▸" / ""; font-size: 11px; transition: transform 0.15s ease; }
+.a11y-widget-biz .a11y-tech-details[open] > summary::before { transform: rotate(90deg); }
+.a11y-widget-biz .a11y-tech-details > :not(summary) { margin: 0 0 8px; font-size: 13px; line-height: 16px; }
+.a11y-widget-biz .a11y-tech-elements { list-style: none; padding: 0; }
+.a11y-widget-biz .a11y-tech-elements code { overflow-wrap: anywhere; }
+
+/* Learn more: a 13px link with its arrow, under the rule. */
+.a11y-widget-biz .a11y-fd-learn { margin: 8px 0 0; font-size: 13px; line-height: 16px; }
+.a11y-widget-biz .a11y-fd-learn a { display: inline-flex; align-items: center; gap: 4px; }
+.a11y-widget-biz .a11y-fd-learn svg { width: 12px; height: 12px; }
+
+
+/* The findings grouped under each question ("Will it keep working?" and
+   the others; user's "and here", 26 Nov 2026): no markers, each finding a
+   ruled row set left, severity at 13px over the title at 16px, the
+   criterion after it at 13px, the fix and level marks under it. A picture,
+   when there is one, sits small at the row's left. */
+.a11y-widget-biz .a11y-principle-group + .a11y-principle-group { margin-top: 26px; }
+.a11y-widget-biz .a11y-pg-head { padding-bottom: 8px; border-bottom: 1px solid var(--rule); }
+.a11y-widget-biz .a11y-principle-title { margin: 0; font-size: 16px; line-height: 19px; }
+.a11y-widget-biz .a11y-findings-list { list-style: none; margin: 0; padding: 0; }
+.a11y-widget-biz .a11y-findings-list > .a11y-finding { margin: 0; border-bottom: 1px solid var(--rule); }
+.a11y-widget-biz .a11y-finding-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
+  width: 100%;
+  padding: 8px 0 13px;
+  text-align: start;
+}
+.a11y-widget-biz .a11y-finding-header:has(> .a11y-shot) { grid-template-columns: 96px minmax(0, 1fr); column-gap: 13px; }
+.a11y-widget-biz .a11y-finding-header > .a11y-shot { grid-row: 1 / span 3; margin: 0; }
+.a11y-widget-biz .a11y-finding-header .a11y-shot-img { max-height: 64px; }
+.a11y-widget-biz .a11y-finding-header .a11y-shot-bubble { display: none; }
+.a11y-widget-biz .a11y-finding-header:hover .a11y-finding-desc { text-decoration: underline; text-underline-offset: 3px; }
+.a11y-widget-biz .a11y-finding-desc { font-size: 16px; line-height: 19px; }
+.a11y-widget-biz .a11y-finding-criterion { margin-inline-start: 0.5em; font-size: 13px; line-height: 16px; color: var(--ink-2); white-space: nowrap; }
+.a11y-widget-biz .a11y-finding-meta { display: flex; flex-wrap: wrap; gap: 4px; margin: 0; }
+.a11y-widget-biz .a11y-finding-meta > * { margin: 0; }
+.a11y-widget-biz .a11y-finding > [id] { padding: 0 0 8px; }
+
+/* The rest of the report's blocks, from one pass over every section open
+   at once (26 Nov 2026): no list markers anywhere in a report block, every
+   multi-line button set left, and the parts that are spans in the markup
+   given their own line or a gap. */
+.a11y-widget-biz button { text-align: start; }
+.a11y-widget-biz .g-row-block :is(ul, ol) { list-style: none; padding-inline-start: 0; }
+
+/* Rows that are buttons: the whole width, words left, a rule under each. */
+.a11y-widget-biz :is(.a11y-sr-row, .a11y-dn-bar, .a11y-undecided-cell > button) {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 13px; width: 100%;
+  min-height: var(--row); padding: 6px 0 7px; text-align: start;
+}
+.a11y-widget-biz .a11y-sr-list > li { margin: 0; border-bottom: 1px solid var(--rule-soft); }
+.a11y-widget-biz .a11y-sr-num { flex: none; min-width: 2ch; font-size: 13px; color: var(--ink-2); }
+.a11y-widget-biz .a11y-sr-line-text { flex: 1 1 0; min-width: 0; }
+.a11y-widget-biz .a11y-sr-issue { flex: 1 1 100%; padding-inline-start: calc(2ch + 13px); font-size: 13px; line-height: 16px; color: var(--error); }
+.a11y-widget-biz .a11y-sr-log-heads { display: flex; gap: 13px; margin: 0; padding: 6px 0; border-bottom: 1px solid var(--rule); font-size: 13px; line-height: 16px; color: var(--ink-2); }
+.a11y-widget-biz .a11y-sr-log-heads > :first-child { min-width: 2ch; }
+.a11y-widget-biz .a11y-sr-log-heads > :nth-child(2) { flex: 1 1 0; }
+.a11y-widget-biz .a11y-undecided-cell { margin: 0; border-bottom: 1px solid var(--rule); }
+.a11y-widget-biz .a11y-undecided-what { flex: 1 1 0; min-width: 0; }
+
+/* The legal rows: the result, its count, then the marks, each apart. */
+.a11y-widget-biz .a11y-legal-row-desc { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; flex: 1 1 100%; }
+.a11y-widget-biz .a11y-legal-mark { font-size: 13px; line-height: 16px; }
+.a11y-widget-biz .a11y-legal-mark-critical { color: var(--error); }
+.a11y-widget-biz .a11y-legal-row-meaning { font-size: 13px; line-height: 16px; color: var(--ink-2); }
+
+/* The settings block: label in a 160px column, its controls beside it. */
+.a11y-widget-biz .a11y-settings-row {
+  display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 4px 13px; align-items: center;
+  padding: 6px 0 7px; border-bottom: 1px solid var(--rule);
+}
+.a11y-widget-biz .a11y-settings-label { font-size: 13px; line-height: 16px; color: var(--ink-2); }
+.a11y-widget-biz .a11y-settings-switch { display: flex; flex-wrap: wrap; gap: 2px; }
+.a11y-widget-biz .a11y-settings-opt {
+  display: inline-flex; align-items: center; min-height: var(--row); padding: 0 8px; border-radius: 2px;
+  background: var(--pill); color: var(--on-pill);
+}
+.a11y-widget-biz .a11y-settings-opt[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+.a11y-widget-biz .a11y-settings-ring { display: none; }
+.a11y-widget-biz .a11y-settings-row > :not(.a11y-settings-label) { grid-column: 2; }
+.a11y-widget-biz .a11y-settings-state { display: block; }
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-settings-row { grid-template-columns: minmax(0, 1fr); }
+  .a11y-widget-biz .a11y-settings-row > :not(.a11y-settings-label) { grid-column: 1; }
+}
+
+/* The findings table: the caret and the severity take only their width;
+   the title runs the row, the severity a 13px word at its end. */
+.a11y-widget-biz .a11y-datatable { table-layout: auto; }
+.a11y-widget-biz .a11y-dt-toggle-cell { width: 24px; padding-inline-end: 0; }
+.a11y-widget-biz .a11y-dt-toggle { width: 16px; min-height: 19px; justify-content: center; }
+.a11y-widget-biz td[data-col="severity"] { width: 1%; white-space: nowrap; text-align: end; padding-inline-end: 0; }
+.a11y-widget-biz .a11y-finding-sev-word { font-size: 13px; line-height: 19px; }
+.a11y-widget-biz .a11y-finding-sev-critical { color: var(--error); }
+.a11y-widget-biz .a11y-finding-sev-serious { color: var(--warn); }
+.a11y-widget-biz .a11y-finding-sev-moderate { color: var(--link); }
+.a11y-widget-biz .a11y-finding-sev-minor { color: var(--ok); }
+.a11y-widget-biz td[data-col="issue"] .a11y-finding-meta-line { display: block; margin-top: 2px; font-size: 13px; line-height: 16px; color: var(--ink-2); }
+
 /* The form's report (a page behind a login) keeps the product shell. */
 .a11y-widget-biz .a11y-shell-with-nav > .a11y-shell-main { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 10px; padding: 13px; }
 .a11y-widget-biz .a11y-shell-nav { position: sticky; top: 13px; align-self: start; display: flex; flex-direction: column; gap: 2px; }
