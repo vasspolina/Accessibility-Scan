@@ -1149,8 +1149,8 @@ export const UNDECIDED_ES: Record<string, { what: string; ask: string }> = {
     ask: "Abra la página en un móvil y gírelo en los dos sentidos. Todo debe seguir funcionando, para quien tiene el móvil fijo en una silla de ruedas o un soporte.",
   },
   "interaction-no-status-region": {
-    what: "Nada en esta página está preparado para anunciar cambios sin recargar, como una lista filtrada o un mensaje de «Guardado». Un lector de pantalla calla mientras ocurren.",
-    ask: "Pregunte a su equipo de desarrollo si aquí algo se actualiza sin recargar la página. Si es así, esa actualización necesita una región dinámica (live region) para que se diga además de verse.",
+    what: "La página tiene botones o formularios, pero nada preparado para leer los cambios en voz alta. Si una lista se filtra o aparece «Guardado» sin recargar, un lector de pantalla no dice nada.",
+    ask: "Use los botones y formularios de la página y fíjese en si algo cambia sin recargar. Si es así, pida a su equipo de desarrollo que ponga ese mensaje en una región dinámica (live region), para que un lector de pantalla lo lea.",
   },
   "interaction-acts-on-change": {
     what: "Menús o casillas cuyo código indica que actúan en cuanto se marcan, sin botón. No los probamos, porque podría hacerse un pedido real.",
