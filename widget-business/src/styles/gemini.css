@@ -905,6 +905,72 @@
 .a11y-widget-biz .a11y-finding-sev-word,
 .a11y-widget-biz .a11y-undecided-q .a11y-undecided-kind { font-size: 16px; line-height: 19px; }
 
+/* The chat box always at the foot (user's "the chat needs to be at
+   bottom", 26 Nov 2026): the page is a column the window's height; the
+   starter questions come first, the conversation fills what is left, and
+   the box is pushed to its end, where it stays (sticky) as the thread
+   scrolls. */
+.a11y-widget-biz .g-page { display: flex; flex-direction: column; min-height: calc(100vh - 39px); }
+.a11y-widget-biz .g-app .g-cols { display: flex; flex-direction: column; flex: 1 1 auto; }
+.a11y-widget-biz .g-app .g-col-side { order: -1; }
+.a11y-widget-biz .g-app .g-col-main { display: flex; flex-direction: column; flex: 1 1 auto; }
+.a11y-widget-biz .g-app .g-dock { margin-top: auto; }
+
+/* The box keeps the column's width: the flex column stretches it (the
+   grid's align-items: start shrank it to its words). */
+.a11y-widget-biz .g-app .g-cols { align-items: stretch; }
+
+/* Every place you copy from is the code card (user's "make any form
+   where you copy something look like this", 26 Nov 2026): the chat box's
+   grey, 12px corners, Copy with its icon at the top right (green on hover),
+   what you copy under it at 13px. The alt text suggestion, the AI code
+   fix, the colour fix, the statement's draft and the conformance report's
+   draft. */
+.a11y-widget-biz :is(.a11y-alt-card, .a11y-code-fix, .a11y-colour-fix, .a11y-stmt-code) {
+  margin: 8px 0 0; padding: 8px 8px 14px 16px; border: 0; border-radius: 12px; background: var(--chat-box);
+}
+.a11y-widget-biz :is(.a11y-alt-copy, .a11y-code-fix .a11y-copy-btn, .a11y-colour-fix .a11y-copy-btn, .a11y-stmt-copy, .a11y-acr .a11y-stmt-actions > button:first-of-type) {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 0 8px; margin: 0;
+  border: 0; border-radius: 6px; background: transparent; color: var(--ink);
+  font-size: 13px; line-height: 16px; text-decoration: none;
+}
+.a11y-widget-biz :is(.a11y-alt-copy, .a11y-colour-fix .a11y-copy-btn, .a11y-stmt-copy, .a11y-acr .a11y-stmt-actions > button:first-of-type):not(:has(svg))::before {
+  content: ""; flex: none; width: 14px; height: 14px; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M28,10V28H10V10H28m0-2H10a2,2,0,0,0-2,2V28a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V10a2,2,0,0,0-2-2Z'/%3E%3Cpath d='M4,18H2V4A2,2,0,0,1,4,2H18V4H4Z'/%3E%3C/svg%3E") center / 14px no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M28,10V28H10V10H28m0-2H10a2,2,0,0,0-2,2V28a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V10a2,2,0,0,0-2-2Z'/%3E%3Cpath d='M4,18H2V4A2,2,0,0,1,4,2H18V4H4Z'/%3E%3C/svg%3E") center / 14px no-repeat;
+}
+.a11y-widget-biz :is(.a11y-alt-copy, .a11y-code-fix .a11y-copy-btn, .a11y-colour-fix .a11y-copy-btn, .a11y-stmt-copy, .a11y-acr .a11y-stmt-actions > button:first-of-type) svg { width: 14px; height: 14px; }
+.a11y-widget-biz :is(.a11y-alt-copy, .a11y-code-fix .a11y-copy-btn, .a11y-colour-fix .a11y-copy-btn, .a11y-stmt-copy, .a11y-acr .a11y-stmt-actions > button:first-of-type):hover:not(:disabled) { background: var(--accent); color: var(--on-accent); text-decoration: none; }
+/* The alt text: its label and Copy on the bar, the words under it. */
+.a11y-widget-biz .a11y-alt-card .a11y-alt-suggestion-value { margin: 4px 0 0; padding: 0 8px 0 0; border: 0; }
+/* The AI fix: its label and Copy on one line, the markup under them. */
+.a11y-widget-biz .a11y-code-fix { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 8px; align-items: center; }
+.a11y-widget-biz .a11y-code-fix > * { grid-column: 1 / -1; }
+.a11y-widget-biz .a11y-code-fix > .a11y-code-fix-label { grid-column: 1; grid-row: 1; margin: 0; font-size: 13px; line-height: 16px; }
+.a11y-widget-biz .a11y-code-fix > .a11y-copy-btn { grid-column: 2; grid-row: 1; }
+.a11y-widget-biz .a11y-code-fix-warn { color: var(--error); }
+.a11y-widget-biz .a11y-code-fix-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 13px; margin-top: 8px; padding-inline-end: 8px; }
+.a11y-widget-biz .a11y-code-fix-key { margin: 0 0 4px; font-size: 13px; line-height: 16px; color: var(--ink-2); }
+.a11y-widget-biz .a11y-code-fix-pre { margin: 0; padding: 0; border: 0; font-size: 13px; line-height: 16px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.a11y-widget-biz .a11y-code-fix-note { margin: 4px 0 0; font-size: 13px; line-height: 16px; color: var(--ink-2); }
+/* The colour fix: the sentence in the card, Copy at its end. */
+.a11y-widget-biz .a11y-colour-fix { position: relative; padding-top: 14px; padding-inline-end: 88px; }
+.a11y-widget-biz .a11y-colour-fix .a11y-copy-btn { position: absolute; top: 8px; inset-inline-end: 8px; }
+/* The statement: Copy on its step's line, the draft in the card under it. */
+.a11y-widget-biz .a11y-stmt-code { font-size: 13px; line-height: 16px; padding-inline-end: 16px; }
+/* The conformance report: Copy and Download on a bar, the draft the card. */
+.a11y-widget-biz .a11y-acr .a11y-stmt-actions {
+  display: flex; justify-content: flex-end; align-items: center; gap: 4px; margin: 13px 0 0;
+  padding: 8px 8px 0; border-radius: 12px 12px 0 0; background: var(--chat-box);
+}
+.a11y-widget-biz .a11y-acr .a11y-stmt-actions > button:nth-of-type(2) {
+  min-height: 28px; padding: 0 8px; border-radius: 6px; background: transparent; color: var(--ink); font-size: 13px; line-height: 16px;
+}
+.a11y-widget-biz .a11y-acr .a11y-stmt-actions > button:nth-of-type(2):hover { background: var(--accent); color: var(--on-accent); }
+.a11y-widget-biz .a11y-acr .a11y-stmt-actions + .a11y-stmt-text {
+  margin: 0; padding: 4px 16px 14px; border: 0; border-radius: 0 0 12px 12px; background: var(--chat-box);
+  font-size: 13px; line-height: 16px; white-space: pre-wrap;
+}
+
 /* The form's report (a page behind a login) keeps the product shell. */
 .a11y-widget-biz .a11y-shell-with-nav > .a11y-shell-main { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 10px; padding: 13px; }
 .a11y-widget-biz .a11y-shell-nav { position: sticky; top: 13px; align-self: start; display: flex; flex-direction: column; gap: 2px; }
