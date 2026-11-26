@@ -1,12 +1,9 @@
-/* The demo view's stylesheet (backend/public/demo-gemini.html), used only
-   by `vite build --mode gemini`; global.css and the product bundle are
-   untouched by it. The view's markup is ScanChat's GEMINI branch (g-*
-   classes); the report blocks inside it are the product's components.
+/* The chat demo page's stylesheet, used only by the demo build
+   (vite build in its own mode); the product's global.css and bundle are
+   untouched by it. The demo view's markup is the g-* branch of ScanChat;
+   the report blocks inside it are the product's components. */
 
-   History (user's instructions, 26 Nov 2026): a chat-app frame in the
-   product's colours, then the same frame in its own palette from a blank
-   sheet, then its own markup; now the type and layout below, after the
-   user's reference. */
+
 
 /* ---------- Behaviour: what the widget needs to work ---------- */
 
@@ -58,27 +55,6 @@
 
 /* ---------- Tokens ---------- */
 
-/* Type and layout after the user's reference of 26 Nov 2026 (a type
-   foundry's shop page, measured at 1800px): one face at one weight (400),
-   letters spaced 0.02em, three sizes only: 20px on a 24px line for text and
-   rows, 16px on 20px for column titles and labels, 14px on 16px for small
-   print. Rows are 40px between 1px rules; label pills 40px tall with 2px
-   corners and 2px apart; tabs 295px wide over a 1px rule; content starts
-   240px from the left. The face is the product's Jokker, not the reference's.
-   Colours stay the demo's.
-
-   Colours follow the reference too (user's instruction, the same day, "a
-   bit more close to reference"): black ink, dark teal pills
-   with pink words, the current pill red-orange. Two of its pairs fail and
-   are changed: pink words on the red-orange (2.7:1) are black (5.7:1), and
-   the pale words of the other tabs (1.4:1) are a muted rose (6.1:1).
-   The paper is white since the user's "delete pink background" (the
-   same day), the pink-derived tints neutral greys: #5c5c5c on white 6.7:1.
-   Measured: black on white 21:1; #ffd2d3 on #113739 9.5:1; #000 on
-   #ff3200 5.7:1; #6b4446 on #ffd2d3 6.1:1. Since the user's "use green
-   instead of red" (the same day) the accent is green #34c759, black words
-   on it 9.9:1; the focus line a deeper #1a7f37 (5.0:1 on white; #6fdc8c on
-   the dark teal), since the accent as a line on white is 2.2:1. */
 .a11y-widget-biz {
   --bg: #ffffff;
   --ink: #000000;
@@ -334,11 +310,7 @@
 .a11y-widget-biz .g-row[data-busy] .g-who::after { content: " ●" / ""; color: var(--accent); animation: a11y-blink 1s steps(2, start) infinite; }
 @keyframes a11y-blink { to { visibility: hidden; } }
 .a11y-widget-biz .g-row-you .g-who { color: var(--ink-2); }
-/* Your words at the row size, 20px; the assistant's reply as the
-   reference's article, a size down (16px on 20px), paragraphs one blank
-   line apart, lists with hanging markers (numbers kept), inline code at the
-   text's size. No rules inside a reply (user's "not always a line divider
-   needed", 26 Nov 2026). */
+
 .a11y-widget-biz .g-text { font-size: 20px; line-height: 24px; }
 .a11y-widget-biz .g-row:not(.g-row-you) .g-text { font-size: 16px; line-height: 20px; }
 .a11y-widget-biz .g-text :is(p, ul, ol, pre) { margin: 0 0 16px; }
@@ -351,11 +323,7 @@
 .a11y-widget-biz .g-text code { font-size: inherit; line-height: inherit; }
 .a11y-widget-biz .g-text strong { color: var(--ink); }
 .a11y-widget-biz .g-text a { color: var(--link); }
-/* A code block as a card to copy from, after Claude's (user's "make this
-   into form with copy button like claude but keep current design", 26 Nov
-   2026): the chat box's grey, 15px corners; a header bar with Copy and its
-   icon at the right; the code under it at 16px, wrapped. Jokker and the
-   palette stay. */
+
 .a11y-widget-biz .a11y-chat-copy { margin: 0 0 16px; border-radius: 15px; background: var(--chat-box); overflow: hidden; }
 .a11y-widget-biz .a11y-chat-copy-bar { display: flex; justify-content: flex-end; align-items: center; margin: 0; padding: 8px 10px 0; }
 .a11y-widget-biz .a11y-chat-copy-btn {
@@ -389,11 +357,6 @@
 .a11y-widget-biz .g-actions { margin-top: 10px; }
 .a11y-widget-biz .g-confirm { margin: 10px 0 0; }
 
-/* The box, as a Gemini chat box (user's "design as chat like gemini
-   chat", 26 Nov 2026): a rounded grey field floating at the window's foot
-   on a fade, no rules; the words on top, one line until something is
-   typed; the image and microphone as plain icons under them at the left,
-   Send a round arrow at the right once there is text. */
 .a11y-widget-biz .g-dock {
   position: sticky; z-index: 15; bottom: 0;
   margin-top: 16px; padding: 33px 0 16px; border: 0;
@@ -407,16 +370,12 @@
 .a11y-widget-biz .g-composer { margin: 0; }
 .a11y-widget-biz .g-field {
   display: grid; grid-template-columns: minmax(0, 1fr); gap: 5px;
-  /* Corners as Claude's message box (user's "make chat corners like
-     claude", 26 Nov 2026): a rounded rectangle, 20px, not a pill. */
+
   padding: 16px 13px 10px 25px; border: 0; border-radius: 20px;
   background: var(--chat-box);
   transition: box-shadow 0.15s ease;
 }
-/* Focus as Claude's composer has it (user's "make focus outline like
-   claude focus", 26 Nov 2026): a hairline edge at rest that darkens on
-   focus, with a soft shadow, in place of the 2px green ring. The focused
-   edge #8a8a8a measures 3.0:1 on the box's #f0f0f0. */
+
 .a11y-widget-biz .g-field { box-shadow: inset 0 0 0 1px var(--box-edge); }
 .a11y-widget-biz .g-field:focus-within { box-shadow: inset 0 0 0 1px var(--box-edge-focus), 0 5px 20px rgb(0 0 0 / 0.08); margin: 0; }
 .a11y-widget-biz .g-input {
@@ -542,14 +501,6 @@
 .a11y-widget-biz .a11y-error { color: var(--error); }
 .a11y-widget-biz .a11y-loading { padding: 33px 0; color: var(--ink-2); }
 
-/* The opened finding, set as the reference's article page (user's
-   instructions, 26 Nov 2026, "typeset this text properly", then its
-   colophon page as the reference): two columns. At the left the facts
-   (WCAG, level, fix, places) as 20px index rows between 1px rules; at the
-   right the explanation as an article a size down, 16px on 20px, each part
-   a label line over its words, one blank line (16px) between parts, list
-   items as lines with a hanging bullet. On a phone the facts stand over the
-   article. */
 .a11y-widget-biz .a11y-fd {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -635,7 +586,6 @@
 .a11y-widget-biz .a11y-fd-learn { margin: 10px 0 0; font-size: 16px; line-height: 20px; }
 .a11y-widget-biz .a11y-fd-learn a { display: inline-flex; align-items: center; gap: 5px; }
 .a11y-widget-biz .a11y-fd-learn svg { width: 15px; height: 15px; }
-
 
 /* The findings grouped under each question ("Will it keep working?" and
    the others; user's "and here", 26 Nov 2026): no markers, each finding a
@@ -726,11 +676,6 @@
 .a11y-widget-biz .a11y-finding-sev-minor { color: var(--ok); }
 .a11y-widget-biz td[data-col="issue"] .a11y-finding-meta-line { display: block; margin-top: 2px; font-size: 16px; line-height: 20px; color: var(--ink-2); }
 
-/* The score's notes (How the score works, Warning) and the report's other
-   notes, set as the reference's article column (user's "typeset this", 26
-   Nov 2026): a 1px rule, the title at 20px 10px under it, then the text a
-   size down, 16px on 20px in ink, paragraphs one blank line apart. No
-   icon: the title says what it is. The warning's title takes the red. */
 .a11y-widget-biz .a11y-sum-notes { gap: 13px; align-items: start; }
 .a11y-widget-biz .a11y-sum-card,
 .a11y-widget-biz .a11y-note { display: block; padding: 10px 0 0; border-top: 1px solid var(--rule); font-size: 16px; line-height: 20px; color: var(--ink); }
@@ -839,11 +784,6 @@
 .a11y-widget-biz .a11y-legal-row > .a11y-legal-col-result { grid-column: 1; grid-row: 1; margin: 0; }
 .a11y-widget-biz .a11y-legal-row > .a11y-legal-row-desc { grid-column: 1 / -1; }
 
-/* Email me this report, as the reference's sign-in form (user's "design
-   this like this", 26 Nov 2026): the title at 20px over a rule, space,
-   then every control a 40px row between 1px rules: the address with its
-   label at the row's left, Send this report and Download in PDF each an
-   icon in a 30px ring then the words, filling red-orange on hover. */
 .a11y-widget-biz .a11y-report-actions .a11y-ra-panel { display: block; padding: 0; border-top: 0; }
 .a11y-widget-biz .a11y-ra-email-form { display: block; margin: 0; }
 .a11y-widget-biz .a11y-ra-head { margin: 0 0 65px; padding-bottom: 10px; border-bottom: 1px solid var(--rule); font-size: 20px; line-height: 24px; }
@@ -1014,13 +954,6 @@
 /* Badges may wrap: the long level names ran 100px past a phone's edge. */
 .a11y-widget-biz :is(.a11y-tag, .a11y-rule-chip, .a11y-pro-chip, .a11y-method-badge, .a11y-level-badge, .a11y-count-badge, .a11y-status-chip, .a11y-undecided-kind, .a11y-sum-chip) { white-space: normal; max-width: 100%; }
 
-/* The chat as Claude's (user's "actually design chat like claude chat",
-   26 Nov 2026). Your words in a rounded grey bubble at the right; the
-   assistant's plain, full width; the speaker labels kept for screen
-   readers only; Copy under a reply a small icon and word. The box white
-   with a light edge and a soft shadow, 20px corners; the plus and the
-   microphone outlined rounded squares at its left, Send a filled rounded
-   square at its right once there is text. */
 .a11y-widget-biz .g-who { position: absolute !important; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .a11y-widget-biz .g-row-you { display: flex; justify-content: flex-end; }
 .a11y-widget-biz .g-row-you .g-text {
