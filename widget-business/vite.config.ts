@@ -49,6 +49,9 @@ export default defineConfig(({ mode }) => ({
       formats: ["iife"],
       fileName: () => (mode === "gemini" ? "widget-business-gemini.js" : "widget-business.js"),
     },
+    // The Gemini build runs after the product build in the Docker image and
+    // must not wipe dist/widget-business.js on its way.
+    emptyOutDir: mode !== "gemini",
     rollupOptions: {
       output: {
         extend: true,
