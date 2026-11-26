@@ -16,6 +16,10 @@ COPY widget-business/package.json widget-business/package-lock.json ./widget-bus
 RUN cd widget-business && npm ci
 COPY widget-business ./widget-business
 RUN cd widget-business && npm run build
+# The Gemini-style demo's bundle (demo-gemini.html): the same source built
+# with its own stylesheet and view. Its mode keeps dist/ as it is, so the
+# product bundle above stays beside it.
+RUN cd widget-business && npx vite build --mode gemini
 
 # --- The scanner. ---
 FROM mcr.microsoft.com/playwright:v1.61.1-jammy
@@ -41,6 +45,7 @@ COPY backend/public ./public
 # The older technical widget (public/widget.js) is still committed: it has
 # no tests or CI and rarely changes.
 COPY --from=widget /repo/widget-business/dist/widget-business.js ./public/widget-business.js
+COPY --from=widget /repo/widget-business/dist/widget-business-gemini.js ./public/widget-business-gemini.js
 
 RUN npm run build
 
