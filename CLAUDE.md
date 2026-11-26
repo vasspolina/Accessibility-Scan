@@ -184,6 +184,7 @@ Comments in this codebase are long and record what was measured and why a value 
 - **For your designer and developer has no numbers** ("delete numbers"): caret, words and fix kind on one line; "Same as item N" is gone, each answer says its own advice.
 - **Every yellow note is 21px** ("make it bigger like other letra text"), the conversation's included.
 - **The screen reader simulation in the conversation**: no "(N announcements)" after its title; its controls and "What you'd hear" on the title's edge; Show all a white pill like Skip the transcript. The speaker labels You and Assistant are PP Lettra Mono.
+- **One button size, 18px PP Telegraf** (26 Nov 2026, "lets make button font same everywhere, and 10% bigger then this", on Other questions at 16px): every pill button, Start the scan and Send this report included (they were 29px). Rows, carets, accordion heads, legal tiles and question cards keep their sizes. Block `ONE BUTTON SIZE, 18PX` in `global.css`; a new button class joins its list. Other questions stands centred under the opening cards.
 - **Every section title is PP Lettra Mono** ("title needs to be in letra"), at its own size, no tracking, 1.15; the line under it stays PP Telegraf. Block `EVERY SECTION TITLE IN LETTRA`, last in `global.css`.
 
 ## The screen reader simulation as a form panel (user's reference, 25 Nov 2026, "design this like this")

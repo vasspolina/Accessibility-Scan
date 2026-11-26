@@ -8089,3 +8089,20 @@
 /* Other questions stands centred under the opening cards (user's
    instruction, 25 Nov 2026, "centre"). */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-prompt-more[class][class] { display: flex; justify-content: center; text-align: center; }
+
+/* ═══ ONE BUTTON SIZE, 18PX (user's instruction, 26 Nov 2026, "lets make
+   button font same everywhere, and 10% bigger then this", on Other
+   questions) ════════════════════════════════════════════════════════════
+   Measured at 1440px on the report and the chat: every pill button was
+   16px (Other questions, Copy, Download in PDF and as CSV, Show all, the
+   chat's section pills, New chat, Report a barrier, Language, Ask this,
+   the simulation's controls), the chat box's buttons 18px, and Start the
+   scan and Send this report 29px. Every one is now 18px (16 x 1.1,
+   rounded), PP Telegraf, the chat box's size. Whole-line rows, carets,
+   accordion heads, the legal tiles and the question cards are not
+   buttons in this sense and keep their sizes; so do the round delete
+   bin and the "Open" mark. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-blockflag-jump, .a11y-copy-btn, .a11y-findings-csv, a.a11y-learn-prompt, .a11y-login-close, .a11y-login-toggle, .a11y-ra-pdf, .a11y-ra-send, .a11y-show-all, .a11y-sim-btn, .a11y-skip-link, .a11y-sr-play, .a11y-undecided-export, .a11y-shell-nav-toggle, .a11y-chat-chip, .a11y-chats-new, .a11y-lang-toggle, .a11y-prompt-go, .a11y-settings-opt, .a11y-stmt-copy)[class][class][class] {
+  font-family: "PP Telegraf", "DejaVu Sans", sans-serif; font-size: 18px; font-weight: 200; letter-spacing: 0.025em;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-ra-send, .a11y-ra-pdf, .a11y-chats-new, .a11y-lang-toggle, .a11y-prompt-go)[class][class][class] :is(span, strong):not(.a11y-sr-only) { font-size: inherit; letter-spacing: inherit; }
