@@ -2998,7 +2998,7 @@
 .a11y-widget-biz .a11y-chat-layout > .a11y-chats {
   display: flex; flex-direction: column; align-self: stretch; overflow: visible;
 }
-.a11y-widget-biz .a11y-chats > .a11y-chats-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+.a11y-widget-biz .a11y-chats > .a11y-chats-body { flex: 1 1 auto; min-width: 0; min-height: 0; overflow-y: auto; }
 /* No space above the foot's rule (user's instruction, 24 Nov 2026, "delete
    white space above the line"): the conversations scroll right up to it.
    It had 16px over it. */
@@ -3037,7 +3037,7 @@
 /* 960px with the panel's fold above, not 640px. */
 @media (max-width: 1055px) {
   .a11y-widget-biz .a11y-chat-layout > .a11y-chats { flex-flow: row wrap; align-items: center; justify-content: space-between; }
-  .a11y-widget-biz .a11y-chats > .a11y-chats-body { order: 3; flex: 1 1 100%; overflow: visible; }
+  .a11y-widget-biz .a11y-chats > .a11y-chats-body { order: 3; flex: 1 1 100%; min-width: 0; overflow: visible; }
   .a11y-widget-biz .a11y-chats > .a11y-chats-foot { margin: 0; padding: 0; border: 0; }
   .a11y-widget-biz .a11y-lang-menu .a11y-lang-toggle { width: auto; }
   .a11y-widget-biz .a11y-lang-menu .a11y-lang-list { top: calc(100% + var(--cds-spacing-03)); bottom: auto; left: auto; min-width: 12em; }
