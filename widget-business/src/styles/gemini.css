@@ -774,7 +774,10 @@
    icon set's solid caret in a 20px column at the row's start, as the
    findings table has it; right while shut, down while open. */
 .a11y-widget-biz .a11y-finding-header { grid-template-columns: 20px minmax(0, 1fr); column-gap: 10px; }
-.a11y-widget-biz .a11y-finding-header:has(> .a11y-shot) { grid-template-columns: 20px 120px minmax(0, 1fr); column-gap: 10px; }
+/* The picture at the card's right end (user's "image can be aligned to
+   right in these cases", 26 Nov 2026): caret, the words, then the picture. */
+.a11y-widget-biz .a11y-finding-header:has(> .a11y-shot) { grid-template-columns: 20px minmax(0, 1fr) 120px auto; column-gap: 16px; }
+.a11y-widget-biz .a11y-finding-header:not(:has(> .a11y-shot)) { grid-template-columns: 20px minmax(0, 1fr) auto; column-gap: 16px; }
 .a11y-widget-biz .a11y-finding-header::before {
   content: ""; grid-column: 1; grid-row: 1 / span 3; align-self: start;
   width: 20px; height: 20px; margin-top: 1px; background: currentColor;
@@ -782,8 +785,15 @@
   transition: transform 0.15s ease;
 }
 .a11y-widget-biz .a11y-finding-header[aria-expanded="true"]::before { transform: rotate(90deg); }
-.a11y-widget-biz .a11y-finding-header > .a11y-shot { grid-column: 2; }
-.a11y-widget-biz .a11y-finding-header > :not(.a11y-shot) { grid-column: -2 / -1; }
+/* Then ("or centered and fix soon to the right"): the severity word at
+   the row's right end as in the findings table, the picture centred in the
+   row's height just before it, the title and marks after the caret. */
+.a11y-widget-biz .a11y-finding-header > .a11y-shot { grid-column: 3; grid-row: 1 / span 2; align-self: center; justify-self: center; }
+.a11y-widget-biz .a11y-finding-header > .a11y-sev { grid-column: -2 / -1; grid-row: 1; font-size: 20px; line-height: 24px; margin: 0; white-space: nowrap; }
+.a11y-widget-biz .a11y-finding-header > .a11y-finding-desc { grid-row: 1; }
+.a11y-widget-biz .a11y-finding-header > .a11y-finding-meta { grid-row: 2; }
+.a11y-widget-biz .a11y-finding-header::before { grid-row: 1 / span 2; }
+.a11y-widget-biz .a11y-finding-header > :is(.a11y-finding-desc, .a11y-finding-meta) { grid-column: 2; }
 
 /* The legal section's head (user's "allign and do not do this content",
    26 Nov 2026, on its three panels): the "'Nothing found' is not a pass"
