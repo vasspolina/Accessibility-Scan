@@ -1,0 +1,10 @@
+{
+  "name": "a11y-scan",
+  "version": "1.0.0",
+  "description": "Scan any page, including localhost, for WCAG 2.2 A/AA faults with the Accessibility Scan pipeline: a real Chromium at desktop and phone width, axe-core plus its own probes, one card per fault with the element, the criterion and the fix.",
+  "author": { "name": "Polina Vasilyeva" },
+  "homepage": "https://github.com/vasspolina/Accessibility-Scan",
+  "repository": "https://github.com/vasspolina/Accessibility-Scan",
+  "license": "EUPL-1.2",
+  "keywords": ["accessibility", "a11y", "wcag", "en-301-549", "axe-core", "playwright"]
+}
