@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Accessibility scan&nbsp;– demo</title>
+    <!-- A copy of demo.html with no page styles of its own (user's
+         instruction, 26 Nov 2026: copy the demo, strip all CSS, design it
+         like the Gemini app). The look is in widget-business-gemini.js,
+         built from widget-business with `vite build --mode gemini`, which
+         swaps global.css for styles/gemini.css. The two rules below are all
+         the page sets: no body margin, so the app runs edge to edge, and
+         the page's one h1 kept for screen readers only. -->
+    <style>
+      body { margin: 0; }
+      .page > h1 { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <h1>Accessibility scan</h1>
+      <!-- The address is written out: this service sends script-src 'self',
+           so an inline script to fill it in would be blocked. -->
+      <div
+        id="a11y-widget-business-root"
+        data-api-base="https://a11y-checker-v2-production.up.railway.app"
+      ></div>
+    </main>
+
+    <script src="./widget-business-gemini.js" defer></script>
+  </body>
+</html>
