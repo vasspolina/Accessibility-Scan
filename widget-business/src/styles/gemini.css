@@ -1132,9 +1132,11 @@
    fill with the light icon, 2px corners, the Back button's 40px height;
    green on hover. */
 .a11y-widget-biz .g-tools .g-icon-btn {
-  width: var(--row); height: var(--row); border-radius: 2px;
+  width: 32px; height: 32px; border-radius: 2px;
   background: var(--pill); color: var(--on-pill); box-shadow: none;
 }
+/* Smaller (user's "make smaller"): 32px squares, the icon 16px. */
+.a11y-widget-biz .g-tools .g-icon-btn svg { width: 16px; height: 16px; }
 .a11y-widget-biz .g-tools .g-icon-btn:hover:not(:disabled) { background: var(--accent); color: var(--on-accent); }
 .a11y-widget-biz .g-list-delete { border-radius: 2px; }
 
