@@ -8661,3 +8661,18 @@
 }
 /* The picture of the element stands at the left edge with the words. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-affected .a11y-shot:not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20) { margin-inline: 0 auto; }
+/* The meta line's items (WCAG, level, fix, instances) are the outlined
+   pills the cards' labels were ("and these into these", 27 Nov 2026): the
+   cream (--hl-cap-a) with black words in both themes (19:1), a 1px black
+   edge, round ends, 4px 14px inside, 22px words, 8px apart. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-meta:not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20) { gap: var(--cds-spacing-03); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-meta > *:not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20) {
+  display: inline-flex; align-items: center; margin: 0; padding: 4px 14px;
+  border: 1px solid #000; border-radius: 999px; background: var(--hl-cap-a); color: #000;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 22px; font-weight: 400; line-height: 1.15; letter-spacing: 0; white-space: nowrap;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-meta > *:not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20)::before,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-meta > *:not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20)::after { content: none; display: none; }
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-meta > *:not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20) { border-color: CanvasText; }
+}
