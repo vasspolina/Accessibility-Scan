@@ -8389,10 +8389,10 @@
    designer and developer list, the design notes, the WCAG 2.2 items, the
    statement's steps, the screen reader simulation and conformance report
    heads, the technical version and the dark-pattern cards. */
-.a11y-widget-biz { --row-arrow: #6f6f6f; --row-rule: #d0d0d0; --row-arrow-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M24.59 16.59 17 24.17V4h-2v20.17l-7.59-7.58L6 18l10 10 10-10-1.41-1.41z'/%3E%3C/svg%3E"); }
-.a11y-widget-biz[data-theme="dark"] { --row-arrow: #a8a8a8; --row-rule: #3a3a3c; }
+.a11y-widget-biz { --row-hover: #0e6027; --row-arrow: #6f6f6f; --row-rule: #d0d0d0; --row-arrow-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M24.59 16.59 17 24.17V4h-2v20.17l-7.59-7.58L6 18l10 10 10-10-1.41-1.41z'/%3E%3C/svg%3E"); }
+.a11y-widget-biz[data-theme="dark"] { --row-hover: #6fdc8c; --row-arrow: #a8a8a8; --row-rule: #3a3a3c; }
 @media (prefers-color-scheme: dark) {
-  .a11y-widget-biz:not([data-theme="light"]) { --row-arrow: #a8a8a8; --row-rule: #3a3a3c; }
+  .a11y-widget-biz:not([data-theme="light"]) { --row-hover: #6fdc8c; --row-arrow: #a8a8a8; --row-rule: #3a3a3c; }
 }
 
 /* The rows: one shape for every disclosure button. */
@@ -8416,7 +8416,12 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header)[aria-expanded="true"][class][class][class][class][class][class][class][class]::before,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-details[open] > summary:not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8)::before { rotate: 180deg; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8):hover { background: none; color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8):hover { background: none; color: var(--row-hover); text-decoration: none; }
+/* Hover is dark green words, no underline ("do not underline, make text
+   dark green on hover", 27 Nov 2026): #0e6027 on white is 7.4:1, #6fdc8c
+   on black 12:1. The row's own words take it; the coloured kind and status
+   words keep theirs. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary):hover :is(.a11y-undecided-what, .a11y-dn-bar-title, .a11y-legal-row-label, .a11y-legal-count, .a11y-legal-row-meaning, .a11y-stmt-toggle-words, .a11y-w22-q, .a11y-finding-desc)[class][class][class][class][class][class][class][class][class][class][class] { color: var(--row-hover); text-decoration: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-details > summary:not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8)::-webkit-details-marker { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8)::before { transition: none; }
@@ -8499,7 +8504,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:has(.a11y-dt-toggle[aria-expanded="true"]) > td:last-child:not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6)::after { rotate: 180deg; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:has(.a11y-dt-toggle:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:not(.a11y-dt-expand-row):hover .a11y-finding-title { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:not(.a11y-dt-expand-row):hover .a11y-finding-title { color: var(--row-hover); text-decoration: none; }
 @media (prefers-reduced-motion: reduce) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:not(.a11y-dt-expand-row) > td:last-child:not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6)::after { transition: none; }
 }
