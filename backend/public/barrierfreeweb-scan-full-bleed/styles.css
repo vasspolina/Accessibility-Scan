@@ -794,42 +794,59 @@ main.wrap > form.signup { margin-bottom: var(--s12); padding-bottom: var(--s10);
 .chat__prompt:is(:hover, :focus-visible):not(:disabled) { background: var(--y); color: #000; }
 @media (max-width: 671px) { .chat__prompt, .chat__prompt:nth-child(3n + 2), .chat__prompt:nth-child(3n + 3) { min-height: 200px; } }
 
-/* ---------- What we offer, opened, as a type foundry's Info block (user's
-   reference, 26 Nov 2026, "design this like this", on the opened Brand
-   development panel; then "but keep the form like grey and yellow"). The
-   grey bars, their yellow hover and the grey round panel an opened bar
-   becomes all stay; the inside takes the reference's order:
-   - The opened bar is the title: a 4px ink rule across the panel's inner
-     width, the service's name 8px under it in Jokker Medium at 56px, 1.0,
-     -0.02em (32px on a phone). Drawn as a background line so the bar keeps
-     its round panel corners; its hover keeps the line on the yellow.
-   - Two columns, a gutter apart. Left, "Description": the lede and any
-     paragraphs, in EB Garamond (SIL OFL, ../fonts/) at 24px, 1.15, under
-     a small capital label over a 1px rule, one empty line between
-     paragraphs, at most 60 characters a line. Right, "Details": the terms
-     as a key and value table at 18px, 1.25, the term in a 9em column, no
-     space between rows, under the same label and closed by a 1px rule.
-     The two labels are drawn with alt text "": the bar already names the
-     panel, and they add nothing a screen reader needs. A panel with no
-     terms (Accessibility testing) is the left column alone.
-   - The right column spans every row through a last 1fr track, so a long
-     table never pulls the paragraphs apart. One column under 672px. */
+/* ---------- What we offer as an FAQ list (user's reference, 27 Nov 2026,
+   image 2: clean white rows separated by 1px rules, service name left,
+   a grey chevron arrow right; keep the serif Description / Details layout
+   inside the opened panel). ----------
+   - Each row: 1px top rule, no background, no rounded pill.
+   - Button: left label in Jokker Medium at 32px, right grey ↓/↑ arrow icon.
+   - Hover: pale yellow band (existing --hover).
+   - Opened row: white panel beneath the button, same padding as before;
+     the two-column Description / Details serif layout stays unchanged.
+   The .acc__btn / .acc__row rules above are overridden here. */
 @font-face {
   font-family: "EB Garamond";
   src: url("../fonts/EBGaramond-latin-400-normal.woff2") format("woff2");
   font-weight: 400; font-style: normal; font-display: swap;
 }
-.acc__btn[aria-expanded="true"] {
-  /* No rule above the opened title (user's instruction, 27 Nov 2026, "delete line above"). */
-  padding: var(--s07) var(--s07) var(--s05);
-  color: #000; font-weight: 500; font-size: 56px; line-height: 1; letter-spacing: -0.02em;
-  font-feature-settings: "ss01", "ss02", "ss05";
+
+/* FAQ-list accordion: each row is a 1px-ruled item, white ground, no pill shape.
+   The button spans the row: service name on the left, grey ↓/↑ arrow on the right.
+   Opening reveals the Description / Details panel beneath (layout unchanged). */
+.acc { gap: 0; }
+.acc__row { border-top: 1px solid #000; }
+.acc__row:last-child { border-bottom: 1px solid #000; }
+
+.acc__btn {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s06);
+  width: 100%; min-height: 72px; margin: 0;
+  padding: var(--s05) 0;
+  border: 0; border-radius: 0;
+  background: transparent; color: var(--ink);
+  text-align: start; cursor: pointer;
+  font-size: 32px; line-height: 1.1; letter-spacing: -0.01em; font-weight: 400;
 }
-.acc__btn[aria-expanded="true"]:hover { background-color: var(--hover); }
+.acc__btn::after {
+  content: "";
+  flex: none; width: 24px; height: 24px;
+  background: #aaa;
+  -webkit-mask: var(--caret-down) center / contain no-repeat;
+  mask: var(--caret-down) center / contain no-repeat;
+  transition: transform 0.2s ease;
+}
+.acc__btn[aria-expanded="true"]::after { transform: rotate(180deg); background: #aaa; }
+.acc__btn:hover { background: var(--hover); color: var(--hover-ink); padding-inline: var(--s04); border-radius: 4px; }
+.acc__btn:hover::after { background: var(--hover-ink); }
+
+/* Opened state: no grey panel/outline around it, plain white, panel content below the button */
+.acc__row:has(> .acc__head [aria-expanded="true"]) { background: none; border-radius: 0; border: 0; border-top: 1px solid #000; }
+.acc__row:has(> .acc__head [aria-expanded="true"]) .acc__btn { border-radius: 0; }
+
 .acc .acc__panel {
+  display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: repeat(5, auto) 1fr;
   column-gap: var(--gutter); row-gap: 0; align-items: start;
-  padding: var(--s07) var(--s07) var(--s08);
+  padding: 0 0 var(--s08);
 }
 .acc .acc__panel[hidden] { display: none; }
 .acc__panel .acc__body { display: contents; }
@@ -858,8 +875,8 @@ main.wrap > form.signup { margin-bottom: var(--s12); padding-bottom: var(--s10);
 .acc__panel .terms dd { margin: 0; text-align: start; }
 .acc__panel .terms > div + div > * { padding-top: var(--s03); }
 @media (max-width: 671px) {
-  .acc__btn[aria-expanded="true"] { padding: var(--s07) var(--s05) var(--s05); background-size: calc(100% - 2 * var(--s05)) 4px; background-position: left var(--s05) top var(--s05); font-size: 32px; line-height: 1.05; }
-  .acc .acc__panel { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; padding: var(--s05) var(--s05) var(--s07); }
+  .acc__btn { font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; min-height: 56px; padding: var(--s04) 0; }
+  .acc .acc__panel { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; padding: 0 0 var(--s07); }
   .acc__panel .acc__body > .terms { grid-column: 1; grid-row: auto; margin-top: var(--s08); grid-template-columns: minmax(0, 7em) minmax(0, 1fr); }
   .acc__panel > .acc__lede, .acc__panel .acc__body > p { font-size: 24px; letter-spacing: 0; line-height: 1.15; }
 }
