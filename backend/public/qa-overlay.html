@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>QA fixture: an accessibility overlay on the page</title>
+<!--
+  The fixture for the overlay note (services/overlay/analyzeOverlay.ts).
+
+  One overlay is on this page, and three things that are not.
+
+  The overlay: qa-overlay-stub.js stands in for a vendor's script. It does
+  what the real one does once it has loaded, which is append the vendor's
+  widget element to <body>, and nothing else. It is a local file, so the test
+  never opens a socket and never runs a vendor's code. The scan must name
+  that one vendor, with the widget on the page and no script address, since
+  a file: address belongs to nobody.
+
+  What must stay silent, all three built to look close:
+
+  1. #ae_app with no .ae-module child. A short id another site could
+     plausibly use; the marker asks for the vendor's own children too.
+  2. .access-widget-ui as a class on a div. The marker is the element name.
+  3. The site's own "Text size" buttons under #accessibility-tools. A site
+     that builds its own display settings has not installed an overlay.
+
+  The script tag carries a query string and a fragment on purpose: the
+  collector must hand back the address without either.
+-->
+<style>
+  body { font-family: system-ui; margin: 0; padding: 24px; color: #1a1a1a; background: #fff; }
+  main { max-width: 640px; }
+  #accessibility-tools { margin: 24px 0; padding: 16px; border: 1px solid #1a1a1a; }
+  #accessibility-tools button { font: inherit; padding: 8px 14px; margin-right: 8px; min-height: 44px; }
+</style>
+</head>
+<body>
+<main id="main">
+  <h1>A page with an overlay script</h1>
+  <p>This page loads a stand-in for a third-party accessibility widget.</p>
+
+  <section id="accessibility-tools" aria-labelledby="tools-title">
+    <h2 id="tools-title">Text size</h2>
+    <p>These two buttons are the site's own.</p>
+    <button type="button" id="text-larger">Larger text</button>
+    <button type="button" id="text-smaller">Smaller text</button>
+  </section>
+
+  <section aria-labelledby="near-title">
+    <h2 id="near-title">Names that only look like a widget</h2>
+    <div id="ae_app"><p>An application panel that happens to use this id.</p></div>
+    <div class="access-widget-ui"><p>A class with a widget's element name.</p></div>
+  </section>
+</main>
+
+<script src="qa-overlay-stub.js?account=QA-TEST-0001#loaded" async></script>
+<script>
+  // The site's own controls, so the buttons above do something.
+  var size = 100;
+  function step(by) {
+    size = Math.max(80, Math.min(200, size + by));
+    document.documentElement.style.fontSize = size + "%";
+  }
+  document.getElementById("text-larger").addEventListener("click", function () { step(10); });
+  document.getElementById("text-smaller").addEventListener("click", function () { step(-10); });
+</script>
+</body>
+</html>

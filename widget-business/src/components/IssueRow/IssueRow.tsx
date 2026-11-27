@@ -47,7 +47,7 @@ export function IssueRow({
         <span className="a11y-issue-row-title">{title}</span>
         <span className="a11y-issue-row-meta">
           {criterion}
-          {selector ? ` · ${selector}` : ""}
+          {selector ? ` — ${selector}` : ""}
         </span>
       </span>
       {/* `!= null`, not truthiness: a count of 0 is meaningful here and

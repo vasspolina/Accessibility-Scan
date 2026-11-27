@@ -77,6 +77,28 @@ describe("a scheduled scan", () => {
     expect(mails[0]).toContain("1 new finding");
   });
 
+  it("alerts the webhook when worse, even with no email, and never shows the hook back", async () => {
+    const a = accounts.createAccount("s4@test.invalid");
+    const hookUrl = "https://hooks.slack.com/services/T1/B1/topsecretvalue";
+    const made = schedules.createSchedule(a.id, { url: "https://s4.test/", everyHours: 1, notifyWebhook: hookUrl });
+    expect(made.webhookSecret).toMatch(/^[0-9a-f]{48}$/);
+    expect(made.schedule!.notifyWebhook).not.toContain("topsecret");
+    expect(JSON.stringify(schedules.listSchedules(a.id))).not.toContain("topsecret");
+    const sent: Array<{ url: string; secret?: string | null; newFindings: number }> = [];
+    const hook = async (url: string, alert: { newFindings: number }, secret?: string | null) => {
+      sent.push({ url, secret, newFindings: alert.newFindings });
+      return { ok: true };
+    };
+    const noMail = async () => ({ ok: true });
+    await scheduler.tick(async (u) => report(u, 80, ["cccccccccccccccc"]), noMail, new Date(), hook);
+    expect(sent).toHaveLength(0);
+    const later = new Date(Date.now() + 2 * 3_600_000);
+    const out = await scheduler.tick(async (u) => report(u, 80, ["cccccccccccccccc", "dddddddddddddddd"]), noMail, later, hook);
+    expect(out?.webhooked).toBe(true);
+    expect(out?.notified).toBe(false);
+    expect(sent[0]).toEqual({ url: hookUrl, secret: made.webhookSecret, newFindings: 1 });
+  });
+
   it("records a failure and moves on rather than retrying every tick", async () => {
     const a = accounts.createAccount("s3@test.invalid");
     const { schedule } = schedules.createSchedule(a.id, { url: "https://dead.test/", everyHours: 6 });

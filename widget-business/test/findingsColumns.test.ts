@@ -6,12 +6,11 @@ import { ReportViewProvider } from "../src/components/ReportViewContext";
 import type { AccessibilityFinding } from "../src/api/scanClient";
 
 /**
- * Every findings table in a report has the same columns. Instances is decided
- * once for the whole report (ReportView.showInstances), so an empty one is
- * gone from every table and a used one is in every table, including those
- * where no row repeats.
+ * A findings table drops any column that is empty in every one of its rows,
+ * header and all (user's instruction, 18 Nov 2026): Instances when nothing
+ * repeats, Level and WCAG when no row names one.
  */
-const finding = (ruleId: string): AccessibilityFinding =>
+const finding = (ruleId: string, extra: Partial<AccessibilityFinding> = {}): AccessibilityFinding =>
   ({
     id: `${ruleId}-1`,
     source: "axe",
@@ -24,24 +23,44 @@ const finding = (ruleId: string): AccessibilityFinding =>
     wcagCriterion: "1.4.3",
     wcagLevel: "AA",
     selector: "main > form",
+    ...extra,
   }) as unknown as AccessibilityFinding;
 
-const headers = (showInstances: boolean | undefined) =>
+const headers = (findings: AccessibilityFinding[]) =>
   [
     ...renderToStaticMarkup(
       createElement(
         ReportViewProvider,
-        { value: { professional: false, criterionNames: {}, showInstances } },
-        createElement(FindingsList, { findings: [finding("a"), finding("b")] })
+        { value: { professional: false, criterionNames: {} } },
+        createElement(FindingsList, { findings })
       )
     ).matchAll(/<th[^>]*data-col="([a-z]+)"/g),
   ].map((m) => m[1]);
 
+const markup = (findings: AccessibilityFinding[]) =>
+  renderToStaticMarkup(
+    createElement(
+      ReportViewProvider,
+      { value: { professional: false, criterionNames: {} } },
+      createElement(FindingsList, { findings })
+    )
+  );
+
+/* Since 24 Nov 2026 the schedule is set as a list of questions (user's
+   reference): the issue and its severity, whatever the rows carry. WCAG,
+   Level, Fix and Instances are the first line of the opened finding. */
 describe("findings table columns", () => {
-  it("drops Instances from every table when nothing in the report repeats", () => {
-    expect(headers(false)).toEqual(["severity", "issue", "wcag", "fix", "level"]);
+  it("is the issue and its severity, with or without repeats", () => {
+    expect(headers([finding("a"), finding("b")])).toEqual(["issue", "severity"]);
+    expect(headers([finding("a"), { ...finding("a"), id: "a-2" }, finding("b")])).toEqual(["issue", "severity"]);
   });
-  it("keeps Instances in a table with no repeats when another section has them", () => {
-    expect(headers(true)).toEqual(["severity", "issue", "wcag", "fix", "level", "count"]);
+  it("keeps both when no row names a criterion", () => {
+    const bare = { wcagCriterion: undefined, wcagLevel: undefined } as Partial<AccessibilityFinding>;
+    expect(headers([finding("cookie", bare)])).toEqual(["issue", "severity"]);
+  });
+  it("sets the severity as a word at the end of the row, not a badge over the title", () => {
+    const html = markup([finding("a")]);
+    expect(html).toContain('class="a11y-finding-sev-word a11y-finding-sev-serious"');
+    expect(html).not.toContain("a11y-finding-sev-fold");
   });
 });

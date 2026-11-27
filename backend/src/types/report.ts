@@ -86,12 +86,24 @@ export const accessibilityFindingSchema = z.object({
     .enum(["hidden", "offscreen", "missing", "too-large", "no-usable-image", "not-attempted", "unreachable"])
     .optional(),
   pictureFrame: z.string().optional(),
+  // Set when the picture is not simply the element, because the element
+  // could not be photographed on its own: "container", the visible part of
+  // the page a hidden element is folded into; "focused", a skip link shown
+  // with the keyboard on it; "top", the top of a region too tall to picture
+  // whole; "covered", the screen at the element's spot with something lying
+  // over it. The widget says which under the picture.
+  pictureShows: z.enum(["container", "focused", "top", "covered"]).optional(),
   // One sentence from the age-inclusive review on how this measured finding
   // lands for visitors past sixty. Its own field, not folded into the
   // description: rules with a plain-language account show that account
   // instead of the description, which made the first shipped note invisible
   // on the very rule it attached to.
   ageNote: z.string().optional(),
+  // What the AI review said about this same fault on this same element,
+  // when a rule had already measured it (foldAiIntoMeasured). Supporting
+  // evidence on the measured card, never a card of its own and never in the
+  // score: one repair is counted once.
+  aiSupport: z.string().optional(),
   // For images missing alt text: an AI-generated, ready-to-use alt-text
   // suggestion based on looking at the actual image (see aiReview/
   // suggestAltText.ts). Present only when the AI layer ran and produced one.
@@ -99,6 +111,32 @@ export const accessibilityFindingSchema = z.object({
   // decorative and should get alt="" so assistive tech skips it. Undefined
   // means no suggestion was generated (no key, not an image finding, etc.).
   suggestedAltText: z.string().optional(),
+  // The AI fix: the failing element's own markup with the fault corrected
+  // (aiReview/suggestCodeFix.ts). `before` is the captured snippet it was
+  // written against, so the reader sees the change and not only the result.
+  // Present only when the AI layer ran, the element had a snippet, and the
+  // answer passed validateCodeFix. Absent means no fix, never "nothing to fix".
+  suggestedCode: z
+    .object({
+      before: z.string(),
+      after: z.string(),
+      note: z.string().optional(),
+      model: z.string(),
+    })
+    .optional(),
+  // A plain-language rewrite of an axe finding by the self-hosted model
+  // (services/plainLanguage/). Words only: severity, criterion and score are
+  // never the model's. Absent when the layer is not set up, was switched
+  // off, or did not reach this rule within its budget.
+  plain: z
+    .object({
+      title: z.string(),
+      explanation: z.string(),
+      fix: z.string(),
+      model: z.string(),
+      lang: z.string(),
+    })
+    .optional(),
 });
 export type AccessibilityFinding = z.infer<typeof accessibilityFindingSchema>;
 
@@ -146,6 +184,16 @@ export type AiReviewStatus = z.infer<typeof aiReviewStatusSchema>;
 
 // Why a failed AI review failed, in coarse terms. A small fixed set, never a
 // raw error message: this crosses a public API boundary.
+export const plainLanguageMetaSchema = z.object({
+  status: z.enum(["completed", "partial", "timed_out", "failed", "not_configured", "disabled_by_request", "off_for_scans"]),
+  model: z.string().optional(),
+  /** axe rules on the page, and how many of them the model rewrote. */
+  rules: z.number(),
+  rewritten: z.number(),
+  ms: z.number(),
+});
+export type PlainLanguageMeta = z.infer<typeof plainLanguageMetaSchema>;
+
 export const aiReviewErrorKindSchema = z.enum([
   "overloaded",
   "invalid_request",
@@ -216,8 +264,9 @@ export const criterionResultSchema = z.object({
   alwaysSatisfied: z.boolean().optional(),
 });
 
-// What changes when EN 301 549 adopts WCAG 2.2, expected in the Official
-// Journal around October 2026. Kept separate from the conformance summary on
+// What changes when the EU's cited standard moves to WCAG 2.2. EN 301 549
+// v4.1.1 adopts it and was published on 2 September 2026; its citation in
+// the Official Journal is still pending (see wcag22Readiness). Kept separate from the conformance summary on
 // purpose: reporting a site as failing something it is not yet required to
 // meet would be the same overclaim this report refuses elsewhere.
 export const wcag22CriterionSchema = z.object({
@@ -273,7 +322,109 @@ export const reportVerdictSchema = z.object({
 });
 export type ReportVerdict = z.infer<typeof reportVerdictSchema>;
 
+/**
+ * The documents a page links to: PDFs and Word, Excel and PowerPoint files.
+ *
+ * Counted on every page scan, because a page whose forms are all PDFs is not
+ * described by a report that mentions none. A page scan opens a small sample
+ * of the PDFs (services/documents/linkedDocuments.ts); the rest, and every
+ * office file, are counted and say why they were not opened.
+ *
+ * Nothing here reaches `findings`, the summary or the score. What is wrong
+ * with a linked document is wrong with the document, and scoring the page
+ * for it would mark the page down for a file it only points at.
+ */
+export const linkedDocumentSchema = z.object({
+  url: z.string(),
+  kind: z.enum(["pdf", "word", "excel", "powerpoint"]),
+  // The words of the first link that pointed at it.
+  text: z.string(),
+  // How many links on the page point at it.
+  links: z.number(),
+  // On the scanned page's own origin. A file on another host may still be
+  // the owner's (a CDN), which is for a person to say.
+  sameOrigin: z.boolean(),
+  status: z.enum(["checked", "not-checked"]),
+  // Present on every "not-checked" entry: the one reason it was not opened.
+  reason: z
+    .enum([
+      // Word, Excel, PowerPoint: counted, never opened.
+      "office-file",
+      // On another origin. Opening it would scan somebody else's property.
+      "other-site",
+      // A page scan opens the first few PDFs and counts the rest.
+      "beyond-sample",
+      // The download failed, was refused, or the file was not a PDF.
+      "could-not-open",
+      // The sample's time allowance ended first.
+      "out-of-time",
+      // The page was scanned signed in, and the document fetch is not.
+      "behind-login",
+      // A site audit counts documents and opens none.
+      "site-audit",
+    ])
+    .optional(),
+  // Present only on "checked".
+  check: z
+    .object({
+      pages: z.number(),
+      // The checker reads the first pages of a long document, not all of it.
+      pagesRead: z.number(),
+      tagged: z.boolean(),
+      title: z.string().nullable(),
+      // The document's own faults, in the same shape as a page's findings so
+      // a reader of the JSON needs no second vocabulary. Never merged into
+      // the page's findings.
+      findings: z.array(accessibilityFindingSchema),
+    })
+    .optional(),
+});
+export type LinkedDocument = z.infer<typeof linkedDocumentSchema>;
+
+export const documentInventorySchema = z.object({
+  // Distinct documents, by kind.
+  counts: z.object({
+    pdf: z.number(),
+    word: z.number(),
+    excel: z.number(),
+    powerpoint: z.number(),
+  }),
+  total: z.number(),
+  otherSites: z.number(),
+  pdfChecked: z.number(),
+  pdfNotChecked: z.number(),
+  pdfWithFaults: z.number(),
+  // The render reads a capped number of a page's links. Present only when
+  // the page had more: how many were not read, which makes the counts above
+  // a floor.
+  linksNotRead: z.number().optional(),
+  items: z.array(linkedDocumentSchema),
+});
+export type DocumentInventory = z.infer<typeof documentInventorySchema>;
+
+// A third-party accessibility overlay seen on the scanned page. See
+// services/overlay/analyzeOverlay.ts for the vendor table and for why this
+// is a statement on `meta` and not a finding: it has no severity, no
+// criterion and no fix, and the score never sees it.
+export const detectedOverlaySchema = z.object({
+  // The vendor's name as the vendor writes it.
+  vendor: z.string(),
+  // The script as the page loaded it, query string removed. Absent when the
+  // widget was on the page and its script came from an address this scan
+  // does not recognise (a copy the site serves itself).
+  scriptUrl: z.string().optional(),
+  // Whether the element the vendor's script builds was in the document when
+  // the page was measured. False means the script tag was there and the
+  // widget had not started in this browser, so the report must not say the
+  // findings were measured with it on.
+  widgetOnPage: z.boolean(),
+});
+export type DetectedOverlay = z.infer<typeof detectedOverlaySchema>;
+
 export const accessibilityReportSchema = z.object({
+  // The documents this page links to. Optional so reports stored before the
+  // field existed still parse; absent also when the page links to none.
+  documents: documentInventorySchema.optional(),
   // See reportVerdictSchema. Absent for anonymous scans and for a site
   // nobody has answered a question about yet.
   verdicts: z.array(reportVerdictSchema).optional(),
@@ -362,6 +513,12 @@ export const accessibilityReportSchema = z.object({
     documentPages: z.number().optional(),
     aiReviewErrorKind: aiReviewErrorKindSchema.optional(),
     model: z.string().optional(),
+    plainLanguage: plainLanguageMetaSchema.optional(),
+    // Accessibility overlays loaded on the page. Absent means none of the
+    // known ones was seen, or an older report. A fact about the conditions
+    // the page was measured under, like incompleteChecks above: never
+    // counted, scored or triaged.
+    overlays: z.array(detectedOverlaySchema).optional(),
   }),
 });
 export type AccessibilityReport = z.infer<typeof accessibilityReportSchema>;

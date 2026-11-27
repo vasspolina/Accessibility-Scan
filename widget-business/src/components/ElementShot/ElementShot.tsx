@@ -26,14 +26,22 @@ import { t } from "../../lib/strings";
 export function ElementShot({
   finding,
   showLocator = false,
+  bubble,
 }: {
   finding: AccessibilityFinding;
   showLocator?: boolean;
+  /** The element's name, set as a speech bubble over the picture's top-left
+   *  corner (user's instruction, 21 Nov 2026, "add bubbles to the finding
+   *  screenshots too"). Real text, before the picture in reading order; the
+   *  occurrence then leaves its own label out, so the name is said once. */
+  bubble?: string;
 }) {
   if (!finding.elementScreenshot) return null;
   const box = finding.elementBox;
+  const shows = finding.pictureShows ? t(PICTURE_SHOWS[finding.pictureShows]) : null;
   return (
-    <figure className="a11y-shot">
+    <figure className={bubble ? "a11y-shot a11y-shot-has-bubble" : "a11y-shot"}>
+      {bubble && <span className="a11y-shot-bubble">{bubble}</span>}
       <span className="a11y-shot-frame">
         <img
           className="a11y-shot-img"
@@ -54,11 +62,27 @@ export function ElementShot({
           />
         )}
       </span>
-      {showLocator && finding.selector && (
-        <figcaption className="a11y-shot-locator">
-          <strong>{t("Selector:")}</strong> <code>{finding.selector}</code>
+      {(shows || (showLocator && finding.selector)) && (
+        <figcaption className="a11y-shot-caption">
+          {shows && <span className="a11y-shot-shows">{shows}</span>}
+          {showLocator && finding.selector && (
+            <span className="a11y-shot-locator">
+              <strong>{t("Selector:")}</strong> <code>{finding.selector}</code>
+            </span>
+          )}
         </figcaption>
       )}
     </figure>
   );
 }
+
+/* Every element the report points at is pictured (user's instruction, 25 Nov
+   2026). Where the element could not be photographed on its own, the backend
+   took a second kind of picture and says which; this line says it to the
+   reader, so a picture of a menu bar is not read as the link folded inside. */
+const PICTURE_SHOWS: Record<NonNullable<AccessibilityFinding["pictureShows"]>, string> = {
+  container: "Hidden when we scanned. This is the part of the page it is folded into.",
+  focused: "Shown with the keyboard on it, the only time it appears.",
+  top: "The top of the region this covers.",
+  covered: "Something lay over it when we photographed it. The outline marks where it is.",
+};

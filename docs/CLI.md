@@ -12,9 +12,38 @@ a11y-scan https://example.com
 
 ## Installing
 
-It is not on the npm registry yet, so `a11y-scan` does not work — the
-earlier version of this page said it did. Until it is published, install
-from a checkout:
+Three ways in, each one line once it is published. The npm package and the
+image are prepared (`backend/package.json`, `backend/cli.Dockerfile`, and
+`.github/workflows/release-cli.yml`, which publishes both when a `cli-v*`
+tag is pushed) but **not published yet**, so the first two do not work
+until the owner publishes them. The Action works now: it builds from this
+repository at the ref you name.
+
+```bash
+# npm (once published)
+npm install -g a11y-scan
+npx playwright@1.61.1 install chromium --with-deps
+
+# Docker (once published): output files land in the mounted directory
+docker run --rm -v "$PWD:/work" ghcr.io/vasspolina/a11y-scan https://example.com --json report.json
+```
+
+```yaml
+# GitHub Actions: use @main until a v1 tag exists
+- uses: vasspolina/Accessibility-Scan@main
+  with:
+    url: http://localhost:3000
+    args: --fail-on serious --sarif a11y.sarif
+```
+
+The Action's `url` takes one or more addresses, `args` any other options,
+and `summary: "true"` (the default) writes the Markdown summary to the job
+summary. Its `exit-code` output and its own exit code are the command's.
+The browser is pinned: Playwright 1.61.1 and the Chromium it ships. A
+Chromium from another Playwright version does not launch, and the command
+says which line to run if it is missing.
+
+Until the package is published, a checkout works too:
 
 ```bash
 git clone git@github.com:vasspolina/Accessibility-Scan.git
@@ -24,9 +53,10 @@ npx playwright install chromium --with-deps
 npm link                                  # puts `a11y-scan` on your PATH
 ```
 
-Node 24 or later. The backend's own CI runs exactly this from a temporary
-directory and checks the three exit codes, so if that job is green the
-install path works.
+Node 24 or later. The backend's own CI runs this from a temporary directory
+and checks the three exit codes, and the `Install paths` workflow runs the
+Action, builds and runs the image, and checks what npm would publish (the
+compiled command and its README, never the widgets or their fonts).
 
 ## Exit codes
 
@@ -55,8 +85,16 @@ scanner as a clean site.
 | `--baseline <file>` | compare against a saved baseline |
 | `--max-new <n>` | allow up to n new findings against that baseline (default 0) |
 | `--write-baseline` | write the baseline from this run and exit 0 |
+| `--sitemap <url>` | scan the pages a sitemap lists (see Several pages) |
+| `--max-pages <n>` | take at most n pages from the sitemap (default 25) |
+| `--urls <file>` | scan the addresses in a text file, one on each line |
 | `--json <file>` | write the full report as JSON |
 | `--sarif <file>` | write the findings as SARIF 2.1.0, which GitHub shows inline on the pull request |
+| `--junit <file>` | write the findings as JUnit XML, the test report GitLab, Jenkins and Azure Pipelines read |
+| `--csv <file>` | write the findings as a spreadsheet, one row for each finding |
+| `--markdown <file>` | write a summary for a job summary or a pull request comment |
+| `--tickets <file>` | write one ticket's text per fault, to paste into any tracker (see Findings as tickets) |
+| `--github-issues <owner/name>` | file those tickets as GitHub issues, once each; the token comes from `GITHUB_TOKEN` |
 | `--server <url>` | save the report into a hosted instance's history |
 | `--api-key <key>` | with this key; or set `A11Y_SERVER` and `A11Y_API_KEY` in the environment |
 | `--ai` | include the AI review (needs `ANTHROPIC_API_KEY`) |
@@ -70,6 +108,98 @@ private ranges have to be blocked — that is a confused deputy. A command has
 no stranger: the person who typed the URL owns the machine doing the
 fetching, the same trust model as `curl`. Only the scheme is still checked,
 because `file://` reads the local disk.
+
+## Several pages
+
+One command can scan a list of pages. Name them, put them in a file, or
+point at the sitemap:
+
+```bash
+a11y-scan http://localhost:3000 http://localhost:3000/contact
+a11y-scan --urls pages.txt
+a11y-scan --sitemap https://staging.example.com/sitemap.xml --max-pages 40
+```
+
+`--sitemap` reads a urlset, a sitemap index (it follows the index to its
+children) or a plain text sitemap, gzipped or not. Given a site's address in
+place of a sitemap's, it looks in `robots.txt` and then at `/sitemap.xml`.
+A sitemap with no page addresses ends the run with exit 2: a sitemap that
+moved must not turn the job into one that scans nothing and passes.
+
+Only the sitemap's pages are cut to `--max-pages`. An address you named, on
+the command line or in the file, is always scanned. The run prints how many
+pages the sitemap lists and how many it took:
+
+```
+  sitemap lists 312 pages; scanning 25 (raise --max-pages to scan more)
+```
+
+Two pages are scanned at a time, which is what the browser pool allows.
+
+What changes with more than one page:
+
+- `--min-score` applies to every page, and the failure names the pages
+  below it.
+- `--fail-on` counts findings across all pages.
+- The baseline keys each finding by its page's path as well as its
+  fingerprint, so the same fault on a new page is a new finding. The path
+  has no host in it: a baseline written against `localhost:3000` matches
+  the same pages on staging. Only a run that crosses hosts puts the host in
+  the key, since two sites both have a `/`. A baseline written from a single page still
+  works; it names no page, so its entries match that finding on any page.
+- `--json` writes `{ "pages": [...], "failed": [...] }`. With one page it
+  writes the report itself, as before.
+- A page that cannot be scanned does not stop the others. If no threshold
+  was missed the run then exits 2 and says `INCOMPLETE`, never 0: a page
+  nobody looked at did not meet a threshold. If a threshold was missed the
+  exit is 1, because that much is known. `--write-baseline` refuses to
+  write when a page failed.
+
+## Output for other tools
+
+| File | Read by |
+| --- | --- |
+| `--sarif` | GitHub code scanning; Azure DevOps with the SARIF tab extension |
+| `--junit` | the test report in GitLab, Jenkins, Azure Pipelines, CircleCI, Bitbucket |
+| `--csv` | a spreadsheet: page, severity, rule, WCAG criterion and level, EN 301 549 clause, issue, what to do, element, fingerprint |
+| `--markdown` | `$GITHUB_STEP_SUMMARY`, or a pull request comment |
+
+Every format holds accessibility findings only. Design notes and dark
+patterns are in the JSON report.
+
+JUnit has no passed cases. Each finding is a failed case in its page's
+suite, a page with none is an empty suite, and a page that could not be
+scanned is an error. The scanner never says a page passed, and a column of
+green ticks in a build's test tab would say exactly that.
+
+The EN 301 549 clause is the WCAG criterion with 9 in front (1.4.3 is
+clause 9.1.4.3), for Level A and AA. AAA has no clause in the standard and
+gets none here. It is in the SARIF `properties` as `en301549` too.
+
+A cell in the CSV that starts with `=`, `+`, `-` or `@` gets a leading
+apostrophe. Those cells hold text from the scanned page, and a spreadsheet
+would otherwise run them as formulas.
+
+### GitLab
+
+```yaml
+accessibility:
+  script:
+    - a11y-scan --sitemap http://localhost:3000/sitemap.xml --baseline .a11y-baseline.json --junit a11y.xml
+  artifacts:
+    when: always
+    reports:
+      junit: a11y.xml
+```
+
+### A summary on the GitHub job
+
+```yaml
+      - name: Scan
+        run: a11y-scan http://localhost:3000 --baseline .a11y-baseline.json --markdown a11y.md
+      - if: always()
+        run: cat a11y.md >> "$GITHUB_STEP_SUMMARY"
+```
 
 ## Working with an existing site
 
@@ -166,6 +296,45 @@ A web page has no file and line, so the location is the URL and the CSS
 selector. The fingerprint is the same rule-plus-selector the baseline uses,
 so GitHub keeps a finding's identity across runs the same way.
 
+### Findings as tickets
+
+`--tickets a11y-tickets.md` writes one ticket for each fault on each page,
+worst first. A fault on forty elements is one ticket that lists the forty
+selectors (up to twenty, then a count), not forty tickets. Each ticket has
+the page, severity, WCAG criterion and level, EN 301 549 clause, rule, what
+to do, the elements, an example element and the fingerprints. Findings the
+owner marked ignored, false positive or fixed are left out.
+
+`--github-issues owner/name` files the same tickets as issues, labelled
+`accessibility`, `severity:<level>` and `wcag-<criterion>`:
+
+```yaml
+    permissions:
+      issues: write
+    steps:
+      # …
+      - name: Scan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: a11y-scan https://staging.example.com --github-issues ${{ github.repository }}
+```
+
+Each issue carries a hidden key (the page and the rule). Before filing, the
+run reads the open issues labelled `accessibility`, so a fault that already
+has an open issue is not filed again; closing the issue lets a fault that
+comes back be filed anew. At most 25 are filed in one run. Filing never
+changes the exit code: a refused token is printed and the thresholds still
+decide.
+
+The hosted service does the same over HTTP. `POST /api/tickets/draft` with
+`{"reports":[…]}` returns the ticket text with no token. `POST /api/tickets`
+with a `target` files them: `{"kind":"github","repo":"owner/name","token":"…"}`
+or `{"kind":"jira","site":"https://team.atlassian.net","email":"…","token":"…","projectKey":"WEB"}`.
+The token is used for that request only: never stored, logged or sent back.
+Requests go only to `api.github.com` or the caller's own `*.atlassian.net`
+site. In Jira the key is a label (`a11y-<key>`), and an issue counts as open
+until its status is Done.
+
 ### Into the hosted history
 
 A CLI report never passes through the hosted service, so on its own it is
@@ -200,6 +369,26 @@ result in that same pull request. The diff shows what was accepted and who
 accepted it, which is the point: an accepted failure should be visible in
 review, not silently allowed by a raised `--max-new`.
 
+## Linked documents
+
+When the page links to PDFs or to Word, Excel or PowerPoint files, the run
+prints one line of counts:
+
+```
+  documents: 9 PDF (2 opened, 2 with faults, 7 not opened) · 1 Word, Excel or PowerPoint (counted, never opened)
+```
+
+A page scan opens the first two PDFs on the page's own origin and checks
+each for tags, a title, a language, image descriptions and headings. The
+rest are counted. Office files are counted and never opened. Which
+documents, why each was not opened and what was found in the two that were
+is in the JSON report under `documents`.
+
+A linked document's faults are the document's. They are not among the
+page's findings, they do not move the score, and no threshold
+(`--min-score`, `--fail-on`, the baseline) sees them. To hold a PDF to a
+threshold, scan its address: `a11y-scan https://example.com/form.pdf`.
+
 ## Checks that did not finish
 
 The run prints this when a probe was cut short:
@@ -211,3 +400,27 @@ The run prints this when a probe was cut short:
 A score computed from checks that did not all run is not comparable with one
 that did. Treat a trend line built from both as measuring the weather, not
 the site.
+
+## An accessibility overlay on the page
+
+The run prints this when the page loads a third-party accessibility overlay
+it recognises, one line per overlay:
+
+```
+  NOTE: accessibility overlay loaded — accessiBe (https://acsbapp.com/apps/app/dist/js/app.js), widget on the page during the scan
+```
+
+It is a statement of what was seen, not a finding. It has no severity, it
+never changes the score, the counts or the exit code, and `--baseline` does
+not track it. The same facts are in the JSON report under `meta.overlays`:
+`vendor`, `scriptUrl` (the script as the page loaded it, query string
+removed) and `widgetOnPage`.
+
+"Widget on the page" means the element the vendor's script builds was in the
+document, so the score was measured with the overlay running. "Widget not on
+the page" means the script tag was there and the widget had not started in
+the scan's browser. UserWay's loader, for one, does not start for a user
+agent containing "bot", and the scanner declares itself as `A11yCheckerBot`.
+
+The vendors it recognises, and what each was checked against, are listed in
+`backend/src/services/overlay/analyzeOverlay.ts`.

@@ -1,4 +1,4 @@
-import { useId, useMemo, useRef, useState } from "react";
+import { useId, useMemo, useState, type CSSProperties } from "react";
 import { t, tf } from "../lib/strings";
 import type { ConformanceSummary, CriterionResult, RecordedVerdict } from "../api/scanClient";
 import { statusWord } from "./ManualChecks";
@@ -12,15 +12,18 @@ import { DataTable } from "./DataTable";
 // the site — which is also the difference between a report a specialist will
 // respect and one they'll dismiss.
 
-const STATUS_LABEL = {
-  failed: "Fails",
-  "no-issues-found": "Nothing found",
-  "needs-review": "Needs a person",
-  // Not the same as needs-review: a person was never going to be required
-  // here — our check was, and it did not finish. Without this state a
-  // crashed probe rendered the same row as a clean page.
-  "not-measured": "Not measured",
-} as const;
+/* Where a status bubble sits on its row: a tilt of -4 to 4 degrees and a
+   place from 30% to 70% across the row's text column, read from the
+   criterion's id (a small string hash), so a row's bubble never moves
+   between renders. The WCAG 2.2 schedule places its calls with it too. */
+export function bubblePlace(id: string): CSSProperties {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  const tilt = ((h % 81) - 40) / 10;
+  const across = 30 + ((h >>> 7) % 41);
+  return { "--bubble-tilt": `${tilt}deg`, "--bubble-x": `${across}%` } as CSSProperties;
+}
+
 
 /* The three the design names. Real ones, not invented: each is a WCAG 2.1
    criterion whose result axe reports as "incomplete" — it cannot judge
@@ -33,31 +36,44 @@ const HUMAN_QUESTIONS = [
 ];
 
 /* Counts come from the conformance summary, never recounted here. */
+type Filter = "failed" | "needs-review" | "no-issues-found" | "not-measured" | "all";
+
+/* The sentence under the count is back (user's instruction, 24 Nov 2026,
+   "bring this design back", with a picture of the cards as first set on
+   23 Nov): the status word small at the top, the count, then "We found
+   problems", "We checked, found nothing", "We couldn't check" or "A check
+   didn't finish" large under it. It was dropped on 23 Nov as restating the
+   status badge. */
 function RESULT_ROWS(c: ConformanceSummary): Array<{
   key: string;
+  /** The checklist filter this tile opens. */
+  filter: Filter;
   severity: string;
   label: string;
   meaning?: string;
-  mark: string;
+  /** Left out where it would say the label again ("We checked, found
+   *  nothing" beside "Nothing found"): the row's colour is the status. */
+  mark?: string;
   n: number;
 }> {
   return [
-    { key: "failed", severity: "critical", label: t("We found problems"),
+    { key: "failed", filter: "failed", severity: "critical", label: t("We found problems"),
       meaning: tf("{a} at level A, {aa} at AA", { a: c.failedByLevel.A, aa: c.failedByLevel.AA }),
       mark: t("Fix first"), n: c.failed },
     // No meaning line on these two: the band above says "nothing found"
-    // is not a pass, and the mark says "Needs a person".
-    { key: "clean", severity: "pass", label: t("We checked, found nothing"),
-      mark: t("Nothing found"), n: c.noIssuesFound },
-    { key: "human", severity: "minor", label: t("We couldn't check"),
+    // is not a pass, and the mark says "Needs a person". No mark on the
+    // clean row or the unfinished one: it only said the label again (user's
+    // instruction, 25 Nov 2026, "no repetition").
+    { key: "clean", filter: "no-issues-found", severity: "pass", label: t("We checked, found nothing"),
+      n: c.noIssuesFound },
+    { key: "human", filter: "needs-review", severity: "minor", label: t("We couldn't check"),
       mark: t("Needs a person"), n: c.needsReview },
     // Only present when it happened. A permanent zero row would teach readers
     // to skip it; when a check breaks, this is the row that keeps the clean
     // count honest.
     ...((c.notMeasured ?? 0) > 0
-      ? [{ key: "not-measured", severity: "serious", label: t("A check didn't finish"),
-          meaning: t("A second run usually completes them."),
-          mark: t("Not measured"), n: c.notMeasured ?? 0 }]
+      ? [{ key: "not-measured", filter: "not-measured" as const, severity: "serious", label: t("A check didn't finish"),
+          n: c.notMeasured ?? 0 }]
       : []),
   ];
 }
@@ -67,7 +83,14 @@ function RESULT_ROWS(c: ConformanceSummary): Array<{
    joined by a key of its own, so "and" is never English inside a German
    sentence. */
 function unfinishedChecks(names: string[]): string {
-  const local = names.map((n) => t(n));
+  /* The backend's stand-in for an axe rule that returned "incomplete" is a
+     phrase, not a check's name, and set into "The {check} check" it read
+     "The an automated check that couldn't decide check didn't finish this
+     scan" (user's screenshot, 25 Nov 2026). It is said in a sentence of its
+     own, and left out of a list beside named checks. */
+  const UNDECIDED = "an automated check that couldn't decide";
+  const local = names.filter((n) => n !== UNDECIDED).map((n) => t(n));
+  if (local.length === 0) return t("The scan couldn't decide this one.");
   return local.length === 1
     ? tf("The {check} check didn’t finish this scan", { check: local[0] })
     : tf("The {checks} checks didn’t finish this scan", {
@@ -94,6 +117,62 @@ function DecidedLine({ verdict }: { verdict: RecordedVerdict }) {
   );
 }
 
+/* One criterion of the checklist, under its result's caret. */
+function CriterionRow({ c, verdict }: { c: CriterionResult; verdict?: RecordedVerdict }) {
+  return (
+    <li
+      className={`a11y-conf-row a11y-conf-${c.status}`}
+    >
+      <span className="a11y-conf-id">
+        {/* The number and level are the row's call-out, in EB Garamond
+            italic (user's instruction, 25 Nov 2026, "use italicks", after
+            the morning's PP Lettra Mono); the name under them stays in
+            the body face. */}
+        <span className="a11y-conf-key">{c.id} <em>{c.level}</em></span>
+        {/* The criterion's official name under its number, in the key's
+            column (user's instruction, 25 Nov 2026, "move focus visible to
+            first column"); the column on the right holds only the line. */}
+        <span className="a11y-conf-name">{c.name}</span>
+      </span>
+      <span className="a11y-conf-body">
+        {/* A failing row states the problem; the rest ask the
+            question, because for those we have no problem to
+            report — only something we didn't find, or couldn't
+            check. */}
+        <strong>{c.status === "failed" ? c.failing : c.plain}</strong>
+        {/* Say which check broke, or "not measured" is just a
+            shrug. The names are the report's own, the same ones
+            the warning banner above uses. */}
+        {c.status === "not-measured" && c.notMeasured && c.notMeasured.length > 0 && (
+          <span className="a11y-conf-plain">{unfinishedChecks(c.notMeasured)}</span>
+        )}
+        {/* Only where the scan left the question open. A measured
+            failure is not overruled by an opinion. */}
+        {c.status !== "failed" && verdict && (
+          <DecidedLine verdict={verdict} />
+        )}
+      </span>
+      {/* A small bubble that sits on its row at a place and tilt
+          of its own (user's instruction, 23 Nov 2026, "design
+          these badges randomly sit on related content in small
+          bubles", "it need to say fails in 2 places"). The
+          place comes from the criterion's id, so it stays put
+          across renders and differs from row to row. Still last
+          in the row's markup, so a screen reader meets it after
+          the line it qualifies. */}
+      {/* The row sits in its result's group, whose title already says
+          the status (user's instruction, 24 Nov 2026, "do not repeat this
+          content"), so it adds only what the title does not: how many
+          places a failure was found in. */}
+      {c.status === "failed" && c.findingCount > 0 && (
+        <span className="a11y-conf-status" data-status={c.status} style={bubblePlace(c.id)}>
+          {c.findingCount === 1 ? t("1 place") : tf("{count} places", { count: c.findingCount })}
+        </span>
+      )}
+    </li>
+  );
+}
+
 export function ConformanceView({
   conformance,
   showBfsgNote = false,
@@ -110,49 +189,23 @@ export function ConformanceView({
   showBfsgNote?: boolean;
 }) {
   const verdictFor = useMemo(() => new Map(verdicts.map((v) => [v.criterion, v])), [verdicts]);
-  const [expanded, setExpanded] = useState(false);
-  // Three states, not the boolean this used to be. "We couldn't check" is
-  // the largest row in the table above and was also the hardest to act on:
-  // the reader saw a count of 22 and had no way to reach the 22 without
-  // clearing a filter that defaulted to failures-only. Naming that group as
-  // a filter of its own is what makes the count answerable.
-  const [filter, setFilter] = useState<"failed" | "needs-review" | "not-measured" | "all">("failed");
+  // The result groups that are open. More than one may be open at once:
+  // a reader comparing the failures with the items needing a person should
+  // not have to shut one to open the other.
+  const [openGroups, setOpenGroups] = useState<ReadonlySet<Filter>>(() => new Set());
   const panelId = useId();
-  const filterName = useId();
-  // The toggle stays mounted whichever state we're in, so keyboard focus
-  // never evaporates when the panel opens or closes. The convenience "hide"
-  // at the bottom of a long checklist hands focus back up here.
-  const toggleRef = useRef<HTMLButtonElement>(null);
+  const toggleGroup = (f: Filter) =>
+    setOpenGroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(f)) next.delete(f);
+      else next.add(f);
+      return next;
+    });
 
-  const failing = useMemo(
-    () => conformance.criteria.filter((c) => c.status === "failed"),
-    [conformance.criteria]
-  );
-  // The criteria behind the "We couldn't check" count. Naming a few of them
-  // in the caveat below beats the two hardcoded examples that used to stand
-  // in for the whole group: those were written once and could describe a
-  // set that no longer contains them.
-  const needsPerson = useMemo(
-    () => conformance.criteria.filter((c) => c.status === "needs-review"),
-    [conformance.criteria]
-  );
-  const notMeasured = useMemo(
-    () => conformance.criteria.filter((c) => c.status === "not-measured"),
-    [conformance.criteria]
-  );
-  // Every criterion is rendered; the filter hides rather than removes. On
-  // screen that is identical. On paper it is the difference between a record
-  // of what was checked and a list of what went wrong — a printed compliance
-  // document that omits the 22 criteria needing a person is hiding the most
-  // honest part of the report. Filtering by not rendering put those rows
-  // beyond the reach of the print stylesheet entirely.
-  const shown = conformance.criteria;
-  const isFilteredOut = (status: CriterionResult["status"]) =>
-    filter !== "all" && status !== filter;
   // One sentence with the filter's name set into it in bold, split where
   // the name goes rather than stitched from fragments.
   const [otherBefore, otherAfter] = tf(
-    "The other {count} are in the checklist below. Choose {filter} to see them.",
+    "{count} more under {filter}.",
     { count: conformance.needsReview - HUMAN_QUESTIONS.length }
   ).split("{filter}");
 
@@ -167,65 +220,63 @@ export function ConformanceView({
         <h2 className="a11y-legal-title" id="a11y-conf-heading" data-nav-label={t("Legal standard")}>
           {t("Do you meet the legal standard?")}
         </h2>
-        <span className="a11y-legal-standard">{conformance.standard}</span>
-        <p className="a11y-legal-intro">
-          {tf("The checklist of {total} items European accessibility law measures sites against.", {
-            total: conformance.total,
-          })}
-          {showBfsgNote && (
-            <>
-              {" "}
-              {t(
-                "In Germany this is the standard the BFSG points at. That law implements the European Accessibility Act and has been in force since June 2025."
-              )}
-            </>
-          )}
-        </p>
       </div>
 
-      {/* The band. Its claim is the one thing in this section a reader must
-          not miss, which is why the design gives it the full width and the
-          brand yellow rather than a line of prose. */}
-      <div className="a11y-legal-band" aria-labelledby="a11y-legal-band-heading">
-        <h3 className="a11y-legal-eyebrow" id="a11y-legal-band-heading">
-          {t("So “nothing found” is not a pass")}
-        </h3>
-        <div className="a11y-legal-card">
-          <p className="a11y-legal-lead">
-            {t("You need every item at both levels, A and AA. They don’t average out.")}
-          </p>
-          <p className="a11y-legal-body">
-            {t("One Level A failure means you don’t meet the standard.")}
+      {/* The standard, the band and the questions as three yellow cards in
+          a row, set like the score's issue cards (user's instruction, 25 Nov
+          2026, "make this as yellow pils above as well"). */}
+      <div className="a11y-legal-cards">
+        <div className="a11y-legal-std">
+          <span className="a11y-legal-standard">{conformance.standard}</span>
+          <p className="a11y-legal-intro">
+            {tf("The {total} items EU accessibility law checks sites against.", {
+              total: conformance.total,
+            })}
+            {showBfsgNote && (
+              <>
+                {" "}
+                {t(
+                  "In Germany the BFSG points at it."
+                )}
+              </>
+            )}
           </p>
         </div>
-      </div>
 
-      <div className="a11y-legal-grid">
-        <div className="a11y-legal-panel" aria-labelledby="a11y-legal-tells-heading">
-          <h3 className="a11y-legal-eyebrow" id="a11y-legal-tells-heading">{t("What this tells you")}</h3>
+        {/* The band. Its claim is the one thing in this section a reader must
+            not miss, which is why it is a card of its own rather than a line
+            of prose. */}
+        <div className="a11y-legal-band" aria-labelledby="a11y-legal-band-heading">
+          <h3 className="a11y-legal-eyebrow" id="a11y-legal-band-heading">
+            {t("“Nothing found” is not a pass")}
+          </h3>
           <div className="a11y-legal-card">
             <p className="a11y-legal-lead">
-              {t("The scan lists where your site fails. It cannot confirm that anything meets the standard.")}
+              {t("Every A and AA item has to pass.")}
             </p>
-            <p className="a11y-legal-body">
-              {tf(
-                "{count} of the {total} items need a person.",
-                { count: conformance.needsReview, total: conformance.total }
-              )}
-            </p>
+          </div>
+        </div>
+
+        <div className="a11y-legal-panel" aria-labelledby="a11y-legal-tells-heading">
+          {/* The questions alone (user's instructions, 22 Nov 2026, "delete
+              all repetition", "do not over explain"): "It can't confirm that
+              anything meets the standard" said the band above again, and the
+              count of items needing a person is the Needs a person tile. */}
+          <h3 className="a11y-legal-eyebrow" id="a11y-legal-tells-heading">{t("Questions no software can answer")}</h3>
+          <div className="a11y-legal-card">
             <div className="a11y-legal-questions">
-              <p className="a11y-legal-micro">{t("Questions no software can answer")}</p>
-              {HUMAN_QUESTIONS.map((q, i) => (
+              {HUMAN_QUESTIONS.map((q) => (
                 <span key={q} className="a11y-legal-q">
-                  <span className="a11y-legal-qnum" aria-hidden="true">{i + 1}</span>
+                  {/* A hung en dash, not a numbered ring (user's instruction,
+                      25 Nov 2026, "change to dashes"): the questions are not
+                      steps in an order. */}
+                  <span className="a11y-legal-qdash" aria-hidden="true">–</span>
                   <span>{t(q)}</span>
                 </span>
               ))}
               {conformance.needsReview > HUMAN_QUESTIONS.length && (
                 <span className="a11y-legal-q a11y-legal-q-more">
-                  <span className="a11y-legal-qnum" aria-hidden="true">
-                    {HUMAN_QUESTIONS.length + 1}
-                  </span>
+                  <span className="a11y-legal-qdash" aria-hidden="true">–</span>
                   <span>
                     {otherBefore}
                     <strong>{t("Needs a person")}</strong>
@@ -236,7 +287,9 @@ export function ConformanceView({
             </div>
           </div>
         </div>
+      </div>
 
+      <div className="a11y-legal-grid">
         <div className="a11y-legal-results" aria-labelledby="a11y-legal-results-heading">
           <h3 className="a11y-legal-eyebrow" id="a11y-legal-results-heading">
             {t("Automated check results")}
@@ -245,16 +298,56 @@ export function ConformanceView({
             <span className="a11y-legal-col-result">{t("Result")}</span>
             <span className="a11y-legal-col-items">{t("Items")}</span>
           </div>
-          {RESULT_ROWS(conformance).map((r) => (
-            <div key={r.key} className="a11y-legal-row">
-              <span className="a11y-legal-col-result">
-                <span className="a11y-legal-row-label">{r.label}</span>
-                {r.meaning && <span className="a11y-legal-row-meaning">{r.meaning}</span>}
-                <span className={`a11y-legal-mark a11y-legal-mark-${r.severity}`}>{r.mark}</span>
-              </span>
-              <span className="a11y-legal-count">{r.n}</span>
-            </div>
-          ))}
+          {/* Each result is a caret (user's instruction, 24 Nov 2026, "this
+              can be carrets as well"): the line opens its own group of the
+              checklist in place, under it inside the panel, and shuts again.
+              That replaces the lines as a filter and the Show the checklist
+              button under them, so every criterion is listed once, under
+              its result. Every group stays in the DOM, hidden when shut: a
+              printed report is compliance evidence, and the print
+              stylesheet can reveal a hidden element but not one React never
+              rendered. */}
+          <ul className="a11y-legal-tiles a11y-legal-carets" role="list">
+          {RESULT_ROWS(conformance).map((r) => {
+            const open = openGroups.has(r.filter);
+            const rows = conformance.criteria.filter((c) => c.status === r.filter);
+            return (
+              <li key={r.key} className={`a11y-legal-caret a11y-legal-caret-${r.key}`} data-open={open || undefined}>
+                <button
+                  type="button"
+                  className={`a11y-legal-row a11y-legal-row-${r.key}`}
+                  aria-controls={`${panelId}-${r.key}`}
+                  aria-expanded={open}
+                  onClick={() => toggleGroup(r.filter)}
+                >
+                  {/* Read left to right as drawn: the sentence, the count in
+                      the middle of the row (user's instruction, 24 Nov 2026,
+                      "numbers can go in the middle"), then the small print,
+                      its parts parted by a comma. */}
+                  <span className="a11y-legal-col-result">
+                    <span className="a11y-legal-row-label">{r.label}</span>
+                  </span>
+                  <span className="a11y-legal-count">{r.n}</span>
+                  <span className="a11y-legal-row-desc">
+                    {r.mark && <span className={`a11y-legal-mark a11y-legal-mark-${r.severity}`}>{r.mark}</span>}
+                    {r.meaning && <span className="a11y-legal-row-meaning">{r.meaning}</span>}
+                  </span>
+                </button>
+                <div id={`${panelId}-${r.key}`} className="a11y-conf-panel a11y-legal-group" hidden={!open}>
+                  {rows.length === 0 ? (
+                    r.filter === "failed" && <p className="a11y-conf-caveat">{t("Nothing on this page fails.")}</p>
+                  ) : (
+                    <ul className="a11y-conf-list">
+                      {rows.map((c) => (
+                        <CriterionRow key={c.id} c={c} verdict={verdictFor.get(c.id)} />
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+          </ul>
           {/* No footer restating the standard and the item count: the chip and
               the line under the title above already say both. */}
         </div>
@@ -265,117 +358,6 @@ export function ConformanceView({
           seven sentences, twice each, in both audiences. The panels are
           already text; a screen reader read them twice. */}
 
-      <button
-        ref={toggleRef}
-        type="button"
-        className="a11y-show-all a11y-show-checklist"
-        aria-expanded={expanded}
-        aria-controls={panelId}
-        onClick={() => setExpanded((v) => !v)}
-      >
-        {expanded ? t("Hide the checklist") : t("Show the checklist")}
-      </button>
-
-      {/* Always in the DOM, hidden when collapsed. A printed report is
-          compliance evidence, and behind a conditional this checklist — the
-          substance of it — appeared on paper only if the reader happened to
-          expand it first. The print stylesheet can reveal a hidden element;
-          it cannot reveal one React never rendered. */}
-      <div id={panelId} className="a11y-conf-panel" hidden={!expanded}>
-          {/* The counts belong here rather than on the button that opens
-              this panel. That button used to promise "Show all 50 items"
-              and then show three, because a filter was on by default — it
-              described the checklist's length while the reader got the
-              filtered view. Here each number sits on the option it
-              selects, so every one of them is true. */}
-          <fieldset className="a11y-radio-group a11y-conf-filter">
-            <legend>{t("Show")}</legend>
-            {(
-              [
-                ["failed", tf("Failures ({count})", { count: failing.length })],
-                ["needs-review", tf("Needs a person ({count})", { count: needsPerson.length })],
-                // The chip exists only when the state does — an always-empty
-                // filter would be a control that never does anything.
-                ...(notMeasured.length > 0
-                  ? ([["not-measured", tf("Not measured ({count})", { count: notMeasured.length })]] as const)
-                  : []),
-                ["all", tf("Everything ({count})", { count: conformance.total })],
-              ] as const
-            ).map(([value, label]) => (
-              <label key={value} className="a11y-radio">
-                <input
-                  type="radio"
-                  name={filterName}
-                  value={value}
-                  checked={filter === value}
-                  onChange={() => setFilter(value)}
-                />
-                <span>{label}</span>
-              </label>
-            ))}
-          </fieldset>
-
-          {failing.length === 0 && filter === "failed" ? (
-            <p className="a11y-conf-caveat">{t("Nothing on this page fails.")}</p>
-          ) : (
-            <ul className="a11y-conf-list">
-              {shown.map((c) => (
-                <li
-                  key={c.id}
-                  className={`a11y-conf-row a11y-conf-${c.status}`}
-                  hidden={isFilteredOut(c.status)}
-                >
-                  <span className="a11y-conf-id">
-                    {c.id} <em>{c.level}</em>
-                  </span>
-                  <span className="a11y-conf-body">
-                    {/* A failing row states the problem; the rest ask the
-                        question, because for those we have no problem to
-                        report — only something we didn't find, or couldn't
-                        check. */}
-                    <strong>{c.status === "failed" ? c.failing : c.plain}</strong>
-                    <span className="a11y-conf-plain">
-                      {t("Officially:")} {c.name}
-                    </span>
-                    {/* Say which check broke, or "not measured" is just a
-                        shrug. The names are the report's own, the same ones
-                        the warning banner above uses. */}
-                    {c.status === "not-measured" && c.notMeasured && c.notMeasured.length > 0 && (
-                      <span className="a11y-conf-plain">{unfinishedChecks(c.notMeasured)}</span>
-                    )}
-                    {/* Only where the scan left the question open. A measured
-                        failure is not overruled by an opinion. */}
-                    {c.status !== "failed" && verdictFor.get(c.id) && (
-                      <DecidedLine verdict={verdictFor.get(c.id)!} />
-                    )}
-                  </span>
-                  <span className="a11y-conf-status">
-                    {t(STATUS_LABEL[c.status])}
-                    {/* "(13)" leaves the reader to guess thirteen of what.
-                        Say it: thirteen places on this page. */}
-                    {c.findingCount > 0 && (
-                      <em className="a11y-conf-count">
-                        {c.findingCount === 1 ? t("1 place") : tf("{count} places", { count: c.findingCount })}
-                      </em>
-                    )}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-          <button
-            type="button"
-            className="a11y-show-all a11y-show-checklist"
-            onClick={() => {
-              setExpanded(false);
-              // This button is about to hide with the panel it lives in —
-              // hand focus back to the toggle rather than dropping it.
-              toggleRef.current?.focus();
-            }}
-          >
-            {t("Hide the checklist")}
-          </button>
-      </div>
     </section>
   );
 }

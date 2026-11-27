@@ -10,6 +10,9 @@ import { evaluateDialogs } from "../src/services/dialog/analyzeDialogs.js";
 import { evaluateForcedColors } from "../src/services/forcedColors/analyzeForcedColors.js";
 import { evaluateReadingOrder } from "../src/services/readingOrder/analyzeReadingOrder.js";
 import { evaluateMobile } from "../src/services/mobile/analyzeMobile.js";
+import { evaluateReflowHeight } from "../src/services/reflowHeight/analyzeReflowHeight.js";
+import { evaluatePixelContrast } from "../src/services/contrast/pixelContrast.js";
+import { evaluateFormErrors, notePanelFindings, panelViolations } from "../src/services/interaction/openAndMeasure.js";
 import { evaluateDarkPatterns } from "../src/services/darkPatterns/analyzeDarkPatterns.js";
 import { evaluateTextResize } from "../src/services/textResize/analyzeTextResize.js";
 import { evaluateConsentA11y } from "../src/services/consentA11y/evaluateConsentA11y.js";
@@ -18,6 +21,7 @@ import { evaluateControlContrast } from "../src/services/contrast/analyzeControl
 import { evaluateActivation } from "../src/services/interaction/analyzeActivation.js";
 import { evaluateSchemeContrast } from "../src/services/contrast/analyzeSchemeContrast.js";
 import { dropBannerShadowedAriaHiddenFocus, mergeFindings } from "../src/services/merge/mergeFindings.js";
+import { evaluateOverlay } from "../src/services/overlay/analyzeOverlay.js";
 import type { AccessibilityFinding } from "../src/types/report.js";
 
 // The two QA fixtures, run as a test rather than by hand.
@@ -36,6 +40,7 @@ import type { AccessibilityFinding } from "../src/types/report.js";
 /* The consent describe below also needs render-level facts (the behind-
    banner screenshot), so the last render is kept beside the findings. */
 let lastRender: Awaited<ReturnType<typeof renderAndScan>> | undefined;
+let lastFormErrors: ReturnType<typeof evaluateFormErrors> | undefined;
 
 async function scanFixture(name: string): Promise<AccessibilityFinding[]> {
   const url = "file://" + path.resolve(`public/${name}`);
@@ -57,6 +62,12 @@ async function scanFixture(name: string): Promise<AccessibilityFinding[]> {
   findings.push(...evaluateForcedColors(r.keyboardNav.stops, r.userPreferences));
   findings.push(...evaluateReadingOrder(r.readingOrder));
   findings.push(...evaluateMobile(r.mobileSignals));
+  findings.push(...evaluateReflowHeight(r.reflowHeight));
+  findings.push(...evaluatePixelContrast(r.pixelContrast));
+  const opened = panelViolations(r.openedPanels);
+  findings.push(...notePanelFindings(axeToFindings(opened.axe as never), opened.foundIn));
+  lastFormErrors = evaluateFormErrors(r.formErrors);
+  findings.push(...lastFormErrors.findings);
   findings.push(...evaluateDarkPatterns(r.darkPatternSignals));
   findings.push(...evaluateConsentA11y(r.darkPatternSignals));
   findings.push(...evaluateTextResize(r.textResizeSignals));
@@ -116,6 +127,9 @@ describe("qa-fixture.html: the rules axe owns", () => {
     ["image with no alt", ["image-alt"]],
     ["button with no accessible name", ["button-name"]],
     ["link with no text", ["link-name"]],
+    // Stable and on by default since axe-core 4.14.0. Before that it was
+    // experimental and its results were filed as open questions.
+    ["button whose spoken name leaves out its visible words", ["label-content-name-mismatch"]],
     ["link text that says nothing", ["link-text-vague"]],
     ["input with no label", ["label"]],
     ["text far below 4.5:1", ["color-contrast"]],
@@ -629,6 +643,116 @@ describe("qa-mobile-good.html: phone-width done right", () => {
   });
 });
 
+// The vertical half of 1.4.10: a window 256px tall. One fixture holds a
+// pinned cookie panel whose buttons fall below the edge and two bars that
+// leave 16px to read through; the other holds the same parts built right (a
+// panel that scrolls inside itself, a bar that stops pinning when the window
+// is short, a slim header) and must draw nothing.
+// Things that open and forms that refuse. Nothing wrong is visible while the
+// page is as it loads: the faults are inside a closed panel and an unselected
+// tab, and in what two forms do with an empty submit. The forms are tested
+// with the network blocked, so the fixture's action URLs are never asked for.
+describe("qa-open-forms.html: open before measuring, submit with nothing sent", () => {
+  let findings: AccessibilityFinding[];
+  beforeAll(async () => {
+    findings = await scanFixture("qa-open-forms.html");
+  }, 120_000);
+
+  it("finds the image without alt inside the closed panel, and says which control opens it", () => {
+    const f = findings.find((x) => x.ruleId === "image-alt");
+    expect(f).toBeDefined();
+    expect(f!.description).toContain("Opening times");
+  });
+
+  it("finds the nameless button inside the unselected tab", () => {
+    const f = findings.find((x) => x.ruleId === "button-name");
+    expect(f).toBeDefined();
+    expect(f!.description).toContain("Prices");
+  });
+
+  it("scores the form that refuses an empty submit in silence", () => {
+    const f = findings.filter((x) => x.ruleId === "form-error-silent");
+    expect(f.map((x) => x.selector)).toEqual(["#silent"]);
+  });
+
+  it("asks about the form whose error is neither linked nor announced", () => {
+    const rows = Object.fromEntries((lastFormErrors?.undecided ?? []).map((r) => [r.ruleId, r.count]));
+    expect(rows).toEqual({ "form-error-unlinked": 1, "form-error-unannounced": 1 });
+  });
+
+  it("puts the page back as it loaded", () => {
+    expect(lastRender!.finalUrl).toMatch(/qa-open-forms\.html$/);
+  });
+});
+
+describe("qa-open-forms-good.html: open before measuring, done right", () => {
+  let findings: AccessibilityFinding[];
+  beforeAll(async () => {
+    findings = await scanFixture("qa-open-forms-good.html");
+  }, 120_000);
+
+  it("stays silent about the panel and both forms", () => {
+    expect(findings.filter((f) => f.ruleId === "image-alt" || f.ruleId?.startsWith("form-error"))).toEqual([]);
+    expect(lastFormErrors?.undecided).toEqual([]);
+  });
+});
+
+// Text on gradients, which axe leaves undecided. Measured from the pixels
+// behind the letters: one run fails everywhere and is scored, one passes
+// everywhere and is settled, one sits half on white and half on black and
+// stays a question for a person.
+describe("qa-contrast-images.html: text over gradients, measured from pixels", () => {
+  let findings: AccessibilityFinding[];
+  let undecided: string[] = [];
+  beforeAll(async () => {
+    findings = await scanFixture("qa-contrast-images.html");
+    undecided = (lastRender!.axe.incomplete.find((r) => r.id === "color-contrast")?.nodes ?? []).map((n) => n.target.flat().join(" "));
+  }, 120_000);
+
+  it("scores the pale text that fails over all of its background", () => {
+    const f = findings.filter((x) => x.ruleId === "contrast-over-image");
+    expect(f.map((x) => x.selector)).toEqual(["#faint"]);
+  });
+
+  it("settles both clear cases and leaves only the split one undecided", () => {
+    expect(undecided).not.toContain("#faint");
+    expect(undecided).not.toContain("#dark-ok");
+    expect(undecided).toContain("#half");
+  });
+});
+
+describe("qa-reflow-height.html: a window 256px tall", () => {
+  let findings: AccessibilityFinding[];
+  beforeAll(async () => {
+    findings = await scanFixture("qa-reflow-height.html");
+  }, 120_000);
+
+  it("names the buttons a pinned panel leaves below the edge", () => {
+    const f = findings.find((x) => x.ruleId === "reflow-height-unreachable");
+    expect(f).toBeDefined();
+    expect(f!.selector).toBe("#consent");
+    expect(f!.description).toContain("Accept all");
+    expect(f!.description).toContain("Reject all");
+  });
+
+  it("scores bars that leave less than a line", () => {
+    const f = findings.find((x) => x.ruleId === "reflow-height-pinned");
+    expect(f).toBeDefined();
+    expect(f!.wcagCriterion).toBe("1.4.10");
+  });
+});
+
+describe("qa-reflow-height-good.html: a window 256px tall, done right", () => {
+  let findings: AccessibilityFinding[];
+  beforeAll(async () => {
+    findings = await scanFixture("qa-reflow-height-good.html");
+  }, 120_000);
+
+  it("stays silent about every correct pattern", () => {
+    expect(findings.filter((f) => f.ruleId?.startsWith("reflow-height")).map((f) => f.ruleId)).toEqual([]);
+  });
+});
+
 // The detectors, auf Deutsch: every text heuristic outside the consent
 // banner was English-only on a product built for EU sites — the coverage
 // audit's sharpest product mismatch. This fixture proves the scored
@@ -912,4 +1036,47 @@ describe("qa-scheme-contrast.html: contrast in the states one axe run never sees
     expect(f).toBeTruthy();
     expect(f.description).toContain("phone width");
   });
+});
+
+// The overlay note is not a finding, so it is read from the render's signals
+// and the evaluator, not from the findings list scanFixture returns.
+describe("qa-overlay.html: an accessibility overlay on the page", () => {
+  let signals: NonNullable<typeof lastRender>["domSignals"]["overlay"];
+  let findings: AccessibilityFinding[];
+  beforeAll(async () => {
+    findings = await scanFixture("qa-overlay.html");
+    signals = lastRender!.domSignals.overlay;
+  }, 180_000);
+
+  it("reads the page's script addresses, without the query string or fragment", () => {
+    const stub = signals.scriptSrcs.filter((s) => s.includes("qa-overlay-stub"));
+    expect(stub).toHaveLength(1);
+    expect(stub[0].startsWith("file://")).toBe(true);
+    expect(stub[0].endsWith("/public/qa-overlay-stub.js")).toBe(true);
+    // The account key in the fixture's query string never leaves the page.
+    expect(JSON.stringify(signals)).not.toContain("QA-TEST-0001");
+  });
+
+  it("names the one vendor whose widget element the script built", () => {
+    // No script address: the stub is a local file, and a file: address
+    // belongs to nobody. The element alone names the vendor.
+    expect(evaluateOverlay(signals)).toEqual([{ vendor: "accessiBe", widgetOnPage: true }]);
+  });
+
+  it("stays silent about the look-alikes beside it", () => {
+    // #ae_app without the vendor's own children, .access-widget-ui as a
+    // class, and the site's own text-size buttons.
+    expect(signals.markers).toEqual(["access-widget-ui"]);
+  });
+
+  it("adds nothing to the findings: the widget element is not carded", () => {
+    expect(findings.filter((f) => f.selector.includes("access-widget-ui"))).toEqual([]);
+  });
+
+  it("says nothing at all on a page with no overlay", async () => {
+    await scanFixture("qa-dialog-good.html");
+    const quiet = lastRender!.domSignals.overlay;
+    expect(quiet.markers).toEqual([]);
+    expect(evaluateOverlay(quiet)).toEqual([]);
+  }, 180_000);
 });

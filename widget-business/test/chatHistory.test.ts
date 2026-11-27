@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { appendUser, sourcesOf, unansweredToolUses, type ChatMessage } from "../src/api/chatClient";
+import { appendUser, beforeLastAnswer, sourcesOf, unansweredToolUses, type ChatMessage } from "../src/api/chatClient";
 
 /**
  * The two rules that keep the conversation valid for the API: every
@@ -98,5 +98,34 @@ describe("sourcesOf", () => {
       { type: "text", text: "x", citations: [{ type: "web_search_result_location", url: "javascript:alert(1)", title: "x", cited_text: "x", encrypted_index: "x" }] },
     ];
     expect(sourcesOf(content)).toEqual([]);
+  });
+});
+
+describe("beforeLastAnswer: the answer redone after a switch of language", () => {
+  const answer = (text: string): ChatMessage => ({
+    role: "assistant",
+    content: [{ type: "thinking", thinking: "", signature: "s" }, { type: "text", text }],
+  });
+
+  it("drops the latest answer whole, so the history ends on the question", () => {
+    // Seen live: switched to Deutsch, and the English answer on screen stayed.
+    const history: ChatMessage[] = [{ role: "user", content: "Show me how to reproduce an issue" }, answer("You reproduce it by…")];
+    expect(beforeLastAnswer(history)).toEqual([history[0]]);
+  });
+
+  it("leaves a turn alone that called a tool, or that has not been answered", () => {
+    expect(beforeLastAnswer([])).toBeNull();
+    expect(beforeLastAnswer([{ role: "user", content: "hi" }])).toBeNull();
+    // Asking again would start the scan a second time.
+    expect(beforeLastAnswer([{ role: "user", content: "check example.com" }, assistantWith("a")])).toBeNull();
+    // Waiting on a shown section's result: the history ends on the person's side.
+    expect(
+      beforeLastAnswer([
+        { role: "user", content: "show the law" },
+        assistantWith("a"),
+        { role: "user", content: [{ type: "tool_result", tool_use_id: "a", content: "Shown in the conversation." }] },
+      ])
+    ).toBeNull();
+    expect(beforeLastAnswer([{ role: "user", content: "hi" }, answer("  ")])).toBeNull();
   });
 });

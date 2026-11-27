@@ -481,7 +481,7 @@ export function evaluateMobile(m: MobileSignals): AccessibilityFinding[] {
       category: "design-clarity",
       selector: sc.elements[0].selector,
       elementSnippet: sc.elements[0].snippet,
-      description: `Bars pinned to the screen take up about ${pct}% of a phone display (${sc.totalPx}px of ${sc.viewportHeight}px, across ${sc.elements.length} element${sc.elements.length === 1 ? "" : "s"}). Every pinned pixel is one the visitor cannot read the page through. Anything the keyboard focuses can end up hidden behind them. WCAG 2.2 makes keeping focus visible a requirement (2.4.11 Focus Not Obscured).`,
+      description: `Bars pinned to the screen take up about ${pct}% of a phone display (${sc.totalPx}px of ${sc.viewportHeight}px, across ${sc.elements.length} element${sc.elements.length === 1 ? "" : "s"}). Every pinned pixel is one the visitor can't read the page through. Anything the keyboard focuses can end up hidden behind them. WCAG 2.2 makes keeping focus visible a requirement (2.4.11 Focus Not Obscured).`,
       suggestedFix:
         "Slim the pinned bars on phone widths, or let them scroll away and return. Keep their combined height well under a third of the screen. Set scroll-margin-top on content so focused elements land clear of them.",
       ruleId: "mobile-sticky-coverage",

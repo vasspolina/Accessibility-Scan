@@ -1,8 +1,8 @@
 import type { AccessibilityReport, AccessibilityFinding } from "../api/scanClient";
 import { checkNames, t, tf } from "../lib/strings";
 import { statusWord } from "./ManualChecks";
-import { SCORE_POINTS } from "./ScoreGauge";
 import { Notification } from "./Feedback";
+import { OverlayNotes } from "./OverlayNotes";
 
 export type ProView = "issues" | "clean";
 
@@ -40,7 +40,6 @@ export function ProSummary({
   report,
   issueCount,
   cleanCount,
-  onSeeFindings,
 }: {
   report: AccessibilityReport;
   issueCount: number;
@@ -62,12 +61,12 @@ export function ProSummary({
   const nameOf = new Map((report.conformance?.criteria ?? []).map((c) => [c.id, c.name]));
 
   return (
-    <section className="a11y-pro-panel" aria-labelledby="a11y-score-heading">
+    <section className="a11y-pro-panel" aria-labelledby="a11y-results-heading">
       {/* The host pill and the run controls moved to the shell's top bar,
           which is where the design puts them and where they are reachable
           from every section rather than only from the top of this panel. */}
       <div className="a11y-pro-titlerow">
-        <h2 className="a11y-results-title" id="a11y-score-heading" data-nav-label={t("Score")}>
+        <h2 className="a11y-results-title" id="a11y-results-heading" data-nav-label={t("Results")}>
           {host}: {t("scan results")}
         </h2>
         <p className="a11y-pro-count">
@@ -76,31 +75,11 @@ export function ProSummary({
       </div>
 
       <div className="a11y-pro-grid">
-        {/* The score card. Inverted, because it is the one figure the whole
-            panel is arranged around. */}
-        <div className="a11y-pro-scorecard">
-          <p className="a11y-pro-eyebrow a11y-pro-eyebrow-invert">{t("Issues by severity")}</p>
-          <p className="a11y-pro-score">
-            <span className="a11y-pro-score-num">{report.score}</span>
-            <span className="a11y-pro-score-of">{t("out of 100")}</span>
-          </p>
-          <div className="a11y-pro-chips">
-            <span className="a11y-pro-chip">{t("Checked against WCAG 2.1 AA")}</span>
-            <span className="a11y-pro-chip">{t("1 page")}</span>
-            {report.summary.critical > 0 && (
-              <span className="a11y-pro-chip">{tf("{count} fix first", { count: report.summary.critical })}</span>
-            )}
-          </div>
-          {onSeeFindings && (
-            <button type="button" className="a11y-pro-jump" onClick={onSeeFindings}>
-              <span>
-                {issueCount === 1 ? t("See the finding") : tf("See the {count} findings", { count: issueCount })}
-              </span>
-              <span aria-hidden="true">&#8599;</span>
-            </button>
-          )}
-        </div>
-
+        {/* The score card (the number, three chips and a jump to the
+            findings) is gone: the professional report opens on the same
+            "Your score" block as the owner's, the dial and the run of the
+            worst findings, drawn by ScoreGauge above this panel (user's
+            instruction, 23 Nov 2026, "bring old design back", "this one"). */}
         <div className="a11y-pro-lists">
           <h3 className="a11y-pro-eyebrow" id="a11y-pro-sev-heading">
             {tf("Issues ({count})", { count: issueCount })}
@@ -121,7 +100,7 @@ export function ProSummary({
           </h3>
           {clean.length === 0 ? (
             <p className="a11y-pro-empty">
-              {t("Nothing here came back clean enough to list.")}
+              {t("No check came back clean on this page.")}
             </p>
           ) : (
             <ul className="a11y-pro-rows" aria-labelledby="a11y-pro-clean-heading">
@@ -157,21 +136,7 @@ export function ProSummary({
       </div>
 
       <div className="a11y-pro-grid">
-        <div>
-          <h3 className="a11y-pro-eyebrow" id="a11y-pro-counts-heading">
-            {t("What the score counts")}
-          </h3>
-          <ol className="a11y-pro-points" aria-labelledby="a11y-pro-counts-heading">
-            {SCORE_POINTS.map((point, i) => (
-              <li key={point} className="a11y-pro-point">
-                <span className="a11y-pro-point-num" aria-hidden="true">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <span>{t(point)}</span>
-              </li>
-            ))}
-          </ol>
-        </div>
+        {/* "What the score counts" is in the score block above, once. */}
         <div>
           {/* The score only counts checks that ran, so a scan where some fell
               over can look better than a complete one. It sits beside the
@@ -180,10 +145,13 @@ export function ProSummary({
           {incomplete.length > 0 && (
             <Notification
               kind="warning"
-              title={tf("Some checks didn't finish this time: {checks}.", { checks: checkNames(incomplete) })}
-              subtitle={t("The score above only counts what ran, so it may look better than it should. A second run usually completes them.")}
+              title={tf("Some checks didn't finish: {checks}.", { checks: checkNames(incomplete) })}
+              subtitle={t("The score counts only what ran, so it may be too high. Run the scan again.")}
             />
           )}
+          {/* What the score was measured with: an overlay on the page is one
+              more qualification of the same number. */}
+          <OverlayNotes overlays={report.meta.overlays} />
         </div>
       </div>
     </section>

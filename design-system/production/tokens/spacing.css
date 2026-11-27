@@ -1,5 +1,5 @@
 :root {
-  /* Carbon 2x grid */
+  /* 2x grid */
   --space-01: 0.125rem;
   --space-02: 0.25rem;
   --space-03: 0.5rem;
@@ -13,7 +13,7 @@
   --space-11: 5rem;
   --space-12: 6rem;
 
-  /* Minimal, near-square corners — Carbon-flat */
+  /* Minimal, near-square corners — flat */
   --radius-none: 0;
   --radius-sm: 2px;
   --radius-md: 4px;

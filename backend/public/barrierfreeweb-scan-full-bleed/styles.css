@@ -1,0 +1,983 @@
+/* BarrierFreeWeb, set in the Accessible Scan's design (user's instruction,
+   25 Nov 2026: "copy this and use accessible scan design to design this
+   website"). The pages, the copy and app.js are the studio site's in
+   ../barrierfreeweb/, copied as they were; only this file is new. Every
+   value below is taken from the scan widget's own stylesheet
+   (widget-business/src/styles/global.css) as it stood that day:
+
+   - One face, PP Telegraf Ultralight (200), for everything; PP Lettra Mono
+     Ultralight for the centred callouts, the cards' words and the small
+     keys, as the scan sets "New scan", "Your score" and its opening cards.
+     No bold, no italic, no synthesis.
+   - Sizes 18, 24 and 32px only, each with its tracking and leading:
+     18px +0.025em 1.2, 24px +0.015em 1.15, 32px +0.01em 1.1. The prose is
+     32px, 24px on a phone (under 672px, Carbon's md).
+   - The poster's colours: blue #2848c8 and green #486048 with white words
+     (7.4:1, 6.9:1), red #f03c38 with black words (5.4:1), black; the grey
+     paper #dcdbd5, the cream tile #f4efe2, the pills' grey #e6e6e6 and the
+     pale yellow hover #fff5c2, each with black words. Callout titles in
+     #2848c8 (7.4:1 on white), #7d95ff on black.
+   - Every button a grey pill (999px, 34px tall, 18px words); the main
+     action and the chosen one solid; hover the pale yellow; disabled
+     dashed. A disclosure is a full-width bar with the solid caret, opened
+     a 28px-cornered panel with white cards inside.
+   - Sections open on a 1px ink rule with the title 8px under it.
+   - IBM Carbon's spacing steps for every margin, padding and gap.
+   - Focus is a 2px green line inside the edge (#198038; #6fdc8c in dark),
+     white on the blue, green and black grounds. */
+
+@font-face {
+  font-family: "Jokker";
+  src: url("../fonts/JokkerVF-TRIAL.woff2") format("woff2-variations"), url("../fonts/JokkerVF-TRIAL.woff2") format("woff2");
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+
+:root {
+  --ink: #000; --paper: #fff;
+  --blue: #2848c8; --green: #486048; --red: #f03c38; --black: #000;
+  --on-blue: #fff; --on-green: #fff; --on-red: #000; --on-black: #fff;
+  --grey-paper: #dcdbd5;       /* the scan form's panel, kept light in dark */
+  --field: #fff;               /* a white field on the grey panel (user's instruction, 25 Nov 2026, "make this white forms"; was #e6e6e6) */
+  --tile: #f4efe2; --tile-ink: #000;
+  --bubble: #e6e6e6; --bubble-ink: #000; --bubble-pill: #fff;
+  --hover: #fff5c2; --hover-ink: #000;
+  --solid: #000; --solid-ink: #fff;
+  --edge: #8e8e93;             /* the chat box's edge, 3.3:1 on white */
+  --callout: #2848c8;
+  --focus: #198038;
+  --r-panel: 28px; --r-card: 20px;
+
+  --s01: 2px; --s02: 4px; --s03: 8px; --s04: 12px; --s05: 16px; --s06: 24px;
+  --s07: 32px; --s08: 40px; --s09: 48px; --s10: 64px; --s11: 80px; --s12: 96px;
+  --gutter: 32px; --gutter-narrow: 16px;
+
+  --mono: "PP Lettra Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  --close: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z'/%3E%3C/svg%3E");
+  --caret-right: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M12 8 22 16 12 24z'/%3E%3C/svg%3E");
+  --caret-down: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M24 12 16 22 8 12z'/%3E%3C/svg%3E");
+  --arrow-right: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M18 6 16.57 7.393 24.15 15 4 15 4 17 24.15 17 16.57 24.573 18 26 28 16 18 6z'/%3E%3C/svg%3E");
+  --arrow-left: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M14 26 15.41 24.59 7.83 17 28 17 28 15 7.83 15 15.41 7.41 14 6 4 16 14 26z'/%3E%3C/svg%3E");
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  --ink: #fff; --paper: #000; --black: #2c2c2e;
+  --tile: #1c1c1e; --tile-ink: #fff;
+  --bubble: #1c1c1e; --bubble-ink: #fff; --bubble-pill: #2c2c2e;
+  --solid: #636366; --solid-ink: #fff;
+  --callout: #7d95ff; --focus: #6fdc8c;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: #fff; --paper: #000; --black: #2c2c2e;
+    --tile: #1c1c1e; --tile-ink: #fff;
+    --bubble: #1c1c1e; --bubble-ink: #fff; --bubble-pill: #2c2c2e;
+    --solid: #636366; --solid-ink: #fff;
+    --callout: #7d95ff; --focus: #6fdc8c;
+    color-scheme: dark;
+  }
+}
+
+/* ---------- Type ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font-family: "Jokker", "DejaVu Sans", sans-serif;
+  font-size: 32px; font-weight: 200; line-height: 1.1; letter-spacing: 0.01em;
+  font-kerning: normal; font-variant-ligatures: common-ligatures; font-synthesis: none;
+  text-rendering: optimizeLegibility; hyphens: manual; overflow-wrap: break-word;
+}
+h1, h2, h3, h4, strong, b, dt, th, button, input, textarea, select, label { font-weight: 200; }
+button, input, textarea, select { font-family: inherit; color: inherit; }
+p, ul, ol, dl { margin: 0; }
+h1, h2, h3 { margin: 0; font-size: inherit; line-height: inherit; letter-spacing: inherit; }
+.text p + p, .text p + ul, .text ul + p, .text p + dl, .text dl + p, .text h3 + ul,
+.acc__body p + p, .acc__body p + dl, .chat__text p + p, .card p + p { margin-top: 1lh; }
+
+a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+a:hover { background: var(--hover); color: var(--hover-ink); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+a:focus-visible { outline-offset: 2px; }
+main:focus { outline: none; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+.skip {
+  position: absolute; top: var(--s03); left: var(--s03); z-index: 10; transform: translateY(-200%);
+  display: inline-flex; align-items: center; min-height: 34px; padding: var(--s02) var(--s04);
+  border-radius: 999px; background: var(--solid); color: var(--solid-ink);
+  font-size: 18px; letter-spacing: 0.025em; text-decoration: none;
+}
+.skip:focus { transform: none; }
+
+/* ---------- The page ---------- */
+.wrap { max-width: 1312px; margin-inline: auto; padding-inline: var(--s07); }
+main.wrap { padding-top: var(--s10); }
+
+/* ---------- Pills: one shape for every button ---------- */
+.nav a, .toc a, .plates__btn, .theme, .btn, .signup__btn, .chat__send, .request__link {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--s03);
+  min-height: 34px; padding: var(--s02) var(--s04);
+  border: 1px solid var(--bubble); border-radius: 999px; background: var(--bubble); color: var(--bubble-ink);
+  font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; text-decoration: none; cursor: pointer;
+}
+.btn, .signup__btn, .chat__send:enabled, .nav a[aria-current], .toc a[aria-current] {
+  border-color: var(--solid); background: var(--solid); color: var(--solid-ink);
+}
+:is(.nav a, .toc a, .plates__btn, .theme, .btn, .signup__btn, .request__link):hover,
+.chat__send:enabled:hover {
+  border-color: var(--hover); background: var(--hover); color: var(--hover-ink);
+}
+:is(.plates__btn, .theme, .signup__btn, .chat__send, .chat__prompt):disabled {
+  border: 1px dashed var(--ink); background: transparent; color: var(--ink); cursor: default;
+}
+/* The arrow after a button's words is the scan's icon set's, drawn as a mask. */
+.signup__arrow { display: none; }
+.signup__btn::after, .plates__btn::before, .news__btn::before {
+  content: ""; display: inline-block; width: 1em; height: 1em; flex: none; background: currentColor;
+  -webkit-mask: var(--arrow-right) center / contain no-repeat; mask: var(--arrow-right) center / contain no-repeat;
+}
+.request__row .signup__btn::after, .request__send .signup__btn::after, .request__mail::after { content: none; }
+
+/* ---------- Header: the brand, the crumb, the pages as pills ---------- */
+.top {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: var(--s05);
+  padding-block: var(--s06);
+}
+.brand {
+  display: inline-block; justify-self: start;
+  font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; text-decoration: none;
+  /* The wordmark: Jokker Heavy Italic, the variable file's own slant axis at its end (-16). */
+  font-family: "Jokker", sans-serif; font-weight: 900; font-variation-settings: "slnt" -16;
+  letter-spacing: -0.01em;
+}
+.crumb { font-family: var(--mono); font-size: 18px; line-height: 1.2; letter-spacing: 0; }
+.crumb ol { display: flex; flex-wrap: wrap; margin: 0; padding: 0; list-style: none; }
+.crumb li + li::before { content: "\2009/\2009"; }
+.crumb [aria-current] { color: var(--callout); }
+.nav { justify-self: end; }
+.nav ul { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--s02); margin: 0; padding: 0; list-style: none; }
+
+/* ---------- The page's title: a centred callout, as "New scan" ---------- */
+.title, .title h1 {
+  font-family: var(--mono); font-size: 32px; line-height: 1.15; letter-spacing: 0;
+  text-align: center; color: var(--callout);
+}
+.title { max-width: 30ch; margin: 0 auto var(--s10); text-wrap: balance; }
+.title__sub { margin-top: var(--s05); color: var(--ink); font-size: 24px; }
+/* The home page's lede at a tester's size (user's reference, 25 Nov 2026,
+   "design this like this", a type foundry's specimen line; then, the same
+   day, "make text blue and no black background"): the page's blue Lettra
+   callout on the paper, Ultralight at 56px, 1.15, no tracking, centred
+   across the column's width; #2848c8 on white 7.4:1, #7d95ff on black.
+   No panel. The phone takes 32px. */
+.title--lede { max-width: none; margin: 0 0 var(--s10); font-size: 56px; line-height: 1.15; }
+@media (max-width: 671px) {
+  .title.title--lede { font-size: 32px; }
+}
+
+/* ---------- The request form: the scan form's grey panel ---------- */
+.signup, .request {
+  /* The panel stays light in dark, so its pills keep the light theme's. */
+  --ink: #000; --focus: #198038; --solid: #000; --solid-ink: #fff;
+  display: grid; gap: var(--s05);
+  margin: 0 0 var(--s10); padding: var(--s09) var(--s10);
+  border-radius: var(--r-panel); background: var(--grey-paper); color: #000;
+}
+.signup { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
+.signup__field {
+  display: flex; flex-direction: column; gap: var(--s03); min-width: 0;
+  padding: var(--s05) var(--s06); border-radius: var(--r-card); background: var(--field); color: #000;
+}
+.signup__field:focus-within { outline: 2px solid var(--focus); outline-offset: -2px; }
+.signup__field label { font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; }
+.signup__input {
+  width: 100%; min-width: 0; min-height: 32px; margin: 0; padding: var(--s01) 0; border: 0; border-radius: 0;
+  background: transparent; color: #000; font-size: 24px; line-height: 1.2; letter-spacing: 0.015em;
+}
+.signup__input:focus-visible { outline: none; }
+.signup__trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+/* The home page's request form as one outlined row (user's instructions,
+   25 Nov 2026, "delete background on form as well", then "form can look
+   like this", a row of two outlined fields and an outlined Send request on
+   a dark panel): no grey ground, the page's own paper and words in both
+   themes. Email, Your request and Send request side by side, 8px apart,
+   centred in at most 980px; each 56px tall, 12px corners, a 1px edge in
+   the chat box's #8e8e93 (3.3:1 on white, 6.2:1 on black), no fill. Each
+   field's label stays visible, at its left on the field's line at 18px,
+   the typed words after it. Send request is the same outline with the
+   arrow; hover the pale yellow. One column on a phone. form.signup
+   out-ranks the shared .signup rules and their phone padding. */
+form.signup {
+  --ink: inherit; --focus: inherit; --solid: inherit; --solid-ink: inherit;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) auto; gap: var(--s03); align-items: stretch;
+  max-width: 980px; margin-inline: auto; padding: 0; border-radius: 0; background: none; color: inherit;
+}
+form.signup .signup__field {
+  flex-direction: row; align-items: center; gap: var(--s04); min-height: 56px; padding: 0 var(--s05);
+  border: 1px solid var(--edge); border-radius: var(--s04); background: transparent; color: inherit;
+}
+form.signup .signup__field label { flex: none; }
+form.signup .signup__input { flex: 1 1 auto; min-height: 0; color: inherit; font-size: 18px; letter-spacing: 0.025em; }
+form.signup > .signup__btn {
+  grid-column: auto; justify-self: stretch; margin-top: 0; min-height: 56px; padding: 0 var(--s05);
+  border: 1px solid var(--edge); border-radius: var(--s04); background: transparent; color: var(--ink);
+  font-size: 18px; letter-spacing: 0.025em;
+}
+form.signup > .signup__btn:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
+@media (max-width: 671px) {
+  form.signup { grid-template-columns: minmax(0, 1fr); padding: 0; }
+}
+.signup > .signup__btn {
+  grid-column: 1 / -1; justify-self: center; margin-top: var(--s03);
+  min-height: 56px; padding: 0 var(--s06); font-size: 24px; letter-spacing: 0.015em;
+}
+
+/* The questions that follow, in the same panel. */
+.request { justify-items: center; text-align: center; }
+.request[hidden] { display: none; }
+.request__note, .request__status { font-family: var(--mono); font-size: 18px; line-height: 1.2; letter-spacing: 0; }
+.request__title { font-family: var(--mono); font-size: 32px; line-height: 1.15; letter-spacing: 0; color: #2848c8; max-width: 30ch; }
+.request__title:focus { outline: none; }
+.request__row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--s03); width: 100%; }
+.request__input {
+  min-height: 56px; padding: var(--s03) var(--s06); border-radius: 999px; background: var(--field);
+}
+.request__input:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.request__link { border-color: #fff; background: #fff; color: #000; }
+.request__brief {
+  display: grid; gap: var(--s03); width: 100%; margin: 0; text-align: start;
+}
+.request__brief > div {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: var(--s05);
+  padding: var(--s05) var(--s06); border-radius: var(--r-card); background: #fff;
+}
+.request__brief dt { font-family: var(--mono); font-size: 18px; line-height: 1.2; letter-spacing: 0; padding-top: var(--s01); }
+.request__brief dd { margin: 0; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
+.request__send { display: grid; justify-items: center; gap: var(--s05); }
+.request__consent { display: inline-flex; align-items: flex-start; gap: var(--s04); max-width: 40ch; text-align: start; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; cursor: pointer; }
+.request__consent input {
+  appearance: none; flex: none; width: 28px; height: 28px; margin: 0; border: 1px solid #000; border-radius: 50%; background: #fff; cursor: pointer;
+}
+.request__consent input:checked {
+  background: #000 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23fff' d='M13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z'/%3E%3C/svg%3E") center / 18px no-repeat;
+}
+.request__consent input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* ---------- The statements: cards in the poster's colours, in turn ---------- */
+.plates { margin: 0 0 var(--s10); }
+.plates__track {
+  display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; cursor: pointer;
+  border-radius: var(--r-panel);
+}
+.plates__track::-webkit-scrollbar { display: none; }
+.plates__track:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+.plate {
+  --on: var(--on-blue);
+  flex: 0 0 100%; scroll-snap-align: start; display: grid; place-items: center;
+  min-height: 360px; padding: var(--s09); border-radius: var(--r-panel);
+  background: var(--blue); color: var(--on);
+}
+.plate:nth-child(4n + 2) { background: var(--green); --on: var(--on-green); }
+.plate:nth-child(4n + 3) { background: var(--red); --on: var(--on-red); }
+.plate:nth-child(4n + 4) { background: var(--black); --on: var(--on-black); }
+.plate p { max-width: 24ch; font-family: var(--mono); font-size: 32px; line-height: 1.15; letter-spacing: 0; text-align: center; text-wrap: balance; }
+/* The statements full screen, like cards (user's instruction, 25 Nov 2026,
+   "make this slide full screen like cards", on the red "Accessibility is a
+   human right." slide): the track breaks out of the 1312px column to the
+   window's width less 8px each side, so the 28px corners still read as a
+   card, and each slide is the window's height less the arrows' bar
+   (104px: their 16px gap, 34px and air). The body clips sideways so the
+   breakout never scrolls the page. */
+body { overflow-x: clip; }
+.plates .plates__track { width: calc(100vw - 2 * var(--s03)); margin-left: calc(50% - 50vw + var(--s03)); }
+.plates .plate { min-height: calc(100svh - 104px); }
+.plates__bar { display: flex; align-items: center; justify-content: center; gap: var(--s03); margin-top: var(--s05); }
+.plates__btn { width: 48px; padding: 0; font-size: 0; }
+.plates__btn::before { width: 18px; height: 18px; }
+.plates__btn[data-prev]::before { -webkit-mask-image: var(--arrow-left); mask-image: var(--arrow-left); }
+.plates__count { min-width: 4ch; font-family: var(--mono); font-size: 18px; line-height: 1.2; letter-spacing: 0; text-align: center; font-variant-numeric: lining-nums; }
+
+/* ---------- Sections: a page of text ---------- */
+.content { container: content / inline-size; min-width: 0; }
+.cols {
+  display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--gutter); align-items: start;
+}
+.cols + .cols { margin-top: var(--s10); }
+.cols:has(> .text > h2:first-child) { padding-top: var(--s03); border-top: 1px solid var(--ink); }
+@container content (max-width: 760px) {
+  .cols { grid-template-columns: minmax(0, 1fr); gap: var(--s06); }
+}
+/* The column's words 10% under the body's 32px (user's instruction, 25 Nov
+   2026, "make this font 10% smaller", on Why not just fix your current
+   site?): 29px, the title with them; then 15% under that (the same day,
+   "make this font 15% smaller", on the same passage): 25px. The phone
+   keeps its 24px. */
+.text { font-size: 25px; }
+.text h2, .card h2 { margin-bottom: var(--s05); }
+.text h3 { margin: 1lh 0 var(--s03); letter-spacing: 0.02em; text-transform: uppercase; }
+/* A list in the column (user's reference, 25 Nov 2026, "typesetting need to
+   look like this", on a programme of upcoming lectures): the heading in
+   capitals in the body face at the prose size, each item behind a thin
+   cross (Carbon's close, as a mask) set inside the column, not hung in the
+   margin where the en dash used to sit against the window's edge. The
+   cross is 0.7em, centred on the item's first line; the words start 1.15em in. */
+.text ul { padding: 0; list-style: none; }
+.text li { position: relative; padding-left: 1.15em; }
+.text li::before {
+  content: ""; position: absolute; left: 0; top: calc((1lh - 0.7em) / 2); width: 0.7em; height: 0.7em; background: currentColor;
+  -webkit-mask: var(--close) center / contain no-repeat; mask: var(--close) center / contain no-repeat;
+}
+
+/* The side note: a cream card. */
+.card {
+  padding: var(--s06); border-radius: var(--r-card); background: var(--tile); color: var(--tile-ink);
+  font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+}
+.card h2 { font-size: 24px; }
+.card .action { margin-top: var(--s05); }
+.offer { padding: 0; list-style: none; display: grid; gap: var(--s02); }
+.offer__link { text-decoration: none; }
+.offer__link::before {
+  content: ""; display: inline-block; width: 0.75em; height: 0.75em; margin-right: var(--s03); background: currentColor;
+  -webkit-mask: var(--caret-right) center / contain no-repeat; mask: var(--caret-right) center / contain no-repeat;
+}
+.offer__link:hover { text-decoration: underline; }
+.action { margin-top: 1lh; }
+
+/* Terms as labelled paragraphs (user's reference, 25 Nov 2026, a foundry's
+   contact page: "SUPPORT & TECH HELP:" over its words; the user chose it
+   over the cross rows of the same afternoon): each term over its meaning,
+   one empty line between terms. */
+.terms { display: grid; gap: 1lh; margin: 0; }
+.terms dd { margin: 0; }
+/* The term as a callout in Lettra (user's instruction, 25 Nov 2026, "put
+   call outs in letra", beside the scan's outlined pills "1.1.1", "Fix soon",
+   "2 places"): PP Lettra Mono, sentence case, no tracking, a 1px edge in the
+   words' colour round it with round ends, 0.83em of the words beside it
+   (24px in the 29px column), 0.3em over its meaning. Replaces the capitals
+   and colon of the same afternoon. */
+.terms dt {
+  display: inline-block; margin-bottom: 0.3em; padding: 0.15em 0.6em 0.1em; border: 1px solid currentColor; border-radius: 999px;
+  font-family: var(--mono); font-size: 0.83em; line-height: 1.2; letter-spacing: 0;
+}
+/* The What we offer panels' terms two to a row (user's instruction, 25 Nov
+   2026, "make it two columns", on Copywriting): read across, row by row,
+   the gutter between them, one column where the panel's words are under
+   560px wide. The lists in the text column stay one column.
+   Each term centred in its column, the pill over its words (the same
+   day, "now center pillows"). */
+@container content (min-width: 560px) {
+  .acc__body .terms { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--gutter); align-items: start; }
+}
+/* The What we offer terms as a type foundry's info and credits columns
+   (user's reference, 25 Nov 2026, "design this like this", its INFO and
+   CREDITS panes): the term a small capital label centred over its
+   column, Telegraf at 18px tracked +0.04em with no pill; its meaning set
+   left under it at the column's 24px, one 16px step down; 32px between
+   rows, two lines of the words. Replaces the centred Lettra pills of the
+   same day, in these panels only; the text column's lists keep theirs. */
+.acc__body .terms { row-gap: var(--s07); }
+.acc__body .terms dt {
+  display: block; margin-bottom: var(--s05); padding: 0; border: 0; border-radius: 0;
+  font-family: inherit; font-size: 18px; line-height: 1.2; letter-spacing: 0.04em;
+  text-transform: uppercase; text-align: center;
+}
+.acc__body .terms dd { text-align: start; }
+
+/* Links in the column and the cards on a pale yellow highlight (the same
+   reference: its addresses on a pale yellow, no underline). Black words on
+   #fff5c2 in both themes; hover adds the underline. Buttons and the offer
+   list keep their own look. */
+.text a:not(.btn), .card p a:not(.btn) {
+  padding: 0 0.08em; border-radius: 4px; background: var(--hover); color: var(--hover-ink);
+  text-decoration: none; -webkit-box-decoration-break: clone; box-decoration-break: clone;
+}
+.text a:not(.btn):hover, .card p a:not(.btn):hover { text-decoration: underline; text-decoration-thickness: 1px; }
+
+/* ---------- On this page: the scan's rail, as pills ---------- */
+.toc-layout { display: grid; grid-template-columns: minmax(200px, 1fr) minmax(0, 3fr); gap: var(--gutter); align-items: start; }
+.toc { position: sticky; top: var(--s07); }
+.toc ul { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s02); margin: 0; padding: 0; list-style: none; }
+/* A long section name runs to two lines: half the pill's height keeps one
+   line round-ended and two a rounded block, not a lozenge. */
+.toc a { justify-content: flex-start; text-align: start; border-radius: 17px; }
+@media (max-width: 1055px) {
+  .toc-layout { grid-template-columns: minmax(0, 1fr); gap: var(--s07); }
+  .toc { position: static; }
+  .toc ul { flex-direction: row; flex-wrap: wrap; }
+}
+
+/* ---------- Four services: the scan's opening cards ---------- */
+.slogans {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gutter-narrow);
+  margin: 0 0 var(--s10); padding: 0; list-style: none;
+}
+.slogan { display: flex; }
+.slogan__link, .chat__prompt {
+  --on: var(--on-blue);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--s03);
+  width: 100%; min-height: 220px; padding: var(--s06); border: 0; border-radius: var(--r-panel);
+  background: var(--blue); color: var(--on); text-align: center; text-decoration: none;
+  font-family: var(--mono); letter-spacing: 0;
+}
+.slogan:nth-child(4n + 2) .slogan__link, .chat__prompt:nth-child(3n + 2) { background: var(--green); --on: var(--on-green); }
+.slogan:nth-child(4n + 3) .slogan__link, .chat__prompt:nth-child(3n + 3) { background: var(--red); --on: var(--on-red); }
+.slogan:nth-child(4n + 4) .slogan__link { background: var(--black); --on: var(--on-black); }
+.slogan__label { font-size: 18px; line-height: 1.2; }
+.slogan__link p { font-size: 24px; line-height: 1.15; }
+:is(.slogan__link, .chat__prompt):is(:hover, :focus-visible):not(:disabled) { background: var(--tile); color: var(--tile-ink); }
+@media (max-width: 1055px) { .slogans { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 671px) { .slogans { grid-template-columns: minmax(0, 1fr); } .slogan__link { min-height: 0; } }
+
+/* ---------- The scanner invite: a message bubble on the right ---------- */
+.bubble { display: flex; justify-content: flex-end; margin: var(--s10) 0; }
+.bubble__msg {
+  max-width: min(36ch, 80%); padding: var(--s05) var(--s06); border-radius: 24px;
+  background: var(--bubble); color: var(--bubble-ink); text-decoration: none;
+  font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+}
+
+/* ---------- The chat ---------- */
+.chat, .related { margin-top: var(--s10); padding-top: var(--s03); border-top: 1px solid var(--ink); }
+.chat__label, .related__label { margin-bottom: var(--s06); }
+.chat__prompts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gutter-narrow); margin-bottom: var(--s06); }
+.chat__prompts[hidden] { display: none; }
+.chat__prompt { min-height: 160px; font-size: 24px; line-height: 1.15; cursor: pointer; }
+.chat__prompt:focus-visible { outline-color: var(--focus); }
+@media (max-width: 671px) { .chat__prompts { grid-template-columns: minmax(0, 1fr); } .chat__prompt { min-height: 0; } }
+.chat__thread { display: grid; gap: 2lh; margin: 0 0 var(--s07); padding: 0; list-style: none; }
+.chat__thread[hidden] { display: none; }
+.chat__who { margin-bottom: var(--s02); font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; }
+.chat__turn:nth-child(odd) { display: flex; flex-direction: column; align-items: flex-end; }
+.chat__turn:nth-child(odd) .chat__text {
+  max-width: min(36ch, 80%); padding: var(--s05) var(--s06); border-radius: 24px;
+  background: var(--bubble); color: var(--bubble-ink); font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+}
+.chat__thinking { font-size: 24px; }
+.chat__box {
+  display: grid; gap: var(--s03); padding: var(--s05) var(--s06);
+  border: 1px solid var(--edge); border-radius: 32px; background: var(--paper);
+}
+.chat__box:focus-within { outline: 2px solid var(--focus); outline-offset: -2px; }
+.chat__box textarea {
+  width: 100%; min-height: 2.3em; margin: 0; padding: 0; border: 0; background: transparent; resize: none;
+  font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+}
+.chat__box textarea::placeholder { color: var(--ink); opacity: 1; }
+.chat__box textarea:focus-visible { outline: none; }
+.chat__row { display: flex; justify-content: flex-end; }
+
+/* ---------- What we offer: carets as full bars ---------- */
+.acc { display: grid; gap: var(--s03); }
+.acc__head { margin: 0; }
+.acc__btn {
+  display: flex; align-items: center; gap: var(--s05); width: 100%; min-height: 64px; margin: 0;
+  padding: var(--s04) var(--s07); border: 1px solid var(--bubble); border-radius: 999px;
+  background: var(--bubble); color: var(--bubble-ink); text-align: start; cursor: pointer;
+  font-size: 32px; line-height: 1.1; letter-spacing: 0.01em;
+}
+/* No caret and no box inside the opened panel (user's instruction, 25 Nov
+   2026, "do not add dots and box inside of box for this element"): the
+   bar opening into its panel shows the state; aria-expanded says it. */
+.acc__btn:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
+.acc__row:has(> .acc__head [aria-expanded="true"]) { border-radius: var(--r-panel); background: var(--bubble); color: var(--bubble-ink); }
+.acc__row:has(> .acc__head [aria-expanded="true"]) .acc__btn { border-radius: var(--r-panel); }
+/* Three times the space between an opened service's lede and its terms
+   (user's instruction, 25 Nov 2026, "add 3 times more paragraph break
+   here"): 16px became 48px. The panel holds only those two. */
+.acc__panel { display: grid; gap: var(--s09); padding: var(--s03) var(--s07) var(--s07); }
+.acc__panel[hidden] { display: none; }
+.acc__lede { font-size: 32px; }
+.acc__body {
+  container: content / inline-size;
+  font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
+}
+
+/* ---------- Footer ---------- */
+footer.wrap { margin-top: var(--s12); padding-bottom: var(--s07); }
+/* The EAA notice in Lettra, centred (user's instructions, 25 Nov 2026,
+   "letra", "centered"): PP Lettra Mono, no tracking, 1.15 leading, every
+   line centred and the box centred in the column. */
+.notice {
+  width: fit-content; max-width: 100%; margin-inline: auto; padding: var(--s05) var(--s06); border-radius: var(--r-card);
+  background: var(--hover); color: var(--hover-ink); font-family: var(--mono); font-size: 24px; line-height: 1.15; letter-spacing: 0;
+  text-align: center;
+}
+
+/* Stay in touch: the scan's "Email me this report", the green panel. */
+.news {
+  --focus: #fff;
+  display: flex; flex-direction: column; align-items: center; gap: var(--s06);
+  margin-top: var(--s07); padding: var(--s09) var(--s10);
+  border-radius: var(--r-panel); background: var(--green); color: var(--on-green); text-align: center;
+}
+.news__title { font-family: var(--mono); font-size: 32px; line-height: 1.15; letter-spacing: 0; }
+.news__text { max-width: 40ch; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
+.news__form { display: flex; gap: var(--s03); width: min(560px, 100%); }
+.news__input {
+  flex: 1 1 auto; min-width: 0; min-height: 56px; padding: 0 var(--s06);
+  border: 1px solid currentColor; border-radius: 999px; background: transparent; color: inherit;
+  font-size: 24px; letter-spacing: 0.015em;
+}
+.news__input::placeholder { color: inherit; opacity: 1; }
+/* Flex, not grid (user's instruction, 25 Nov 2026, "center"): as a grid the
+   hidden arrow character made a second row (39px and 15px) and the drawn
+   arrow sat in the upper one. */
+.news__btn {
+  display: inline-flex; align-items: center; justify-content: center; line-height: 0; flex: none; width: 56px; height: 56px; padding: 0;
+  border: 1px solid currentColor; border-radius: 50%; background: transparent; color: inherit; font-size: 0; cursor: pointer;
+}
+.news__btn::before { width: 24px; height: 24px; }
+.news__btn:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
+.news :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.foot { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gutter); margin-top: var(--s10); }
+.foot__label {
+  margin: 0 0 var(--s04); padding-bottom: var(--s03); border-bottom: 1px solid var(--ink);
+  font-family: var(--mono); font-size: 18px; line-height: 1.2; letter-spacing: 0; text-transform: uppercase;
+}
+.foot__col { font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
+.foot__col p + p { margin-top: 1lh; }
+.foot__col ul { display: grid; gap: var(--s02); margin: 0; padding: 0; list-style: none; }
+.foot__base { grid-column: 1 / -1; display: flex; align-items: center; justify-content: flex-end; gap: var(--s05); margin-top: var(--s09); }
+.theme[hidden] { display: none; }
+
+/* ---------- A phone ---------- */
+@media (max-width: 1055px) {
+  .top { grid-template-columns: minmax(0, 1fr) auto; }
+  .crumb { grid-column: 1 / -1; grid-row: 2; }
+}
+@media (max-width: 671px) {
+  body { font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
+  .text { font-size: 24px; }
+  .wrap { padding-inline: var(--s05); }
+  main.wrap { padding-top: var(--s07); }
+  .top { grid-template-columns: minmax(0, 1fr); gap: var(--s04); }
+  .nav { justify-self: start; }
+  .nav ul { justify-content: flex-start; }
+  .crumb { grid-row: auto; }
+  .title, .title h1, .request__title, .news__title, .plate p { font-size: 24px; }
+  .title__sub { font-size: 18px; letter-spacing: 0.025em; }
+  .title { margin-bottom: var(--s07); }
+  .signup, .request { grid-template-columns: minmax(0, 1fr); padding: var(--s06) var(--s05); }
+  .request__row, .request__brief > div { grid-template-columns: minmax(0, 1fr); }
+  .request__row .signup__btn { justify-self: center; }
+  .request__brief > div { gap: var(--s02); }
+  .plate { min-height: 240px; padding: var(--s06); }
+  .acc__btn { min-height: 56px; padding: var(--s03) var(--s05); font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
+  .acc__panel { padding: var(--s03) var(--s05) var(--s05); }
+  .acc__lede { font-size: 24px; }
+  .news { padding: var(--s06) var(--s05); }
+  .foot { grid-template-columns: minmax(0, 1fr); gap: var(--s07); }
+  .bubble__msg, .chat__turn:nth-child(odd) .chat__text { max-width: 90%; }
+  .card, .bubble__msg, .chat__box textarea, .notice, .foot__col, .news__text, .acc__body, .chat__turn:nth-child(odd) .chat__text { font-size: 18px; letter-spacing: 0.025em; line-height: 1.2; }
+  .notice { letter-spacing: 0; }
+}
+
+/* ---------- Forced colours ---------- */
+@media (forced-colors: active) {
+  .signup, .request, .plate, .card, .slogan__link, .chat__prompt, .bubble__msg, .acc__btn, .acc__row, .notice, .news,
+  .nav a, .toc a, .plates__btn, .theme, .btn, .signup__btn, .chat__send, .request__link, .signup__field { border: 1px solid CanvasText; }
+  .signup__btn::after, .plates__btn::before, .news__btn::before, .offer__link::before, .text li::before { background: ButtonText; forced-color-adjust: none; }
+}
+
+/* ---------- More air between the pieces (user's instruction, 25 Nov 2026,
+   "add more space between content", on the home page's EAA section, the
+   scanner invite and the chat). Everything here stood one step of 64px
+   apart, the title 8px under its rule, and the chat's title, cards and box
+   24px apart, so the sections read as one run. On a desktop the sections
+   now stand 96px apart (the scale's top step), a title sits 16px under its
+   rule with 24px under it, and the chat's parts are 40px apart. A phone
+   keeps 64px between sections and takes 32px inside the chat. ---------- */
+.plates { margin-bottom: var(--s12); }
+.cols + .cols { margin-top: var(--s12); }
+.cols:has(> .text > h2:first-child), .chat, .related { padding-top: var(--s05); }
+.text h2, .card h2 { margin-bottom: var(--s06); }
+.bubble { margin-block: var(--s12); }
+.chat, .related { margin-top: var(--s12); }
+.chat__label, .related__label { margin-bottom: var(--s08); }
+.chat__prompts { margin-bottom: var(--s08); }
+@media (max-width: 671px) {
+  .plates, .bubble { margin-bottom: var(--s10); }
+  .cols + .cols, .bubble, .chat, .related { margin-top: var(--s10); }
+  .chat__label, .related__label, .chat__prompts { margin-bottom: var(--s07); }
+}
+
+/* ---------- The Services page's "What we offer" card as a numbered list
+   in a bubble (user's reference, 25 Nov 2026, a packaging box, "keep it in
+   buble"; then, on the terracotta version, "keep this but put on yellow
+   beige and in lettra font"). The card keeps its rounded shape on the pale
+   yellow #fff5c2 with black words (19.1:1), in both themes. Everything in it
+   is PP Lettra Mono Ultralight: on top "What we offer" at 18px over a 1px
+   rule; then the six services, each with its number at the right, between
+   1px rules. In lower case, as written, no tracking (user's instruction,
+   the same day, "lower case", on the card in capitals). The number is drawn with alt text
+   "" so a link's name stays the service. No marker triangles. ---------- */
+.card:has(> .offer) {
+  --ink: #000; --focus: #198038;
+  padding: var(--s06); border-radius: var(--r-card); background: #fff5c2; color: #000;
+  font-family: var(--mono); letter-spacing: 0;
+}
+.card:has(> .offer) > h2 {
+  margin: 0; padding-bottom: var(--s03); border-bottom: 1px solid currentColor;
+  font-family: var(--mono); font-size: 18px; line-height: 1.2; letter-spacing: 0;
+}
+.card > .offer { gap: 0; counter-reset: offer-card; }
+.card > .offer > li { counter-increment: offer-card; border-bottom: 1px solid currentColor; }
+.card .offer__link {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; column-gap: var(--s05);
+  padding: var(--s04) 0; color: inherit; text-decoration: none;
+  font-family: var(--mono); font-size: 24px; line-height: 1.15; letter-spacing: 0;
+}
+.card .offer__link::before { content: none; }
+.card .offer__link::after { content: counter(offer-card, decimal-leading-zero) / ""; font-size: 18px; }
+.card .offer__link:hover { background: transparent; color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.12em; }
+.card .offer__link:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (max-width: 671px) {
+  .card .offer__link { font-size: 18px; line-height: 1.2; }
+}
+@media (forced-colors: active) {
+  .card:has(> .offer) { border: 1px solid CanvasText; }
+}
+
+/* ---------- The other cream side cards in Lettra (user's reference, 25 Nov
+   2026, "this need to go in letra", on "The four principles behind it").
+   PP Lettra Mono Ultralight, no tracking, 1.15 leading. Set left, the
+   button with it (user's instruction, the same day, "left align", on the
+   exemption card of services.html; they were centred as a programme that
+   morning). The card's cream, corners and 24px size stay. ---------- */
+/* Lettra 15% smaller in these cards (user's instruction, the same day,
+   "make lettra font be smaller 15%", on the exemption card): 24px became
+   20px, the phone's 18px 15px; the button keeps its own size. */
+.card:not(:has(> .offer)) {
+  font-family: var(--mono); font-size: 20px; letter-spacing: 0; line-height: 1.15;
+}
+.card:not(:has(> .offer)) h2 { font-family: var(--mono); font-size: 20px; letter-spacing: 0; }
+/* Buttons stay in the body face, as every pill in the scan. */
+.card:not(:has(> .offer)) .btn { font-family: "Jokker", "DejaVu Sans", sans-serif; letter-spacing: 0.025em; line-height: 1.2; text-wrap: nowrap; }
+@media (max-width: 671px) {
+  .card:not(:has(> .offer)) { font-size: 15px; letter-spacing: 0; line-height: 1.2; }
+}
+
+/* ---------- Full bleed (user's instruction, 26 Nov 2026, "lets make it
+   full bleed", on a copy of /barrierfreeweb-scan/) ----------
+   This copy only: the 1312px column is lifted, so the header, the page and
+   the footer run the window's full width, keeping the page's side gutter
+   (--s07, --s05 on a phone) so no words touch the window's edge. The
+   request form drops its 980px cap and spans the column. The statements
+   run edge to edge, the window's full width with no side gap and no
+   corners, since a slide that meets the window's edge is not a card. */
+.wrap { max-width: none; }
+form.signup { max-width: none; }
+.plates .plates__track { width: 100vw; margin-left: calc(50% - 50vw); border-radius: 0; }
+.plates .plate { border-radius: 0; }
+
+/* ---------- Jokker and the callouts after a type foundry's specimen pages
+   (user's instruction and references, 26 Nov 2026: "use joker font instead
+   of pp telegraph and design caal outs like this use alt figures", with a
+   yellow hero of big centred type and a small caption under it, a black
+   panel of bold italic, a showcase of specimens between corner brackets
+   with a counter pill over each, and section titles under a heavy rule).
+   This copy only. ----------
+   - One face, Jokker VF (trial, ../fonts/JokkerVF-TRIAL.woff2; weight
+     100 to 900, slant 0 to -16). It replaces PP Telegraf and PP Lettra
+     Mono both: --mono points at it, so the small keys, the crumb and the
+     footer's labels are Jokker too, as the references set every small
+     line in the same face. The body keeps the copy's weight, 200.
+   - The alternates: ss01 (the single-storey a), ss02 (the wedge
+     parentheses) and ss05 (the alternate r) on every callout, and tabular
+     figures on the counters. The trial file has no other figure sets (its
+     features are tnum, pnum, zero, sups, frac and ss01 to ss06; the
+     retail's ten figure sets are not in it).
+   - Colours read off the references: the yellow #fcfb9e and the cream
+     #f3f0e8, each with black words, black with white, fixed in both
+     themes like the copy's other plates. */
+:root { --mono: "Jokker", "DejaVu Sans", sans-serif; --y: #fcfb9e; --cream: #f3f0e8; }
+.title, .title h1, .plate p, .chat__label, .related__label, .text h2, .news__title, .chat__prompt {
+  font-feature-settings: "ss01", "ss02", "ss05";
+}
+
+/* The hero: the header, the page's title and (on the home page) the request
+   form share one yellow band across the window. Each part paints the band
+   past its own edges with a border image, so the band runs edge to edge
+   without wrapping the markup; the body already clips sideways. The title
+   is big centred black type, Jokker Regular, 7vw (48px floor, 160px cap),
+   0.95 leading, -0.015em, lines balanced; it stands at least 60% of the
+   window tall. A page's line under the title (About) is the small caption
+   at the band's foot, 24px, as the references' two-line note. */
+header.wrap, main.wrap > .title, main.wrap > form.signup {
+  --ink: #000; --callout: #2848c8; --focus: #198038; --edge: #000; --bubble: #fff; --bubble-ink: #000;
+  color: #000;
+  border-image: linear-gradient(var(--y) 0 0) fill 0 / 0 / 0 100vw;
+}
+main.wrap:has(> .title) { padding-top: 0; }
+main.wrap > .title {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--s06);
+  max-width: none; min-height: 60svh; margin: 0 0 var(--s12); padding: var(--s10) 0 var(--s12);
+  color: #000; font-family: var(--mono); font-weight: 400;
+  font-size: clamp(48px, 7vw, 160px); line-height: 0.95; letter-spacing: -0.015em;
+  text-align: center; text-wrap: balance;
+}
+main.wrap > .title h1 { color: inherit; font: inherit; letter-spacing: inherit; font-feature-settings: inherit; }
+main.wrap > .title .title__sub {
+  margin-top: auto; padding-top: var(--s09); color: #000;
+  font-size: 24px; font-weight: 400; line-height: 1.15; letter-spacing: 0.015em; font-feature-settings: normal;
+}
+/* The home page's form closes the band: no gap above it, the band's
+   bottom padding under it. */
+main.wrap > .title--lede { margin-bottom: 0; padding-bottom: var(--s10); }
+main.wrap > form.signup { margin-bottom: var(--s12); padding-bottom: var(--s10); }
+
+/* The statements as specimens, each slide in its own setting in turn, as
+   the references: white bold italic on black; black bold italic on white
+   between four corner brackets; black Regular on the yellow; black
+   SemiBold on the cream. 6.5vw (44px floor, 140px cap), 0.95 leading,
+   -0.02em, at most 14 characters a line, balanced. Over the words a small
+   counter pill, black with white figures (white with black on the black
+   slide): the slide's number of four, drawn from a counter with alt text
+   "", since the slide's own label says "1 of 4" to a screen reader. */
+.plates__track { counter-reset: plate; }
+.plates .plate {
+  counter-increment: plate; align-content: center; gap: var(--s06);
+  background: #000; color: #fff;
+}
+.plates .plate::before {
+  content: counter(plate) "/4" / "";
+  display: inline-flex; align-items: center; min-height: 34px; padding: var(--s02) var(--s04); border-radius: var(--s03);
+  background: #000; color: #fff;
+  font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em; font-variant-numeric: tabular-nums;
+}
+.plates .plate:nth-child(4n + 1)::before { background: #fff; color: #000; }
+.plates .plate p {
+  max-width: 14ch; font-family: var(--mono); font-weight: 700; font-variation-settings: "slnt" -16;
+  font-size: clamp(44px, 6.5vw, 140px); line-height: 0.95; letter-spacing: -0.02em;
+}
+.plates .plate:nth-child(4n + 2) {
+  background-color: #fff; color: #000;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 22'%3E%3Cpath d='M1 22Q1 1 22 1H44' fill='none' stroke='%23000' stroke-width='1.5'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 22'%3E%3Cpath d='M43 22Q43 1 22 1H0' fill='none' stroke='%23000' stroke-width='1.5'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 22'%3E%3Cpath d='M1 0Q1 21 22 21H44' fill='none' stroke='%23000' stroke-width='1.5'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 22'%3E%3Cpath d='M43 0Q43 21 22 21H0' fill='none' stroke='%23000' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 44px 22px;
+  background-position: top var(--s06) left var(--s06), top var(--s06) right var(--s06), bottom var(--s06) left var(--s06), bottom var(--s06) right var(--s06);
+}
+.plates .plate:nth-child(4n + 3) { background: var(--y); color: #000; }
+.plates .plate:nth-child(4n + 4) { background: var(--cream); color: #000; }
+.plates .plate:nth-child(4n + 3) p { font-weight: 400; font-variation-settings: "slnt" 0; }
+.plates .plate:nth-child(4n + 4) p { font-weight: 600; font-variation-settings: "slnt" 0; }
+
+/* Section titles as the showcase's: a 4px ink rule across the column (the
+   1px rule it replaces), the title 8px under it in Jokker Medium at 56px,
+   1.0 leading, -0.02em; 32px on a phone. */
+.cols:has(> .text > h2:first-child), .chat, .related { padding-top: var(--s03); border-top-width: 4px; }
+.text h2, .chat__label, .related__label {
+  font-family: var(--mono); font-weight: 500; font-size: 56px; line-height: 1; letter-spacing: -0.02em;
+}
+.news__title { font-weight: 500; font-size: 56px; line-height: 1; letter-spacing: -0.02em; }
+@media (max-width: 671px) {
+  .text h2, .chat__label, .related__label, .news__title { font-size: 32px; line-height: 1.05; }
+}
+
+/* The opening questions as the feature cards: the cream ground, square
+   corners, tall, black words centred at a display size (2.6vw, 24px floor,
+   48px cap, Regular, 1.0, -0.01em); hover and focus the yellow. */
+.chat__prompt, .chat__prompt:nth-child(3n + 2), .chat__prompt:nth-child(3n + 3) {
+  --on: #000; min-height: 360px; padding: var(--s07); border-radius: 0; background: var(--cream); color: #000;
+  font-weight: 400; font-size: clamp(24px, 2.6vw, 48px); line-height: 1; letter-spacing: -0.01em; text-wrap: balance;
+}
+.chat__prompt:is(:hover, :focus-visible):not(:disabled) { background: var(--y); color: #000; }
+@media (max-width: 671px) { .chat__prompt, .chat__prompt:nth-child(3n + 2), .chat__prompt:nth-child(3n + 3) { min-height: 200px; } }
+
+/* ---------- What we offer as an FAQ list (user's reference, 27 Nov 2026,
+   image 2: clean white rows separated by 1px rules, service name left,
+   a grey chevron arrow right; keep the serif Description / Details layout
+   inside the opened panel). ----------
+   - Each row: 1px top rule, no background, no rounded pill.
+   - Button: left label in Jokker Medium at 32px, right grey ↓/↑ arrow icon.
+   - Hover: pale yellow band (existing --hover).
+   - Opened row: white panel beneath the button, same padding as before;
+     the two-column Description / Details serif layout stays unchanged.
+   The .acc__btn / .acc__row rules above are overridden here. */
+@font-face {
+  font-family: "EB Garamond";
+  src: url("../fonts/EBGaramond-latin-400-normal.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+
+/* FAQ-list accordion: each row is a 1px-ruled item, white ground, no pill shape.
+   The button spans the row: service name on the left, grey ↓/↑ arrow on the right.
+   Opening reveals the Description / Details panel beneath (layout unchanged). */
+.acc { gap: 0; }
+.acc__row { border-top: 1px solid #000; }
+.acc__row:last-child { border-bottom: 1px solid #000; }
+
+.acc__btn {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s06);
+  width: 100%; min-height: 72px; margin: 0;
+  padding: var(--s05) 0;
+  border: 0; border-radius: 0;
+  background: transparent; color: var(--ink);
+  text-align: start; cursor: pointer;
+  font-size: 32px; line-height: 1.1; letter-spacing: -0.01em; font-weight: 400;
+}
+.acc__btn::after {
+  content: "";
+  flex: none; width: 24px; height: 24px;
+  background: #aaa;
+  -webkit-mask: var(--caret-down) center / contain no-repeat;
+  mask: var(--caret-down) center / contain no-repeat;
+  transition: transform 0.2s ease;
+}
+.acc__btn[aria-expanded="true"]::after { transform: rotate(180deg); background: #aaa; }
+.acc__btn:hover { background: var(--hover); color: var(--hover-ink); padding-inline: var(--s04); border-radius: 4px; }
+.acc__btn:hover::after { background: var(--hover-ink); }
+
+/* Opened state: no grey panel/outline around it, plain white, panel content below the button */
+.acc__row:has(> .acc__head [aria-expanded="true"]) { background: none; border-radius: 0; border: 0; border-top: 1px solid #000; }
+.acc__row:has(> .acc__head [aria-expanded="true"]) .acc__btn { border-radius: 0; }
+
+.acc .acc__panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: repeat(5, auto) 1fr;
+  column-gap: var(--gutter); row-gap: 0; align-items: start;
+  padding: 0 0 var(--s08);
+}
+.acc .acc__panel[hidden] { display: none; }
+.acc__panel .acc__body { display: contents; }
+.acc__panel > .acc__lede, .acc__panel .acc__body > p {
+  grid-column: 1; max-width: 60ch;
+  font-family: "EB Garamond", Georgia, serif; font-weight: 400; font-size: 24px; line-height: 1.15; letter-spacing: 0;
+}
+.acc__panel .acc__body > p { margin-top: 1lh; }
+.acc__panel > .acc__lede::before, .acc__panel .terms::before {
+  display: block; margin-bottom: var(--s05); padding-bottom: var(--s03); border-bottom: 1px solid #000;
+  font-family: var(--mono); font-weight: 400; font-size: 18px; line-height: 1.2; letter-spacing: 0.04em; text-transform: uppercase;
+}
+.acc__panel > .acc__lede::before { content: "Description" / ""; }
+.acc__panel .terms::before { content: "Details" / ""; grid-column: 1 / -1; }
+.acc__panel .acc__body > .terms {
+  grid-column: 2; grid-row: 1 / -1;
+  display: grid; grid-template-columns: minmax(0, 9em) minmax(0, 1fr); column-gap: var(--s05); row-gap: 0;
+  margin: 0; padding-bottom: var(--s04); border-bottom: 1px solid #000;
+  font-size: 18px; font-weight: 400; line-height: 1.25; letter-spacing: 0.01em;
+}
+.acc__panel .terms > div { display: contents; }
+.acc__panel .terms dt {
+  display: block; margin: 0; padding: 0; border: 0; border-radius: 0;
+  font: inherit; letter-spacing: inherit; text-transform: none; text-align: start;
+}
+.acc__panel .terms dd { margin: 0; text-align: start; }
+.acc__panel .terms > div + div > * { padding-top: var(--s03); }
+@media (max-width: 671px) {
+  .acc__btn { font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; min-height: 56px; padding: var(--s04) 0; }
+  .acc .acc__panel { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; padding: 0 0 var(--s07); }
+  .acc__panel .acc__body > .terms { grid-column: 1; grid-row: auto; margin-top: var(--s08); grid-template-columns: minmax(0, 7em) minmax(0, 1fr); }
+  .acc__panel > .acc__lede, .acc__panel .acc__body > p { font-size: 24px; letter-spacing: 0; line-height: 1.15; }
+}
+
+/* ---------- The header as a foundry's top bar (user's references, 27 Nov
+   2026, "make these like these", then "ad like these on sub pages") ----------
+   The wordmark and the three main pages are one line of big type, the
+   wordmark and the page you are on in black, the others grey; Newsletters is
+   a small grey link at the right. A 1px rule runs under each side, broken
+   between them. A sub page adds a second row under the rule: its sections
+   as small grey links, the one being read in black, with a rule under the
+   row (the old "On this page" rail beside the text, moved up). The crumb is
+   kept for screen readers only, since the black page name says it.
+   Grey #5e5e5e on the band's #fcfb9e measures 6.0:1. */
+.top {
+  grid-template-columns: auto auto auto auto minmax(0, 1fr) minmax(max-content, 20%);
+  align-items: end; column-gap: var(--s05); row-gap: 0;
+  padding-block: var(--s04) var(--s06);
+}
+.top .nav, .top .nav ul { display: contents; }
+.top .crumb {
+  position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
+}
+.top .brand, .top .nav a {
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-variation-settings: normal;
+  font-size: clamp(32px, 3.4vw, 56px); line-height: 1.05; letter-spacing: -0.01em;
+}
+.top .brand { color: #000; }
+.top .nav a {
+  display: inline; min-height: 0; padding: 0; border: 0; border-radius: 0; background: none;
+  color: #5e5e5e; text-decoration: none;
+}
+.top .nav a[aria-current] { background: none; color: #000; }
+.top .nav li:last-child { grid-column: 6; padding-bottom: 0.3em; }
+.top .nav li:last-child a { font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; }
+.top .brand:hover, .top .nav a:hover, .top .toc a:hover {
+  background: none; color: #000; text-decoration: underline; text-decoration-thickness: 1px;
+}
+.top::before, .top::after {
+  content: ""; grid-row: 2; height: 1px; margin-top: var(--s02); background: #000;
+}
+.top::before { grid-column: 1 / 6; }
+.top::after { grid-column: 6; }
+.top .toc {
+  position: static; grid-column: 1 / -1; grid-row: 3;
+  padding-block: var(--s03); border-bottom: 1px solid #000;
+}
+.top .toc ul { flex-direction: row; flex-wrap: wrap; column-gap: var(--s07); row-gap: var(--s02); }
+.top .toc a {
+  display: inline; min-height: 0; padding: 0; border: 0; border-radius: 0; background: none;
+  color: #5e5e5e; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; text-decoration: none;
+}
+.top .toc a[aria-current] { background: none; color: #000; }
+/* The rail's column beside the text is gone with the rail. */
+.toc-layout { grid-template-columns: minmax(0, 1fr); }
+
+/* Narrower: the words wrap as a run, one rule under them. */
+@media (max-width: 1055px) {
+  .top { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: var(--s04); row-gap: var(--s02); }
+  .top::before, .top::after { content: none; }
+  .top .nav li:last-child { padding-bottom: 0; }
+  .top .nav li:last-child a { font-size: inherit; }
+  .top .nav li:last-child a, .top .brand, .top .nav a { font-size: clamp(32px, 3.4vw, 56px); }
+  .top .brand { flex-basis: 100%; }
+  .top .toc { flex-basis: 100%; margin-top: var(--s03); border-top: 1px solid #000; }
+}
+
+/* ---------- About opens on its slogans (user's instruction, 27 Nov 2026,
+   "dont say about just say We're a design studio in Berlin building websites
+   that work for everyone. and other slogans on slider") ----------
+   No "About BarrierFreeWeb" title: the yellow hero is a slider of the
+   studio's line and the four statements, set as the hero title was (black
+   Jokker Regular, 7vw with a 48px floor and 160px cap, 0.95, -0.015em),
+   left, top, on the band. The first slide's words are the page's h1. The
+   arrows and the count sit on the band under the words. */
+main.wrap:has(> .plates--hero) { padding-top: 0; }
+main.wrap > .plates--hero {
+  --ink: #000; --focus: #198038; --bubble: #fff; --bubble-ink: #000; --solid: #000; --solid-ink: #fff;
+  color: #000; margin: 0 0 var(--s12); padding-bottom: var(--s10);
+  border-image: linear-gradient(var(--y) 0 0) fill 0 / 0 / 0 100vw;
+}
+.plates--hero .plates__track .plate:nth-child(n) {
+  min-height: 60svh; padding: var(--s09) 0; place-items: start; align-content: start;
+  background: transparent; color: #000;
+}
+.plates--hero .plates__track .plate:nth-child(n)::before { content: none; }
+.plates--hero .plates__track .plate:nth-child(n) :is(p, h1) {
+  max-width: 20ch; margin: 0; color: inherit; text-align: start;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-variation-settings: normal;
+  font-size: clamp(48px, 7vw, 160px); line-height: 0.95; letter-spacing: -0.015em; text-wrap: balance;
+}
+.plates--hero .plates__bar { justify-content: flex-start; margin-top: 0; }
+@media (max-width: 671px) {
+  .plates--hero .plates__track .plate:nth-child(n) { min-height: 50svh; padding: var(--s07) 0; }
+}
+
+/* The header stays at the top on scroll (user's instruction, 27 Nov 2026,
+   "make this sticky"), with its yellow band, over the page; on a sub page
+   the section row under it then marks the section being read. */
+header.wrap { position: sticky; top: 0; z-index: 5; }
+/* A section link lands under the sticky header, not behind it. */
+html:has(header .toc) { scroll-padding-top: 220px; }
+@media (max-width: 1055px) { header.wrap { position: static; } html:has(header .toc) { scroll-padding-top: 0; } }

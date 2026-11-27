@@ -53,21 +53,21 @@ export async function assertSafeUrl(rawUrl: string): Promise<URL> {
   try {
     parsed = new URL(rawUrl);
   } catch {
-    throw new UnsafeUrlError("Invalid URL");
+    throw new UnsafeUrlError("That address isn't valid. Check it and try again.");
   }
 
   if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
-    throw new UnsafeUrlError("Only http and https URLs are allowed");
+    throw new UnsafeUrlError("Only web addresses that start with http or https can be scanned.");
   }
 
   const hostname = parsed.hostname.toLowerCase();
   if (BLOCKED_HOSTNAMES.has(hostname)) {
-    throw new UnsafeUrlError("This host is not allowed");
+    throw new UnsafeUrlError("This address can't be scanned.");
   }
 
   if (net.isIP(hostname)) {
     if (isPrivateOrReservedIp(hostname)) {
-      throw new UnsafeUrlError("This host is not allowed");
+      throw new UnsafeUrlError("This address can't be scanned.");
     }
     return parsed;
   }
@@ -87,7 +87,7 @@ export async function assertSafeUrl(rawUrl: string): Promise<URL> {
   }
 
   if (addresses.length === 0 || addresses.some(isPrivateOrReservedIp)) {
-    throw new UnsafeUrlError("This host is not allowed");
+    throw new UnsafeUrlError("This address can't be scanned.");
   }
 
   return parsed;

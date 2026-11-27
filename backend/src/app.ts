@@ -12,7 +12,11 @@ import { errorHandler } from "./middleware/errorHandler.js";
 import { healthRoutes } from "./routes/health.js";
 import { scanRoutes } from "./routes/scan.js";
 import { chatRoutes } from "./routes/chat.js";
+import { cookieChatRoutes } from "./routes/cookieChat.js";
 import { emailReportRoutes } from "./routes/emailReport.js";
+import { ticketRoutes } from "./routes/tickets.js";
+import { inquiryRoutes } from "./routes/inquiry.js";
+import { pilotRoutes } from "./routes/pilot.js";
 import { auditRoutes } from "./routes/audit.js";
 import { accountRoutes } from "./routes/account.js";
 import { historyRoutes } from "./routes/history.js";
@@ -92,7 +96,11 @@ export async function buildApp() {
   await app.register(scheduleRoutes);
   await app.register(scanRoutes);
   await app.register(chatRoutes);
+  await app.register(cookieChatRoutes);
   await app.register(auditRoutes);
   await app.register(emailReportRoutes);
+  await app.register(ticketRoutes);
+  await app.register(inquiryRoutes);
+  await app.register(pilotRoutes);
   return app;
 }

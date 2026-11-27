@@ -4,6 +4,8 @@ Accessibility Scan checks a page, or a whole site, in a real browser at desktop 
 
 **Try it:** https://a11y-checker-v2-production.up.railway.app/demo.html
 
+**In Claude Code:** `/plugin marketplace add vasspolina/Accessibility-Scan`, then `/plugin install a11y-scan@accessibility-scan`. Claude scans any page you name, `localhost` included, fixes what it finds and scans again ([docs/SKILL.md](docs/SKILL.md)).
+
 ## What a scan runs
 
 Every scan renders the page in headless Chromium and layers:
@@ -100,19 +102,20 @@ everything right.
 
 ## Deploying
 
-The live app is one Railway service built from `backend/` (its Dockerfile,
-root directory `backend`), connected to this repository on `main`. **Merging
-to `main` deploys.** Nothing else does: no workflow in `.github/` touches
-Railway, and `railway up` is only for a one-off upload from your own machine.
+The live app is one Railway service built from `backend/Dockerfile` with the
+repository root as its build context (root directory empty, settings in
+[railway.json](railway.json)), connected to this repository on `main`.
+**Merging to `main` deploys.** Nothing else does: no workflow in `.github/`
+touches Railway, and `railway up` (run from the repository root) is only for a
+one-off upload from your own machine.
 
-The server serves `backend/public/widget-business.js` as committed. The Docker
-build context is `backend/` alone, so the widget cannot be built in the
-image: **a change to `widget-business/src` reaches the live app only when the
-bundle is rebuilt and committed with it.** From `backend/`:
+The image builds the owner's widget itself and serves it as
+`public/widget-business.js`, so a change to `widget-business/src` needs no
+built file committed with it; the bundle is gitignored. To serve the widget
+from a local backend, build it once from `backend/`:
 
 ```bash
 npm run build:widget-business   # builds ../widget-business, copies dist/widget-business.js here
-git add public/widget-business.js
 ```
 
 To see which build is live, open `/healthz` on the app: `commit` is the
@@ -140,3 +143,7 @@ per-criterion verdicts with evidence, what each verification stage actually
 ran, and an honest list of what still needs a human with a screen reader. It
 does not claim conformance, which is a habit the report itself keeps too:
 what was measured is stated, what was not is named.
+
+## Licence
+
+EUPL-1.2, in [`LICENSE`](LICENSE). Some files in this repository belong to others and are not covered; [`NOTICE.md`](NOTICE.md) lists them.

@@ -7,16 +7,14 @@ export interface NavSection extends NavTarget {
 }
 
 /**
- * The shell's jump list, in Google's Material Design 3 language rather
- * than the report's own Carbon-derived kit — a deliberate one-off, per
- * request, styled against a Material nav-rail reference (Google Drive's
- * sidebar): a tonal surface with no hairline border, and the current
- * section carried by a full pill fill rather than Carbon's square card +
- * left-border accent. `.a11y-shell-nav*` in styles.css defines the
- * Material color roles and shape tokens this reads from, scoped to this
- * component so the rest of the report's Carbon tokens are untouched.
+ * The shell's jump list, set apart from the rest of the report's kit — a
+ * deliberate one-off, per request: a tonal surface with no hairline
+ * border, and the current section carried by a full fill rather than a
+ * square card with a left-border accent. `.a11y-shell-nav*` in styles.css
+ * defines the colour roles and shape tokens this reads from, scoped to
+ * this component so the rest of the report's tokens are untouched.
  *
- * The links stay real `<a>` elements rather than a Material-flavoured
+ * The links stay real `<a>` elements rather than a styled
  * Button: nothing in this app's Button can forward `href`, `aria-current`,
  * or a ref, so it can't be a real link, can't carry current-section state,
  * and can't be the target `document.activeElement` checks land on.
@@ -119,9 +117,10 @@ export function SideNav({
       <ul id={listId} data-open={open}>
         {groupSections(sections).map((g) => (
           <li key={g.label} className="a11y-shell-nav-group">
-            {/* No label over a group that is one link of the same name —
-                "Score" above "Score" said it twice. */}
-            {!(g.items.length === 1 && g.items[0].label === t(g.label)) && (
+            {/* No label over a group whose first link has the same name:
+                "Score" above "Score" said it twice, with or without "Since
+                last time" under it. */}
+            {g.items[0].label !== t(g.label) && (
               <span className="a11y-shell-nav-group-label" aria-hidden="true">{t(g.label)}</span>
             )}
             <ul aria-label={t(g.label)}>

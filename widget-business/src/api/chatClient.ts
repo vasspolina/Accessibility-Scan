@@ -10,6 +10,7 @@
  */
 
 import { t } from "../lib/strings";
+import { getLang } from "../lib/i18n";
 
 export type ChatBlock = Record<string, unknown> & { type: string };
 export type ChatMessage = { role: "user" | "assistant"; content: string | ChatBlock[] };
@@ -101,14 +102,16 @@ export async function sendChatTurn(
     response = await fetch(`${apiBase.replace(/\/$/, "")}/api/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages }),
+      // The reader's Language choice: the assistant answers in it whatever
+      // language the question is typed in.
+      body: JSON.stringify({ messages, language: getLang() }),
       signal,
     });
   } catch (err) {
     if (err instanceof DOMException && err.name === "AbortError") throw err;
     // A dropped connection is not the server saying it has no assistant:
     // the next message asks again.
-    throw new ChatError(t("Could not reach the assistant. Try sending that again."));
+    throw new ChatError(t("Couldn't reach the assistant. Try sending that again."));
   }
 
   // Only the server's own word switches the assistant off: the route is
@@ -127,8 +130,8 @@ export async function sendChatTurn(
       response.status === 413
         ? t("This conversation is too long to continue. Send your question again to start a new one.")
         : response.status === 503
-          ? t("Could not reach the assistant. Try sending that again.")
-          : t("The assistant could not answer that."),
+          ? t("Couldn't reach the assistant. Try sending that again.")
+          : t("The assistant couldn't answer that."),
       response.status
     );
   }
@@ -172,6 +175,21 @@ export async function sendChatTurn(
   return result;
 }
 
+/** The history to answer again after a switch of language: everything up
+ *  to the latest answer, so it ends on the person's turn. Null when the
+ *  history does not end on a finished answer: nothing yet, a turn still
+ *  waiting on a tool result, or an answer that called a tool (a scan or a
+ *  section), which asking again would run a second time. The answer is
+ *  dropped whole, never edited, so the history stays valid for the API. */
+export function beforeLastAnswer(history: ChatMessage[]): ChatMessage[] | null {
+  const last = history[history.length - 1];
+  if (history.length < 2 || !last || last.role !== "assistant") return null;
+  if (history[history.length - 2].role !== "user") return null;
+  if (Array.isArray(last.content) && last.content.some((b) => b.type === "tool_use")) return null;
+  if (!textOf(last.content).trim()) return null;
+  return history.slice(0, -1);
+}
+
 /** The history with blocks added as the person's turn. Joined to a user
  *  message already at the end rather than following it: tool results must
  *  sit in the one message right after the assistant turn that called the
@@ -203,7 +221,7 @@ export function unansweredToolUses(content: ChatBlock[], answered: Iterable<stri
       content:
         b.name === "start_scan"
           ? "One scan at a time. Ask for this address again once the first scan has finished."
-          : "The checker could not act on this call.",
+          : "The checker couldn't act on this call.",
     }));
 }
 

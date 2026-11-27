@@ -1,0 +1,76 @@
+# Proves the three install paths before anything is published: the Action
+# (uses: ./), the CLI image, and the npm package's contents.
+name: Install paths
+
+on:
+  push:
+    paths:
+      - "action.yml"
+      - "backend/cli.Dockerfile"
+      - "backend/package.json"
+      - "backend/package-lock.json"
+      - ".github/workflows/action.yml"
+  pull_request:
+    paths:
+      - "action.yml"
+      - "backend/cli.Dockerfile"
+      - "backend/package.json"
+      - "backend/package-lock.json"
+      - ".github/workflows/action.yml"
+
+jobs:
+  action:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scan with no threshold (exit 0)
+        uses: ./
+        with:
+          url: https://example.com
+          args: --json report.json
+      - run: test -s report.json
+      - name: A threshold it cannot meet (exit 1)
+        id: strict
+        continue-on-error: true
+        uses: ./
+        with:
+          url: https://example.com
+          args: --min-score 100
+          summary: "false"
+      # The backend job's smoke test relies on the same: example.com does not score 100.
+      - run: test "${{ steps.strict.outputs.exit-code }}" = "1"
+
+  image:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -f backend/cli.Dockerfile -t a11y-scan backend
+      - run: docker run --rm -v "$PWD:/work" a11y-scan https://example.com --sarif out.sarif --quiet
+      - run: node -e "const s=JSON.parse(require('fs').readFileSync('out.sarif','utf8')); if(s.version!=='2.1.0') process.exit(1)"
+
+  package:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      # What npm would publish: the compiled command and the README, never
+      # public/ (the widgets and trial fonts belong to the hosted service).
+      - name: Package contents
+        run: |
+          npm pack --dry-run --json > pack.json
+          node -e "
+            const files = JSON.parse(require('fs').readFileSync('pack.json','utf8'))[0].files.map(f => f.path);
+            const need = ['dist/cli.js', 'dist/mcp.js', 'README.md', 'package.json'];
+            const missing = need.filter(n => !files.includes(n));
+            const leaked = files.filter(f => f.startsWith('public/') || f.endsWith('.woff2') || f.startsWith('test/') || f.startsWith('src/'));
+            if (missing.length || leaked.length) { console.error({ missing, leaked }); process.exit(1); }
+            console.log(files.length + ' files');
+          "

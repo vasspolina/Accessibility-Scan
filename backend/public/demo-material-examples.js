@@ -1,0 +1,839 @@
+// Dev-harness fixture. Loaded by index.html (dev server only — the library
+// build never sees this file). Does nothing unless the page is opened with
+// ?fixture in the URL, in which case it:
+//   - stubs window.fetch for /api/scan and /api/audit with canned reports,
+//     so every view and state of the widget can be rendered and audited
+//     without a running backend;
+//   - loads axe-core (copy backend/node_modules/axe-core/axe.min.js to
+//     ./axe.dev.js — gitignored) so the rendered widget can be scanned with
+//     the same engine the product itself uses.
+//
+// Special URLs: scan anything containing "error" for the error state, or
+// "blocked" for the bot-wall state.
+//
+// ?fixture on its own stops at the form. To render a state that only exists
+// after a submit, name it — ?fixture=report, ?fixture=error, ?fixture=blocked,
+// with &audience=professional and &scope=site to pick the report variant, and
+// &at=score (or &at=<element-id>) to park that section at the top of the
+// viewport once it exists. See the auto-run block at the foot of this file.
+(function () {
+  if (!location.search.includes("fixture")) return;
+
+  var axeScript = document.createElement("script");
+  axeScript.src = "/axe.dev.js";
+  document.head.appendChild(axeScript);
+
+  // A drawn placeholder, not a real capture. The first version was a 1x1
+  // grey pixel, which rendered as a blank white box — next to copy like
+  // "written from the actual image" that read as the product failing, and it
+  // was reported as exactly that. A fixture's fake data has to look fake on
+  // purpose: this one is a grey card that says SAMPLE across it.
+  function sampleShot(label) {
+    var c = document.createElement("canvas");
+    c.width = 480; c.height = 160;
+    var g = c.getContext("2d");
+    g.fillStyle = "#e8e8e8"; g.fillRect(0, 0, 480, 160);
+    g.fillStyle = "#c6c6c6"; g.fillRect(0, 0, 480, 28);
+    for (var y = 48; y < 150; y += 22) {
+      g.fillStyle = "#cfcfcf";
+      g.fillRect(16, y, 300 + ((y * 7) % 120), 10);
+    }
+    g.fillStyle = "#8d8d8d";
+    g.font = "bold 28px system-ui, sans-serif";
+    g.textAlign = "center";
+    g.fillText(label || "SAMPLE", 240, 100);
+    return c.toDataURL("image/jpeg", 0.7).split(",")[1];
+  }
+  var TINY_JPEG = sampleShot("SAMPLE");
+
+  function finding(over) {
+    return Object.assign(
+      {
+        id: Math.random().toString(36).slice(2),
+        source: "automated",
+        severity: "moderate",
+        category: "accessibility",
+        selector: "body > main > p",
+        description: "Example finding",
+        suggestedFix: "Fix it like `this`.",
+        ruleId: "color-contrast",
+        wcagCriterion: "1.4.3",
+        wcagLevel: "AA",
+        helpUrl: "https://dequeuniversity.com/rules/axe/4.10/color-contrast",
+      },
+      over
+    );
+  }
+
+  function makeReport(url) {
+    var findings = [
+      // The consent-banner screen-reader check, in its flag state: the
+      // booking.com shape the 18 Aug 2026 EU sweep measured.
+      finding({
+        id: "f0-consent",
+        severity: "critical",
+        ruleId: "consent-blocks-reader",
+        wcagCriterion: "4.1.2",
+        wcagLevel: "A",
+        selector: "#consent-layer",
+        elementSnippet: '<div id="consent-layer" class="cookie-banner">',
+        description:
+          "While the cookie banner is up, 97% of the page's text is marked hidden for assistive technology, and keyboard focus never lands inside the banner.",
+        suggestedFix:
+          "Move focus into the banner when it opens and keep it there until a choice is made — or stop hiding the page behind it.",
+        helpUrl: "https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/",
+      }),
+      finding({
+        id: "f1",
+        severity: "serious",
+        selector: ".hero > a.cta",
+        elementSnippet: '<a href="/pricing" class="cta">See pricing</a>',
+        description: "Text has a contrast of 2.9:1, below the 4.5:1 minimum.",
+        suggestedFix: "Darken the text colour until it reaches 4.5:1.",
+        elementScreenshot: TINY_JPEG,
+        elementBox: { x: 0.12, y: 0.34, width: 0.5, height: 0.3 },
+        suggestedColour: { from: "#8a9bb0", to: "#4a617f", background: "#ffffff", ratio: 4.6, required: 4.5 },
+        ageNote: "Contrast this faint sits below what reduced contrast sensitivity, a common change past sixty, can reliably resolve.",
+      }),
+      finding({
+        id: "f2",
+        severity: "serious",
+        selector: "footer .legal",
+        elementSnippet: '<span class="legal">All rights reserved</span>',
+        description: "Text has a contrast of 3.2:1, below the 4.5:1 minimum.",
+        suggestedFix: "Darken the text colour until it reaches 4.5:1.",
+      }),
+      finding({
+        id: "f3",
+        severity: "serious",
+        selector: "nav .muted",
+        elementSnippet: '<a href="/about" class="muted">About</a>',
+        description: "Text has a contrast of 4.1:1, below the 4.5:1 minimum.",
+        suggestedFix: "Darken the text colour until it reaches 4.5:1.",
+      }),
+      finding({
+        id: "f4",
+        severity: "critical",
+        ruleId: "image-alt",
+        wcagCriterion: "1.1.1",
+        wcagLevel: "A",
+        selector: ".gallery img:nth-child(1)",
+        elementSnippet: '<img src="/bike.jpg">',
+        description: "Image has no alt attribute.",
+        suggestedFix: "Describe the image in an alt attribute.",
+        elementScreenshot: TINY_JPEG,
+        elementBox: { x: 0.04, y: 0.18, width: 0.9, height: 0.7 },
+        suggestedAltText: "A red bicycle leaning against a brick wall",
+        helpUrl: "https://dequeuniversity.com/rules/axe/4.10/image-alt",
+      }),
+      finding({
+        id: "f5",
+        severity: "critical",
+        ruleId: "image-alt",
+        wcagCriterion: "1.1.1",
+        wcagLevel: "A",
+        selector: ".gallery img:nth-child(2)",
+        elementSnippet: '<img src="/divider.png">',
+        description: "Image has no alt attribute.",
+        suggestedFix: "Describe the image in an alt attribute.",
+        suggestedAltText: "",
+      }),
+      finding({
+        id: "f6",
+        severity: "minor",
+        ruleId: "link-name-vague",
+        wcagCriterion: "2.4.4",
+        wcagLevel: "A",
+        selector: ".news a.more",
+        elementSnippet: '<a href="/posts/spring-opening" class="more">Read more</a>',
+        description: "Link text says nothing about where it goes.",
+        suggestedFix: "Name the destination in the link text.",
+        // The AI fix (backend aiReview/suggestCodeFix.ts), as the scan
+        // returns it when the AI review ran.
+        suggestedCode: {
+          before: '<a href="/posts/spring-opening" class="more">Read more</a>',
+          after: '<a href="/posts/spring-opening" class="more">Read more about the spring opening</a>',
+          note: "The link now names its destination, taken from its address. Check the wording matches the post.",
+          model: "fixture",
+        },
+      }),
+      finding({
+        id: "f7",
+        source: "ai-review",
+        severity: "moderate",
+        category: "design-clarity",
+        ruleId: undefined,
+        wcagCriterion: "N/A",
+        wcagLevel: undefined,
+        selector: "main p",
+        title: "Body text is set very small",
+        description: "Paragraph text across the page is around 12px, which many readers will struggle with.",
+        suggestedFix: "Raise body text to at least 16px.",
+        confidence: "high",
+        helpUrl: undefined,
+      }),
+      // Two more notes so the kind filter has something to filter. One note
+      // produced one pill, which cannot show that pressing it excludes
+      // anything — the state looked right and proved nothing.
+      finding({
+        id: "f7b",
+        source: "ai-review",
+        severity: "minor",
+        category: "design-clarity",
+        ruleId: undefined,
+        wcagCriterion: "N/A",
+        wcagLevel: undefined,
+        selector: ".cookie-bar",
+        title: "Pinned bars crowd the phone screen",
+        description:
+          "A cookie bar and a header are both fixed to the viewport, leaving little of the page visible on a phone.",
+        suggestedFix: "Let one of the two scroll away with the page.",
+        confidence: "medium",
+        helpUrl: undefined,
+      }),
+      finding({
+        id: "f7c",
+        source: "ai-review",
+        severity: "minor",
+        category: "design-clarity",
+        ruleId: undefined,
+        wcagCriterion: "N/A",
+        wcagLevel: undefined,
+        selector: ".teaser__kicker",
+        title: "Buttons look the same as plain sentences",
+        description:
+          "Several controls carry no border, fill or underline, so nothing marks them as things you can press.",
+        suggestedFix: "Give every control a visible boundary.",
+        confidence: "medium",
+        helpUrl: undefined,
+      }),
+      finding({
+        id: "f8",
+        severity: "moderate",
+        category: "dark-pattern",
+        ruleId: "countdown-pressure",
+        wcagCriterion: "N/A",
+        wcagLevel: undefined,
+        selector: ".offer .countdown",
+        title: "A countdown pressures the visitor",
+        description: "A ticking countdown implies the offer expires, and it resets on reload.",
+        suggestedFix: "Remove the countdown or make it truthful.",
+        helpUrl: undefined,
+      }),
+      finding({
+        id: "f9",
+        severity: "serious",
+        ruleId: "focus-not-visible",
+        wcagCriterion: "2.4.7",
+        wcagLevel: "AA",
+        selector: ".menu button",
+        elementSnippet: '<button class="menu-toggle" aria-label="Menu"></button>',
+        description: "Keyboard focus is invisible on this control.",
+        suggestedFix: "Restore the focus outline, or draw your own of at least 2px.",
+      }),
+    ];
+
+    var srLines = [];
+    var kinds = ["landmark", "heading", "link", "button", "image", "field", "list", "text"];
+    for (var i = 0; i < 16; i++) {
+      srLines.push({
+        text:
+          i === 3
+            ? "button, unlabelled"
+            : i === 7
+              ? "link, Read more"
+              : i === 12
+                ? "image, bike dot jpg"
+                : "Announcement " + (i + 1) + " of the page content",
+        kind: kinds[i % kinds.length],
+        selector: "sel-" + i,
+        issue:
+          i === 3
+            ? "A button with no name. The listener hears only 'button'."
+            : i === 7
+              ? "Nine links on this page all announce 'Read more'."
+              : i === 12
+                ? "The file name is read out in place of a description."
+                : undefined,
+      });
+    }
+
+    function crit(id, name, level, status, plain, failing, count) {
+      return {
+        id: id,
+        name: name,
+        level: level,
+        coverage: status === "needs-review" ? "manual" : "automated",
+        plain: plain,
+        failing: failing,
+        status: status,
+        findingCount: count,
+      };
+    }
+
+    var conformance = {
+      standard: "WCAG 2.1 AA",
+      failed: 2,
+      noIssuesFound: 25,
+      needsReview: 22,
+      notMeasured: 1,
+      total: 50,
+      failedByLevel: { A: 1, AA: 1 },
+      criteria: [
+        crit("1.1.1", "Non-text Content", "A", "failed", "Do images have descriptions?", "Two images have no description at all.", 2),
+        crit("1.4.3", "Contrast (Minimum)", "AA", "failed", "Can the text be read against its background?", "Three places are too pale to read.", 3),
+        crit("2.1.1", "Keyboard", "A", "no-issues-found", "Does everything work with a keyboard?", "", 0),
+        crit("2.4.7", "Focus Visible", "AA", "no-issues-found", "Can you see where the keyboard is?", "", 0),
+        crit("1.2.2", "Captions (Prerecorded)", "A", "needs-review", "Do videos have captions?", "", 0),
+        // The check-fell-over state. Real reports carry which check broke;
+        // the fixture names one so the row renders the way production would.
+        Object.assign(
+          crit("1.4.10", "Reflow", "AA", "not-measured", "Does the page work at phone width without sideways scrolling?", "", 0),
+          { notMeasured: ["phone layout"] }
+        ),
+        crit("3.1.5", "Reading Level", "AAA", "needs-review", "Is the wording plain enough?", "", 0),
+      ],
+    };
+
+    var isPdf = url.includes("pdf");
+    return {
+      url: url,
+      scannedAt: new Date().toISOString(),
+      score: 62,
+      summary: { critical: 2, serious: 4, moderate: 2, minor: 1, total: 9 },
+      categorySummary: { accessibility: 7, designClarity: 3, darkPattern: 1 },
+      findings: findings,
+      screenReaderScript: { lines: srLines, truncated: true },
+      conformance: conformance,
+      wcag22: {
+        standard: "WCAG 2.2",
+        expectedFrom: "October 2026",
+        alreadyFailing: 1,
+        needsReview: 4,
+        total: 6,
+        parsingNoLongerCounts: true,
+        criteria: [
+          {
+            id: "2.4.11",
+            name: "Focus Not Obscured (Minimum)",
+            level: "AA",
+            coverage: "automated",
+            plain: "Does the sticky header cover what you tabbed to?",
+            failing: "The sticky header covers focused links beneath it.",
+            status: "already-failing",
+            findingCount: 2,
+          },
+          { id: "2.5.7", name: "Dragging Movements", level: "AA", coverage: "manual", plain: "Can every drag be done another way?", failing: "", whyManual: "Only a person can try the drag.", status: "needs-review", findingCount: 0 },
+          // The check-fell-over state, renderable without a broken backend:
+          // an "automated" 2.2 criterion whose evidence pass died this scan.
+          { id: "2.5.8", name: "Target Size (Minimum)", level: "AA", coverage: "automated", plain: "Are tap targets big enough?", failing: "Some things you tap are under 24 pixels and packed close together.", status: "not-measured", findingCount: 0 },
+          { id: "3.2.6", name: "Consistent Help", level: "A", coverage: "manual", plain: "Is help in the same place on every page?", failing: "", status: "needs-review", findingCount: 0 },
+          { id: "3.3.7", name: "Redundant Entry", level: "A", coverage: "manual", plain: "Does a form ask for the same thing twice?", failing: "", status: "needs-review", findingCount: 0 },
+          { id: "3.3.8", name: "Accessible Authentication", level: "AA", coverage: "manual", plain: "Can you sign in without solving a puzzle?", failing: "", status: "needs-review", findingCount: 0 },
+        ],
+      },
+      undecidedChecks: [
+        { ruleId: "color-contrast", count: 12, help: "Contrast could not be measured over an image background.", helpUrl: "https://dequeuniversity.com/rules/axe/4.10/color-contrast" },
+        { ruleId: "consent-layer-unheralded", count: 1, help: "The cookie layer has no dialog role, no name, and keyboard focus never reaches it.", helpUrl: "https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/" },
+        { ruleId: "media-video-captions", count: 3, help: "Video with no captions track", helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/captions-prerecorded.html" },
+        { ruleId: "media-embedded-player", count: 2, help: "Video embedded from another site", helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/captions-prerecorded.html" },
+        { ruleId: "interaction-key-shortcuts", count: 1, help: "The page listens for key presses everywhere", helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/character-key-shortcuts.html" },
+        { ruleId: "interaction-acts-on-change", count: 2, help: "Controls that may act as soon as you set them", helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/on-input.html" },
+        { ruleId: "interaction-pointer-cancellation", count: 4, help: "Controls that act the moment they are pressed", helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/pointer-cancellation.html" },
+        { ruleId: "media-audio-transcript", count: 1, help: "Audio with no transcript we can see", helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/audio-only-and-video-only-prerecorded.html" },
+        // The page's linked documents, with the sentences the server writes
+        // (services/documents/linkedDocuments.ts). The widget words these
+        // rows itself by ruleId; `help` is what the assistant's digest reads.
+        { ruleId: "pdf-linked-not-checked", count: 7, help: "This page links to 9 PDF documents. The scan opened 2 and did not open 7: 7 come after the first 2, which is all a page scan opens.", helpUrl: "https://www.w3.org/WAI/WCAG21/Techniques/#pdf" },
+        { ruleId: "pdf-linked-faults", count: 2, help: "The scan opened 2 linked PDF documents and 2 have faults: no tags (1), no title (1), no language set (1). They are the document's faults and are not in this page's score.", helpUrl: "https://www.w3.org/WAI/WCAG21/Techniques/#pdf" },
+        { ruleId: "office-linked-not-checked", count: 1, help: "This page links to 1 Word, Excel or PowerPoint file. The scan counts these and does not open them." },
+      ],
+      pagePreview: TINY_JPEG,
+      // The fixture report carries a consent finding, so it also carries the
+      // behind-the-banner preview that ships with one.
+      pagePreviewBehindConsent: TINY_JPEG,
+      meta: {
+        axeVersion: "4.10.2",
+        renderTimeMs: 1234,
+        aiReviewTimeMs: 8000,
+        aiReviewStatus: "completed",
+        incompleteChecks: ["phone-layout walk"],
+        // The overlay note (components/OverlayNotes.tsx). A made-up vendor
+        // on a reserved domain, so the fixture names no real product; the
+        // address is long on purpose, since it is the one unbroken string
+        // in the notice and the reflow check should meet it at 320px.
+        // &overlay=script shows the other case: script there, widget not.
+        overlays: isPdf
+          ? undefined
+          : [
+              {
+                vendor: "Example Overlay",
+                scriptUrl: "https://cdn.overlay-vendor.example/apps/widget/dist/js/loader.min.js",
+                widgetOnPage: new URLSearchParams(location.search).get("overlay") !== "script",
+              },
+            ],
+        documentKind: isPdf ? "pdf" : undefined,
+        documentPages: isPdf ? 4 : undefined,
+      },
+    };
+  }
+
+  function makeAudit(url) {
+    return {
+      entryUrl: url,
+      scannedAt: new Date().toISOString(),
+      pagesScanned: 3,
+      pagesFailed: 1,
+      averageScore: 71,
+      worstPage: { url: url + "/contact", label: "Contact", score: 54, findingCount: 12 },
+      pages: [
+        { url: url, label: "Home", score: 78, findingCount: 6 },
+        { url: url + "/contact", label: "Contact", score: 54, findingCount: 12 },
+        { url: url + "/legal", label: "Legal", score: 0, findingCount: 0, error: "The page took too long to load." },
+      ],
+      consistency: [
+        {
+          criterion: "3.2.3",
+          ruleId: "nav-order-inconsistent",
+          title: "The menu is in a different order on some pages",
+          description: "The menu on the home page lists its links in one order, and 2 other pages list the same links in a different one. People who navigate by position \u2014 by memory, by keyboard, or with a screen magnifier showing part of the screen at a time \u2014 have to find the menu again on every page.",
+          pages: ["https://example.com/", "https://example.com/about", "https://example.com/shop"],
+        },
+        {
+          criterion: "3.2.4",
+          ruleId: "nav-name-inconsistent",
+          title: "The same link is called different things",
+          description: "One link goes to the same place under more than one name \u2014 for example \u201cbasket\u201d on one page and \u201ccart\u201d on another. Anyone who learned the first name has to work out that the second one is the same thing.",
+          pages: ["https://example.com/", "https://example.com/shop"],
+        },
+      ],
+      siteWide: [
+        { ruleId: "image-alt", title: "Images have no descriptions", severity: "critical", pageCount: 3, totalOccurrences: 9, wcagCriterion: "1.1.1" },
+        { ruleId: "color-contrast", title: "Text is too pale to read", severity: "serious", pageCount: 3, totalOccurrences: 21, wcagCriterion: "1.4.3" },
+      ],
+      conformance: makeReport(url).conformance,
+    };
+  }
+
+  // ---- The milestone stream, faked ----------------------------------------
+  // The widget opens EventSource(/api/scan/progress/:id) beside the POST and
+  // narrates what arrives. Here the itinerary plays on a timer inside the
+  // fetch delay, so the narration is drivable — and screenshotable — with no
+  // backend. ?fixture=noprogress silences it, which is the fallback path
+  // (an old backend, a refused stream) kept reachable for testing.
+  var RealEventSource = window.EventSource;
+  var MILESTONE_SEQUENCE = [
+    "load", "rules", "screen-reader", "photograph", "keyboard",
+    "text-resize", "phone", "ai-review", "report",
+  ];
+  function FakeScanEventSource(url) {
+    var self = this;
+    this.url = String(url);
+    this.readyState = 0;
+    this.onmessage = null;
+    this.onerror = null;
+    var step = 0;
+    this._timer = setInterval(function () {
+      self.readyState = 1;
+      if (step >= MILESTONE_SEQUENCE.length) return; // "done" comes with the report
+      if (self.onmessage) self.onmessage({ data: MILESTONE_SEQUENCE[step] });
+      step += 1;
+    }, 160);
+  }
+  FakeScanEventSource.prototype.close = function () {
+    this.readyState = 2;
+    clearInterval(this._timer);
+  };
+  if (!location.search.includes("noprogress")) {
+    window.EventSource = function (url) {
+      if (/\/api\/scan\/progress\//.test(String(url))) return new FakeScanEventSource(url);
+      return new RealEventSource(url);
+    };
+  }
+
+  // ---- The assistant, faked ----------------------------------------------
+  // Streams server-sent events the way /api/chat does, from canned logic:
+  // an address starts a scan, a scan result gets a summary built from the
+  // digest, anything else gets an answer read off the digest. Not a model —
+  // a stand-in good enough to drive every state of the conversation.
+  // &nochat makes the server answer 503, the "no assistant" fallback.
+  var chatCalls = 0;
+  function chatStub(body) {
+    if (location.search.includes("nochat")) {
+      return Promise.resolve(new Response(JSON.stringify({ error: "chat_unavailable" }), { status: 503, headers: { "Content-Type": "application/json" } }));
+    }
+    var messages = (body && body.messages) || [];
+    var last = messages[messages.length - 1] || {};
+    var blocks = typeof last.content === "string" ? [{ type: "text", text: last.content }] : (last.content || []);
+    // The scan's result only: a shown section's result can share the message
+    // with the person's next words (the widget joins them, as the API wants).
+    var toolResult = blocks.find(function (b) { return b.type === "tool_result" && /^toolu_fixture_\d+$/.test(b.tool_use_id); });
+    var userText = blocks.filter(function (b) { return b.type === "text"; }).map(function (b) { return b.text; }).join(" ");
+
+    var digest = null;
+    messages.forEach(function (m) {
+      (Array.isArray(m.content) ? m.content : []).forEach(function (b) {
+        if (b.type === "tool_result" && !b.is_error) { try { digest = JSON.parse(b.content); } catch (e) {} }
+      });
+    });
+
+    var text, content, scan = null, showReq = [], searchQuery = null;
+    function sectionAsked(t) {
+      var map = [
+        [/law|legal|checklist|comply|compliance/i, "checklist", "legal checklist"],
+        [/statement/i, "statement", "draft statement"],
+        [/vpat|procurement|buyer/i, "vpat", "conformance report"],
+        [/screen ?reader|sound/i, "screenreader", "screen reader preview"],
+        [/colou?r ?blind|vision|simulat/i, "simulator", "vision simulator"],
+        [/setting|report style/i, "settings", "settings"],
+        // Needs an account, which the fixture never has: the way to see
+        // what a section this scan cannot show looks like.
+        [/history|since last time/i, "history", "history"],
+      ];
+      for (var i = 0; i < map.length; i++) if (map[i][0].test(t)) return { key: map[i][1], label: map[i][2] };
+      return null;
+    }
+    if (toolResult) {
+      if (toolResult.is_error) {
+        text = "The scan did not finish. " + String(toolResult.content).replace(/^The scan did not complete: /, "");
+      } else {
+        var d = JSON.parse(toolResult.content);
+        var first = (d.whatPeopleCantUse || []).filter(function (f) { return f.severity === "Fix first"; });
+        text = "The page scores " + d.score + ". " +
+          (first.length
+            ? "Start with " + first.slice(0, 2).map(function (f) { return "\"" + f.title + "\""; }).join(" and ") + "."
+            : "Nothing is marked Fix first.") +
+          " I can also show the legal checklist, a draft statement or the screen reader preview.";
+      }
+      content = [{ type: "text", text: text }];
+    } else {
+      var addr = (userText.match(/\b((?:https?:\/\/)?(?:[a-z0-9-]+\.)+[a-z]{2,}(?:\/[^\s]*)?)/i) || [])[1];
+      if (addr) addr = addr.replace(/[.,;:!?)]+$/, "");
+      if (addr && !/fix|why|what|how/i.test(userText.replace(addr, ""))) {
+        chatCalls += 1;
+        var toolId = "toolu_fixture_" + chatCalls;
+        var wantsSite = /whole site|every page|site-wide/i.test(userText);
+        text = "Checking " + addr + " now.";
+        var input = { url: addr, scope: wantsSite ? "site" : "page", ai_review: /ai|design/i.test(userText) };
+        content = [{ type: "text", text: text }, { type: "tool_use", id: toolId, name: "start_scan", input: input }];
+        scan = { toolUseId: toolId, url: input.url, scope: input.scope, aiReview: input.ai_review };
+      } else if (/\bcode\b|write the fix/i.test(userText)) {
+        // A fix the way the model writes one: steps, a fenced block with
+        // blank lines in it, a numbered step after the block, a link.
+        text =
+          "Give each field a real label joined to it:\n\n" +
+          "1. Add a `<label>` before the field\n2. Match its `for` to the field's `id`\n\n" +
+          "```html\n<label for=\"email\">Email address</label>\n\n<input type=\"email\" id=\"email\" name=\"email\" autocomplete=\"email\" aria-describedby=\"email-hint email-error another-very-long-identifier-that-has-to-wrap\">\n```\n\n" +
+          "3. Click the label and check the cursor lands in the field\n\n" +
+          "More in [the W3C forms tutorial](https://www.w3.org/WAI/tutorials/forms/labels/).";
+        content = [{ type: "text", text: text }];
+      } else if (/deadline|when (did|does|will)|latest|news|look (it )?up|search/i.test(userText)) {
+        // A question the report cannot answer and the model is not sure of:
+        // it searches first. The route tells the widget when the search
+        // starts and what it asked; the text that follows cites a page.
+        searchQuery = "European Accessibility Act deadline";
+        text = "I looked this up. The European Accessibility Act applied to new products and services from 28 June 2025; services already on the market have until 28 June 2030.";
+        content = [
+          { type: "server_tool_use", id: "srvtoolu_fixture", name: "web_search", input: { query: searchQuery } },
+          { type: "web_search_tool_result", tool_use_id: "srvtoolu_fixture", content: [{ type: "web_search_result", url: "https://commission.europa.eu/eaa", title: "European Accessibility Act", encrypted_content: "x", page_age: null }] },
+          { type: "text", text: text, citations: [
+            { type: "web_search_result_location", url: "https://commission.europa.eu/eaa", title: "European Accessibility Act", cited_text: "28 June 2025", encrypted_index: "a" },
+            { type: "web_search_result_location", url: "https://eur-lex.europa.eu/eli/dir/2019/882", title: "Directive (EU) 2019/882", cited_text: "28 June 2030", encrypted_index: "b" },
+          ] },
+        ];
+      } else if (digest && sectionAsked(userText)) {
+        var section = sectionAsked(userText);
+        chatCalls += 1;
+        var showId = "toolu_fixture_show_" + chatCalls;
+        // A message that opens with "show" gets the tool call alone, as a
+        // real model often answers one: no sentence beside the block.
+        // The person's own words are the last text block; a report the
+        // widget attaches comes before them.
+        var ownWords = blocks.filter(function (b) { return b.type === "text"; }).map(function (b) { return b.text; }).pop() || "";
+        var bare = /^\s*show\b/i.test(ownWords);
+        text = bare ? "" : "Here is the " + section.label + ".";
+        var showUse = { type: "tool_use", id: showId, name: "show_section", input: { section: section.key } };
+        content = bare ? [showUse] : [{ type: "text", text: text }, showUse];
+        showReq = [{ toolUseId: showId, section: section.key }];
+      } else if (digest) {
+        var top = (digest.whatPeopleCantUse || [])[0];
+        text = top
+          ? "Start with \"" + top.title + "\". " + (top.whatToDo || "") + " It goes to " + String(top.whoFixes).toLowerCase() + "."
+          : "The report has no findings to rank.";
+        content = [{ type: "text", text: text }];
+      } else {
+        text = "Which address should I check?";
+        content = [{ type: "text", text: text }];
+      }
+    }
+
+    var words = text.split(/(\s+)/);
+    // A search is shown before the words: named when it starts, then with
+    // its query, each held long enough to be seen (ticks are 40ms).
+    var before = searchQuery
+      ? [JSON.stringify({ query: null })].concat(new Array(20).fill(null), [JSON.stringify({ query: searchQuery })], new Array(45).fill(null))
+      : [];
+    var stream = new ReadableStream({
+      start: function (controller) {
+        var enc = new TextEncoder();
+        var i = 0;
+        var tick = setInterval(function () {
+          if (before.length) {
+            var frame = before.shift();
+            if (frame) controller.enqueue(enc.encode("event: searching\ndata: " + frame + "\n\n"));
+            return;
+          }
+          if (i < words.length) {
+            controller.enqueue(enc.encode("event: delta\ndata: " + JSON.stringify({ text: words.slice(i, i + 4).join("") }) + "\n\n"));
+            i += 4;
+            return;
+          }
+          clearInterval(tick);
+          controller.enqueue(enc.encode("event: done\ndata: " + JSON.stringify({ content: content, stopReason: scan || showReq.length ? "tool_use" : "end_turn", scan: scan, show: showReq }) + "\n\n"));
+          controller.close();
+        }, 40);
+      },
+    });
+    return Promise.resolve(new Response(stream, { status: 200, headers: { "Content-Type": "text/event-stream" } }));
+  }
+
+  var realFetch = window.fetch.bind(window);
+  window.fetch = function (input, init) {
+    var target = typeof input === "string" ? input : input.url;
+    if (/\/api\/chat$/.test(target)) {
+      var chatBody = {};
+      try { chatBody = JSON.parse(init && init.body ? init.body : "{}"); } catch (e) { /* ignore */ }
+      return chatStub(chatBody);
+    }
+    // Report a barrier (BarrierReport.tsx): the pilot's routes, canned, so
+    // the whole conversation can be walked through, written report and send
+    // included. Marked SAMPLE so it is never taken for the model's work.
+    var pilot = /\/api\/pilot(\/[a-z]+)?$/.exec(target);
+    if (pilot) {
+      var pb = {};
+      try { pb = JSON.parse(init && init.body ? init.body : "{}"); } catch (e) { /* ignore */ }
+      var json = function (o, ms) {
+        return new Promise(function (resolve) {
+          setTimeout(function () {
+            resolve(new Response(JSON.stringify(o), { status: 200, headers: { "Content-Type": "application/json" } }));
+          }, ms || 300);
+        });
+      };
+      var route = pilot[1] || "";
+      if (route === "") return json({ open: true, stores: true, mails: false }, 50);
+      if (route === "/wake") return json({}, 50);
+      if (route === "/page") {
+        var raw = String(pb.url || "").trim();
+        if (raw.split(/\s+/).length > 3) return json({ url: null, words: true });
+        var u = /^https?:\/\//.test(raw) ? raw : "https://" + raw.replace(/\s+/g, "");
+        return json({ url: u, words: false, reached: true, title: "SAMPLE page title" });
+      }
+      if (route === "/followup") {
+        return json({ question: "SAMPLE follow-up: which control was it?", suggestions: ["The menu button", "The search field"] }, 800);
+      }
+      if (route === "/draft") {
+        return json({
+          model: "sample-model",
+          draft: {
+            title: "SAMPLE: the menu button cannot be reached with the keyboard",
+            explanation: "SAMPLE. Pressing Tab skips the menu button, so the menu cannot be opened without a mouse.",
+            whoItStops: "People who use only a keyboard, and people who use a switch.",
+            steps: ["Open the page.", "Press Tab until you pass the logo.", "The menu button is skipped."],
+            fix: "Make the menu a real button element, or give it tabindex=\"0\" and open it on Enter and Space.",
+            impact: "blocked",
+            wcagCriterion: "2.1.1",
+          },
+        }, 1500);
+      }
+      if (route === "/report") return json({ ok: true }, 600);
+    }
+    if (!/\/api\/(scan|audit)$/.test(target)) return realFetch(input, init);
+
+    var body = {};
+    try {
+      body = JSON.parse(init && init.body ? init.body : "{}");
+    } catch (e) { /* ignore */ }
+    var url = body.url || "https://example.com";
+
+    return new Promise(function (resolve, reject) {
+      setTimeout(function () {
+        if (url.includes("error")) {
+          resolve(new Response(JSON.stringify({
+            error: "There is no page at that address (HTTP 404). Check the address and try again.",
+            reason: { code: "page-status", host: "example.com", status: 404 },
+          }), { status: 422, headers: { "Content-Type": "application/json" } }));
+          return;
+        }
+        if (url.includes("blocked")) {
+          // The backend's own shape: the English sentence, and its values as
+          // `reason` for the widget to word in the reader's language.
+          resolve(new Response(JSON.stringify({
+            error: "example.com turned our scanner away (HTTP 403). Its protection against automated visitors keeps tools like ours out, so this says nothing about how accessible the site is.",
+            reason: { code: "refused", host: "example.com", status: 403 },
+            blocked: true,
+          }), { status: 422, headers: { "Content-Type": "application/json" } }));
+          return;
+        }
+        var payload = /audit$/.test(target) ? makeAudit(url) : makeReport(url);
+        resolve(new Response(JSON.stringify(payload), { status: 200, headers: { "Content-Type": "application/json" } }));
+      }, 1500);
+    });
+  };
+
+  // ---- Auto-run, so report states can be rendered without an interaction ---
+  //
+  // ?fixture alone stops at the form: the report only exists after a submit.
+  // That is fine for driving the widget by hand, and useless for anything that
+  // renders the page fresh and then looks at it — a screenshot tool, a visual
+  // diff, an axe run in CI. Those all get a form, or a blank band where they
+  // scrolled to a report that was never built.
+  //
+  //   ?fixture=report                       a finished report
+  //   ?fixture=report&audience=professional the pro view
+  //   ?fixture=report&scope=site            a whole-site run
+  //   ?fixture=error                        the scan-failed state
+  //   ?fixture=blocked                      the bot-wall state
+  //
+  // It drives the real form rather than seeding state, because the state
+  // belongs to App and nothing outside it can set it — and because a fixture
+  // that takes a different path through the code proves less than one that
+  // does not.
+  var params = new URLSearchParams(location.search);
+  var mode = params.get("fixture");
+
+  // Pin the audience BEFORE the app mounts. App persists the last choice in
+  // localStorage, so once ?audience=professional had been opened, every later
+  // ?fixture=report rendered the professional view from the stored value — the
+  // report was built, just not the one the URL asked for.
+  //
+  // That cost real time: the business view has .a11y-score and the pro view
+  // has .a11y-pro-summary, so a check keyed on the wrong one reads as "the
+  // scan never ran". It looked intermittent only because the two variants were
+  // being opened alternately. A fixture that inherits state from the last run
+  // is not a fixture.
+  try {
+    localStorage.setItem(
+      "a11y-audience-mode",
+      params.get("audience") === "professional" ? "professional" : "business"
+    );
+  } catch (e) { /* private mode — the click below still covers it */ }
+
+  if (mode === "report" || mode === "error" || mode === "blocked") {
+    // The stub branches on the address, so the state is chosen by what we type.
+    var address = mode === "report" ? "example.com" : "example.com/" + mode;
+
+    waitFor(function () {
+      var host = document.getElementById("a11y-widget-business-root");
+      var sr = host && host.shadowRoot;
+      if (!sr) return null;
+      // The conversation is the default entry since 1 Oct 2026; these states
+      // are built through the form, which is one button away.
+      if (!sr.querySelector("#a11y-url-input")) {
+        // By position, not by its words: the label is translated, and an
+        // English-only match left every non-English state stuck at the chat.
+        // Since 18 Nov 2026 the only way to the form is "Scan a page behind
+        // a login", then under the box; "Use the form
+        // instead" in the box row is gone. While this still looked in the
+        // row it found nothing, gave up after 10s, and every report state
+        // of check:reflow measured the chat landing and passed.
+        // Since 20 Nov 2026 (feae924) the button sits in the box's start
+        // group and shows only once the message names an address, so the
+        // harness types the address into the chat box first. It is the
+        // group's only direct-child button on the landing: Voice control's
+        // button is wrapped in .a11y-voice, and Back shows only after a
+        // block was opened. Looking under the box found nothing from then
+        // on, and check:reflow failed every report state as not built.
+        var toForm = sr.querySelector(".a11y-chat .a11y-chat-box-start > button");
+        if (toForm) { toForm.click(); return null; }
+        var chatInput = sr.querySelector("#a11y-chat-input");
+        if (chatInput && !chatInput.value) {
+          var setDraft = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
+          setDraft.call(chatInput, address);
+          chatInput.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
+        }
+        return null;
+      }
+      return sr.querySelector("form.a11y-url-form") ? sr : null;
+    }, function (sr) {
+      // That button opens the form with its login panel open. These states
+      // are public scans, so shut it before anything is typed.
+      var login = sr.querySelector('.a11y-login-toggle[aria-expanded="true"]');
+      if (login) login.click();
+      // Options first — they have to be set before the submit that reads them.
+      if (params.get("scope") === "site") click(sr, "#a11y-scope-site");
+      click(sr, params.get("audience") === "professional" ? "#a11y-aud-pro" : "#a11y-aud-biz");
+
+      var input = sr.querySelector("#a11y-url-input");
+      // React tracks the previous value on the DOM node, so assigning .value
+      // directly is swallowed as a no-op change. Go through the native setter
+      // and then announce it.
+      var setValue = Object.getOwnPropertyDescriptor(
+        window.HTMLInputElement.prototype, "value"
+      ).set;
+      setValue.call(input, address);
+      input.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
+
+      sr.querySelector("form.a11y-url-form").requestSubmit();
+
+      // &at=<id> parks a section at the top of the viewport once the report
+      // exists. Scrolling from outside cannot be relied on: anything that
+      // renders the page fresh — a screenshot tool, a visual diff — starts at
+      // the top and races this auto-run, so it captures a short page and a
+      // blank band where the section had not been built yet. Doing it here
+      // means the scroll happens after the report does, every time.
+      var at = params.get("at");
+      if (at) {
+        var id = at === "score" ? "a11y-score-heading" : at;
+        waitFor(function () {
+          return sr.getElementById(id);
+        }, function (el) {
+          // The heading, not its section: a section can start above its own
+          // title wherever a band is stacked in front of it.
+          el.scrollIntoView({ block: "start", behavior: "instant" });
+          window.scrollBy(0, -24);
+        });
+      }
+    });
+  }
+
+  //   ?fixture=chat           the conversation: asks to check example.com
+  //   ?fixture=chat&nochat    the same with no assistant on the server
+  if (mode === "chat") {
+    waitFor(function () {
+      var host = document.getElementById("a11y-widget-business-root");
+      var sr = host && host.shadowRoot;
+      return sr && sr.querySelector("#a11y-chat-input") ? sr : null;
+    }, function (sr) {
+      var input = sr.querySelector("#a11y-chat-input");
+      // The box is a textarea since 16 Oct 2026; the setter has to match the element.
+      var setValue = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
+      setValue.call(input, "Can you check example.com for me?");
+      input.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
+      setTimeout(function () { sr.querySelector("form.a11y-chat-composer").requestSubmit(); }, 50);
+    });
+  }
+
+  function click(sr, selector) {
+    var el = sr.querySelector(selector);
+    if (el) el.click();
+  }
+
+  // Polls rather than using MutationObserver: the widget mounts once, this
+  // runs once, and a wrong answer here should be a warning in the console and
+  // not a hang with no explanation.
+  function waitFor(read, then) {
+    var waited = 0;
+    var tick = setInterval(function () {
+      var found = read();
+      if (found) { clearInterval(tick); then(found); return; }
+      waited += 50;
+      if (waited >= 10000) {
+        clearInterval(tick);
+        console.warn(
+          "[dev-fixture] gave up waiting for the widget to mount; " +
+          "?fixture=" + mode + " did not run."
+        );
+      }
+    }, 50);
+  }
+})();

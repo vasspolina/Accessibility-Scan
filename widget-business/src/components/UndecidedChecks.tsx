@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { undecidedExplanation } from "../lib/wcagPlain";
 import { t, tf } from "../lib/strings";
+import { getLang } from "../lib/i18n";
 import { fixKindForRule } from "../lib/testMethod";
 import { DataTable } from "./DataTable";
+import { Icon } from "./Icon";
+import { learnMoreClick, useReportView } from "./ReportViewContext";
 
 /* The design's "Export the list" made real. A CSV, because this section is
    the one the owner hands to someone else: it opens in whatever spreadsheet
@@ -43,14 +46,25 @@ export function UndecidedChecks({
 }: {
   rows: Array<{ ruleId: string; count: number; help: string; helpUrl?: string }>;
 }) {
-  const total = rows.reduce((n, r) => n + r.count, 0);
   // Folded to the first three on screen: this section was 55 % of the
   // report's words, aimed at the reader's designer rather than the reader.
   // Every row stays in the DOM so the printed report and the export carry
   // all of them; the fold is a screen-only class, never a conditional.
   const FOLD = 3;
+  const { ask } = useReportView();
   const [showAll, setShowAll] = useState(false);
   const folded = !showAll && rows.length > FOLD;
+  // Which answers are open. Independent per row, as the findings table's
+  // rows are: two answers read side by side is the reader's call.
+  const [open, setOpen] = useState<ReadonlySet<string>>(() => new Set());
+  const toggle = (id: string) =>
+    setOpen((prev) => {
+      const next = new Set(prev);
+      if (!next.delete(id)) next.add(id);
+      return next;
+    });
+  // French sets a space before the colon.
+  const colon = getLang() === "fr" ? " :" : ":";
   // One sentence, translated whole: the visible words come before the
   // arrow, and the rest is said only to a screen reader.
   const [learnMore, learnMoreRest] = t("Learn more {arrow} about this check").split("{arrow}");
@@ -66,15 +80,15 @@ export function UndecidedChecks({
       {/* h2: this is a top-level section of the report, same as its siblings. */}
       <h2 className="a11y-section-title" id="a11y-undecided-heading" data-nav-label={t("Designer and developer")}>
         {t("For your designer and developer")}{" "}
-        <span className="a11y-section-count">({total})</span>
+        <span className="a11y-section-count a11y-count-dot">{rows.length}</span>
       </h2>
       {/* Two sentences: what the checker did, and that none of it is
           scored. The heading names who decides and the Call column says
           whose, so the lead no longer repeats either. */}
       <p className="a11y-section-desc">
-        {total === 1
-          ? t("The checker could not settle this one on its own. It does not count against the score.")
-          : tf("The checker could not settle these {total} on its own. None of them count against the score.", { total })}
+        {rows.length === 1
+          ? t("The scan couldn't decide this one.")
+          : t("The scan couldn't decide these.")}
       </p>
       </div>
       {rows.length > 0 && (
@@ -91,13 +105,18 @@ export function UndecidedChecks({
            the column header can sit over them, but the semantics agree. The
            header strip is aria-hidden: a list has no real columns, and each
            cell carries its own label for a listener. */
+        /* A list of questions (user's instruction, 24 Nov 2026, "apply this
+           design to other elements", after the findings list): each check is
+           one line, the solid triangle, its number and what the checker saw,
+           with the fix kind at the far end as a coloured word. Pressing it
+           opens the answer under it in the round bubble: places as a
+           "Key: value" mono line, what to ask for, and Learn more. The NO /
+           WHAT THE CHECKER SAW / WHAT TO ASK FOR / CALL strip is gone with
+           the columns it headed. The answer is always in the DOM, hidden
+           when shut, so the printed report shows every one (the print rule
+           undoes [hidden]) and the button's aria-controls always points at
+           something real. */
         <div className="a11y-undecided-ledger">
-          <p className="a11y-undecided-heads" aria-hidden="true">
-            <span>{t("No")}</span>
-            <span>{t("What the checker saw")}</span>
-            <span>{t("What to ask for")}</span>
-            <span>{t("Call")}</span>
-          </p>
           <ol className="a11y-undecided-table" aria-label={t("What the checker couldn't decide")}>
             {rows.map((r, i) => {
               const e = undecidedExplanation(r.ruleId);
@@ -107,40 +126,58 @@ export function UndecidedChecks({
               // The same guidance printed under every item of a kind was
               // the report's largest source of repeated sentences. Said once,
               // then pointed at.
-              const firstOfKind = e ? rows.findIndex((x) => undecidedExplanation(x.ruleId)?.ask === e.ask) : i;
+              const isOpen = open.has(r.ruleId);
+              const answerId = `a11y-undecided-answer-${i}`;
               return (
-                <li key={r.ruleId} className={`a11y-undecided-cell${folded && i >= FOLD ? " a11y-undecided-folded" : ""}`}>
-                  <span className="a11y-undecided-no" aria-hidden="true">
-                    {i + 1}
-                  </span>
-                  <p className="a11y-undecided-what">{e ? e.what : r.help}</p>
-                  {e ? (
-                    <p className="a11y-undecided-ask">
-                      <strong className="a11y-sr-only">{t("What to ask for:")} </strong>
-                      {firstOfKind === i ? e.ask : tf("Same as item {number}.", { number: firstOfKind + 1 })}
+                <li
+                  key={r.ruleId}
+                  className={`a11y-undecided-cell${folded && i >= FOLD ? " a11y-undecided-folded" : ""}`}
+                  data-open={isOpen ? "" : undefined}
+                >
+                  <button
+                    type="button"
+                    className="a11y-undecided-q"
+                    aria-expanded={isOpen}
+                    aria-controls={answerId}
+                    onClick={() => toggle(r.ruleId)}
+                  >
+                    <Icon name="caret--right" className="a11y-undecided-caret" />
+                    <span className="a11y-undecided-what">{e ? e.what : r.help}</span>
+                    <span className={`a11y-undecided-kind a11y-kind-${fix.key}`}>{t(fix.label)}</span>
+                  </button>
+                  <div className="a11y-undecided-answer" id={answerId} hidden={!isOpen}>
+                    <p className="a11y-fd-meta">
+                      <span>{`${t("Places")}${colon} ${r.count}`}</span>
+                      {most && <span>{t("Most places")}</span>}
                     </p>
-                  ) : (
-                    <span className="a11y-undecided-ask" />
-                  )}
-                  <span className="a11y-undecided-call">
-                    <span className={`a11y-method-badge a11y-fix-${fix.key}`}>{t(fix.label)}</span>
-                    {most && <span className="a11y-undecided-most">{t("Most places")}</span>}
-                    <span className="a11y-undecided-places">
-                      {r.count === 1 ? t("1 place") : tf("{count} places", { count: r.count })}
-                    </span>
+                    {e && (
+                      <p className="a11y-undecided-ask">
+                        <strong className="a11y-sr-only">{t("What to ask for:")} </strong>
+                        {/* Each answer says its own advice: "Same as item 2"
+                            pointed at the numbers, which are gone (user's
+                            instruction, 25 Nov 2026, "delete numbers"). */}
+                        {e.ask}
+                      </p>
+                    )}
                     {r.helpUrl && (
                       <a
-                        className="a11y-learn-more"
+                        /* The black prompt pill of the opened finding's
+                           Learn more (user's word, 26 Nov 2026, "this
+                           should be button"); it already asks the chat. */
+                        className="a11y-learn-more a11y-learn-prompt"
                         href={r.helpUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        onClick={learnMoreClick(
+                          ask,
+                          tf("Tell me more about this: {issue}", { issue: e ? e.what : r.help }),
+                          r.helpUrl
+                        )}
                       >
                         {learnMore}
-                        <span aria-hidden="true">↗</span>
+                        <Icon name="arrow--right" />
                         <span className="a11y-sr-only">{learnMoreRest}</span>
                       </a>
                     )}
-                  </span>
+                  </div>
                 </li>
               );
             })}

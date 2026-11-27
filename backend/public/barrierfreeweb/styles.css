@@ -1,0 +1,1504 @@
+/* PP Telegraf, the one family of the site (user's instruction, Nov 2026,
+   replacing Jokker, Saans and Serrif). Text is the Light cut; big type is the
+   Ultralight cut (user's instruction, 22 Nov 2026, "use telegraph thin" for
+   big type only), so nothing small is drawn thin. Each is declared for every
+   weight, so a bold label or heading is drawn in the same cut and never faked. */
+@font-face {
+  font-family: "PP Telegraf";
+  src: url("fonts/PPTelegraf-Light.otf") format("opentype");
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "PP Telegraf Display";
+  src: url("fonts/PPTelegraf-Ultralight.otf") format("opentype");
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+/* Jokker VF (Displaay, trial licence), wght 100-900, no italic cut. Check the
+   trial terms before the site goes public. */
+/* the same file again for the italics: Jokker's own slant axis (slnt 0 to -16),
+   drawn by the designer, so nothing is skewed by the browser */
+
+/* BarrierFreeWeb.
+   Layout after the Source Type store page: a dark crumb pill, a centred
+   title, 605px of text beside a 390px grey card, a "Related" row under a
+   rule. Sizes are theirs: 38/40 title, 23/26 headings, 21/27 text,
+   19/24 controls, 15/20 small print; 23/27, 16/21 and 14/19 on a phone.
+   Type as on Source Type. Their faces, Times NR Seven and Rekord, are
+   licensed; the stand-ins were tuned to the same line lengths: STIX Two
+   Text 420 at 0.076em breaks their paragraph on the same words (titles at
+   0.09em, as theirs), Saans Light at 0.1em (0.087em at 19px) matches Rekord at 15px
+   with 1px tracking. Both have true italics. No bold.
+   "What we offer" follows their Information rows (see that block). The
+   displaay colours below are kept but unused; each
+   with black text at 13:1 or better. */
+
+:root {
+  --paper: #ffffff;
+  --ink: #000000;
+  --plate: #000000;
+  --plate-ink: #ffffff;
+  --card: #e3e3e3;      /* Source Type's card */
+  --quiet: #595959;     /* 7:1 on paper, 5.9:1 on the card */
+  --pill: #414141;      /* crumb, current page and buttons: 10.4:1 with white */
+  --chip: #ebebeb;
+  --info-green: #a6ddae; /* Source Type Information page */
+  --brown: #6b3e16;     /* row hover: 8.1:1 on the lime band, 9.6:1 on white */
+  --lime: #e4f5a4;      /* "What we offer" band, light green-yellow: black text 18:1, blue links 8:1 */
+  --page: var(--paper);  /* the ground the sticky header paints */
+  --link: #0000ff;      /* 8.6:1 on paper */
+  --pill-ink: #ffffff;  /* the words on a pill */
+  --mark-bg: #000000;   /* the breadcrumb, the current page, a hovered nav word */
+  --mark-ink: #ffffff;
+  --band-ink: #000000;  /* the words on the sky band */
+  --toc: var(--cream);  /* the section buttons on long pages */
+
+  /* displaay specimen grounds, tiles only */
+  --mint: #beffbd;
+  --cyan: #b8fbff;
+  --sky: #a2e3ff;
+  --pink: #ffa0ff;
+  --yellow: #f8ff58;
+  --cream: #f2f0e6;
+
+  --serif: "PP Telegraf", "Helvetica Neue", Helvetica, Arial, sans-serif;  /* the serif roles, set in Telegraf */
+  --sans: "PP Telegraf", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --serif-track: 0.076em;
+  --title-track: 0.09em;
+  --sans-track: 0.1em;
+  --ui-track: 0.087em;
+
+  --margin: 20px;       /* page margin, as displaay.net: 20px, 10px on a phone */
+  --text-col: 50%;      /* the text runs half the page */
+  --card-col: 390px;
+  --gap: 40px;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+html { background: var(--paper); scroll-padding-top: 100px; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-weight: 420;
+  font-size: 15px;
+  line-height: 20px;
+  letter-spacing: var(--sans-track);
+  font-kerning: normal;
+  font-synthesis: none;  /* one Light cut only: no faked bold, and no sloped roman passed off as italic */
+  font-feature-settings: "ss04", "ss05";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, strong, b { font-weight: inherit; }
+em, i, cite { font-style: italic; }
+
+a { color: var(--link); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
+a:hover { text-decoration-thickness: 2px; }
+
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 0; }
+
+.skip {
+  position: absolute; left: var(--margin); top: -100px; z-index: 100;
+  background: var(--pill); color: var(--pill-ink); text-decoration: none;
+  font-size: 19px; line-height: 24px; letter-spacing: var(--ui-track);
+  padding: 5px 15px; border-radius: 21px;
+}
+.skip:focus { top: 16px; }
+
+.wrap {
+  padding-left: max(var(--margin), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--margin), env(safe-area-inset-right, 0px));
+}
+
+/* ---------- Header: brand, the dark crumb pill, page pills ---------- */
+
+/* The header stays at the top while the page scrolls, on the page's own
+   ground; the band above it (a phone's status bar) is painted to match. */
+body > header {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 20;
+  background: var(--page);
+  padding-bottom: 14px;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  z-index: 21;
+  background: var(--page);
+}
+
+.top {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px;
+  padding-block: 25px 0;
+}
+.top > * { min-width: 0; }
+
+.brand {
+  justify-self: start;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 19px; line-height: 24px; letter-spacing: var(--ui-track);
+}
+
+.crumb {
+  justify-self: center;
+  background: var(--pill);
+  color: var(--mark-ink);
+  border-radius: 21px;
+  padding: 5px 15px;
+  font-size: 19px; line-height: 24px; letter-spacing: var(--ui-track);
+  white-space: nowrap;
+}
+.crumb a { color: var(--mark-ink); text-decoration: none; }
+.crumb a:hover { text-decoration: underline; }
+.crumb ol { list-style: none; margin: 0; padding: 0; display: flex; }
+.crumb li + li::before { content: "\2009\2192\2009"; }
+
+.nav { justify-self: end; }
+.nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+.nav a {
+  display: inline-block;
+  color: var(--ink);
+  text-decoration: none;
+  background: var(--chip);
+  border-radius: 21px;
+  padding: 4px 8px;
+}
+.nav a:hover { background: var(--ink); color: var(--paper); }
+.nav a[aria-current="page"] { background: var(--pill); color: #fff; }
+
+/* ---------- Title ---------- */
+
+.title {
+  font-family: var(--serif);
+  font-size: 38px;
+  line-height: 40px;
+  letter-spacing: var(--title-track);
+  text-align: center;
+  margin: 87px auto 50px;
+  max-width: 980px;
+  text-wrap: balance;
+}
+.title :is(em, .title__sub) { display: block; font-style: italic; }
+
+/* ---------- Columns: 605px of text, 40px, a 390px card ---------- */
+
+.content {
+  display: grid;
+  gap: 81px;
+}
+
+.cols {
+  display: grid;
+  grid-template-columns: minmax(0, var(--text-col)) minmax(0, var(--card-col));
+  gap: var(--gap);
+  justify-content: space-between;
+  align-items: start;
+}
+.cols--single { grid-template-columns: minmax(0, var(--text-col)); }
+
+.text {
+  font-family: var(--serif);
+  letter-spacing: var(--serif-track);
+  font-size: 21px;
+  line-height: 27px;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+.text > * { margin: 0; }
+.text > * + * { margin-top: 27px; }
+.text p { text-wrap: pretty; }
+.text h2 { font-size: 23px; line-height: 26px; text-wrap: balance; }
+.text h2 + * { margin-top: 13px; }
+.text h3 { font: inherit; font-style: italic; }
+.text h3 + * { margin-top: 0; }
+
+.text ul { padding: 0 0 0 1.05em; list-style: disc; }
+.text ul li::marker { font-size: 0.8em; }
+
+.terms { margin: 0; }
+.terms dt, .terms dd { display: inline; margin: 0; }
+.terms dt { font-style: italic; }
+/* the separator is drawn, not written, so each <dt>/<dd> pair stays a valid list item;
+   the empty alt keeps screen readers from reading "dash" */
+.terms dt::after { content: " - " / ""; font-style: normal; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+/* the card: Source Type's store popup */
+.card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
+  min-width: 0;
+  position: sticky;
+  top: 100px;
+}
+.card > * { margin: 0; }
+.card > * + * { margin-top: 20px; }
+.card h2 { font: inherit; font-style: italic; margin: 0; }
+.card h2 + * { margin-top: 6px; }
+.card a { color: var(--ink); }
+
+.offer { list-style: none; margin: 0; padding: 0; }
+.offer li {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+  padding-block: 6px 7px;
+  border-bottom: 1px solid var(--ink);
+}
+.offer li:first-child { border-top: 1px solid var(--ink); }
+
+.action { display: flex; justify-content: flex-end; }
+.text .action { justify-content: flex-start; }
+.btn, .card .btn {
+  display: inline-block;
+  background: var(--pill);
+  color: var(--pill-ink);
+  font-size: 19px; line-height: 24px; letter-spacing: var(--ui-track);
+  padding: 10px 18px;
+  border-radius: 8px;
+  text-decoration: none;
+  text-align: center;
+}
+.btn:hover { background: var(--ink); }
+
+/* ---------- The home plates: black, white type, switching ---------- */
+
+/* Full bleed: the plate runs from one edge of the window to the other,
+   out through the page gutter, and is as tall as the window allows. */
+.plates {
+  margin: 0 calc(-1 * max(var(--margin), env(safe-area-inset-right, 0px))) 72px calc(-1 * max(var(--margin), env(safe-area-inset-left, 0px)));
+}
+.plates__track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+.plates__track::-webkit-scrollbar { display: none; }
+.plate {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  height: clamp(320px, 56.25vw, calc(100vh - 220px));
+  max-width: 100%;
+  background: var(--plate);
+  color: var(--plate-ink);
+  display: grid;
+  place-items: center;
+  padding: 8%;
+  text-align: center;
+}
+.plate p {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(28px, 4.6vw, 88px);
+  line-height: 1.08;
+  letter-spacing: var(--title-track);
+  text-wrap: balance;
+}
+.plates__bar {
+  display: flex; justify-content: center; align-items: center; gap: 18px;
+  margin-top: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.plates__btn {
+  font: inherit; color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--ink);
+  border-radius: 21px;
+  width: 34px; height: 34px;
+  cursor: pointer;
+}
+.plates__btn:hover { background: var(--ink); color: var(--paper); }
+.plates__count { min-width: 3.5em; text-align: center; }
+@media (prefers-reduced-motion: reduce) { .plates__track { scroll-behavior: auto; } }
+
+/* ---------- Instagram posts ---------- */
+
+.post { margin: 0; min-width: 0; }
+.post__img {
+  aspect-ratio: 1 / 1;
+  max-width: 100%;
+  background: var(--paper);          /* "White background with black sans-serif text" */
+  border: 1px solid var(--ink);
+  display: grid;
+  place-items: center;
+  padding: 10%;
+  text-align: center;
+}
+.post__img p { margin: 0; letter-spacing: 0.02em; font-size: clamp(22px, 2.6vw, 32px); line-height: 1.12; text-wrap: balance; }
+.post__img--todo { background: var(--card); border-color: var(--card); }
+.post__img--todo p { font-size: 15px; line-height: 20px; }
+.post figcaption { margin-top: 10px; color: var(--quiet); }
+.tags { font-family: var(--sans); letter-spacing: var(--sans-track); font-size: 15px; line-height: 20px; color: var(--quiet); }
+
+/* ---------- Accessibility: Source Type's Information page ----------
+   Green ground (#a6ddae, black text at 14:1, blue links at 5.9:1), a 100px
+   title, 38/40 section headings with a 2px rule between sections, then
+   three 323px columns: 23/29 subheadings over 17.5/23 text. */
+
+.page-info, html:has(.page-info) { background: var(--info-green); }
+.page-info { --page: var(--info-green); }
+.title--info { font-size: 100px; line-height: 100px; letter-spacing: 0.01em; margin: 60px auto 80px; }
+
+.info {
+  font-family: var(--serif);
+  letter-spacing: 1px;
+}
+.info__section + .info__section { border-top: 2px solid var(--ink); margin-top: 37px; padding-top: 37px; }
+.info__section > h2 { margin: 0 0 37px; font-size: 38px; line-height: 40px; letter-spacing: 0.02em; text-wrap: balance; }
+.info__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 37px 33px;
+  align-items: start;
+}
+.info__item { min-width: 0; font-size: 17.5px; line-height: 23px; }
+.info__item > * { margin: 0; }
+.info__item > * + * { margin-top: 23px; }
+.info__item h3 { font-size: 23px; line-height: 29px; margin: 0 0 6px; }
+.info__item h3 + p { margin-top: 0; }
+.info__item ul { padding-left: 1em; }
+.info__item .action { justify-content: flex-start; margin-top: 16px; }
+
+@media (max-width: 860px) {
+  .info__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .title--info { font-size: 48px; line-height: 50px; margin: 36px auto 40px; }
+  .info__section > h2 { font-size: 23px; line-height: 27px; margin-bottom: 20px; }
+  .info__grid { grid-template-columns: minmax(0, 1fr); gap: 21px; }
+  .info__item { font-size: 16px; line-height: 21px; }
+  .info__item h3 { font-size: 17px; line-height: 21px; }
+}
+
+/* ---------- What we offer: Source Type's Information rows ----------
+   38/40 serif rows between 2px rules, each a button. An open row shows its
+   copy under it: the description at 23/29 on the left, the points at
+   17.5/23 on the right, as in their opened sections. */
+
+.related {
+  margin: 120px 0 0;
+  padding-block: 48px 64px;
+  font-family: var(--serif);
+  letter-spacing: 1px;
+  /* the band runs the full width of the window behind the section */
+  background: var(--lime);
+  box-shadow: 0 0 0 100vmax var(--lime);
+  clip-path: inset(0 -100vmax);
+}
+.related + footer .foot, main:has(.related) + footer .foot { margin-top: 0; }
+.related__label { font-family: var(--sans); letter-spacing: var(--sans-track); font-size: 18px; line-height: 24px; margin: 0 0 16px; }
+.acc { border-bottom: 2px solid var(--ink); }
+.acc__row { border-top: 2px solid var(--ink); }
+.acc__head { margin: 0; font: inherit; }
+.acc__btn {
+  display: block; width: 100%;
+  font: inherit; font-size: 46px; line-height: 48px; letter-spacing: 0.02em;
+  color: var(--ink); background: transparent; border: 0;
+  padding: 28px 0 26px; text-align: left; cursor: pointer;
+}
+.acc__btn:hover { color: var(--brown); }
+.acc__btn:focus-visible { outline-offset: -2px; }
+.acc__panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 40px; align-items: start; padding: 4px 0 44px; }
+.acc__panel[hidden] { display: none; }
+.acc__lede { margin: 0; font-size: 28px; line-height: 35px; letter-spacing: 0.02em; text-wrap: balance; }
+.acc__body { font-size: 21px; line-height: 28px; min-width: 0; }
+.acc__body > * { margin: 0; }
+.acc__body > * + * { margin-top: 28px; }
+.acc__body .terms dt { font-style: italic; }
+
+@media (max-width: 860px) {
+  .acc__panel { grid-template-columns: minmax(0, 1fr); gap: 21px; }
+}
+@media (max-width: 640px) {
+  .related { margin-top: 63px; padding-block: 32px 40px; }
+  .acc__btn { font-size: 28px; line-height: 32px; padding: 19px 0 18px; }
+  .acc__lede { font-size: 21px; line-height: 28px; }
+  .acc__body { font-size: 19px; line-height: 25px; }
+}
+
+/* ---------- Footer ---------- */
+
+.foot {
+  margin: 100px 0 0;
+  padding-block: 16px 80px;
+  border-top: 1px solid var(--ink);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px 40px;
+}
+.foot p { margin: 0; }
+.foot ul { list-style: none; margin: 0; padding: 0; }
+.foot a { color: var(--ink); display: inline-block; min-height: 24px; line-height: 24px; }  /* 24px targets, WCAG 2.5.8 */
+
+/* ---------- Narrower ---------- */
+
+
+@media (max-width: 860px) {
+  .cols, .cols--single { grid-template-columns: minmax(0, 1fr); gap: 25px; }
+  .card { position: static; }
+  .foot { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Phone: Source Type's 390px sizes */
+@media (max-width: 640px) {
+  :root { --margin: 10px; }
+  .wrap {
+    padding-left: max(var(--margin), env(safe-area-inset-left, 0px));
+    padding-right: max(var(--margin), env(safe-area-inset-right, 0px));
+  }
+  body { font-size: 14px; line-height: 19px; }
+  .top { grid-template-columns: 1fr; justify-items: center; padding-block: 12px 0; gap: 8px; }
+  /* On a phone the header wraps to three rows (152px); pinned, it would
+     take a fifth of the screen and crowd zoomed text, so it scrolls. */
+  body > header { position: static; padding-bottom: 10px; }
+  .card { top: 24px; }
+  .brand, .crumb, .nav { justify-self: center; }
+  .nav ul { justify-content: center; }
+  .brand, .crumb, .btn, .skip { font-size: 18px; line-height: 22px; }
+  .crumb { padding: 5px 10px; max-width: 100%; white-space: normal; text-align: center; }
+  .crumb ol { flex-wrap: wrap; justify-content: center; }
+  .btn { padding: 6px 18px; }
+  .title { font-size: 23px; line-height: 27px; margin: 40px auto 20px; }
+  .content { gap: 63px; }
+  .plates {
+    margin: 0 calc(-1 * max(var(--margin), env(safe-area-inset-right, 0px))) 48px calc(-1 * max(var(--margin), env(safe-area-inset-left, 0px)));
+  }
+  .text { font-size: 16px; line-height: 21px; }
+  .text > * + * { margin-top: 21px; }
+  .text h2 { font-size: 17px; line-height: 21px; }
+  .text h2 + * { margin-top: 10px; }
+  .tags, .post__img--todo p { font-size: 14px; line-height: 19px; }
+  .foot { margin-top: 63px; }
+}
+
+/* ==========================================================================
+   Typeset after Displaay's Jokker page (user's reference, Nov 2026).
+   One family, no tracking. A bold title under a 4px rule; uppercase labels
+   over a 1px rule; prose large and tight (24/28); details small (18/23) in
+   a key column and a value column, closed by a 1px rule. No boxes, no
+   italic: Jokker has no italic cut, so terms and subtitles stay upright.
+   ========================================================================== */
+:root { --serif-track: 0; --title-track: 0; --sans-track: 0; --ui-track: 0; }
+body { font-weight: 400; letter-spacing: 0; }
+.info, .related, .title--info, .post__img p { letter-spacing: 0; }
+
+.title {
+  text-align: left; max-width: none; text-wrap: balance;
+  margin: 40px 0 64px; padding-top: 14px;
+  border-top: 4px solid var(--ink);
+  font-size: 64px; line-height: 1; font-weight: 600; letter-spacing: -0.015em;
+  overflow-wrap: break-word; hyphens: auto;  /* one long word must still fit 320px with wide spacing */
+}
+.title :is(em, .title__sub) {
+  font-weight: 400; letter-spacing: 0;
+  font-size: 24px; line-height: 28px; max-width: 32em; margin-top: 28px;
+}
+
+/* The plates: set as the Jokker tester, big, bold, tight, centred */
+.plate p {
+  font-family: var(--sans); font-weight: 600;
+  font-size: clamp(40px, 7.4vw, 140px); line-height: 0.96; letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.plates__count { font-size: 18px; }
+
+.text { font-size: 24px; line-height: 28px; }
+.text > * + * { margin-top: 28px; }
+.text h2, .card > h2:first-child, .related__label {
+  font-size: 16px; line-height: 20px; font-weight: 400; font-style: normal;
+  letter-spacing: 0; text-transform: uppercase;
+  padding-bottom: 10px; border-bottom: 1px solid var(--ink);
+}
+.text h2 + * { margin-top: 16px; }
+.text h3 + * { margin-top: 0; }
+.text * + h2 { margin-top: 56px; }
+
+/* Term lists, set after palace-enterprise.com: no bullets; the term a bold
+   capital label, what it means on the line under it, upright */
+.terms { display: block; padding: 0; border: 0; font-size: inherit; line-height: inherit; }
+.terms > div + div { margin-top: 0.75em; }
+.terms dt, .terms dd, .acc__body .terms dt { display: block; margin: 0; }
+.terms dt, .acc__body .terms dt { font-weight: 600; font-style: normal; text-transform: uppercase; }
+.terms dd { padding-left: 0; font-style: normal; }  /* no indent: the bold capital label already sets the line off */
+.terms dt::after { content: none; }
+
+/* Plain lists: no dots, each item indented (role="list" in the markup keeps
+   them lists for VoiceOver once the markers are gone) */
+.text ul { list-style: none; padding-left: var(--indent); }
+.text ul li::marker { content: none; }
+
+/* Italic, as Palace uses it: for what follows or qualifies a line */
+:root { --indent: 1.33em; }  /* Palace: 20px at 15px */
+em, i, cite { font-style: italic; }
+.title :is(em, .title__sub) { font-style: italic; }
+.text h3 { font-style: italic; font-weight: 400; }
+.card h2:not(:first-child) { font-style: italic; }
+.post figcaption, .tags { font-style: italic; }
+
+/* The card is a details column: rules, not a box */
+.card {
+  background: none; border-radius: 0; box-shadow: none;
+  padding: 10px 0 14px; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink);
+  font-size: 18px; line-height: 23px;
+}
+.card:has(> h2:first-child) { border-top: 0; padding-top: 0; }
+.card > * + * { margin-top: 16px; }
+.card > h2:first-child + * { margin-top: 12px; }
+.card a { color: var(--link); }
+.card .btn { color: var(--pill-ink); }
+
+/* What we offer */
+.related__label { margin: 0; border-bottom: 0; }
+.acc__btn { letter-spacing: -0.01em; }
+.acc__lede { font-size: 28px; line-height: 33px; letter-spacing: 0; }
+.acc__body { font-size: 24px; line-height: 28px; }
+.acc__body > * + * { margin-top: 28px; }
+
+@media (max-width: 640px) {
+  .title { font-size: clamp(30px, 11vw, 40px); margin: 24px 0 40px; padding-top: 10px; }
+  .title :is(em, .title__sub) { font-size: 20px; line-height: 24px; margin-top: 20px; }
+  .text, .acc__body { font-size: 20px; line-height: 24px; }
+  .text > * + *, .acc__body > * + * { margin-top: 24px; }
+  .acc__lede { font-size: 22px; line-height: 26px; }
+  .text * + h2 { margin-top: 40px; }
+}
+
+/* ==========================================================================
+   Page title, after Displaay's typeface heroes (user's reference, Nov 2026):
+   a full-width blue band, the title huge and centred in Saans Regular, the
+   subtitle small and centred under it. Black on #a2e3ff measures 15.7:1.
+   ========================================================================== */
+.title {
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: clamp(56px, 10vw, 168px); line-height: 0.98; letter-spacing: -0.02em;
+  text-align: center; text-wrap: balance;
+  overflow-wrap: anywhere;  /* the title's text is an anonymous flex item, which break-word cannot shrink */
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  min-height: clamp(360px, 62vh, 680px);
+  margin: 0 0 72px; padding: 72px 0 48px;
+  border-top: 0;
+  /* the band runs the full width of the window behind the title */
+  background: var(--sky);
+  box-shadow: 0 0 0 100vmax var(--sky);
+  clip-path: inset(0 -100vmax);
+}
+.title :is(em, .title__sub) {
+  font-family: var(--sans);
+  font-size: 20px; line-height: 24px; letter-spacing: 0;
+  max-width: 30em; margin: 56px auto 0;
+  text-wrap: balance;
+}
+/* the plates follow straight on, blue then black, as on Displaay */
+.title + .plates { margin-top: -72px; }
+
+@media (max-width: 640px) {
+  .title {
+    font-size: clamp(40px, 13vw, 56px);
+    min-height: 0; padding: 56px 0 36px; margin: 0 0 48px;
+  }
+  .title :is(em, .title__sub) { font-size: 17px; line-height: 22px; margin-top: 32px; }
+  .title + .plates { margin-top: -48px; }
+}
+
+/* Row arrows: each row ends in an arrow that turns down when the row is open.
+   Drawn, with empty alt text: the button's aria-expanded already says open
+   or closed, so a screen reader is not told "right arrow" as well. */
+.acc__btn { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; }
+.acc__btn::after {
+  content: "\2192" / "";
+  flex: none;
+  font-family: var(--sans); font-weight: 300;
+  transition: transform 0.2s ease;
+}
+.acc__btn[aria-expanded="true"]::after { transform: rotate(90deg); }
+@media (prefers-reduced-motion: reduce) { .acc__btn::after { transition: none; } }
+
+/* ==========================================================================
+   Long pages, laid out as displaay.net/help/licenses: the page's sections as
+   a column of buttons in the left third, held in view while you read, the
+   one you are reading filled; the text in the right two thirds.
+   ========================================================================== */
+.toc-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; }
+.toc ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.toc a {
+  display: inline-block; min-height: 36px;
+  padding: 7px 12px; border-radius: 6px; border: 1px solid transparent;
+  background: var(--toc); color: var(--ink);
+  font-size: 18px; line-height: 22px; text-decoration: none;
+}
+.toc a:hover { border-color: var(--ink); }
+/* the section being read: white on #5c5a54, 6.9:1 */
+.toc a[aria-current="true"] { background: #5c5a54; color: #fff; }
+
+@media (min-width: 1024px) {
+  .toc-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 0 var(--margin); align-items: start; }
+  .toc { position: sticky; top: 100px; }
+  .toc ul { flex-direction: column; align-items: flex-start; }
+  .toc-layout .content { --text-col: 62%; --card-col: 32%; }
+}
+
+/* ==========================================================================
+   The chat, after the accessibility scanner's (widget-business ScanChat):
+   opening questions at display size, the conversation as an interview (who
+   speaks in small print above the words), and the scanner's chat box:
+   square corners, a 2px ink edge, the actions inside it under the text.
+   ========================================================================== */
+.chat { max-width: 920px; margin: 120px 0 0; }
+.chat__label {
+  margin: 0; font-size: 16px; line-height: 20px; font-weight: 400;
+  text-transform: uppercase; padding-bottom: 10px; border-bottom: 1px solid var(--ink);
+}
+.chat__prompts { display: grid; justify-items: start; gap: 10px; margin: 28px 0 44px; }
+.chat__prompt {
+  font: inherit; font-family: var(--sans); font-size: 40px; line-height: 1.05; letter-spacing: -0.015em;
+  color: var(--ink); background: none; border: 0; padding: 0; text-align: left; cursor: pointer;
+  text-wrap: wrap;  /* a line runs to the end of the measure before it turns (it was balanced) */
+}
+.chat__prompt:hover { color: #1f3fb0; }  /* 9.4:1 on white, as the scanner's opening questions */
+.chat__prompt:disabled { cursor: default; }
+.chat__thread { list-style: none; margin: 32px 0 36px; padding: 0; }
+.chat__turn + .chat__turn { margin-top: 1.6em; }
+.chat__who { margin: 0 0 0.3em; font-size: 15px; line-height: 20px; font-weight: 500; }
+.chat__text { font-size: 24px; line-height: 28px; min-width: 0; overflow-wrap: break-word; }
+.chat__text p { margin: 0; }
+.chat__text p + p { margin-top: 0.8em; }
+.chat__thinking { font-style: italic; }
+.chat__box { border: 2px solid var(--ink); padding: 0.5em 0.6em; background: var(--paper); }
+.chat__box:focus-within { outline: 2px solid var(--focus); outline-offset: -2px; }
+.chat__box textarea {
+  display: block; width: 100%; min-height: 2.4em; max-height: 40vh; overflow-y: auto;
+  font: inherit; font-size: 24px; line-height: 28px; color: var(--ink);
+  border: 0; padding: 0; resize: none; background: transparent;
+}
+.chat__box textarea:focus-visible { outline: none; }
+.chat__box textarea::placeholder { color: var(--quiet); opacity: 1; }
+.chat__row { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 10px 16px; margin-top: 0.5em; }
+.chat__note { margin: 0; font-size: 15px; line-height: 20px; flex: 1 1 260px; min-width: 0; }
+.chat__send {
+  font: inherit; font-size: 18px; line-height: 22px;
+  min-height: 36px; padding: 6px 20px; border-radius: 999px;
+  background: var(--ink); color: var(--paper); border: 1px solid var(--ink); cursor: pointer;
+}
+.chat__send:hover:not(:disabled) { background: var(--yellow); color: #000; }  /* marker yellow, black text, as the scanner */
+.chat__send:disabled { background: var(--paper); color: var(--ink); border-style: dashed; cursor: default; }  /* dashed, never faded */
+@media (prefers-reduced-motion: no-preference) {
+  .chat__turn { animation: chat-in 0.3s ease-out both; }
+  @keyframes chat-in { from { opacity: 0; transform: translateY(6px); } }
+}
+@media (max-width: 640px) {
+  .chat { margin-top: 63px; }
+  .chat__prompt { font-size: 28px; }
+  .chat__text, .chat__box textarea { font-size: 20px; line-height: 24px; }
+}
+
+/* Header buttons, after displaay.net's top row (user's reference, Nov 2026),
+   without the outlines: rounded rectangles of one size, 18px type, a light
+   fill; the page you are on solid black. The brand is the first of them. */
+.brand, .crumb, .nav a {
+  display: inline-flex; align-items: center;
+  min-height: 38px; padding: 0 13px; border-radius: 10px;
+  font-size: 18px; line-height: 22px; letter-spacing: 0;
+}
+.brand, .nav a { background: none; color: var(--ink); }  /* no fill, no outline: the words alone */
+.crumb, .nav a[aria-current="page"] { background: var(--mark-bg); color: var(--mark-ink); }
+.brand:hover, .nav a:hover { background: var(--mark-bg); color: var(--mark-ink); }
+.nav ul { gap: 6px; }
+@media (max-width: 640px) {
+  .brand, .crumb, .nav a { font-size: 17px; min-height: 36px; padding: 0 11px; }
+  .crumb { padding-block: 6px; }
+}
+/* with no fill the brand is a word, not a button: it sits on the page margin */
+.brand { padding-inline: 0; }
+.brand:hover { background: none; color: var(--ink); text-decoration: underline; }
+/* Home: the studio's sentence is the title, so it is set a size down from a
+   one-word title to fit the band in three or four lines */
+.title--lede { font-size: clamp(40px, 6vw, 104px); line-height: 1.02; }
+@media (max-width: 640px) { .title--lede { font-size: clamp(32px, 9.5vw, 40px); } }
+
+/* The plates, set as Displaay's Serrif tester (user's reference, Nov 2026):
+   the statements in Serrif on the blue of the title band, black type.
+   Only the trial's Light cut is here; the tester shows Regular. */
+.plate { background: var(--sky); color: var(--band-ink); }  /* 15.7:1 */
+.plate p {
+  font-family: var(--sans);
+  font-weight: 300; letter-spacing: -0.01em; line-height: 0.98;
+  font-size: clamp(40px, 7vw, 132px);
+}
+
+/* The disabled Send button's dashed edge, drawn so the dash length can be
+   set: 6px dashes, 2px gaps (a CSS dashed border gives 3px and 2px). The
+   stroke is 2px with its outer half clipped by the button, so 1px shows. */
+.chat__send:disabled {
+  border-color: transparent; border-style: solid;
+  background: var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Crect width='100%25' height='100%25' rx='18' ry='18' fill='none' stroke='black' stroke-width='2' stroke-dasharray='6 2'/%3E%3C/svg%3E") no-repeat border-box;
+}
+
+/* The opening, in the green of the reference (user's screenshot, Nov 2026):
+   pale lime type on deep green, 11.0:1 */
+:root { --forest: #1e361f; --lime-ink: #e3f1bd; }
+.title { background: var(--forest); color: var(--lime-ink); box-shadow: 0 0 0 100vmax var(--forest); }
+
+/* the plates move on when clicked */
+.plates__track { cursor: pointer; }
+
+/* On the published site the chat is the scanner's own widget, mounted from its server */
+.chat__widget { margin-top: 28px; min-height: 320px; }
+
+/* The opening fills the screen (user's reference, Nov 2026: Displaay's
+   typeface opening, one screen tall with a small line at its foot). The
+   title band takes the height left under the header (--head, measured) and
+   above the contact line; the contact line is one row on the same green:
+   its label, an email field, a request field and a Send request button. Cream field, black text 18.4:1;
+   lime button, green text 11.0:1; label lime on green 11.0:1.
+   The header is 77px, 121px where the navigation drops to a second row
+   (under 1020px), then 146px under 650px and 188px under 430px (measured in
+   PP Telegraf with the logo). */
+.title--lede { --head: 77px; --foot: 96px; min-height: calc(100vh - var(--head) - var(--foot)); min-height: calc(100svh - var(--head) - var(--foot)); margin-bottom: 0; }
+.signup {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 96px; padding: 0 0 40px; margin: 0;
+  background: var(--forest); color: var(--lime-ink);
+  /* the clip leaves 10px above the row: a field's focus ring is 6px outside
+     it, and the fields sit on the row's top edge. The green above is the
+     title band's own, so nothing shows. */
+  box-shadow: 0 0 0 100vmax var(--forest); clip-path: inset(-10px -100vmax 0);
+  font-family: var(--sans); font-size: 18px; line-height: 24px; letter-spacing: 0;
+}
+.signup__label { margin: 0 6px 0 0; white-space: nowrap; flex: none; }
+.signup__input {
+  font: inherit; letter-spacing: 0; color: #000; background: var(--cream);
+  border: 0; border-radius: 0; height: 56px; padding: 0 18px;
+  width: 320px; min-width: 0; flex: 0 1 320px;
+}
+/* Each field shows its own label, small, inside the field's top edge, so
+   the label stays when something is typed (a placeholder does not). The
+   field is the cream block; the input inside it is bare. Square, like the
+   rest of the form (user's instruction, Nov 2026). Label #000 on cream
+   18.4:1. Restored at the user's request after the one-bar version. */
+.signup__field {
+  position: relative; width: 320px; min-width: 0; flex: 0 1 320px; height: 56px;
+  background: var(--cream); color: #000;
+}
+.signup__field--wide { width: 420px; flex-basis: 420px; }
+.signup__field > label { position: absolute; left: 18px; top: 7px; font-size: 14px; line-height: 16px; pointer-events: none; white-space: nowrap; }
+.signup__field > .signup__input {
+  display: block; width: 100%; flex: none; height: 56px; padding: 22px 18px 0; background: transparent;
+}
+.signup__field > .signup__input:focus-visible { outline: none; }
+.signup__field:focus-within { outline: 2px solid var(--focus, #0f62fe); outline-offset: -2px; }
+.signup__input::placeholder { color: #4a4a4a; opacity: 1; }  /* 7.8:1 on cream */
+.signup__btn {
+  font: inherit; letter-spacing: 0; color: var(--forest); background: var(--lime-ink);
+  border: 0; border-radius: 0; height: 56px; padding: 0 22px; cursor: pointer; white-space: nowrap;
+}
+.signup__btn:hover { background: #fff; }
+
+.signup + .plates { margin-top: 0; }
+@media (max-width: 1019px) { .title--lede { --head: 121px; } }
+@media (max-width: 649px) { .title--lede { --head: 146px; } }
+@media (max-width: 640px) {
+  .title--lede { --head: 146px; --foot: 150px; min-height: calc(100vh - var(--head) - var(--foot)); min-height: calc(100svh - var(--head) - var(--foot)); margin-bottom: 0; }
+  /* two rows on a phone: the email, then the request beside its button */
+  .signup { font-size: 16px; gap: 6px; min-height: 150px; padding-bottom: 32px; flex-wrap: wrap; align-content: flex-start; }
+  .signup__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .signup__field { flex: 1 1 0; width: auto; }
+  .signup__field:not(.signup__field--wide) { flex: 1 0 100%; }
+  .signup__field > label { left: 14px; }
+  .signup__field > .signup__input { padding: 22px 14px 0; }
+  .signup__input { flex: 1 1 0; width: auto; padding: 0 14px; }
+  .signup__btn { padding: 0 16px; }
+}
+@media (max-width: 429px) { .title--lede { --head: 188px; } }
+
+/* The request, after the row is sent: the assistant's questions, then what
+   will be sent and the consent box, on the same green as the opening. Lime
+   on green 11.0:1; fields and buttons as in the row. */
+.signup__trap { display: none; }
+.request {
+  background: var(--forest); color: var(--lime-ink);
+  box-shadow: 0 0 0 100vmax var(--forest); clip-path: inset(0 -100vmax);
+  font-family: var(--sans); font-size: 18px; line-height: 24px; letter-spacing: 0;
+  padding: 8px 0 56px;
+}
+.request > * { max-width: 640px; margin-inline: auto; }
+.request__title { font: inherit; font-size: 28px; line-height: 32px; margin-block: 0 16px; text-wrap: balance; }
+.request__title:focus { outline: none; }
+.request__title:focus-visible { outline: 2px solid var(--focus-inverse); outline-offset: 4px; }
+.request__note, .request__status { margin-block: 0 12px; }
+.request__row { display: flex; gap: 10px; }
+.request .request__input { flex: 1 1 0; width: auto; min-width: 0; }
+.request__link {
+  font: inherit; color: inherit; background: none; border: 0; padding: 12px 0; margin-top: 4px;
+  display: block; width: 100%; text-align: left; text-decoration: underline; text-underline-offset: 0.15em; cursor: pointer;
+}
+.request__link:focus-visible { outline: 2px solid var(--focus-inverse); outline-offset: 0; box-shadow: none; }
+.request__brief { margin-block: 0 24px; border-top: 1px solid var(--lime-ink); }
+.request__brief > div { display: grid; grid-template-columns: 11em minmax(0, 1fr); gap: 4px 16px; padding: 10px 0; border-bottom: 1px solid var(--lime-ink); }
+.request__brief dt, .request__brief dd { margin: 0; overflow-wrap: anywhere; }
+.request__send { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+.request__consent { display: flex; align-items: flex-start; gap: 10px; flex: 1 1 320px; cursor: pointer; }
+.request__consent input { width: 22px; height: 22px; margin: 1px 0 0; flex: none; accent-color: var(--lime-ink); }
+.request__consent input:focus-visible { outline: 2px solid var(--focus-inverse); outline-offset: 2px; }
+.request__mail { display: inline-flex; align-items: center; text-decoration: none; }
+.request + .plates { margin-top: 0; }
+@media (max-width: 640px) {
+  .request { font-size: 16px; line-height: 22px; padding-bottom: 40px; }
+  .request__title { font-size: 22px; line-height: 26px; }
+  .request__brief > div { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Focus, after IBM Carbon (user's instruction, Nov 2026). Carbon's focus is
+   a 2px line in its focus blue #0f62fe, drawn on the control's own edge and
+   not outside it; on a filled button a 1px line of white sits inside the
+   blue, so the ring shows whatever the button's fill; on a dark ground the
+   line is white. Measured: blue on white 5.0:1, on the cream field 4.4:1,
+   on the lime button 4.2:1, on the sky band 3.5:1; white on the green
+   18:1. Text links take the same 2px line around the words. */
+:root { --focus: #0f62fe; --focus-inverse: #ffffff; }
+button:focus-visible, .btn:focus-visible, .nav a:focus-visible, .brand:focus-visible, .toc a:focus-visible,
+.skip:focus-visible, .signup__btn:focus-visible {
+  outline: 2px solid var(--focus); outline-offset: -2px; box-shadow: inset 0 0 0 3px #fff;
+}
+.acc__btn:focus-visible { box-shadow: none; }
+.signup__input:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.crumb a:focus-visible { outline-color: var(--mark-ink); }  /* white on the black pill, black on the white one in dark */
+
+/* A page title with a line under it (About): the heading is the h1 alone and
+   the line is a paragraph beside it in the same band, so a screen reader
+   reads the title as the title and not the two run together as one heading.
+   The h1 takes the band's type; the paragraph takes what the em had. */
+.title > h1 { font: inherit; letter-spacing: inherit; margin: 0; text-wrap: inherit; overflow-wrap: inherit; }
+.title > .title__sub { display: block; font-style: italic; margin-bottom: 0; }
+
+/* High-contrast mode (forced colours) removes every fill, so a control drawn
+   only by its fill vanishes into the page. A transparent 1px border costs
+   nothing normally and is drawn in the system's own colour there, so the
+   fields and buttons of the request form keep an edge. */
+.signup__field, .signup__btn, .signup__input, .request__brief > div { border: 1px solid transparent; }
+.signup__field > .signup__input { border: 0; }
+.request__brief > div { border-width: 0 0 1px; border-bottom-color: var(--lime-ink); }
+/* The pill links and the breadcrumb pill take a transparent outline for the
+   same reason; an outline adds no size, so nothing moves. Declared with
+   :where() so every focus rule still wins. */
+:where(.btn, .crumb) { outline: 1px solid transparent; outline-offset: -1px; }
+
+/* The chat's starter questions, set as Displaay's Download / Test / Buy
+   blocks (user's reference, Nov 2026): three round blocks in one row, the
+   first black with white words, the second cyan, the third mint, the
+   words centred. Displaay's wide block is the last; here it is the first,
+   which holds the longest question. White on black 21:1; black on #b8fbff 18.6:1
+   and on #beffbd 18.2:1. They stack on a phone. Hover underlines the
+   words; a disabled block (while an answer is coming) keeps its look. */
+.chat__prompts { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr) minmax(0, 2fr); justify-items: stretch; gap: 10px; }
+.chat__prompt {
+  display: flex; align-items: center; justify-content: center; text-align: center;
+  min-height: 150px; padding: 24px 22px; border-radius: 20px;
+  font-size: 28px; line-height: 1.05; letter-spacing: -0.01em; text-wrap: balance;
+  background: #000; color: #fff;
+}
+.chat__prompt:nth-child(2) { background: var(--cyan); color: #000; }
+.chat__prompt:nth-child(3) { background: var(--mint); color: #000; }
+.chat__prompt:hover { color: #fff; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.12em; }
+.chat__prompt:nth-child(n + 2):hover { color: #000; }
+:where(.chat__prompt) { outline: 1px solid transparent; outline-offset: -1px; }  /* an edge in high-contrast mode */
+@media (max-width: 860px) {
+  .chat__prompts { grid-template-columns: minmax(0, 1fr); }
+  .chat__prompt { min-height: 96px; font-size: 24px; padding: 20px 18px; }
+}
+
+/* ==========================================================================
+   Dark mode (user's instruction, Nov 2026). It follows the system setting
+   and the Light / Dark button in the header, which wins once pressed
+   (data-theme on <html>, kept in localStorage).
+
+   The page is white on black. The colour bands turn to deep versions of
+   their own hue with white words, so a band is still a band: sky #2e3350
+   (white 12.3:1; a slate blue from the user's reference, 23 Nov 2026,
+   replacing #0c2f42), lime band #1f2a0c (16.6:1), the green Accessibility
+   page #0f2b17 (16.1:1), cards and chips #262626 (15.3:1). Links are #9db8ff
+   (10.4:1 on black, 6.3:1 on the sky band, 8.0:1 or better on the others). The opening's green
+   band, the cream form fields and the cyan and mint blocks are the same in
+   both themes: each carries its own fixed text colour. The focus blue
+   #0f62fe is kept: 4.2:1 on black, 4.4:1 on the cream field.
+   ========================================================================== */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --paper: #000000; --ink: #ffffff; --plate: #ffffff; --plate-ink: #000000;
+    --card: #262626; --chip: #262626; --toc: #262626; --quiet: #b8b8b8;
+    --pill: #e6e6e6; --pill-ink: #000000; --mark-bg: #ffffff; --mark-ink: #000000;
+    --link: #9db8ff; --brown: #f0c79a;
+    --sky: #2e3350; --band-ink: #ffffff; --lime: #1f2a0c; --info-green: #0f2b17;
+    --send-dash: white;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #000000; --ink: #ffffff; --plate: #ffffff; --plate-ink: #000000;
+  --card: #262626; --chip: #262626; --toc: #262626; --quiet: #b8b8b8;
+  --pill: #e6e6e6; --pill-ink: #000000; --mark-bg: #ffffff; --mark-ink: #000000;
+  --link: #9db8ff; --brown: #f0c79a;
+  --sky: #2e3350; --band-ink: #ffffff; --lime: #1f2a0c; --info-green: #0f2b17;
+  --send-dash: white;
+}
+:root[data-theme="light"] { color-scheme: light; }
+/* the first starter block is the page's opposite, so it shows on either ground */
+.chat__prompt:first-child { background: var(--mark-bg); color: var(--mark-ink); }
+.chat__prompt:first-child:hover { color: var(--mark-ink); }
+/* the section being read, on the dark chips: white, black words */
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .toc a[aria-current="true"] { background: #fff; color: #000; } }
+:root[data-theme="dark"] .toc a[aria-current="true"] { background: #fff; color: #000; }
+/* the disabled Send button's dashes are drawn in an image, which cannot read
+   a colour token, so dark has its own copy in white */
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .chat__send:disabled { background: var(--paper); color: var(--ink); border-style: dashed; cursor: default; } }
+:root[data-theme="dark"] .chat__send:disabled { background: var(--paper); color: var(--ink); border-style: dashed; cursor: default; }
+
+/* The Light / Dark button: the last thing in the footer's list. It was tried
+   in the header, where it pushed the navigation onto a second row below
+   1290px. */
+.theme {
+  font: inherit; color: var(--ink); background: none; border: 1px solid var(--ink); border-radius: 999px;
+  min-height: 34px; padding: 0 14px; margin-top: 6px; cursor: pointer; white-space: nowrap;
+}
+.theme:hover { background: var(--mark-bg); color: var(--mark-ink); }
+
+/* The logo beside the studio's name: four petals in the brand's colours,
+   decoration beside the words (aria-hidden), so it carries no meaning of
+   its own. */
+.brand { display: inline-flex; align-items: center; gap: 10px; }
+.brand__logo { width: 51px; height: 51px; flex: none; margin-block: -8px; }  /* 70% larger than the first 30px; the negative margin keeps the header's height */
+/* The petals in the site's own colours (user's instruction, Nov 2026): the
+   opening's forest green, the sky of the statements band, the mint and the
+   marker yellow of the chat's blocks. In dark the green petal takes the
+   headline's pale yellow, since forest green would vanish on black. */
+.brand__petal-a { fill: var(--forest); }
+.brand__petal-b { fill: var(--sky-fixed, #a2e3ff); }
+.brand__petal-c { fill: var(--mint); }
+.brand__petal-d { fill: var(--yellow); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .brand__petal-a { fill: var(--lime-ink); } }
+:root[data-theme="dark"] .brand__petal-a { fill: var(--lime-ink); }
+
+/* A line along the bottom of the header (user's instruction, Nov 2026),
+   4px, across the full width, in the pale yellow of the opening's headline
+   (#e3f1bd). It sits in the header's own bottom padding, so the header keeps its
+   measured height. Decoration only. */
+body > header::after {
+  content: ""; position: absolute; bottom: 0; height: 4px;
+  left: 0; right: 0;  /* the header's padding box is already the full width */
+  background: var(--lime-ink);  /* the headline's pale yellow, one colour across (user's instruction, Nov 2026) */
+}
+@media (max-width: 640px) { body > header { position: relative; } }
+@media print { body > header::after { print-color-adjust: exact; -webkit-print-color-adjust: exact; } }
+
+/* No round corners on the chat's starter blocks either (user's instruction, Nov 2026). */
+.chat__prompt { border-radius: 0; }
+
+/* "What we offer", opened, set as a licence guide (user's reference, Nov
+   2026): a rule across, then two columns. On the left the row's one-line
+   promise in a red accent at 28px; on the right the points as a bulleted
+   list, each term followed by what it means. Red #b3260b on the lime band
+   5.6:1 (on white 6.9:1); in dark #ff8a6a on the dark band 6.5:1. */
+:root { --accent: #b3260b; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #ff8a6a; } }
+:root[data-theme="dark"] { --accent: #ff8a6a; }
+.acc__panel { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 0 48px; padding: 28px 0 56px; border-top: 1px solid var(--ink); }
+.acc__lede { color: var(--accent); font-size: 28px; line-height: 1.15; letter-spacing: 0; }
+.acc__body { font-size: 20px; line-height: 1.45; }
+.acc__body > * + * { margin-top: 16px; }
+.acc__body .terms > div { position: relative; margin: 0; padding-left: 1.1em; }
+.acc__body .terms > div + div { margin-top: 2px; }
+.acc__body .terms > div::before { content: "\2022" / ""; position: absolute; left: 0.1em; }
+.acc__body .terms dt, .acc__body .terms dd { display: inline; margin: 0; padding: 0; text-transform: none; font-weight: inherit; }
+.acc__body .terms dt::after { content: ": " / ""; }
+@media (max-width: 860px) {
+  .acc__panel { grid-template-columns: minmax(0, 1fr); gap: 16px; padding: 20px 0 40px; }
+  .acc__lede { font-size: 22px; }
+  .acc__body { font-size: 17px; }
+}
+
+/* The starter blocks' hover is a change of ground, not an underline (user's
+   instruction, Nov 2026): every block turns marker yellow with black words,
+   as the scanner's buttons do. Black on #f8ff58 19.4:1. */
+.chat__prompt:hover, .chat__prompt:first-child:hover, .chat__prompt:nth-child(n + 2):hover {
+  background: var(--yellow); color: #000; text-decoration: none;
+}
+@media (prefers-reduced-motion: no-preference) { .chat__prompt { transition: background-color 0.15s, color 0.15s; } }
+
+/* The request form's fields and buttons take round corners again (user's
+   instruction, Nov 2026: "it can have round corners"), 14px as first drawn.
+   The chat's starter blocks stay square. */
+.signup__field, .signup__input, .signup__field > .signup__input, .signup__btn, .request .request__input { border-radius: 14px; }
+
+/* The opened row's red line and its list are one size (user's instruction,
+   Nov 2026): 20px, 17px on a phone. #b3260b on the lime band is 5.6:1, so it
+   holds at text size too. Set solid at 1.2 (user's instruction, 22 Nov 2026,
+   "why is this line so tall"): at 1.45 its two lines stood apart. */
+.acc__lede { font-size: 20px; line-height: 1.2; }
+@media (max-width: 860px) { .acc__lede { font-size: 17px; } }
+
+/* The terms as they were (user's instruction, Nov 2026): each term in
+   capitals on its own line, what it means on the line under it, no bullet
+   and no colon. The two columns and the red line stay. */
+.acc__body .terms > div { padding-left: 0; }
+.acc__body .terms > div + div { margin-top: 0.75em; }
+.acc__body .terms > div::before { content: none; }
+.acc__body .terms dt, .acc__body .terms dd { display: block; }
+.acc__body .terms dt { text-transform: uppercase; }
+.acc__body .terms dt::after { content: none; }
+
+/* Round corners on the chat too (user's instruction, Nov 2026): the starter
+   blocks at 20px, as first drawn, and the box you type in at 20px. */
+.chat__prompt { border-radius: 20px; }
+.chat__box { border-radius: 20px; }
+
+/* BIG TYPE IN ULTRALIGHT (user's instruction, 22 Nov 2026): the page titles,
+   the statements and the What we offer rows, 40px and up on a desktop. The
+   chat's opening questions (28px) and a title's subtitle are text and stay
+   Light. */
+.title, .plate p, .acc__btn {
+  font-family: "PP Telegraf Display", "PP Telegraf", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.title :is(em, .title__sub) { font-family: var(--sans); }
+
+/* THE FOOTER AS LABELLED COLUMNS (user's reference, 22 Nov 2026, "design this
+   like this"): no rule on top; Pages at the left, Contact and the studio's
+   sentence on the right half, each a label over its lines at one size, 18px
+   on 24px, the label a line above the rest. The page links are plain and
+   underline on hover; the address keeps its underline, since it sits in a
+   line of text. A 1px rule across the foot, then the logo at the left and
+   the Light / Dark button at the right. */
+.foot {
+  margin-top: 100px; padding-block: 24px 16px; border-top: 0;
+  grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 0 20px;
+  font-size: 18px; line-height: 24px; letter-spacing: 0;
+}
+.foot__col { min-width: 0; }
+.foot__col--pages { grid-column: 1 / span 3; }
+.foot__col--contact { grid-column: 8 / span 2; }
+.foot__col--about { grid-column: 10 / span 3; }
+.foot__label { margin: 0 0 24px; font: inherit; letter-spacing: inherit; }
+.foot__col p + p { margin-top: 24px; }
+.foot__col--pages a { text-decoration: none; }
+.foot__col--pages a:hover { text-decoration: underline; text-decoration-thickness: 1px; }
+.foot__base {
+  grid-column: 1 / -1; margin-top: 80px; padding-top: 16px; border-top: 1px solid var(--ink);
+  display: flex; justify-content: space-between; align-items: center; gap: 20px;
+}
+.foot__logo { width: 40px; height: 40px; flex: none; }
+.foot__base .theme { margin-top: 0; }
+@media (max-width: 860px) {
+  .foot { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 20px; }
+  .foot__col--pages, .foot__col--contact { grid-column: auto; }
+  .foot__col--about { grid-column: 1 / -1; }
+  .foot__base { margin-top: 24px; }
+}
+@media (max-width: 640px) { .foot { margin-top: 63px; } }
+
+/* THE SCAN BUBBLE (user's instruction, 23 Nov 2026): a promo for the
+   accessibility scan, set as a message you would send it. "You" at the right,
+   the question on the cream ground with black words (18:1; #262626 with white
+   words in dark, 15.3:1, since 23 Nov 2026; "You" removed the same day),
+   40px corners, a tail at the bottom right and a 1deg tilt. The whole bubble
+   is the link to the scan; hover underlines the words. In forced colours the
+   ground is dropped, so the edge turns into a line. */
+/* at the right of the page, as a message you send sits (user's instruction,
+   23 Nov 2026, "the bubble needs to go to right") */
+.bubble { max-width: 920px; margin: 120px 0 0 auto; }
+.bubble__msg {
+  position: relative; display: block;
+  padding: 36px 44px 40px; border: 1px solid transparent; border-radius: 40px;
+  background: var(--bubble, var(--cream)); color: var(--bubble-ink, #000); text-decoration: none;
+  font-size: 32px; line-height: 38px; text-wrap: pretty; overflow-wrap: break-word; hyphens: manual;
+  transform: rotate(-1deg);
+}
+.bubble__msg::after {
+  content: ""; position: absolute; right: 36px; bottom: -22px;
+  width: 30px; height: 24px; background: var(--bubble, var(--cream));
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+}
+.bubble__msg:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.12em; }
+.bubble__msg:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+.bubble + .chat { margin-top: 96px; }
+@media (max-width: 640px) {
+  .bubble { margin-top: 72px; }
+  .bubble__msg { font-size: 23px; line-height: 27px; padding: 22px 24px 26px; border-radius: 28px; }
+  .bubble__msg::after { right: 24px; bottom: -16px; width: 22px; height: 18px; }
+  .bubble + .chat { margin-top: 72px; }
+}
+@media (forced-colors: active) { .bubble__msg { border-color: LinkText; } .bubble__msg::after { display: none; } }
+
+/* THE LOGO IN LIGHT AND DARK (user's instruction, 23 Nov 2026, "fix colors so
+   there is light and dark version"). On white the pale sky, mint and yellow
+   petals all but vanished, so light takes deep versions of the same four
+   hues, each 3:1 or better on white: forest #1e361f (13.7:1), blue #2b7ab8
+   (4.6:1), green #2e8b57 (4.2:1), ochre #a88a00 (3.3:1). Dark keeps the pale
+   set, each 12:1 or better on black, with the forest petal turned to the
+   headline's pale #e3f1bd. logo.svg (the tab icon) carries the same two sets. */
+.brand__petal-a { fill: #1e361f; }
+.brand__petal-b { fill: #2b7ab8; }
+.brand__petal-c { fill: #2e8b57; }
+.brand__petal-d { fill: #a88a00; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .brand__petal-a { fill: #e3f1bd; }
+  :root:not([data-theme="light"]) .brand__petal-b { fill: #a2e3ff; }
+  :root:not([data-theme="light"]) .brand__petal-c { fill: #beffbd; }
+  :root:not([data-theme="light"]) .brand__petal-d { fill: #f8ff58; }
+}
+:root[data-theme="dark"] .brand__petal-a { fill: #e3f1bd; }
+:root[data-theme="dark"] .brand__petal-b { fill: #a2e3ff; }
+:root[data-theme="dark"] .brand__petal-c { fill: #beffbd; }
+:root[data-theme="dark"] .brand__petal-d { fill: #f8ff58; }
+
+/* THE NOTICE AND STAY IN TOUCH BANDS (user's reference, 23 Nov 2026, "add
+   these elements"): at the head of the footer on every page, after the
+   What we offer band. The notice is one line on a grey band, #000 on
+   #e6e6e6 in both themes (16.1:1). Stay in touch is the sky band (black
+   words on #a2e3ff, white on #2e3350 in dark), its words centred in the
+   Light cut, and one email field with an arrow. There is no mailing list
+   service behind it, so the form opens a mail to the studio with the address
+   in it, as the contact form does without its script. The field's edge,
+   placeholder and focus ring are the band's own ink, so they hold in both
+   themes. */
+.notice, .news { box-shadow: 0 0 0 100vmax var(--band); background: var(--band); clip-path: inset(0 -100vmax); }
+.notice {
+  --band: #e6e6e6; color: #000; margin: 0; padding: 16px 0 17px;
+  text-align: center; font-size: 22px; line-height: 28px; letter-spacing: 0;
+}
+.news {
+  --band: var(--sky); color: var(--band-ink); padding: 72px 0 64px;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+}
+.news__title, .news__text {
+  margin: 0; max-width: 820px; font: inherit; font-weight: 300;
+  font-size: 34px; line-height: 40px; letter-spacing: -0.005em;
+}
+.news__form {
+  margin-top: 36px; width: min(100%, 540px); display: flex; align-items: center;
+  border: 1px solid currentColor; border-radius: 10px; padding-inline: 20px 6px;
+}
+.news__form:focus-within { outline: 2px solid currentColor; outline-offset: 3px; }
+.news__input {
+  flex: 1 1 auto; min-width: 0; min-height: 52px; border: 0; padding: 0;
+  background: transparent; color: inherit; font: inherit; font-size: 18px; letter-spacing: 0;
+}
+.news__input:focus { outline: none; }
+.news__input::placeholder { color: inherit; opacity: 1; }
+.news__btn {
+  flex: none; width: 44px; height: 44px; border: 0; border-radius: 8px; padding: 0;
+  background: transparent; color: inherit; font: inherit; font-size: 22px; cursor: pointer;
+}
+.news__btn:hover { background: var(--band-ink); color: var(--sky); }
+.news__btn:focus-visible { outline: 2px solid currentColor; outline-offset: 0; }
+.news + .foot { margin-top: 0; }
+@media (max-width: 640px) {
+  .notice { font-size: 17px; line-height: 22px; padding: 12px 0 13px; }
+  .news { padding: 48px 0 44px; }
+  .news__title, .news__text { font-size: 24px; line-height: 29px; }
+  .news__form { margin-top: 26px; }
+}
+@media (forced-colors: active) { .news__btn:hover { background: Highlight; color: HighlightText; } }
+
+/* DARK VERSIONS OF THE BUBBLE AND THE QUESTION CARDS (user's instruction,
+   23 Nov 2026, "make dark version"): on black the cream bubble and the white,
+   cyan and mint cards stood out as light slabs. In dark the bubble is #262626
+   with white words (15.3:1). The cards' colours moved to the plate tokens,
+   see THE QUESTION CARDS AS THE SERVICES CARDS. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bubble: #262626; --bubble-ink: #ffffff; }
+}
+:root[data-theme="dark"] { --bubble: #262626; --bubble-ink: #ffffff; }
+
+/* THE CONTACT FORM AS OUTLINED FIELDS (user's instruction, 23 Nov 2026, "fix
+   those forms", after the Stay in touch field): in both themes the fields
+   and the button are the green band behind a 1px pale lime edge with 10px
+   corners, their words in the pale lime (#e3f1bd on #1e361f, 11.0:1). A
+   field's label sits inside it at the text size while it is empty and moves
+   up small once it holds focus or words, so a label is always showing
+   (placeholder=" " lets :placeholder-shown tell the two apart). The button
+   carries an arrow and fills pale lime with green words on hover. The focus
+   ring is the pale lime, outside the edge: the blue one measured 2.5:1 on
+   the green. */
+.signup__field, .signup__btn {
+  background: var(--forest); color: var(--lime-ink);
+  border: 1px solid var(--lime-ink); border-radius: 10px;
+}
+.signup__field > .signup__input { color: var(--lime-ink); border-radius: 10px; }
+.signup__input::placeholder { color: transparent; }
+.signup__field > label { transition: top 0.15s, font-size 0.15s, line-height 0.15s; }
+.signup__field:has(.signup__input:placeholder-shown:not(:focus)) > label {
+  top: 15px; font-size: 18px; line-height: 24px;
+}
+.signup__field:focus-within { outline: 2px solid var(--lime-ink); outline-offset: 3px; }
+.signup__btn:hover { background: var(--lime-ink); color: var(--forest); }
+.signup__btn:focus-visible { outline: 2px solid var(--lime-ink); outline-offset: 3px; box-shadow: none; }
+@media (prefers-reduced-motion: reduce) { .signup__field > label { transition: none; } }
+@media (forced-colors: active) { .signup__field, .signup__btn { border-color: CanvasText; } }
+
+/* THE NOTICE IN DARK (user's instruction, 23 Nov 2026, "Yes, darken it"):
+   the grey strip was the one band that stayed pale on black. In dark it is
+   #262626 with white words (15.3:1), the ground of the bubble and the first
+   question card. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .notice { --band: #262626; color: #fff; }
+}
+:root[data-theme="dark"] .notice { --band: #262626; color: #fff; }
+
+/* A COLOUR PER PLATE AND A SERIF (user's instruction, 23 Nov 2026, "change
+   colors from card to card, also add serif font to some typesetting"). Each
+   statement takes its own ground from the page's palette: sky, mint, pink,
+   yellow, black type on each (11.7:1 or better); in dark, a deep version of
+   the same hue with white type (12:1 or better; the first is the Stay in
+   touch band's #2e3350). The second and fourth statements and the opened
+   offer's lede are set in Serrif Light (trial, Light cut only; check the
+   trial terms before the site goes public), so the plates alternate sans and
+   serif as they switch. */
+@font-face {
+  font-family: "Serrif";
+  src: url("fonts/Serrif-TRIAL-Light.woff2") format("woff2");
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+:root {
+  --plate-1: #a2e3ff; --plate-2: #beffbd; --plate-3: #ffa0ff; --plate-4: #f8ff58;
+  --plate-text: #000000;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --plate-1: #2e3350; --plate-2: #0f3a2a; --plate-3: #3d1440; --plate-4: #36310c;
+    --plate-text: #ffffff;
+  }
+}
+:root[data-theme="dark"] {
+  --plate-1: #2e3350; --plate-2: #0f3a2a; --plate-3: #3d1440; --plate-4: #36310c;
+  --plate-text: #ffffff;
+}
+.plate { color: var(--plate-text); }
+.plate:nth-child(4n + 1) { background: var(--plate-1); }
+.plate:nth-child(4n + 2) { background: var(--plate-2); }
+.plate:nth-child(4n + 3) { background: var(--plate-3); }
+.plate:nth-child(4n) { background: var(--plate-4); }
+.plate:nth-child(even) p, .acc__lede {
+  font-family: "Serrif", Georgia, "Times New Roman", serif;
+  font-weight: 300; font-synthesis: none;
+}
+.plate:nth-child(even) p { letter-spacing: -0.015em; line-height: 1.02; }
+.acc__lede { letter-spacing: 0; }
+
+/* THE EYEBROW OVER THE CHAT, BACK WITH THE SCANNER (user's instruction,
+   23 Nov 2026, "add an eyebrow back and say use our accessibility scanner to
+   check if you need to make your website accessible"; it was removed earlier
+   the same day). Its 16px capitals and rule as before; "accessibility
+   scanner" links to the scanner, since this chat cannot check a site. The
+   link keeps the label's ink, underlined. */
+.chat__label a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+.chat__label a:hover { text-decoration-thickness: 2px; }
+
+/* THE HEADER WITHOUT ITS LINE, THE MENU CENTRED (user's instruction, 23 Nov
+   2026, "delete underline, center content", "vertically on menu"): the 4px
+   pale line along the bottom is gone, and the bar's padding is split evenly
+   above and below the brand, the crumb and the menu (it was 25px over and
+   14px under). The total is unchanged, so the header keeps the measured
+   height the opening's --head values depend on. */
+body > header::after { content: none; }
+body > header { padding-block: 20px 19px; }
+.top { padding-block: 0; }
+@media (max-width: 640px) {
+  body > header { padding-block: 11px; }
+  .top { padding-block: 0; }
+}
+
+/* THE SERVICES CARD'S LIST: ONE RULE AT EACH END, EACH ROW A LINK (user's
+   instructions, 23 Nov 2026, "delete top and bottom line", "make
+   clickable"). The title's rule and the first row's top rule stood 22px
+   apart, and the last row's rule over the card's own; one of each pair is
+   gone. Each row is a link that opens its row in What we offer below
+   (app.js, data-open-offer); hover underlines it and shows the arrow. */
+.offer li:first-child { border-top: 0; }
+.card:has(> .offer) { border-bottom: 0; padding-bottom: 0; }
+.offer li { padding: 0; }
+.offer__link {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+  width: 100%; padding-block: 6px 7px; color: var(--ink); text-decoration: none;
+}
+.offer__link::after { content: "\2192" / ""; }
+.offer__link:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+.acc__btn { scroll-margin-top: 110px; }
+
+/* THE STATEMENTS AS CARDS ON SERVICES (user's instructions, 23 Nov 2026,
+   "add more cards here from content, each card different color", "just use
+   some text about us from opening page slogans"): the home page's four
+   statements, one card each, under the title, in the plates' four colours
+   (--plate-1 to 4, black words in light, white in dark) and the plates'
+   alternation, sans then serif. Four across, two across under 1024px, one
+   under 641px. */
+.slogans {
+  list-style: none; margin: 0 0 80px; padding: 0;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px;
+}
+.slogan {
+  min-width: 0; min-height: 300px; padding: 28px 26px 30px; border-radius: 20px;
+  display: flex; align-items: flex-end;
+  background: var(--plate-1); color: var(--plate-text);
+}
+.slogan:nth-child(4n + 2) { background: var(--plate-2); }
+.slogan:nth-child(4n + 3) { background: var(--plate-3); }
+.slogan:nth-child(4n) { background: var(--plate-4); }
+.slogan p {
+  margin: 0; font-family: "PP Telegraf Display", "PP Telegraf", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 300; font-size: 40px; line-height: 1.02; letter-spacing: -0.01em;
+  overflow-wrap: break-word; hyphens: manual; text-wrap: balance;
+}
+.slogan:nth-child(even) p { font-family: "Serrif", Georgia, "Times New Roman", serif; font-synthesis: none; letter-spacing: -0.015em; }
+@media (max-width: 1023px) { .slogans { grid-template-columns: repeat(2, minmax(0, 1fr)); } .slogan { min-height: 240px; } }
+@media (max-width: 640px) {
+  .slogans { grid-template-columns: minmax(0, 1fr); margin-bottom: 48px; }
+  .slogan { min-height: 0; padding: 22px 20px 24px; }
+  .slogan p { font-size: 32px; }
+}
+@media (forced-colors: active) { .slogan { border: 1px solid CanvasText; } }
+
+/* THE SERVICES CARDS AS LINKS (user's instruction, 23 Nov 2026, "these should
+   be different from content on other cards and about services, also make it
+   clickable"): the four cards no longer repeat the home page's statements.
+   Each names one service at the top and says one thing about it, in words
+   used nowhere else on the site, and the whole card is a link that opens
+   that service's row in What we offer below (data-open-offer; without the
+   script it still goes to the row). Hover underlines the line; the focus
+   ring is the card's own ink, outside its corners. */
+.slogan { padding: 0; }
+.slogan__link {
+  display: flex; flex-direction: column; justify-content: space-between; gap: 24px;
+  width: 100%; min-height: inherit; padding: 28px 26px 30px; border-radius: 20px;
+  color: inherit; text-decoration: none;
+}
+.slogan__label { font-size: 18px; line-height: 24px; letter-spacing: 0; }
+.slogan__link:hover p { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.12em; }
+.slogan__link:focus-visible { outline: 2px solid var(--plate-text); outline-offset: 4px; box-shadow: none; }
+@media (max-width: 640px) { .slogan__link { padding: 22px 20px 24px; } .slogan__label { font-size: 15px; line-height: 20px; } }
+
+/* THE QUESTION CARDS AS THE SERVICES CARDS (user's instruction, 23 Nov 2026,
+   "design these like this but no eyebrow"): the chat's three opening
+   questions take the Services cards' look without their small label. Three
+   equal cards, 300px tall, 20px corners, in the plates' first three colours
+   (sky, mint, pink; black words in light, deep hues with white words in
+   dark, the --plate tokens); each question at the card's foot, set left at
+   40px, sans then serif then sans as the plates alternate. Hover underlines
+   the question; the focus ring is the card's own ink. Two across under
+   1024px, one under 641px. */
+.chat__prompts { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.chat .chat__prompts .chat__prompt {
+  display: flex; align-items: flex-end; justify-content: flex-start; text-align: left;
+  min-height: 300px; padding: 28px 26px 30px; border-radius: 20px; border: 0;
+  font-family: "PP Telegraf Display", "PP Telegraf", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 300; font-size: 40px; line-height: 1.02; letter-spacing: -0.01em;
+  overflow-wrap: break-word; hyphens: manual; text-wrap: balance;
+  background: var(--plate-1); color: var(--plate-text); text-decoration: none;
+}
+.chat .chat__prompts .chat__prompt:nth-child(2) {
+  background: var(--plate-2);
+  font-family: "Serrif", Georgia, "Times New Roman", serif; font-synthesis: none; letter-spacing: -0.015em;
+}
+.chat .chat__prompts .chat__prompt:nth-child(3) { background: var(--plate-3); }
+.chat .chat__prompts .chat__prompt:hover {
+  color: var(--plate-text);
+  text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.12em;
+}
+.chat .chat__prompts .chat__prompt:nth-child(1):hover { background: var(--plate-1); }
+.chat .chat__prompts .chat__prompt:nth-child(2):hover { background: var(--plate-2); }
+.chat .chat__prompts .chat__prompt:nth-child(3):hover { background: var(--plate-3); }
+.chat .chat__prompts .chat__prompt:focus-visible { outline: 2px solid var(--plate-text); outline-offset: 4px; box-shadow: none; }
+@media (max-width: 1023px) {
+  .chat__prompts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .chat .chat__prompts .chat__prompt { min-height: 240px; }
+}
+@media (max-width: 640px) {
+  .chat__prompts { grid-template-columns: minmax(0, 1fr); }
+  .chat .chat__prompts .chat__prompt { min-height: 0; padding: 22px 20px 24px; font-size: 32px; }
+}
+@media (forced-colors: active) { .chat .chat__prompts .chat__prompt { border: 1px solid CanvasText; } }
+
+/* THE OFFERS' TERMS AS CENTRED TITLES OVER THEIR SENTENCE (user's reference,
+   25 Nov 2026, "design this like this", a product title over its
+   description). In every opened What we offer row, each term is a title in
+   capitals centred over the column at 36px, set solid; what it means runs
+   under it at the column's 20px, left, at 1.15, one 24px step down. Terms
+   stand 48px apart, so each pair reads as one piece. On a phone the title is
+   28px over the 17px words, 16px under it and 36px between terms. The plain
+   .text lists (Our approach, Who needs accessibility) keep their look. */
+.acc__body .terms > div + div { margin-top: 48px; }
+.acc__body .terms dt {
+  margin: 0 0 24px; text-align: center; text-transform: uppercase;
+  font-size: 36px; line-height: 1.1; letter-spacing: 0; text-wrap: balance;
+}
+.acc__body .terms dd { margin: 0; text-align: left; line-height: 1.15; }
+@media (max-width: 860px) {
+  .acc__body .terms > div + div { margin-top: 36px; }
+  .acc__body .terms dt { margin-bottom: 16px; font-size: 28px; }
+}
+
+/* THE EYEBROW AND THE BUBBLE AS ONE (user's choice, 23 Nov 2026, "merge",
+   "Eyebrow and bubble"): the bubble moved into the chat, under the eyebrow
+   that names the scanner, so the line and the message it invites read as
+   one block before the question cards. It keeps to the right, as a message
+   you send, at 80% of the chat's width (the full width on a phone). */
+.chat .bubble { max-width: 80%; margin: 40px 0 0 auto; }
+.chat .bubble + .chat__prompts { margin-top: 64px; }
+@media (max-width: 640px) {
+  .chat .bubble { max-width: none; margin-top: 28px; }
+  .chat .bubble + .chat__prompts { margin-top: 44px; }
+}
+
+/* THE LOGO ROW AT THE FOOT (user's reference, 23 Nov 2026, "add this kind
+   of thing in footer but use the logo from barrier free"): under the 1px
+   rule, the logo at the left and two marks at the right, all 48px. The
+   marks are the logo's four petals as one ink shape (logo.svg as a mask),
+   upright and turned 45deg; they are drawn by the row's own pseudo-elements,
+   so they say nothing to a screen reader and need no markup on each page.
+   The Light / Dark button stays, just before them. */
+.foot__base { gap: 16px; }
+.foot__logo { width: 48px; height: 48px; margin-right: auto; }
+.foot__base .theme { order: 2; }
+.foot__base::before, .foot__base::after {
+  content: ""; flex: none; width: 48px; height: 48px; background: var(--ink);
+  -webkit-mask: url("logo.svg") center / contain no-repeat; mask: url("logo.svg") center / contain no-repeat;
+}
+.foot__base::before { order: 3; }
+.foot__base::after { order: 4; transform: rotate(45deg); }
+@media (max-width: 640px) {
+  .foot__logo, .foot__base::before, .foot__base::after { width: 40px; height: 40px; }
+}
+
+/* THE TYPE FLOOR (user's instruction, 24 Nov 2026, "make font sizes do not
+   fall under 16px on desktop and 14px on mobile"). Above 640px of window
+   nothing is set under 16px: the body (15px before), the post tags, the
+   chat's speaker and note lines, and the contact form's raised label (14px
+   before; at 16px on an 18px line from 6px it ends at 24px, clear of the
+   typed words, which start 27px down the 56px field). Under 640px the
+   floor is 14px, which the phone sizes already met.
+   THE TEXT ON THE LIME BAND, LARGER (user's instruction, the same day,
+   "make text on yellow bigger"): an opened "What we offer" row's red line
+   and its terms go from 20px to 24px, the page's own running text size
+   (.text), and stay one size as before; 22px to 860px (17px before), 20px
+   on a phone, as .text is there. */
+@media (min-width: 641px) {
+  body { font-size: 16px; line-height: 21px; }
+  .tags, .post__img--todo p, .chat__who, .chat__note { font-size: 16px; line-height: 21px; }
+  .signup__field > label { top: 6px; font-size: 16px; line-height: 18px; }
+}
+.acc__lede, .acc__body { font-size: 24px; }
+@media (max-width: 860px) { .acc__lede, .acc__body { font-size: 22px; } }
+@media (max-width: 640px) { .acc__lede, .acc__body { font-size: 20px; } }

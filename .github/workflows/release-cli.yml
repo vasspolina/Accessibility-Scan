@@ -1,0 +1,64 @@
+# Publishes the command: the npm package `a11y-scan` and the image
+# ghcr.io/<owner>/a11y-scan. Runs only when a tag like cli-v1.0.0 is pushed,
+# so nothing is published by a merge.
+#
+# Before the first run (the owner's steps, not this file's):
+#   1. Create an npm automation token for the account that will own
+#      `a11y-scan` and add it as the repository secret NPM_TOKEN.
+#   2. Set backend/package.json "version" to the tag's number.
+#   3. git tag cli-v1.0.0 && git push origin cli-v1.0.0
+#   4. For the Action, also move the v1 tag: git tag -f v1 && git push -f origin v1
+#
+# The image needs no secret: GITHUB_TOKEN may write packages for this
+# repository. Make the package public once in its settings on GitHub.
+name: Release CLI
+
+on:
+  push:
+    tags: ["cli-v*"]
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write # npm provenance
+
+jobs:
+  npm:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      - name: The tag matches the package version
+        run: |
+          tag="${GITHUB_REF_NAME#cli-v}"
+          version="$(node -p "require('./package.json').version")"
+          if [ "$tag" != "$version" ]; then echo "Tag $tag but package.json says $version"; exit 1; fi
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push
+        run: |
+          owner="$(echo "$GITHUB_REPOSITORY_OWNER" | tr '[:upper:]' '[:lower:]')"
+          version="${GITHUB_REF_NAME#cli-v}"
+          docker build -f backend/cli.Dockerfile -t "ghcr.io/$owner/a11y-scan:$version" -t "ghcr.io/$owner/a11y-scan:latest" backend
+          docker run --rm "ghcr.io/$owner/a11y-scan:$version" --help
+          docker push "ghcr.io/$owner/a11y-scan:$version"
+          docker push "ghcr.io/$owner/a11y-scan:latest"

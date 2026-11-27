@@ -1,4 +1,4 @@
-import { useId, useMemo, useState } from "react";
+import { useId, useMemo, useRef, useState } from "react";
 import { t, tf } from "../lib/strings";
 import type { AccessibilityReport } from "../api/scanClient";
 import { buildAcrDraft } from "../lib/buildAcrDraft";
@@ -21,6 +21,7 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
   const [contact, setContact] = useState("");
   const [copied, setCopied] = useState(false);
   const panelId = useId();
+  const firstField = useRef<HTMLInputElement>(null);
 
   const draft = useMemo(() => {
     if (!report.conformance) return "";
@@ -50,6 +51,26 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
     total: report.conformance.total,
   }).split("{failed}");
 
+  // The draft as a file to send on. Markdown, because the draft is written
+  // in it: its tables open as tables in most editors and convert to Word.
+  function download() {
+    const host = (() => {
+      try {
+        return new URL(report.url).hostname.replace(/^www\./, "");
+      } catch {
+        return "site";
+      }
+    })();
+    const url = URL.createObjectURL(new Blob([draft], { type: "text/markdown;charset=utf-8" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `conformance-report-${host}.md`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
   async function copy() {
     try {
       await navigator.clipboard.writeText(draft);
@@ -76,25 +97,43 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
             aria-controls={panelId}
             onClick={() => setOpen((v) => !v)}
           >
+            {/* A solid triangle at the start of the line, pointing right
+                shut and down open (user's reference, 22 Nov 2026, a
+                question-and-answer list), in place of the chevron in a
+                round at the far end. Drawn, so it fills with currentColor
+                in forced colours too. */}
+            <svg className="a11y-acr-caret" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+              <path d="M2.5 1 11 6 2.5 11z" fill="currentColor" />
+            </svg>
             <span>
               {t("Conformance report for buyers")}{" "}
               <span className="a11y-section-count">{t("VPAT 2.5, draft")}</span>
             </span>
-            <svg
-              className="a11y-accordion-chevron"
-              viewBox="0 0 16 16"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <path d="M8 11L3 6l.7-.7L8 9.6l4.3-4.3L13 6z" fill="currentColor" />
-            </svg>
           </button>
         </h2>
       </div>
 
       <p className="a11y-section-desc">
-        {t("If a public body or a large customer wants to buy from you, they will ask for one of these. It is the document a procurement team reads instead of your website.")}
+        {t("Public bodies and large customers ask for one before they buy.")}
       </p>
+      {/* The way in that reads as one (user's instruction, 17 Nov 2026). The
+          title above was the only toggle, and nothing about it said it would
+          make anything. Opens the draft and puts the cursor in its first
+          field, the one thing the reader has to type. Gone once open: the
+          title still closes it. */}
+      {!open && (
+        <button
+          type="button"
+          className="a11y-btn a11y-btn-primary a11y-acr-make"
+          aria-controls={panelId}
+          onClick={() => {
+            setOpen(true);
+            requestAnimationFrame(() => firstField.current?.focus());
+          }}
+        >
+          {t("Make a conformance report")}
+        </button>
+      )}
       </div>
 
       {/* Hidden rather than unrendered, so aria-controls always points at a
@@ -113,6 +152,49 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
               <li>{t("Put “Supports” in every row and the document looks finished while claiming something nobody checked.")}</li>
               <li>{t("In a procurement report, that is the version with legal consequences.")}</li>
             </ul>
+          </div>
+
+          {/* One panel, as the accessibility statement's form (user's
+              instruction, 25 Nov 2026, "design this like the other forms"):
+              the title, the three fields on top and the facts they feed
+              under a rule, so what you type and where it lands read as one
+              thing. No submit: the facts and the draft follow the fields as
+              they are typed. */}
+          <div className="a11y-stmt-form">
+          <div className="a11y-stmt-step">
+            <h3 className="a11y-stmt-step-head">{t("Tell us about the product")}</h3>
+          </div>
+
+          <div className="a11y-stmt-fields">
+            <label className="a11y-stmt-field">
+              {t("Product name")}
+              <input
+                ref={firstField}
+                type="text"
+                value={productName}
+                onChange={(e) => setProductName(e.target.value)}
+                placeholder="Acme Shop"
+              />
+            </label>
+            <label className="a11y-stmt-field">
+              {t("Version")}
+              <input
+                type="text"
+                value={productVersion}
+                onChange={(e) => setProductVersion(e.target.value)}
+                placeholder="2026.1"
+              />
+            </label>
+            <label className="a11y-stmt-field">
+              {t("Contact for accessibility questions")}
+              <input
+                type="email"
+                autoComplete="email"
+                value={contact}
+                onChange={(e) => setContact(e.target.value)}
+                placeholder="access@example.com"
+              />
+            </label>
           </div>
 
           {/* What the draft declares, in the same spec-sheet shape the
@@ -143,41 +225,14 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
               </dd>
             </div>
           </dl>
-
-          <div className="a11y-stmt-fields">
-            <label className="a11y-stmt-field">
-              {t("Product name")}
-              <input
-                type="text"
-                value={productName}
-                onChange={(e) => setProductName(e.target.value)}
-                placeholder="Acme Shop"
-              />
-            </label>
-            <label className="a11y-stmt-field">
-              {t("Version")}
-              <input
-                type="text"
-                value={productVersion}
-                onChange={(e) => setProductVersion(e.target.value)}
-                placeholder="2026.1"
-              />
-            </label>
-            <label className="a11y-stmt-field">
-              {t("Contact for accessibility questions")}
-              <input
-                type="email"
-                autoComplete="email"
-                value={contact}
-                onChange={(e) => setContact(e.target.value)}
-                placeholder="access@example.com"
-              />
-            </label>
           </div>
 
           <div className="a11y-stmt-actions">
             <button type="button" className="a11y-sr-play" onClick={copy}>
               {copied ? t("Copied") : t("Copy the draft")}
+            </button>
+            <button type="button" className="a11y-sr-play" onClick={download}>
+              {t("Download the report")}
             </button>
             {/* The button's own text changing is not reliably announced;
                 this mounted status region is. */}

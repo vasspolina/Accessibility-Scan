@@ -16,34 +16,7 @@ import {
 import { env } from "../config/env.js";
 import type { AccessibilityReport, ReportVerdict } from "../types/report.js";
 
-// Sign-in details for scanning pages behind a login. Accepted per request,
-// held in memory for one scan, and never stored, logged, or included in the
-// report. See services/auth/authenticate.ts for the full handling rules.
-const authSchema = z.discriminatedUnion("kind", [
-  z.object({
-    kind: z.literal("cookies"),
-    cookies: z
-      .array(
-        z.object({
-          name: z.string().min(1),
-          value: z.string(),
-          domain: z.string().optional(),
-          path: z.string().optional(),
-        })
-      )
-      .min(1)
-      .max(50),
-  }),
-  z.object({
-    kind: z.literal("form"),
-    loginUrl: z.string().min(1),
-    username: z.string().min(1),
-    password: z.string().min(1),
-    usernameSelector: z.string().optional(),
-    passwordSelector: z.string().optional(),
-    submitSelector: z.string().optional(),
-  }),
-]);
+import { authSchema } from "./authSchema.js";
 
 const scanBodySchema = z.object({
   url: z.string().min(1, "url is required"),
@@ -127,7 +100,7 @@ export async function scanRoutes(app: FastifyInstance) {
       const hasAuth =
         typeof request.body === "object" && request.body !== null && "auth" in request.body;
       return reply.status(400).send({
-        error: "Invalid request body",
+        error: "Something in that request wasn't right. Reload the page and try again.",
         ...(hasAuth ? {} : { details: parsedBody.error.flatten() }),
       });
     }

@@ -3,13 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Accessibility scan — demo</title>
+    <!-- The spaced en dash after a no-break space, as every language in the
+         widget sets it (Hochuli p.36–40; an em dash is a fault here). -->
+    <title>Accessibility scan&nbsp;– demo</title>
     <style>
       body {
-        /* Jokker arrives via the widget's injected @font-face; the
+        /* PP Telegraf arrives via the widget's injected @font-face; the
            stack falls back to the system face until it loads. */
-        font-family: "Jokker", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-        font-feature-settings: "ss04", "ss05";
+        font-family: "PP Telegraf", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
         letter-spacing: 0.01em;
         margin: 0;
         /* No body padding and the widget's own paper: the shell runs

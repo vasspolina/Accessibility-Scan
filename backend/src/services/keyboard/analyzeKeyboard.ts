@@ -258,7 +258,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         "AA",
         "https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum.html",
         first.selector,
-        `${obscuredStops.length === 1 ? "One control is" : `${obscuredStops.length} controls are`} hidden behind ${first.obscured!.coveredBy} when ${obscuredStops.length === 1 ? "it receives" : "they receive"} keyboard focus. The keyboard user cannot see which control is active.`,
+        `${obscuredStops.length === 1 ? "One control is" : `${obscuredStops.length} controls are`} hidden behind ${first.obscured!.coveredBy} when ${obscuredStops.length === 1 ? "it receives" : "they receive"} keyboard focus. The keyboard user can't see which control is active.`,
         "Give the page's scroll position room under the pinned bar. Scroll-padding on the page, or a smaller bar. The element the keyboard lands on has to be at least partly visible while it has focus."
       )
     );
@@ -311,7 +311,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         "A",
         "https://www.w3.org/WAI/WCAG21/Understanding/focus-order.html",
         first.laterStop,
-        `Tabbing through this page jumps backwards ${anomalies.domInversions.length === 1 ? "once" : `${anomalies.domInversions.length} times`}: focus lands on an element that sits EARLIER in the page than the one before it. A keyboard user's sense of where they are breaks at each jump.`,
+        `Tabbing through this page jumps backwards ${anomalies.domInversions.length === 1 ? "once" : `${anomalies.domInversions.length} times`}: focus lands on an element that sits earlier in the page than the one before it.`,
         "Make the tab order follow the page order. The usual causes are CSS that visually reorders content and scripts that move focus. Reorder the markup instead."
       )
     );
@@ -355,7 +355,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         "A",
         "https://www.w3.org/WAI/WCAG21/Understanding/no-keyboard-trap.html",
         trappedSelector,
-        "Keyboard focus gets stuck: pressing Tab repeatedly leaves focus on the same element. Keyboard users cannot move past it to reach the rest of the page.",
+        "Keyboard focus gets stuck: pressing Tab repeatedly leaves focus on the same element. Keyboard users can't move past it to reach the rest of the page.",
         "Make sure every element the Tab key reaches passes focus on when you press Tab. Check for JavaScript that cancels keydown events or re-focuses the element."
       )
     );

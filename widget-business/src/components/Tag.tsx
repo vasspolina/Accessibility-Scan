@@ -18,7 +18,7 @@ import type { ReactNode } from "react";
    only the names were missing. A tone the design system has and the code does
    not is how the two drift apart, even when nothing reaches for it yet.
    "accent" is the odd one out: white on the ember fill at 6.68:1, and the
-   only tone that is not a Carbon tag pair. */
+   only tone that is not one of the paired tag tones. */
 export type TagTone =
   | "gray"
   | "red"

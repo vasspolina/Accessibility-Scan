@@ -44,7 +44,7 @@ export const FIX_KINDS: Record<FixOwner, FixKind> = {
     // a report written for the person who owns the site rather than the one
     // who builds it. They do not need the names of the files.
     get hint() {
-      return t("Whoever builds or maintains the site for you.");
+      return t("Whoever builds your site.");
     },
   },
   content: {
@@ -53,7 +53,7 @@ export const FIX_KINDS: Record<FixOwner, FixKind> = {
       return t("Content fix");
     },
     get hint() {
-      return t("No code needs to change. It belongs with whoever writes the page rather than with a developer.");
+      return t("Whoever writes your pages. No developer needed.");
     },
   },
   design: {
@@ -67,7 +67,7 @@ export const FIX_KINDS: Record<FixOwner, FixKind> = {
     // not their decision to make. The decision comes first and belongs to
     // whoever owns how the page looks.
     get hint() {
-      return t("The designer decides it: a size, a colour, a spacing. A developer then changes the stylesheet to match.");
+      return t("Your designer picks the size, colour or spacing. Your developer applies it.");
     },
   },
   document: {
@@ -76,7 +76,7 @@ export const FIX_KINDS: Record<FixOwner, FixKind> = {
       return t("Document fix");
     },
     get hint() {
-      return t("Fix it in the original file (Word, InDesign, Acrobat) and export again. Editing the site will not help.");
+      return t("Whoever made the PDF. They fix the original file and upload it again.");
     },
   },
 };
@@ -116,6 +116,8 @@ const CONTENT_PREFIXES = ["dark-", "media-"];
 // "Code fix" mark while sitting under a heading that called them notes on the
 // design.
 const DESIGN_RULES = new Set([
+  // Text on a picture: which panel, shade or crop fixes it is a design call.
+  "contrast-over-image",
   "mobile-tap-target",
   "mobile-target-spacing",
   "mobile-sticky-coverage",
@@ -137,7 +139,10 @@ const DESIGN_PREFIXES = ["typo-"];
  */
 export function fixKindForRule(ruleId: string | undefined): FixKind {
   const id = ruleId ?? "";
-  if (id.startsWith("pdf-")) return FIX_KINDS.document;
+  // office- is the linked Word, Excel and PowerPoint files, which the scan
+  // counts and never opens. Like a PDF, the fix is made in the file by
+  // whoever made it, and no one working on the page can make it.
+  if (id.startsWith("pdf-") || id.startsWith("office-")) return FIX_KINDS.document;
   if (CONTENT_RULES.has(id) || CONTENT_PREFIXES.some((p) => id.startsWith(p))) {
     return FIX_KINDS.content;
   }
@@ -146,6 +151,91 @@ export function fixKindForRule(ruleId: string | undefined): FixKind {
   }
   return FIX_KINDS.code;
 }
+
+/**
+ * The "Who fixes this" sentence for one rule, where the desk's own sentence
+ * would be too general to act on.
+ *
+ * The four desk sentences above answer "which kind of person". Read on a
+ * card about a vague link, "whoever writes the page" left the owner asking
+ * who that is and what they should change; on a video it named the wrong
+ * person outright, since captions are added where the video is hosted. So a
+ * rule whose answer is narrower than its desk names the person and the
+ * change. Everything not listed keeps its desk's sentence. English keys,
+ * translated through t() at render time like the desk sentences.
+ */
+const LINK_WORDS =
+  "Whoever writes the page. Each link says where it goes: ‘Opening hours’, not ‘Read more’.";
+const VIDEO_CAPTIONS =
+  "Whoever runs the video account, such as YouTube or Vimeo. Captions go there, not in your site.";
+const CONSENT_BANNER_SETTINGS =
+  "Whoever runs your cookie banner. Refusing should be as easy as accepting.";
+const PRESSURE_WARNING =
+  "Whoever runs your offers. Remove the stock or time warning, or make it true.";
+const FOCUS_OUTLINE =
+  "Your designer draws the keyboard outline. Your developer adds it.";
+const TARGET_SIZE =
+  "Your designer makes these bigger on phones, or spaces them out. Your developer applies it.";
+const TYPE_SETTINGS =
+  "Your designer sets the type size, weight and line spacing. Your developer applies it.";
+const MARKETING_DECISION =
+  "Your marketing or sales team.";
+
+export const RULE_HINTS: Record<string, string> = {
+  "link-text-vague": LINK_WORDS,
+  "sr-vague-link-name": LINK_WORDS,
+  "sr-vague-button-name":
+    "Whoever writes the page. The button says what it does, such as ‘Book a table’.",
+  "sr-filename-alt":
+    "Whoever adds images. Replace the file name in the alt text with what the picture shows.",
+  "video-caption": VIDEO_CAPTIONS,
+  "media-video-captions": VIDEO_CAPTIONS,
+  "media-embedded-player": VIDEO_CAPTIONS,
+  "media-audio-transcript":
+    "Whoever made the recording writes out what is said. Put that text beside the audio.",
+  "media-video-descriptions":
+    "Whoever made the video. Add a spoken description, or a text version beside it.",
+  "component-submit-clarity":
+    "Whoever writes the form. The button says what it does, such as ‘Send my booking’.",
+  "readability-dense-prose":
+    "Whoever writes the page. Shorter sentences, shorter paragraphs, no code change.",
+  "dark-consent-no-reject":
+    "Whoever runs your cookie banner. Add a ‘Reject all’ button as plain as ‘Accept all’.",
+  "dark-consent-asymmetry": CONSENT_BANNER_SETTINGS,
+  "dark-preselected-optin":
+    "Whoever owns the form. Untick the sign-up boxes so each visitor chooses.",
+  "dark-confirmshaming":
+    "Whoever writes your marketing. Let people decline plainly, such as ‘No thanks’.",
+  "dark-fake-scarcity": PRESSURE_WARNING,
+  "dark-fake-urgency": PRESSURE_WARNING,
+  "color-contrast":
+    "Your designer picks a stronger colour. Your developer swaps it in.",
+  "link-in-text-block":
+    "Your designer marks links without relying on colour, such as an underline. Your developer adds it.",
+  "keyboard-faint-focus": FOCUS_OUTLINE,
+  "keyboard-no-visible-focus": FOCUS_OUTLINE,
+  "mobile-tap-target": TARGET_SIZE,
+  "mobile-target-spacing": TARGET_SIZE,
+  "mobile-sticky-coverage":
+    "Your designer decides how much of the screen the fixed bar may cover. Your developer shrinks it.",
+  "component-required-cue":
+    "Your designer marks required fields, such as with the word ‘required’. Your developer adds it.",
+};
+
+/** The "Who fixes this" sentence for a finding, in the reader's language:
+ *  the rule's own where it has one, the desk's otherwise. A dark pattern
+ *  with no rule of its own (the AI review writes those) names the people
+ *  who decide marketing, for the reason fixKindForFinding gives. */
+export function fixHint(finding: AccessibilityFinding): string {
+  const id = finding.ruleId ?? "";
+  if (RULE_HINTS[id]) return t(RULE_HINTS[id]);
+  if (id.startsWith("typo-")) return t(TYPE_SETTINGS);
+  if (finding.category === "dark-pattern") return t(MARKETING_DECISION);
+  return fixKindForFinding(finding).hint;
+}
+
+/** Every rule-specific sentence, for the voice tests. */
+export const ALL_RULE_HINTS: string[] = [...new Set([...Object.values(RULE_HINTS), TYPE_SETTINGS, MARKETING_DECISION])];
 
 export function fixKindForFinding(finding: AccessibilityFinding): FixKind {
   // Category before rule id. A dark pattern is a marketing decision whatever
@@ -206,10 +296,10 @@ export function isAiFinding(finding: AccessibilityFinding): boolean {
 }
 
 export const AI_HINT =
-  "Raised by the AI review, which reads the page the way a person might rather than checking a rule. It can be confidently wrong. Check before acting.";
+  "Our AI wrote this. Check the element first.";
 
 export const KEYBOARD_HINT =
-  "You can confirm this one yourself in a few minutes, with nothing installed. Put the mouse aside and move through the page using Tab, Enter and Escape.";
+  "Put the mouse aside. Move through the page with Tab, Enter and Escape.";
 
 // The two hints above, in the reader's language. The constants stay English
 // because each one is also its own key in t(), and a constant cannot follow
@@ -225,4 +315,17 @@ export function keyboardHint(): string {
 
 export function isKeyboardCheck(finding: AccessibilityFinding): boolean {
   return KEYBOARD_CHECKS.has(finding.ruleId ?? "");
+}
+
+/* How a finding was established, said beside the claim (reviewer's note,
+   22 Nov 2026: "make the testing method visible beside the claim"). The
+   report says what a person can or cannot do; this line says what that rests
+   on. English keys, rendered through t() at the call site. */
+export const METHOD_LINE = {
+  automated: "Found by an automated check.",
+  "ai-review": "From the AI review. Not confirmed.",
+} as const satisfies Record<AccessibilityFinding["source"], string>;
+
+export function methodLine(finding: AccessibilityFinding): string {
+  return t(METHOD_LINE[finding.source]);
 }

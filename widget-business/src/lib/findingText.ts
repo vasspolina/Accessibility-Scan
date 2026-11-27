@@ -32,6 +32,22 @@ export function whatWeFound(
   title: string
 ): string | null {
   if (plain?.found) return plain.found(entryCount);
-  if (finding.description && finding.description !== title) return finding.description;
+  if (finding.description && finding.description !== title) {
+    return finding.ruleId === "markup-validation" ? validatorAsCode(finding.description) : finding.description;
+  }
   return null;
+}
+
+/**
+ * The validator's own messages, quoted after "For example:", marked as code
+ * (user's instruction, 24 Nov 2026, "put this into code font"): they are
+ * the tool's words about tags, "<style> element is not permitted as content
+ * under <body> (line 14)", not sentences of ours. The backend keeps them
+ * plain, because the command line's text, CSV and SARIF have no code face;
+ * the card's CodeText sets the backtick span in the mono face.
+ */
+export function validatorAsCode(text: string): string {
+  const m = text.match(/^([\s\S]*?For example: )([\s\S]*?\(line \d+\))(\.[\s\S]*)$/);
+  if (!m) return text;
+  return `${m[1]}\`${m[2].replace(/`/g, "'")}\`${m[3]}`;
 }

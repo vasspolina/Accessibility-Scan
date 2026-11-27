@@ -3,7 +3,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { FastifyInstance } from "fastify";
-import { START_SCAN_TOOL, WEB_SEARCH_TOOL, CHAT_SYSTEM_PROMPT } from "../src/services/chat/chatPrompt.js";
+import { START_SCAN_TOOL, WEB_SEARCH_TOOL, CHAT_SYSTEM_PROMPT, chatLanguageNote } from "../src/services/chat/chatPrompt.js";
 import { readFileSync } from "node:fs";
 
 /**
@@ -58,11 +58,64 @@ describe("POST /api/chat guardrails", () => {
     expect((await post({ messages })).statusCode).toBe(413);
   });
 
-  it("refuses a document or image block — the API would fetch and bill its source", async () => {
+  it("refuses a document block, or an image by address — the API would fetch and bill its source", async () => {
     const doc = { type: "document", source: { type: "url", url: "https://example.com/600-pages.pdf" } };
     expect((await post({ messages: [{ role: "user", content: [doc, { type: "text", text: "summarise" }] }] })).statusCode).toBe(400);
     const img = { type: "image", source: { type: "url", url: "https://example.com/a.png" } };
     expect((await post({ messages: [{ role: "user", content: [img] }] })).statusCode).toBe(400);
+  });
+
+  // A picture the person attached rides as base64 data: nothing for the
+  // API to fetch. Only the four types the widget accepts, checked by their
+  // bytes as well as their stated type, and held to the caps.
+  describe("attached images", () => {
+    const PNG = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0]).toString("base64");
+    const JPEG = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0, 16, 74, 70, 73, 70, 0, 1, 1, 0, 0, 1, 0, 0]).toString("base64");
+    // 18 bytes each, so the base64 has no padding and the cap tests can
+    // lengthen it.
+    const image = (media_type: string, data: string) => ({ type: "image", source: { type: "base64", media_type, data } });
+    const ask = (...blocks: unknown[]) => post({ messages: [{ role: "user", content: [...blocks, { type: "text", text: "what is wrong here?" }] }] });
+
+    it("lets a png or jpeg through to the model", async () => {
+      // Past every guardrail; without an API key in tests the route answers 503.
+      expect((await ask(image("image/png", PNG))).statusCode).toBe(503);
+      expect((await ask(image("image/jpeg", JPEG))).statusCode).toBe(503);
+    });
+
+    it("refuses a type the widget does not accept", async () => {
+      expect((await ask(image("image/svg+xml", PNG))).statusCode).toBe(400);
+      expect((await ask(image("image/bmp", PNG))).statusCode).toBe(400);
+    });
+
+    it("refuses bytes that are not the stated type", async () => {
+      expect((await ask(image("image/png", JPEG))).statusCode).toBe(400);
+      expect((await ask(image("image/gif", Buffer.from("<svg onload=x>hello").toString("base64")))).statusCode).toBe(400);
+    });
+
+    it("refuses data that is not base64", async () => {
+      expect((await ask(image("image/png", `${PNG}!!not base64`))).statusCode).toBe(400);
+    });
+
+    it("refuses an image over the per-image cap", async () => {
+      const big = PNG + "A".repeat(5_000_000);
+      expect((await ask(image("image/png", big))).statusCode).toBe(400);
+    });
+
+    it("refuses more than four images in one turn", async () => {
+      const five = Array.from({ length: 5 }, () => image("image/png", PNG));
+      expect((await ask(...five)).statusCode).toBe(400);
+    });
+
+    it("answers a conversation holding too many images as too long", async () => {
+      const turn = (n: number) => ({ role: "user", content: [...Array.from({ length: n }, () => image("image/png", PNG)), { type: "text", text: "and this" }] });
+      const messages = [turn(4), { role: "assistant", content: "ok" }, turn(4), { role: "assistant", content: "ok" }, turn(4), { role: "assistant", content: "ok" }, turn(1)];
+      expect((await post({ messages })).statusCode).toBe(413);
+    });
+
+    it("measures the words apart from the images, so a large picture does not make the words too long", async () => {
+      const large = PNG + "A".repeat(600_000);
+      expect((await ask(image("image/png", large))).statusCode).toBe(503);
+    });
   });
 
   it("refuses a sourced block passed off as the assistant's", async () => {
@@ -85,6 +138,11 @@ describe("POST /api/chat guardrails", () => {
     const res = await post({ messages: [{ role: "user", content: [digest, { type: "text", text: "what first?" }] }] });
     // Past every guardrail; without an API key in tests the route answers 503.
     expect(res.statusCode).not.toBe(400);
+  });
+
+  it("refuses a language the widget does not offer", async () => {
+    const r = await post({ messages: [{ role: "user", content: "hi" }], language: "xx" });
+    expect(r.statusCode).toBe(400);
   });
 
   it("refuses roles other than user and assistant", async () => {
@@ -113,9 +171,47 @@ describe("the chat contract", () => {
     expect(CHAT_SYSTEM_PROMPT).toMatch(/fenced code block/);
   });
 
+  // "- **Name:** the label..." read as machine writing (user, 18 Nov 2026:
+  // "don't overdo semicolons, this is slop").
+  it("asks for plain list items and few colons, no semicolons", () => {
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/Do not open a list item with a bold label and a colon/);
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/Never use a semicolon/);
+  });
+
   it("keeps credentials out of the conversation", () => {
     expect(CHAT_SYSTEM_PROMPT).toMatch(/Never ask for, or accept, a password/);
     expect(JSON.stringify(START_SCAN_TOOL)).not.toMatch(/password|username|cookie/i);
+  });
+
+  // The chat habits that read as filler: an opener, a closing offer, a
+  // padding hedge, formatting the answer does not need. Honest uncertainty
+  // (an AI review finding may be wrong) is kept and must stay in the prompt.
+  it("writes without openers, closing offers, filler hedges or extra formatting", () => {
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/Start with the answer\. No opener/);
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/No "Let me know if", "Hope this helps"/);
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/No filler hedges/);
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/Real uncertainty stays/);
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/A list is for three or more items/);
+  });
+
+  // The post-scan summary once read as a run of quoted titles, "the score
+  // leaves it out" and a menu of sections (user's word, 22 Nov 2026: "vague
+  // and looks like a slop"). It now says what each finding does to a person,
+  // where, and who fixes it, and what an unfinished check may have missed.
+  it("opens a report with facts, not a list of titles", () => {
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/A title alone is a label, not a fact/);
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/which problems may be missing from it, and for whom/);
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/Never only "the score leaves it out"/);
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/Do not list the report's sections/);
+    expect(CHAT_SYSTEM_PROMPT).not.toMatch(/One line on what else you can show/);
+  });
+
+  // The user's instruction, 25 Nov 2026, "delete this chapter": a finished
+  // scan gets no reply, so the prompt must not ask for a summary of it in
+  // the answer to the next question either.
+  it("writes no summary after a finished scan", () => {
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/A finished scan gets no reply from you/);
+    expect(CHAT_SYSTEM_PROMPT).not.toMatch(/Your first reply after a scan/);
   });
 
   it("holds the assistant to the report's own claims", () => {
@@ -141,6 +237,15 @@ describe("the chat contract", () => {
     // Seen live: "acessobility nl" got a reply in Dutch asking for an address.
     expect(CHAT_SYSTEM_PROMPT).toMatch(/Did you mean accessibility\.nl\?/);
     expect(CHAT_SYSTEM_PROMPT).toMatch(/country code after a name .* is the end of an address, not a request to change language/);
+  });
+});
+
+describe("the reader's chosen language", () => {
+  // Seen live: the widget set to French, a question typed in English, and
+  // the answer came back in English with French spacing laid over it.
+  it("is named in its own block and wins over the language of the question", () => {
+    expect(chatLanguageNote("fr")).toBe("The reader has set the checker to French. Reply in French.");
+    expect(CHAT_SYSTEM_PROMPT).toMatch(/note after these instructions names the language the reader chose, reply in that language, whatever language they write in/);
   });
 });
 

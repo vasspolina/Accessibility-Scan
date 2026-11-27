@@ -3,6 +3,7 @@ import { Button } from "./Button";
 import { Input } from "./Input";
 import { Select } from "./Select2";
 import { t } from "../lib/strings";
+import { getLang } from "../lib/i18n";
 import {
   createSchedule,
   deleteSchedule,
@@ -26,11 +27,20 @@ import {
  * is off, or a notify address on a server without mail, would otherwise be
  * a schedule that looks alive and never does anything.
  */
-const EVERY: Array<{ value: string; label: string }> = [
+/** A function, not a constant: t() reads the language when called, and a
+ *  module-level list froze the labels in whatever language loaded first. */
+const everyOptions = (): Array<{ value: string; label: string }> => [
   { value: "24", label: t("Every day") },
   { value: "168", label: t("Every week") },
   { value: "6", label: t("Every 6 hours") },
 ];
+
+/** The frequency label ("Every day") sits mid-sentence after "Runs", so it
+ *  is lowercased there. Not in German: nouns keep their capital, and
+ *  lowercasing "Jeden Tag" gave "jeden tag". */
+function midSentence(label: string): string {
+  return getLang() === "de" ? label : label.toLowerCase();
+}
 
 function sameUrl(a: string, b: string): boolean {
   try {
@@ -58,7 +68,7 @@ export function ScheduleRow({ apiBase, url }: { apiBase: string; url: string }) 
       setAll(r.schedules);
       setStatus(r.scheduler);
     } catch (err) {
-      setError(err instanceof ScanError ? err.message : t("Could not load the schedules."));
+      setError(err instanceof ScanError ? err.message : t("Couldn't load the schedules."));
     }
   }
   useEffect(() => {
@@ -77,7 +87,7 @@ export function ScheduleRow({ apiBase, url }: { apiBase: string; url: string }) 
       setWarnings(r.warnings ?? []);
       await load();
     } catch (err) {
-      setError(err instanceof ScanError ? err.message : t("Could not create the schedule."));
+      setError(err instanceof ScanError ? err.message : t("Couldn't create the schedule."));
     } finally {
       setBusy(false);
     }
@@ -92,7 +102,7 @@ export function ScheduleRow({ apiBase, url }: { apiBase: string; url: string }) 
       await setScheduleEnabled(apiBase, mine.id, !mine.enabled);
       await load();
     } catch (err) {
-      setError(err instanceof ScanError ? err.message : t("Could not change the schedule."));
+      setError(err instanceof ScanError ? err.message : t("Couldn't change the schedule."));
     } finally {
       setBusy(false);
     }
@@ -106,13 +116,13 @@ export function ScheduleRow({ apiBase, url }: { apiBase: string; url: string }) 
       setWarnings([]);
       await load();
     } catch (err) {
-      setError(err instanceof ScanError ? err.message : t("Could not delete the schedule."));
+      setError(err instanceof ScanError ? err.message : t("Couldn't delete the schedule."));
     } finally {
       setBusy(false);
     }
   }
 
-  const when = (iso: string) => new Date(iso).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+  const when = (iso: string) => new Date(iso).toLocaleString(getLang() === "en" ? "en-GB" : getLang(), { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 
   return (
     <div className="a11y-settings-row">
@@ -128,15 +138,15 @@ export function ScheduleRow({ apiBase, url }: { apiBase: string; url: string }) 
       {mine ? (
         <>
           <span className="a11y-settings-state">
-            {mine.enabled ? `${t("Runs")} ${(EVERY.find((o) => o.value === String(mine.everyHours))?.label ?? `${mine.everyHours} h`).toLowerCase()}. ` : `${t("Paused.")} `}
+            {mine.enabled ? `${t("Runs")} ${midSentence(everyOptions().find((o) => o.value === String(mine.everyHours))?.label ?? `${mine.everyHours} h`)}. ` : `${t("Paused.")} `}
             {mine.lastRunAt
               ? `${t("Last run")} ${when(mine.lastRunAt)}${mine.lastScore !== null ? `, ${t("score")} ${mine.lastScore}` : ""}. `
               : `${t("Not run yet.")} `}
             {mine.enabled ? `${t("Next")} ${when(mine.nextRunAt)}.` : ""}
             {mine.lastError ? ` ${t("Last run failed:")} ${mine.lastError}` : ""}
-            {mine.notifyEmail ? ` ${t("Writes to")} ${mine.notifyEmail} ${t("if the score drops or a new finding appears.")}` : ""}
+            {mine.notifyEmail ? ` ${t("Emails")} ${mine.notifyEmail} ${t("if the score drops or a new finding appears.")}` : ""}
           </span>
-          {status && !status.enabled && <span className="a11y-settings-state">{t("The scheduler is off on this server. This schedule will not run until it is on.")}</span>}
+          {status && !status.enabled && <span className="a11y-settings-state">{t("The scheduler is off on this server. This schedule will not run until it is turned on.")}</span>}
           {status && mine.notifyEmail && !status.mail && <span className="a11y-settings-state">{t("Mail is not set up on this server. No email will be sent.")}</span>}
           <div className="a11y-manual-form-actions">
             <Button variant="secondary" size="sm" onClick={toggle} disabled={busy}>
@@ -148,12 +158,12 @@ export function ScheduleRow({ apiBase, url }: { apiBase: string; url: string }) 
           </div>
         </>
       ) : all !== null ? (
-        <form className="a11y-manual-form" onSubmit={create} aria-labelledby={`${id}-label`}>
-          <span className="a11y-settings-state">{t("Scan this page automatically. If the score drops or a new finding appears, you are told.")}</span>
-          <Select id={`${id}-every`} label={t("How often")} options={EVERY} value={every} onChange={(e) => setEvery(e.target.value)} />
+        <form className="a11y-manual-form a11y-schedule-form" onSubmit={create} aria-labelledby={`${id}-label`}>
+          <span className="a11y-settings-state">{t("Scan this page on a schedule. We flag it if the score drops or a new finding appears.")}</span>
+          <Select id={`${id}-every`} label={t("How often")} options={everyOptions()} value={every} onChange={(e) => setEvery(e.target.value)} />
           <Input
             id={`${id}-email`}
-            label={t("Email for a worse result (optional)")}
+            label={t("Email me if it gets worse (optional)")}
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}

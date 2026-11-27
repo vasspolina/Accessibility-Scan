@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { Icon } from "../Icon";
 
 /**
  * RelatedChecks, ported from components/scan/RelatedChecks.jsx.
@@ -56,7 +57,7 @@ export function RelatedChecks({
             onClick={() => onOpen?.(it)}
           >
             <span className="a11y-related-meta">
-              {it.id} · Level {it.level}
+              {it.id}{" — "}Level {it.level}
             </span>{" "}
             <span className="a11y-related-name">{it.name}</span>
             {/* `why` is what makes this a recommendation rather than a list
@@ -72,7 +73,7 @@ export function RelatedChecks({
                   a screen reader reading both announces "…, north east
                   arrow". The button's name is the whole card text, which
                   already identifies which check it opens. */}
-              <span aria-hidden="true"> ↗</span>
+              {" "}<Icon name="launch" />
             </span>
           </button>
         ))}

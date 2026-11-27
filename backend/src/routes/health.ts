@@ -3,7 +3,8 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { FastifyInstance } from "fastify";
-import { hasAnthropicKey, hasMailProvider } from "../config/env.js";
+import { env, hasAnthropicKey, hasLocalModel, hasMailProvider } from "../config/env.js";
+import { pilotOpen } from "../services/pilot/pilot.js";
 
 const publicDir = path.join(path.dirname(fileURLToPath(import.meta.url)), "../../public");
 
@@ -26,6 +27,11 @@ export async function healthRoutes(app: FastifyInstance) {
     // So the widget can tell "email isn't set up here" from "the send
     // failed" before it ever asks anyone to type an address.
     emailReportEnabled: hasMailProvider,
+    // The self-hosted plain-language model: whether one is configured, and
+    // which. Configured is not the same as answering; a scan's
+    // meta.plainLanguage.status says whether it did.
+    plainLanguageModel: hasLocalModel ? env.LOCAL_LLM_MODEL : null,
+    pilotOpen: pilotOpen(),
     commit: process.env.RAILWAY_GIT_COMMIT_SHA?.slice(0, 7) ?? null,
     widgetBundle: await widgetBundleHash(),
   }));

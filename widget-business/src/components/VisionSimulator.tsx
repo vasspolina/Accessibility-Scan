@@ -38,7 +38,7 @@ interface Condition {
    tells the truth for whichever image is actually on the stage. */
 function noteFor(c: Condition, behindConsent: boolean): string {
   if (c.id === "none" && behindConsent) {
-    return t("Your page with the cookie banner set aside, so every view here shows the page itself.");
+    return t("Your page with the cookie banner set aside.");
   }
   return t(c.note);
 }
@@ -116,10 +116,10 @@ export function VisionSimulator({
 
   return (
     <section className="a11y-section a11y-sim" aria-labelledby="a11y-sim-heading">
-      <h2 className="a11y-section-title" id="a11y-sim-heading" data-nav-label={t("Through other eyes")}>{t("Your page, through other eyes")}</h2>
+      <h2 className="a11y-section-title" id="a11y-sim-heading" data-nav-label={t("Through other eyes")}>{t("How your page looks with different vision conditions")}</h2>
       <p className="a11y-section-desc">
         {t(
-          "About one man in twelve is colour blind. Switch between views to see what your page loses."
+          "Switch views to see which text, images, and controls become harder to see."
         )}
       </p>
 
@@ -141,16 +141,9 @@ export function VisionSimulator({
           screen reader gets by default — the note that actually explains the
           condition, which is the whole point of this control, is a plain
           paragraph nothing announces. */}
-      {/* The prevalence moved here from the chips, so the seven labels fit
-          one line: it is a fact about the chosen condition, and this is
-          where the chosen condition is explained. */}
       <span className="a11y-sr-only" role="status">
         {t(active.label)}. {active.prevalence ? <>{t(active.prevalence)}. </> : null}{noteFor(active, behindConsent)}
       </span>
-      <p className="a11y-sim-note">
-        {active.prevalence && <strong>{t(active.prevalence)}. </strong>}
-        {noteFor(active, behindConsent)}
-      </p>
 
       {/* One hidden SVG holding every colour matrix; the image references the
           active one by id. Cheaper than rebuilding a filter on each change,
@@ -177,8 +170,14 @@ export function VisionSimulator({
           }}
         />
       </div>
-      <p className="a11y-sim-caption">
-        {t("This shows the top of the page, as first loaded.")}
+      {/* The note sits under the picture (user's instruction, 22 Nov 2026,
+          "move text underneath below the image"), so the buttons and the
+          picture they change stand together on one screen. The prevalence
+          leads it: a fact about the chosen condition, said where the
+          condition is explained. */}
+      <p className="a11y-sim-note">
+        {active.prevalence && <strong>{t(active.prevalence)}. </strong>}
+        {noteFor(active, behindConsent)}
       </p>
     </section>
   );

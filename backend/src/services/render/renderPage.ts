@@ -32,6 +32,9 @@ import {
 } from "../textResize/analyzeTextResize.js";
 import type { ScreenReaderScript } from "../../types/report.js";
 import type { ReadabilitySignals } from "../readability/analyzeReadability.js";
+import { collectReflowHeightInPage, REFLOW_HEIGHT, type ReflowHeightSignals } from "../reflowHeight/analyzeReflowHeight.js";
+import { measureUndecidedContrast, type PixelContrastResult } from "../contrast/pixelContrast.js";
+import { openAndMeasure, type FormErrorProbe, type OpenedPanel } from "../interaction/openAndMeasure.js";
 import type {
   FocusStyles,
   KeyboardNavResult,
@@ -39,7 +42,8 @@ import type {
   TabStop,
 } from "../keyboard/analyzeKeyboard.js";
 import { logger } from "../../utils/logger.js";
-import { authenticate, type AuthConfig } from "../auth/authenticate.js";
+import { authenticate, AuthError, sessionWasLost, type AuthConfig } from "../auth/authenticate.js";
+import { OVERLAY_MARKER_SELECTORS, type OverlaySignals } from "../overlay/analyzeOverlay.js";
 
 const require = createRequire(import.meta.url);
 
@@ -121,7 +125,9 @@ export interface DomSignals {
     // selector, so the label is carried when the markup offers one.
     label: string;
   }>;
-  mediaEmbeds: Array<{ selector: string; provider: string; title: string }>;
+  // src is kept (capped) so the pipeline can ask YouTube and Vimeo whether
+  // the embedded video has captions (media/captionTracks.ts).
+  mediaEmbeds: Array<{ selector: string; provider: string; title: string; src?: string }>;
   // The navigation, in the order it appears. Meaningless on its own — a
   // single page cannot be inconsistent with itself — and collected purely so
   // the crawler can compare one page against another. WCAG 3.2.3 and 3.2.4
@@ -180,11 +186,25 @@ export interface DomSignals {
      reading it, and offers no way to turn it off, extend it, or adjust it —
      which is the whole of WCAG 2.2.1. */
   metaRefreshSeconds: number | null;
+  /* What a third-party accessibility overlay leaves in the document: the
+     addresses of the page's scripts, and which of the widget elements the
+     known vendors build were present. Raw facts only. Which vendor an
+     address belongs to is decided in services/overlay/analyzeOverlay.ts,
+     where the table lives; the collector is handed that table's selectors
+     and knows no vendor by name. */
+  overlay: OverlaySignals;
   // Every same-document link with its text — used by the crawler to pick
   // which pages to audit. Separate from interactiveElements, which is capped
   // at 60 and mixes in buttons: a nav-heavy page would truncate the link list
   // before the pages worth auditing appeared in it.
   pageLinks: Array<{ href: string; text: string }>;
+  // How many of the page's links pageLinks left out because of its cap.
+  // Zero on almost every page. The document inventory
+  // (services/documents/inventoryDocuments.ts) counts from pageLinks, so on
+  // a page with more links than the cap its counts are a floor, and this is
+  // what lets the report say so. Optional so a hand-built DomSignals in a
+  // test need not carry it.
+  pageLinksNotRead?: number;
   // Modal/popup dialogs currently on the page (cookie banners, newsletter
   // pop-ups, age gates, etc.) — either explicitly marked (role="dialog",
   // <dialog>) or heuristically detected as a viewport-covering overlay.
@@ -377,6 +397,18 @@ export interface RenderResult {
   // Main-content prose and the declared language, for the reading-level
   // advisory (services/readability/analyzeReadability.ts).
   readability: ReadabilitySignals;
+  // Pinned boxes measured in a window 256px tall, the vertical half of
+  // 1.4.10 (services/reflowHeight/analyzeReflowHeight.ts). Absent when the
+  // pass did not finish.
+  reflowHeight?: ReflowHeightSignals;
+  // Text over pictures and gradients that axe left undecided, measured from
+  // the pixels (services/contrast/pixelContrast.ts).
+  pixelContrast?: PixelContrastResult[];
+  // Axe run inside menus, accordions and tabs opened one at a time, and the
+  // empty-submit test of the page's forms with the network blocked
+  // (services/interaction/openAndMeasure.ts). Absent when they did not run.
+  openedPanels?: OpenedPanel[];
+  formErrors?: FormErrorProbe[];
   // Checks that did not complete on this run, in words a reader understands.
   //
   // Each of these passes catches its own failures and returns empty signals so
@@ -393,7 +425,7 @@ export interface RenderResult {
 
 // Runs inside the browser page context via page.evaluate — must be fully
 // self-contained (no closures over outer-scope variables).
-function extractDomSignalsInPage(): DomSignals {
+function extractDomSignalsInPage(overlayMarkerSelectors: string[]): DomSignals {
   function cssPath(el: Element): string {
     // CSS.escape, because an id is not automatically a valid CSS identifier.
     // Generated markup routinely produces ids starting with a digit, and
@@ -677,9 +709,10 @@ function extractDomSignalsInPage(): DomSignals {
         selector: cssPath(el),
         provider: match[1],
         title: el.getAttribute("title") ?? "",
+        src: (el as HTMLIFrameElement).src.slice(0, 300),
       };
     })
-    .filter((e): e is { selector: string; provider: string; title: string } => e !== null)
+    .filter((e): e is { selector: string; provider: string; title: string; src: string } => e !== null)
     .slice(0, 20);
 
   // Navigation landmarks first, header only as a fallback: a great many
@@ -879,6 +912,52 @@ function extractDomSignalsInPage(): DomSignals {
     if (Number.isFinite(secs) && secs > 0) metaRefreshSeconds = secs;
   }
 
+  // Script addresses and overlay widget elements, for the overlay note.
+  //
+  // document.scripts and not the network log: a script a tag manager
+  // injected is a <script> element like any other by the time this runs
+  // (after load, the network pause and axe), and the element is what an
+  // owner can find in their own page source or tag manager and remove.
+  // Scripts inside iframes are another document and are not read.
+  //
+  // The query string and fragment go here, before anything leaves the
+  // page. They carry account keys and cache stamps; the vendor is
+  // recognised by host and path, and the reader is shown host and path.
+  // A data: or blob: script is skipped: it has no host to recognise
+  // anything by and its "address" is the script itself. file: is kept so
+  // the fixture test can see this collector read a real page's scripts;
+  // the evaluator names nobody from a file: address.
+  const overlay: { scriptSrcs: string[]; markers: string[] } = { scriptSrcs: [], markers: [] };
+  {
+    const seenSrc = new Set<string>();
+    for (const el of Array.from(document.scripts)) {
+      // A guard, not a measured limit: it stops a pathological page from
+      // growing the payload without end. Nobody has counted what a heavy
+      // real page carries; raise it if a real page is ever cut short.
+      if (overlay.scriptSrcs.length >= 400) break;
+      if (!el.src) continue;
+      try {
+        const u = new URL(el.src, location.href);
+        if (u.protocol !== "https:" && u.protocol !== "http:" && u.protocol !== "file:") continue;
+        const clean = `${u.protocol}//${u.host}${u.pathname}`.slice(0, 300);
+        if (seenSrc.has(clean)) continue;
+        seenSrc.add(clean);
+        overlay.scriptSrcs.push(clean);
+      } catch {
+        // An address that does not parse names nobody.
+      }
+    }
+    for (const sel of overlayMarkerSelectors ?? []) {
+      try {
+        // Light DOM only, on purpose: every marker in the table is the
+        // element a vendor's script appends to the page's own document.
+        if (document.querySelector(sel)) overlay.markers.push(sel);
+      } catch {
+        // A selector this browser rejects is a marker not found.
+      }
+    }
+  }
+
   let respectsReducedMotion = false;
   try {
     for (const sheet of Array.from(document.styleSheets)) {
@@ -1019,7 +1098,9 @@ function extractDomSignalsInPage(): DomSignals {
       };
     });
 
-  const pageLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>("a[href]"))
+  const allPageLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>("a[href]"));
+  const pageLinksNotRead = Math.max(0, allPageLinks.length - 300);
+  const pageLinks = allPageLinks
     .slice(0, 300)
     .map((a) => ({
       href: a.getAttribute("href") ?? "",
@@ -1049,7 +1130,9 @@ function extractDomSignalsInPage(): DomSignals {
     titleTooltips,
     unmarkedScripts,
     metaRefreshSeconds,
+    overlay,
     pageLinks,
+    pageLinksNotRead,
     dialogs,
   };
 }
@@ -1383,8 +1466,25 @@ async function captureElementScreenshots(
 // purpose: real controls often run the full width of their column, so a width
 // test would reject exactly what we want to picture.
 const MAX_COMPONENT_HEIGHT_PX = 220;
-const SECOND_PASS_BUDGET_MS = 12_000;
-const MAX_SECOND_PASS_SHOTS = 10;
+// Every element the report points at gets a picture (user's instruction, 25
+// Nov 2026, "add always screenshots when an item on website is pointed out").
+// Ten shots in twelve seconds left whatever came eleventh with the
+// "not-attempted" note: seven bare cards on moma.org, every one of them a
+// limit rather than a fact about the page. Thirty in twenty leaves room for
+// the fallbacks below as well (focusing a skip link, picturing a hidden
+// element's container), which cost a second look each. The visit is one
+// navigation on the pooled browser; the budget bounds the worst case at
+// eight seconds more than before.
+const SECOND_PASS_BUDGET_MS = 20_000;
+const MAX_SECOND_PASS_SHOTS = 30;
+// A region's picture is its top: at most 0.6 of its width tall, never less
+// than the floor. Enough to show where the region starts and what it holds,
+// not a strip of the whole page.
+const TOP_CROP_ASPECT = 0.6;
+const TOP_CROP_MIN_HEIGHT_PX = 320;
+// Space kept round an element photographed in place from the screen, so a
+// blank or covered element arrives with what sits beside it.
+const IN_PLACE_PAD_PX = 40;
 // Below this, a tight crop of the element on its own is too small to read and
 // too plain to survive the blank-frame check — photograph its surroundings
 // instead. Above it, the element fills the frame on its own.
@@ -1548,6 +1648,108 @@ async function settleLayout(page: Page): Promise<void> {
 }
 
 /**
+ * The top of an element, for one too tall to picture whole: a region the
+ * report points at, or the visible part of the page a hidden element sits in.
+ * The element is photographed as it is and then cut to its top, so the frame
+ * starts where the region starts.
+ */
+async function captureTopOf(target: Locator | ElementHandle<Node>): Promise<string | null> {
+  try {
+    const raw = await target.screenshot({ type: "jpeg", quality: 72, timeout: 4_000, animations: "disabled" });
+    const meta = await sharp(raw).metadata().catch(() => null);
+    if (!meta?.width || !meta.height || meta.width < 80 || meta.height < 20) return null;
+    const height = Math.min(meta.height, Math.max(TOP_CROP_MIN_HEIGHT_PX, Math.round(meta.width * TOP_CROP_ASPECT)));
+    const resized = await sharp(raw)
+      .extract({ left: 0, top: 0, width: meta.width, height })
+      .resize({ width: 480, height: 480, fit: "inside", withoutEnlargement: true })
+      .jpeg({ quality: 62 })
+      .toBuffer();
+    const stats = await sharp(resized).stats().catch(() => null);
+    const maxStdev = stats ? Math.max(...stats.channels.map((c) => c.stdev)) : 1;
+    if (maxStdev < BLANK_STDEV) return null;
+    return resized.toString("base64");
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The nearest ancestor of a hidden element that is itself displayed and has
+ * a size: the closed menu's bar, the folded section's heading row, the
+ * slider's track. Body and html never count, since a picture of the whole
+ * page points at nothing.
+ */
+async function visibleContainer(locator: Locator): Promise<ElementHandle<Node> | null> {
+  try {
+    const handle = await locator.evaluateHandle((el) => {
+      // Inline loop, no named inner function (esbuild keepNames, see above).
+      let node: Element | null = el;
+      for (let i = 0; i < 12 && node; i++) {
+        node = node.parentNode instanceof ShadowRoot ? node.parentNode.host : node.parentElement;
+        if (!node || node === document.body || node === document.documentElement) return null;
+        const cs = getComputedStyle(node);
+        if (cs.display === "none" || cs.visibility === "hidden" || parseFloat(cs.opacity) === 0) continue;
+        const r = node.getBoundingClientRect();
+        if (r.width >= 40 && r.height >= 20) return node;
+      }
+      return null;
+    });
+    return handle.asElement();
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The screen round an element, cut from the viewport rather than from the
+ * element: what a visitor sees at that spot, overlay and all. For an element
+ * that photographs blank on its own, or that something lies over. Returns
+ * where the element sits in the frame, so the widget can outline it.
+ */
+async function captureInPlace(
+  page: Page,
+  locator: Locator
+): Promise<{ image: string; box: { x: number; y: number; width: number; height: number } } | null> {
+  try {
+    await locator.scrollIntoViewIfNeeded({ timeout: 1_000 }).catch(() => {});
+    // Viewport coordinates of the main frame, also for an element inside a
+    // frame, which is what a clip of the page screenshot takes.
+    const box = await locator.boundingBox();
+    const view = page.viewportSize();
+    if (!box || !view || box.width < 2 || box.height < 2) return null;
+    const left = Math.max(0, Math.floor(box.x - IN_PLACE_PAD_PX));
+    const top = Math.max(0, Math.floor(box.y - IN_PLACE_PAD_PX));
+    const right = Math.min(view.width, Math.ceil(box.x + box.width + IN_PLACE_PAD_PX));
+    const bottom = Math.min(view.height, Math.ceil(box.y + box.height + IN_PLACE_PAD_PX), top + 480);
+    const width = right - left;
+    const height = bottom - top;
+    if (width < 80 || height < 20) return null;
+    const raw = await page.screenshot({
+      type: "jpeg",
+      quality: 72,
+      timeout: 2_500,
+      animations: "disabled",
+      clip: { x: left, y: top, width, height },
+    });
+    const resized = await sharp(raw)
+      .resize({ width: 480, height: 480, fit: "inside", withoutEnlargement: true })
+      .jpeg({ quality: 62 })
+      .toBuffer();
+    const stats = await sharp(resized).stats().catch(() => null);
+    const maxStdev = stats ? Math.max(...stats.channels.map((c) => c.stdev)) : 1;
+    if (maxStdev < BLANK_STDEV) return null;
+    const clamp = (n: number) => Math.min(1, Math.max(0, n));
+    const x0 = clamp((box.x - left) / width);
+    const y0 = clamp((box.y - top) / height);
+    const x1 = clamp((box.x + box.width - left) / width);
+    const y1 = clamp((box.y + box.height - top) / height);
+    return { image: resized.toString("base64"), box: { x: x0, y: y0, width: x1 - x0, height: y1 - y0 } };
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Photographs one selector the way a reader needs to see it: scrolled into
  * view, verified as actually on screen, and framed with enough around it to
  * be legible.
@@ -1606,8 +1808,19 @@ function originOf(url: string): string {
   }
 }
 
+/**
+ * What a picture taken by a fallback shows, when it is not simply the element.
+ * The reader is told, so a picture of the menu bar is never taken for a
+ * picture of the link folded inside it.
+ */
+export type PictureShows = "container" | "focused" | "top" | "covered";
+
 export interface FreshCaptureResult {
   shots: Record<string, string>;
+  /** Where the element sits in its picture, for the in-place captures. */
+  boxes?: Record<string, { x: number; y: number; width: number; height: number }>;
+  /** Set only for a picture a fallback took. */
+  shows?: Record<string, PictureShows>;
   /**
    * Why a selector could not be photographed, where the page could tell us.
    * "hidden" and "offscreen" are usually correct behaviour rather than a
@@ -1652,7 +1865,7 @@ export async function captureSelectorsFresh(
   if (selectors.length === 0) return { shots: {}, unpicturable: {} };
 
   return withPage(async (page: Page) => {
-    const result: FreshCaptureResult = { shots: {}, unpicturable: {} };
+    const result: FreshCaptureResult = { shots: {}, unpicturable: {}, boxes: {}, shows: {} };
     try {
       await page.goto(url, { waitUntil: "load", timeout: 20_000 });
       // Same brief settle the main render allows for SPA content.
@@ -1701,13 +1914,20 @@ export async function captureSelectorsFresh(
         if (!alwaysCapture(selector)) {
           const box = await scope.locator(selector).first().boundingBox().catch(() => null);
           if (box && box.height > MAX_COMPONENT_HEIGHT_PX) {
-            // Skipped for being a whole region rather than a component, and
-            // that used to happen in silence — the card arrived with no
-            // picture and no reason, which is the thing this whole mechanism
-            // exists to stop. A reason is recorded even though the skip is
-            // correct: a picture of an entire page section shows the reader
-            // nothing about which part of it is at fault.
-            result.unpicturable[selector] = "too-large";
+            // A whole region rather than a component. It used to get no
+            // picture, on the grounds that a photograph of an entire section
+            // does not say which part of it is at fault; but a card with no
+            // picture does not say where on the page the section is either,
+            // and every element pointed at gets a picture now (user's
+            // instruction, 25 Nov 2026). Its top, then, cut to a frame, and
+            // the reader is told it is the top of a region.
+            const top = await captureTopOf(scope.locator(selector).first());
+            if (top) {
+              result.shots[selector] = top;
+              result.shows![selector] = "top";
+            } else {
+              result.unpicturable[selector] = "too-large";
+            }
             continue;
           }
         }
@@ -1749,6 +1969,47 @@ export async function captureSelectorsFresh(
             }
           }, [selector] as const)
           .catch(() => "");
+        // A second way to picture it, chosen by what kept the first from
+        // working. Only what is gone (missing) or cannot be found
+        // (unreachable) is left without one.
+        const locator = scope.locator(selector).first();
+        if (why === "offscreen") {
+          // A skip link, nearly always: off the edge until the keyboard
+          // reaches it. Put the keyboard on it and it shows itself.
+          await locator.focus({ timeout: 1_000 }).catch(() => {});
+          await page.waitForTimeout(200);
+          const focused = await captureWithContext(scope, selector);
+          if (focused) {
+            result.shots[selector] = focused;
+            result.shows![selector] = "focused";
+            continue;
+          }
+        }
+        if (why === "hidden" || why === "offscreen") {
+          // Folded away: picture the part of the page it is folded into.
+          const container = await visibleContainer(locator);
+          if (container) {
+            await container.scrollIntoViewIfNeeded({ timeout: 1_000 }).catch(() => {});
+            const shot = await captureTopOf(container);
+            if (shot) {
+              result.shots[selector] = shot;
+              result.shows![selector] = "container";
+              continue;
+            }
+          }
+        }
+        if (why === "no-usable-image") {
+          // Blank on its own, or something lies over it: the screen at that
+          // spot, with the element outlined where it is.
+          const covered = !(await isActuallyOnScreen(locator));
+          const inPlace = await captureInPlace(page, locator);
+          if (inPlace) {
+            result.shots[selector] = inPlace.image;
+            result.boxes![selector] = inPlace.box;
+            if (covered) result.shows![selector] = "covered";
+            continue;
+          }
+        }
         if (why) result.unpicturable[selector] = why as FreshCaptureResult["unpicturable"][string];
       } catch {
         // Invalid selector, detached node, timeout. Skip it and keep going —
@@ -3278,7 +3539,7 @@ export class PageStatusError extends Error {
       status === 404 || status === 410
         ? `There is no page at that address (HTTP ${status}). Check the address and try again.`
         : status === 401
-          ? `That page asks for a login first (HTTP ${status}). The form can sign in with your details.`
+          ? `That page asks for a login first (HTTP ${status}). Use the form's login option to sign in with a test account.`
           : `${host} answered with an error (HTTP ${status}) instead of the page, so there was nothing to check. Try again later.`
     );
     this.name = "PageStatusError";
@@ -3448,6 +3709,16 @@ export async function renderAndScan(
       if (status >= 400) {
         throw new PageStatusError(host, status);
       }
+      // A crawled page that lands back on the sign-in form has signed the
+      // scanner out (its session expired, or the page needs a different
+      // account). Scanning the form there would report on the wrong page
+      // under the right page's address, so it is refused by name instead.
+      if (auth?.kind === "session" && auth.loginPath && sessionWasLost(page.url(), url, auth.loginPath)) {
+        const formShowing = (await page.locator('input[type="password"]').count().catch(() => 0)) > 0;
+        if (formShowing) {
+          throw new AuthError("This page sent the scanner back to the sign-in form, so it was not scanned signed in.");
+        }
+      }
       const pageTitle = await page.title().catch(() => "");
       if (BLOCK_PAGE_PATTERNS.test(pageTitle)) {
         throw new SiteBlockedError(host, { kind: "challenge", label: pageTitle.slice(0, 60) });
@@ -3469,7 +3740,7 @@ export async function renderAndScan(
       // redirect, a locale route, a client-side router settling — and doing
       // that mid-injection destroys the execution context and throws. Measured
       // on bbc.co.uk/news, which lost an entire scan to it and reported only
-      // "Could not load or scan the page".
+      // "Couldn't load or scan the page".
       //
       // The page is fine; we were simply early. Wait for it to come to rest
       // and go again. Once, because a page that navigates twice more is not
@@ -3499,6 +3770,30 @@ export async function renderAndScan(
       phaseMs.axe = Date.now() - axeBegan;
       const axe = axeResult;
 
+      // Text axe could not settle because it sits on a picture, a gradient
+      // or another element, measured from the pixels behind its letters
+      // (services/contrast/pixelContrast.ts). A node settled either way
+      // leaves axe's undecided list here, so the undecided count, the
+      // conformance row and the report all agree; a failure becomes a
+      // finding in the pipeline. Bounded to eight seconds and never fatal.
+      let pixelContrast: PixelContrastResult[] | undefined;
+      const undecidedContrast = axe.incomplete?.find((r) => r.id === "color-contrast");
+      if (undecidedContrast && undecidedContrast.nodes.length > 0 && remaining() > 15_000) {
+        pixelContrast = await timed("pixelContrast", () =>
+          measureUndecidedContrast(
+            page,
+            undecidedContrast.nodes.map((n) => ({ selector: axeTargetToSelector(n.target), html: n.html })),
+            Date.now() + Math.min(8000, remaining() - 10_000)
+          )
+        ).catch(() => undefined);
+        // The shots scroll each element into view; later probes start from the top.
+        await page.evaluate(() => window.scrollTo(0, 0)).catch(() => {});
+        const settled = new Set((pixelContrast ?? []).filter((r) => r.verdict !== "mixed").map((r) => r.selector));
+        if (settled.size > 0) {
+          undecidedContrast.nodes = undecidedContrast.nodes.filter((n) => !settled.has(axeTargetToSelector(n.target)));
+        }
+      }
+
       // Supplementary context for the AI layer, not something the report
       // depends on — so it must never be able to fail a scan. It normally
       // costs tens of milliseconds, but on a heavy page on a loaded container
@@ -3508,7 +3803,7 @@ export async function renderAndScan(
         page.locator("body").ariaSnapshot({ timeout: 8_000 }).catch(() => "")
       );
       const domSignals = await timed("domSignals", () =>
-        page.evaluate<DomSignals>(toBrowserScript(extractDomSignalsInPage))
+        page.evaluate<DomSignals>(toBrowserScript(extractDomSignalsInPage, OVERLAY_MARKER_SELECTORS))
       );
       const typographyBlocks = await timed("typography", () =>
         page
@@ -3943,6 +4238,18 @@ export async function renderAndScan(
         });
       }
 
+      // Menus, accordions and tabs, opened one at a time and axe run on the
+      // panel alone, then put back (services/interaction/openAndMeasure.ts).
+      // After the activation pass, which presses the same kind of control
+      // and restores it, and before anything measures the page as loaded
+      // again. Its own budget; never fatal.
+      let openedPanels: OpenedPanel[] | undefined;
+      if (remaining() > 12_000) {
+        openedPanels = (await timed("openPanels", () =>
+          openAndMeasure(page, Math.min(6000, remaining() - 8000), "panels")
+        ).catch(() => undefined)) as OpenedPanel[] | undefined;
+      }
+
       // Visual-versus-source order. Geometry only, so it changes nothing and
       // has to run at desktop width, before the mobile pass reflows the page.
       //
@@ -3958,6 +4265,23 @@ export async function renderAndScan(
       // Text-resize passes — done at desktop width, before the viewport is
       // changed for the mobile pass below.
       const textResizeSignals = await timed("textResize", () => collectTextResizeSignals(page));
+
+      // The vertical half of 1.4.10: a window 256 CSS px tall, which is a
+      // 1280 x 1024 screen at 400%. At desktop width, before the mobile pass
+      // changes the viewport, and put back to 1280 x 900 afterwards so the
+      // phase is invisible to everything that follows. Its own catch: a
+      // failure here costs this check, never the scan.
+      let reflowHeight: ReflowHeightSignals | undefined;
+      if (remaining() > 3000) {
+        await timed("reflowHeight", async () => {
+          await page.setViewportSize({ width: 1280, height: REFLOW_HEIGHT });
+          await page.waitForTimeout(300);
+          reflowHeight = await page.evaluate<ReflowHeightSignals>(toBrowserScript(collectReflowHeightInPage));
+        })
+          .catch(() => {})
+          .finally(() => page.setViewportSize({ width: 1280, height: 900 }).catch(() => {}));
+        await page.waitForTimeout(200);
+      }
 
       // Mobile pass — resize to a phone width, let the layout reflow, and
       // measure mobile-only problems (sideways scrolling, tiny tap targets).
@@ -4019,17 +4343,23 @@ export async function renderAndScan(
           await page.waitForTimeout(200);
         }).catch(() => {});
 
-        // Experimental axe rules, run explicitly because they are off by
-        // default: css-orientation-lock (1.3.4) and label-content-name-mismatch
-        // (2.5.3 — before this, nothing anywhere tested Label in Name while
-        // its conformance row claimed "automated"). Experimental rules cry
-        // wolf, so their results go to the undecided channel for a person to
-        // judge rather than into the findings as confident claims.
+        // The experimental axe rule for 1.3.4, run explicitly because it is
+        // off by default. Experimental rules cry wolf, so its results go to
+        // the undecided channel for a person to judge rather than into the
+        // findings as confident claims.
+        //
+        // label-content-name-mismatch (2.5.3) used to run here beside it, for
+        // the same reason. axe-core 4.14.0 (5 Oct 2026) took it out of
+        // experimental and turned it on by default, after rewriting it to
+        // compare the visible label with the name word by word. The main run
+        // above now returns it as a violation like any other rule, so asking
+        // for it again here would file the same control twice: once as a
+        // finding and once as an open question.
         await timed("orientationLock", async () => {
           const lock = (await page.evaluate(() =>
             (window as unknown as { axe: { run: (c: unknown, o: unknown) => Promise<unknown> } }).axe.run(
               document,
-              { runOnly: { type: "rule", values: ["css-orientation-lock", "label-content-name-mismatch"] } }
+              { runOnly: { type: "rule", values: ["css-orientation-lock"] } }
             )
           )) as AxeRunResult;
           for (const v of lock.violations) {
@@ -4137,6 +4467,16 @@ export async function renderAndScan(
         logger.warn({ err }, "Dialog keyboard probe failed. Reporting without it");
       }
 
+      // The form test, last of all: it submits each form empty with every
+      // network request aborted, so nothing reaches the site, and it leaves
+      // error messages on the page that no probe above should have seen.
+      let formErrors: FormErrorProbe[] | undefined;
+      if (remaining() > 3000) {
+        formErrors = (await timed("formErrors", () =>
+          openAndMeasure(page, Math.min(4000, remaining() - 1500), "forms")
+        ).catch(() => undefined)) as FormErrorProbe[] | undefined;
+      }
+
       // Final check — a late subresource (lazy-loaded image, polling XHR)
       // could have triggered a rebind after the initial navigation settled.
       if (rebindingDetected) throw rebindingDetected;
@@ -4146,6 +4486,10 @@ export async function renderAndScan(
         userPreferences,
         readingOrder,
         readability,
+        reflowHeight,
+        pixelContrast,
+        openedPanels,
+        formErrors,
         pageTitle: domSignals.pageTitle,
         finalUrl: page.url(),
         axe,
@@ -4195,11 +4539,12 @@ export async function renderAndScan(
           // error), and the dialog probe when it was skipped or threw.
           ...(screenReaderFailed ? ["screen reader names"] : []),
           ...(!mobileFailed && !mobileSignals.reflow320 ? ["320px reflow"] : []),
+          ...(!reflowHeight ? ["256px-tall reflow"] : []),
           ...(!dialogProbeRan && domSignals.dialogs.some((d) => d.selector) ? ["open dialogs"] : []),
         ],
       };
     } finally {
       page.off("response", onResponse);
     }
-  }, budgetMs);
+  }, budgetMs, auth?.kind === "session" ? auth.state : undefined);
 }

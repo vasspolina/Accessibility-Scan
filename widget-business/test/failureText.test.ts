@@ -83,6 +83,12 @@ describe("pictureNoteText", () => {
     expect(text).not.toMatch(/nennen das genaue Element/);
   });
 
+  // Running out of the scan's picture budget is said nowhere.
+  it("shows no note when the picture was never attempted", () => {
+    setLang("en");
+    expect(pictureNoteText(finding({ pictureNote: "No picture: …", pictureReason: "not-attempted" }))).toBeUndefined();
+  });
+
   // A report saved before the reason was sent still shows its note.
   it("keeps the English note on an older report", () => {
     setLang("de");
@@ -93,10 +99,12 @@ describe("pictureNoteText", () => {
   // the translation up by. They must stay word for word the same.
   it("matches the backend's English notes", () => {
     const backend = fs.readFileSync(path.resolve(__dirname, "../../backend/src/services/scanPipeline.ts"), "utf8");
-    const reasons = ["hidden", "offscreen", "no-usable-image", "too-large", "missing", "not-attempted", "unreachable"] as const;
+    const reasons = ["hidden", "offscreen", "no-usable-image", "too-large", "missing", "unreachable"] as const;
     for (const reason of reasons) {
       const text = pictureNoteText(finding({ pictureReason: reason }))!;
-      expect(backend, reason).toContain(JSON.stringify(text));
+      // t() sets a straight apostrophe as ’ on screen (Hochuli fig. 53);
+      // the backend's source keeps the straight one it was written with.
+      expect(backend, reason).toContain(JSON.stringify(text.replace(/’/g, "'")));
     }
   });
 });

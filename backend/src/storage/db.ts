@@ -140,9 +140,46 @@ CREATE TABLE IF NOT EXISTS schedules (
   last_score    INTEGER,
   last_scan_id  TEXT,
   last_error    TEXT,
-  created_at    TEXT NOT NULL
+  created_at    TEXT NOT NULL,
+  notify_webhook TEXT,
+  webhook_secret TEXT
 );
 CREATE INDEX IF NOT EXISTS schedules_due ON schedules(enabled, next_run_at);
+
+-- The assistive-technology pilot (routes/pilot.ts): a barrier as the person
+-- who met it described it, and the finding the model drafted from it, kept
+-- side by side so the draft can always be checked against their words.
+-- participant is a hash of their code, never the code, so the table cannot
+-- be used to submit as them. Not tied to an account: participants have none.
+CREATE TABLE IF NOT EXISTS pilot_reports (
+  id            TEXT PRIMARY KEY,
+  participant   TEXT NOT NULL,
+  created_at    TEXT NOT NULL,
+  page_url      TEXT,
+  assistive_tech TEXT NOT NULL,
+  task          TEXT NOT NULL,
+  barrier       TEXT NOT NULL,
+  impact        TEXT NOT NULL,
+  draft_json    TEXT,
+  draft_model   TEXT,
+  confirmed     INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS pilot_reports_time ON pilot_reports(created_at DESC);
+
+-- Did the scanner catch the barrier a pilot report describes? Decided by a
+-- person who scanned the page and read both, because matching someone's
+-- sentence to a finding is a judgement, not a measurement. Never
+-- overwrites, for the reason verdicts never do: the latest row is the
+-- current mark, and the earlier ones say who changed their mind and when.
+CREATE TABLE IF NOT EXISTS pilot_checks (
+  id          TEXT PRIMARY KEY,
+  report_id   TEXT NOT NULL REFERENCES pilot_reports(id),
+  result      TEXT NOT NULL,
+  note        TEXT,
+  decided_by  TEXT NOT NULL,
+  decided_at  TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS pilot_checks_report ON pilot_checks(report_id, decided_at DESC);
 `;
 
 /**
@@ -156,7 +193,16 @@ CREATE INDEX IF NOT EXISTS schedules_due ON schedules(enabled, next_run_at);
  * the next INSERT named a column that was not there. Add a migration for
  * every change to SCHEMA; never edit an entry that has shipped.
  */
-const MIGRATIONS: Array<{ version: number; sql: string }> = [
+// A column added to a table that SCHEMA may have just created whole. A file
+// from before the table existed gets it from SCHEMA's CREATE, columns and
+// all, so a bare ALTER there fails with "duplicate column name". This adds
+// the column only where it is missing.
+function addColumnIfMissing(handle: DatabaseSync, table: string, column: string, type: string): void {
+  const cols = handle.prepare(`PRAGMA table_info(${table})`).all() as Array<{ name: string }>;
+  if (!cols.some((c) => c.name === column)) handle.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`);
+}
+
+const MIGRATIONS: Array<{ version: number; sql: string; run?: (handle: DatabaseSync) => void }> = [
   // 1: the tables as first shipped. A fresh database gets them from SCHEMA
   //    and simply records the version.
   { version: 1, sql: "" },
@@ -170,6 +216,21 @@ const MIGRATIONS: Array<{ version: number; sql: string }> = [
   // 3: triage, site audits and schedules. New tables only, so the CREATE
   //    IF NOT EXISTS in SCHEMA does the work; the entry records the step.
   { version: 3, sql: "" },
+  // 4: the assistive-technology pilot. A new table only, as in 3.
+  { version: 4, sql: "" },
+  // 5: whether the scanner caught a pilot report's barrier (pilot_checks).
+  //    A new table only, as in 3.
+  { version: 5, sql: "" },
+  // 6: a schedule can alert a webhook (Slack, Teams, Discord or any
+  //    endpoint) beside the email, with a secret that signs each alert.
+  {
+    version: 6,
+    sql: "",
+    run: (handle) => {
+      addColumnIfMissing(handle, "schedules", "notify_webhook", "TEXT");
+      addColumnIfMissing(handle, "schedules", "webhook_secret", "TEXT");
+    },
+  },
 ];
 export const SCHEMA_VERSION = MIGRATIONS[MIGRATIONS.length - 1].version;
 
@@ -180,6 +241,7 @@ function migrate(handle: DatabaseSync): void {
     handle.exec("BEGIN");
     try {
       if (m.sql) handle.exec(m.sql);
+      m.run?.(handle);
       handle.exec(`PRAGMA user_version = ${m.version}`);
       handle.exec("COMMIT");
       logger.info({ version: m.version }, "storage migrated");

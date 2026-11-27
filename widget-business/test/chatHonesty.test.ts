@@ -48,14 +48,14 @@ describe("the scan's step lines", () => {
 
   it("keep a count beside an unfinished check", () => {
     const r = report([finding({ ruleId: "keyboard-focus-not-visible" })], { incompleteChecks: ["keyboard navigation"] });
-    expect(stepResult("keyboard", r)).toBe("1 found · Did not finish");
+    expect(stepResult("keyboard", r)).toBe("1 found — Did not finish");
   });
 
   it("say how far a walk cut short by its cap got, and keep 'did not finish' for one that broke", () => {
     // The walk ran and stopped at the cap: a sample, not a failure.
     const cut = report([finding({ ruleId: "keyboard-focus-not-visible" })], { incompleteChecks: ["keyboard navigation"], tabWalkStops: 400 });
-    expect(stepResult("keyboard", cut)).toBe("1 found · first 400 stops");
-    expect(stepResult("keyboard", report([], { incompleteChecks: ["keyboard navigation"], tabWalkStops: 400 }))).toBe("Nothing found · first 400 stops");
+    expect(stepResult("keyboard", cut)).toBe("1 found — first 400 stops");
+    expect(stepResult("keyboard", report([], { incompleteChecks: ["keyboard navigation"], tabWalkStops: 400 }))).toBe("Nothing found — first 400 stops");
     // Another keyboard check that did not finish keeps the plain words.
     const broke = report([], { incompleteChecks: ["keyboard navigation", "open dialogs"], tabWalkStops: 400 });
     expect(stepResult("keyboard", broke)).toBe("Did not finish");
@@ -160,6 +160,27 @@ describe("what the assistant is given", () => {
     expect(d.pages[1]).toEqual({ url: "https://example.com/broken", notScanned: "Timed out" });
     expect(d.aiReview).toMatch(/never includes the AI review/);
     expect(d.checksThatDidNotFinish).toEqual(["text resizing"]);
+  });
+
+  it("says an overlay's widget was running only when the scan saw it on the page", () => {
+    // UserWay's loader does not start for the scanner's user agent, so its
+    // script tag is there and its widget is not. The assistant must not be
+    // handed "measured with it running" for that page.
+    const d = digestReport(
+      report([], {
+        overlays: [
+          { vendor: "accessiBe", scriptUrl: "https://acsbapp.com/apps/app/dist/js/app.js", widgetOnPage: true },
+          { vendor: "UserWay", scriptUrl: "https://cdn.userway.org/widget.js", widgetOnPage: false },
+        ],
+      })
+    );
+    expect(d.accessibilityOverlays?.map((o) => o.vendor)).toEqual(["accessiBe", "UserWay"]);
+    expect(d.accessibilityOverlays?.[0].widget).toMatch(/^on the page during the scan/);
+    expect(d.accessibilityOverlays?.[0].widget).toMatch(/measured with the overlay running/);
+    expect(d.accessibilityOverlays?.[1].widget).toMatch(/^not on the page during the scan/);
+    expect(d.accessibilityOverlays?.[1].widget).not.toMatch(/measured with/);
+    // No overlay, no key: the assistant is not told to look for one.
+    expect(digestReport(report([])).accessibilityOverlays).toBeUndefined();
   });
 });
 

@@ -19,26 +19,6 @@ import { plainForRule } from "../lib/wcagPlain";
  * A table with one meaningful column is a list.
  */
 
-/**
- * The label on the pill. There is no field for this on the finding — the
- * kit's `criterion` ("Layout", "Target size", "Typography") has no
- * counterpart in what the backend sends — so it is derived from the rule,
- * and derived visibly rather than pretending to be data. Anything that
- * doesn't match falls back to "Design", which is true of every note here.
- */
-function noteKind(f: AccessibilityFinding): string {
-  const s = `${f.ruleId ?? ""} ${f.title ?? ""} ${f.description}`.toLowerCase();
-  if (
-    /line-height|leading|letter|spacing|capital|uppercase|typeface|font|text size|body text|very small|too small|legib/.test(
-      s
-    )
-  )
-    return "Type";
-  if (/target|tap|touch|pinned|bar|viewport|phone|layout|crowd|fold/.test(s)) return "Layout";
-  if (/colour|color|contrast/.test(s)) return "Colour";
-  return "Design";
-}
-
 function noteTitle(group: AccessibilityFinding[]): string {
   const rep = group[0];
   return plainForRule(rep.ruleId)?.plain ?? rep.title ?? rep.description;
@@ -47,24 +27,19 @@ function noteTitle(group: AccessibilityFinding[]): string {
 export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[] }) {
   const { professional } = useReportView();
   const groups = groupFindings(findings);
-  // Keyed by the note's own id, not its position. A filter changes what is
-  // at index 0, so an index would have quietly re-pointed at a different
-  // note the moment a pill was pressed.
-  const [openId, setOpenId] = useState<string | null>(() => findings[0]?.id ?? null);
-  const [kind, setKind] = useState<string | null>(null);
+  // The open notes, keyed by each note's own id, not its position, so a
+  // re-render that reorders the notes keeps the same ones open. All start
+  // shut; each opens and shuts on its own.
+  const [openIds, setOpenIds] = useState<ReadonlySet<string>>(() => new Set());
+  const toggle = (id: string) =>
+    setOpenIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
 
   if (groups.length === 0) return null;
-
-  // One pill per distinct kind, in the order the notes appear.
-  const kinds = [...new Set(groups.map((g) => noteKind(g[0])))];
-  const visible = kind ? groups.filter((g) => noteKind(g[0]) === kind) : groups;
-
-  // The open note is whichever visible one carries the open id, and there
-  // is always one: filtering to a kind the chosen note is not in falls back
-  // to the first visible note. This used to close the note instead, which
-  // left a list of bare titles whose explanations were nowhere on the page
-  // — a note with no body under it reads as a note with nothing to say.
-  const open = visible.find((g) => g[0].id === openId) ?? visible[0] ?? null;
 
   return (
     <section className="a11y-section a11y-dn" aria-labelledby="a11y-notes-heading">
@@ -78,7 +53,7 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
         data-nav-label={t("Notes on the design")}
       >
         {t("Notes on the design")}{" "}
-        <span className="a11y-section-count">({groups.length})</span>
+        <span className="a11y-section-count a11y-count-dot">{groups.length}</span>
       </h2>
       {/* The lead used to be three clipped thoughts with no throughline —
           "remarks rather than faults", "judgement rather than measurement" —
@@ -86,7 +61,7 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
           what the section is, then why it matters, and it is translated,
           which the old lead never was. */}
       <p className="a11y-section-desc">
-        {t("What a designer would point out, not failures against a rule. None of it counts towards the score.")}
+        {t("A designer's view, not rule failures.")}
       </p>
 
       {/* Professional mode gets the notes as cards only — the black panel is
@@ -94,75 +69,53 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
           finding once. */}
       {!professional && (
         <div className="a11y-dn-panel">
-          {/* Toggles, not labels. Pressing one narrows the list to that
-              kind; pressing it again clears it, so there is no separate
-              "All" pill to keep in step with the others. */}
-          <ul className="a11y-dn-kinds" aria-label={t("Filter notes by kind")}>
-            {kinds.map((k) => (
-              <li key={k}>
-                <button
-                  type="button"
-                  className="a11y-dn-kind"
-                  aria-pressed={kind === k}
-                  onClick={() => setKind(kind === k ? null : k)}
-                >
-                  {t(k)}
-                </button>
-              </li>
-            ))}
+          {/* Carets (user's instruction, 24 Nov 2026, "make these into
+              carrets like this", after the tabs of 22 Nov and the awning
+              list): each note is a bar with the caret and its title, a
+              button that opens the note in place, under its title, inside
+              the same rounded ground. Each opens and shuts on its own, so
+              two notes can be read side by side; nothing opens by itself. */}
+          <ul className="a11y-dn-carets" role="list">
+            {groups.map((group) => {
+              const id = group[0].id;
+              const open = openIds.has(id);
+              return (
+                <li key={id} className="a11y-dn-caret" data-open={open ? "true" : undefined}>
+                  <h3 className="a11y-dn-caret-head">
+                    <button
+                      type="button"
+                      className="a11y-dn-bar"
+                      id={`a11y-dn-note-${id}`}
+                      aria-expanded={open}
+                      aria-controls={`a11y-dn-detail-${id}`}
+                      onClick={() => toggle(id)}
+                    >
+                      <span className="a11y-dn-bar-title">{noteTitle(group)}</span>
+                      {/* How many places, at the card's far end (user's
+                          reference, 25 Nov 2026, a list of white cards
+                          with a figure at the end of each line). Only
+                          past one, as the professional table counts; the
+                          opened note does not say it again. */}
+                      {group.length > 1 && (
+                        <span className="a11y-dn-bar-count">
+                          {tf("{count} places", { count: group.length })}
+                        </span>
+                      )}
+                    </button>
+                  </h3>
+                  <div
+                    className="a11y-dn-detail"
+                    id={`a11y-dn-detail-${id}`}
+                    role="region"
+                    aria-labelledby={`a11y-dn-note-${id}`}
+                    hidden={!open}
+                  >
+                    {open && <FindingDetails findings={group} asNotes />}
+                  </div>
+                </li>
+              );
+            })}
           </ul>
-
-          {/* Says what the filter did. Without it the only feedback is a
-              list getting shorter, which a screen reader never sees. */}
-          <p className="a11y-dn-status" role="status">
-            {kind
-              ? tf("Showing {shown} of {total} notes: {kind}.", {
-                  shown: visible.length,
-                  total: groups.length,
-                  kind: t(kind),
-                })
-              : groups.length === 1
-                ? t("Showing 1 note.")
-                : tf("Showing all {count} notes.", { count: groups.length })}
-          </p>
-
-          <ul className="a11y-dn-list">
-            {visible.map((group) => (
-              <li key={group[0].id}>
-                {/* Opens, never toggles closed. The panel always shows one
-                    note, so "close" could only mean "open a different one" —
-                    and with a single visible note it would reopen itself, a
-                    button that appears to do nothing. */}
-                <button
-                  type="button"
-                  className="a11y-dn-link"
-                  id={`a11y-dn-note-${group[0].id}`}
-                  aria-expanded={open?.[0].id === group[0].id}
-                  aria-controls="a11y-dn-detail"
-                  onClick={() => setOpenId(group[0].id)}
-                >
-                  <span className="a11y-dn-link-text">{noteTitle(group)}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-
-          {open && (
-            <div
-              className="a11y-dn-detail"
-              id="a11y-dn-detail"
-              role="region"
-              aria-labelledby={`a11y-dn-note-${open[0].id}`}
-            >
-              <div className="a11y-dn-detail-head">
-                <h3 className="a11y-dn-detail-title">{noteTitle(open)}</h3>
-                <p className="a11y-dn-pills">
-                  <span className="a11y-dn-pill a11y-dn-pill-kind">{t(noteKind(open[0]))}</span>
-                </p>
-              </div>
-              <FindingDetails findings={open} asNotes />
-            </div>
-          )}
         </div>
       )}
 

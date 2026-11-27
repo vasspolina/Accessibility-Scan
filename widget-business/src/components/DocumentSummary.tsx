@@ -61,7 +61,7 @@ export function DocumentSummary({ report }: { report: AccessibilityReport }) {
       </p>
       <p className="a11y-doc-meta">
         {t(
-          "We check structure, title, language, readable text and image descriptions. Those decide whether a screen reader can read it aloud at all, though not everything a person would check."
+          "We check structure, title, language, readable text and image descriptions. Those decide whether a screen reader can read it aloud at all. A person would check more."
         )}
       </p>
     </div>

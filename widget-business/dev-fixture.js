@@ -102,6 +102,10 @@
         elementSnippet: '<span class="legal">All rights reserved</span>',
         description: "Text has a contrast of 3.2:1, below the 4.5:1 minimum.",
         suggestedFix: "Darken the text colour until it reaches 4.5:1.",
+        // A picture a fallback took: the part of the page the element is
+        // folded into, with the line under it saying so.
+        elementScreenshot: TINY_JPEG,
+        pictureShows: "container",
       }),
       finding({
         id: "f3",
@@ -124,6 +128,8 @@
         elementScreenshot: TINY_JPEG,
         elementBox: { x: 0.04, y: 0.18, width: 0.9, height: 0.7 },
         suggestedAltText: "A red bicycle leaning against a brick wall",
+        // An AI card about this same image, folded in on the server.
+        aiSupport: "Gallery photo is announced only as 'image'. A screen reader user hears nothing about the bicycle the section is selling.",
         helpUrl: "https://dequeuniversity.com/rules/axe/4.10/image-alt",
       }),
       finding({
@@ -148,6 +154,14 @@
         elementSnippet: '<a href="/posts/spring-opening" class="more">Read more</a>',
         description: "Link text says nothing about where it goes.",
         suggestedFix: "Name the destination in the link text.",
+        // The AI fix (backend aiReview/suggestCodeFix.ts), as the scan
+        // returns it when the AI review ran.
+        suggestedCode: {
+          before: '<a href="/posts/spring-opening" class="more">Read more</a>',
+          after: '<a href="/posts/spring-opening" class="more">Read more about the spring opening</a>',
+          note: "The link now names its destination, taken from its address. Check the wording matches the post.",
+          model: "fixture",
+        },
       }),
       finding({
         id: "f7",
@@ -224,6 +238,12 @@
         suggestedFix: "Restore the focus outline, or draw your own of at least 2px.",
       }),
     ];
+    // &banner=off: the report with no blocking cookie banner, so the
+    // report's own lead ("Start here … Fix these first.") shows instead of
+    // the banner's stop-press, which outranks it.
+    if (new URLSearchParams(location.search).get("banner") === "off") {
+      findings = findings.filter(function (f) { return f.ruleId !== "consent-blocks-reader"; });
+    }
 
     var srLines = [];
     var kinds = ["landmark", "heading", "link", "button", "image", "field", "list", "text"];
@@ -333,6 +353,12 @@
         { ruleId: "interaction-acts-on-change", count: 2, help: "Controls that may act as soon as you set them", helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/on-input.html" },
         { ruleId: "interaction-pointer-cancellation", count: 4, help: "Controls that act the moment they are pressed", helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/pointer-cancellation.html" },
         { ruleId: "media-audio-transcript", count: 1, help: "Audio with no transcript we can see", helpUrl: "https://www.w3.org/WAI/WCAG21/Understanding/audio-only-and-video-only-prerecorded.html" },
+        // The page's linked documents, with the sentences the server writes
+        // (services/documents/linkedDocuments.ts). The widget words these
+        // rows itself by ruleId; `help` is what the assistant's digest reads.
+        { ruleId: "pdf-linked-not-checked", count: 7, help: "This page links to 9 PDF documents. The scan opened 2 and did not open 7: 7 come after the first 2, which is all a page scan opens.", helpUrl: "https://www.w3.org/WAI/WCAG21/Techniques/#pdf" },
+        { ruleId: "pdf-linked-faults", count: 2, help: "The scan opened 2 linked PDF documents and 2 have faults: no tags (1), no title (1), no language set (1). They are the document's faults and are not in this page's score.", helpUrl: "https://www.w3.org/WAI/WCAG21/Techniques/#pdf" },
+        { ruleId: "office-linked-not-checked", count: 1, help: "This page links to 1 Word, Excel or PowerPoint file. The scan counts these and does not open them." },
       ],
       pagePreview: TINY_JPEG,
       // The fixture report carries a consent finding, so it also carries the
@@ -344,6 +370,20 @@
         aiReviewTimeMs: 8000,
         aiReviewStatus: "completed",
         incompleteChecks: ["phone-layout walk"],
+        // The overlay note (components/OverlayNotes.tsx). A made-up vendor
+        // on a reserved domain, so the fixture names no real product; the
+        // address is long on purpose, since it is the one unbroken string
+        // in the notice and the reflow check should meet it at 320px.
+        // &overlay=script shows the other case: script there, widget not.
+        overlays: isPdf
+          ? undefined
+          : [
+              {
+                vendor: "Example Overlay",
+                scriptUrl: "https://cdn.overlay-vendor.example/apps/widget/dist/js/loader.min.js",
+                widgetOnPage: new URLSearchParams(location.search).get("overlay") !== "script",
+              },
+            ],
         documentKind: isPdf ? "pdf" : undefined,
         documentPages: isPdf ? 4 : undefined,
       },
@@ -479,7 +519,11 @@
       }
       content = [{ type: "text", text: text }];
     } else {
-      var addr = (userText.match(/\b((?:https?:\/\/)?(?:[a-z0-9-]+\.)+[a-z]{2,}(?:\/[^\s]*)?)/i) || [])[1];
+      // A Learn more question names its help page, which the note says is
+      // not a site to scan; the model reads it so, and so does this stand-in.
+      var addr = /not a site to scan/.test(userText)
+        ? null
+        : (userText.match(/\b((?:https?:\/\/)?(?:[a-z0-9-]+\.)+[a-z]{2,}(?:\/[^\s]*)?)/i) || [])[1];
       if (addr) addr = addr.replace(/[.,;:!?)]+$/, "");
       if (addr && !/fix|why|what|how/i.test(userText.replace(addr, ""))) {
         chatCalls += 1;
@@ -498,6 +542,17 @@
           "```html\n<label for=\"email\">Email address</label>\n\n<input type=\"email\" id=\"email\" name=\"email\" autocomplete=\"email\" aria-describedby=\"email-hint email-error another-very-long-identifier-that-has-to-wrap\">\n```\n\n" +
           "3. Click the label and check the cursor lands in the field\n\n" +
           "More in [the W3C forms tutorial](https://www.w3.org/WAI/tutorials/forms/labels/).";
+        content = [{ type: "text", text: text }];
+      } else if (/^\s*(why|explain)\b/i.test(blocks.filter(function (b) { return b.type === "text"; }).map(function (b) { return b.text; }).pop() || "")) {
+        // An answer in running prose, the way the model explains: three
+        // paragraphs, a list, one more paragraph. It shows the paragraph
+        // breaks (indented after a paragraph, flush after the list).
+        text =
+          "A field without a label is a box with no name. Someone who sees the page guesses from the words near it; a screen reader has nothing to say but \"edit text\", and the person filling it in has to guess what goes there.\n\n" +
+          "Voice control has the same gap. People say the name of the field to move into it, and a field with no name cannot be called.\n\n" +
+          "It also costs everyone a little. A label joined to its field makes the label itself a place to click, which is a larger target on a phone.\n\n" +
+          "- Screen reader users hear the field's purpose\n- Voice control users can name it\n- Everyone gets a bigger target\n\n" +
+          "The fix is one element and one attribute per field, so it is one of the cheapest on the list.";
         content = [{ type: "text", text: text }];
       } else if (/deadline|when (did|does|will)|latest|news|look (it )?up|search/i.test(userText)) {
         // A question the report cannot answer and the model is not sure of:
@@ -576,6 +631,48 @@
       var chatBody = {};
       try { chatBody = JSON.parse(init && init.body ? init.body : "{}"); } catch (e) { /* ignore */ }
       return chatStub(chatBody);
+    }
+    // Report a barrier (BarrierReport.tsx): the pilot's routes, canned, so
+    // the whole conversation can be walked through, written report and send
+    // included. Marked SAMPLE so it is never taken for the model's work.
+    var pilot = /\/api\/pilot(\/[a-z]+)?$/.exec(target);
+    if (pilot) {
+      var pb = {};
+      try { pb = JSON.parse(init && init.body ? init.body : "{}"); } catch (e) { /* ignore */ }
+      var json = function (o, ms) {
+        return new Promise(function (resolve) {
+          setTimeout(function () {
+            resolve(new Response(JSON.stringify(o), { status: 200, headers: { "Content-Type": "application/json" } }));
+          }, ms || 300);
+        });
+      };
+      var route = pilot[1] || "";
+      if (route === "") return json({ open: true, stores: true, mails: false }, 50);
+      if (route === "/wake") return json({}, 50);
+      if (route === "/page") {
+        var raw = String(pb.url || "").trim();
+        if (raw.split(/\s+/).length > 3) return json({ url: null, words: true });
+        var u = /^https?:\/\//.test(raw) ? raw : "https://" + raw.replace(/\s+/g, "");
+        return json({ url: u, words: false, reached: true, title: "SAMPLE page title" });
+      }
+      if (route === "/followup") {
+        return json({ question: "SAMPLE follow-up: which control was it?", suggestions: ["The menu button", "The search field"] }, 800);
+      }
+      if (route === "/draft") {
+        return json({
+          model: "sample-model",
+          draft: {
+            title: "SAMPLE: the menu button cannot be reached with the keyboard",
+            explanation: "SAMPLE. Pressing Tab skips the menu button, so the menu cannot be opened without a mouse.",
+            whoItStops: "People who use only a keyboard, and people who use a switch.",
+            steps: ["Open the page.", "Press Tab until you pass the logo.", "The menu button is skipped."],
+            fix: "Make the menu a real button element, or give it tabindex=\"0\" and open it on Enter and Space.",
+            impact: "blocked",
+            wcagCriterion: "2.1.1",
+          },
+        }, 1500);
+      }
+      if (route === "/report") return json({ ok: true }, 600);
     }
     if (!/\/api\/(scan|audit)$/.test(target)) return realFetch(input, init);
 
@@ -661,12 +758,38 @@
       if (!sr.querySelector("#a11y-url-input")) {
         // By position, not by its words: the label is translated, and an
         // English-only match left every non-English state stuck at the chat.
-        var toForm = sr.querySelector(".a11y-chat .a11y-chat-box-row .a11y-btn-ghost");
-        if (toForm) toForm.click();
+        // Since 18 Nov 2026 the only way to the form is "Scan a page behind
+        // a login", then under the box; "Use the form
+        // instead" in the box row is gone. While this still looked in the
+        // row it found nothing, gave up after 10s, and every report state
+        // of check:reflow measured the chat landing and passed.
+        // Since 20 Nov 2026 (feae924) the button sits in the box's start
+        // group and shows only once the message names an address, so the
+        // harness types the address into the chat box first. It is the
+        // group's only direct-child button on the landing: Voice control's
+        // button is wrapped in .a11y-voice, and Back shows only after a
+        // block was opened. Looking under the box found nothing from then
+        // on, and check:reflow failed every report state as not built.
+        // Since 25 Nov 2026 Add an image is a direct-child button there too,
+        // always shown, and the harness clicked it (a file picker) instead,
+        // so every report state failed as not built again. Add an image and
+        // Back carry an icon; the sign-in button is words only.
+        var toForm = sr.querySelector(".a11y-chat .a11y-chat-box-start > button:not(:has(svg))");
+        if (toForm) { toForm.click(); return null; }
+        var chatInput = sr.querySelector("#a11y-chat-input");
+        if (chatInput && !chatInput.value) {
+          var setDraft = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
+          setDraft.call(chatInput, address);
+          chatInput.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
+        }
         return null;
       }
       return sr.querySelector("form.a11y-url-form") ? sr : null;
     }, function (sr) {
+      // That button opens the form with its login panel open. These states
+      // are public scans, so shut it before anything is typed.
+      var login = sr.querySelector('.a11y-login-toggle[aria-expanded="true"]');
+      if (login) login.click();
       // Options first — they have to be set before the submit that reads them.
       if (params.get("scope") === "site") click(sr, "#a11y-scope-site");
       click(sr, params.get("audience") === "professional" ? "#a11y-aud-pro" : "#a11y-aud-biz");

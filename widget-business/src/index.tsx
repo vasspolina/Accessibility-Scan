@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { App } from "./App";
 import { mountShadowRoot } from "./utils/shadowMount";
 import { setLang, detectLang } from "./lib/i18n";
-import { keepShortWordsAttached } from "./lib/typography";
+import { typesetText } from "./lib/typography";
 
 export interface MountOptions {
   apiBase: string;
@@ -23,13 +23,33 @@ export interface MountOptions {
 }
 
 // @font-face is IGNORED inside a shadow-root stylesheet, so the face is
-// declared once at document level. Jokker VF (trial), served beside the
-// widget bundle: one variable file whose wght axis (100–900) covers the
-// 300 / 400 / 500 the stylesheet asks for, so no weight is synthesised.
-// font-display swap keeps text readable while it loads, and every rule
-// keeps a system fallback. Saans and Serrif (Displaay, trial, Light only)
-// set the expanded finding, after the "Info" block of
-// displaay.net/typeface/dazzed (user's instruction, 4 Nov 2026).
+// declared once at document level. One face, one weight, for everything
+// (user's instructions, 26 Nov 2026, "use Jokker font instead of pp
+// telegraph", "use regular", "now just use only regular joker for
+// everything"): Jokker VF (trial), served beside the other fonts, a variable
+// font over weights 100–900 that global.css pins at Regular 400, upright
+// only. The mono (PP Lettra Mono) and the callouts' serif (EB Garamond) are
+// no longer declared; the notes on them below are history, and their files
+// stay on the server for the other pages. Check the trial terms before the
+// public site uses it. Before it, one face for everything (user's
+// instruction, 24 Nov 2026, "use pp telegraph thin for all fonts"): PP
+// Telegraf Ultralight, the family's thinnest cut (it has none named Thin),
+// declared for the whole weight range 100–900 so any weight a rule or the
+// browser asks for (a bold strong, a th) is drawn in it. Light, Regular,
+// Saans and Serrif are no longer declared; their files stay on the server
+// for the other pages. font-display swap keeps text readable while it
+// loads, and every rule keeps a system fallback.
+// The mono face is PP Lettra Mono (user's instruction, 25 Nov 2026, "use
+// letra as mono font"), its Ultralight cut declared for every weight like
+// Telegraf (the free package has only Ultralight and Medium upright), and
+// its Medium cut from 500 up, for the principle groups' titles only (user's
+// instruction, 25 Nov 2026, "also use letra medium mono"). It is
+// the first name in every mono stack in global.css, with the system mono
+// behind it. Same free-for-personal-use licence as the Telegraf files.
+// EB Garamond (SIL OFL, latin subset from @fontsource/eb-garamond 5, the
+// licence beside the files) sets the centred callouts after the user's
+// poster reference of 25 Nov 2026: one roman and one italic, each declared
+// for every weight so the widget's 200 draws them without synthesis.
 function injectFonts(apiBase: string) {
   const id = "a11y-widget-fonts";
   if (document.getElementById(id)) return;
@@ -43,21 +63,28 @@ function injectFonts(apiBase: string) {
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
-}
+}`;
+  // The Gemini-style demo (`vite build --mode gemini`) is set in PP Telegraf
+  // (user's instruction, 26 Nov 2026, "use pp telegraph font"): Regular for
+  // 400 and Medium for 500 up, from the files beside Jokker. A build-time
+  // constant, so the product bundle declares Jokker only.
+  if (import.meta.env.MODE === "gemini") {
+    style.textContent += `
 @font-face {
-  font-family: "Saans";
-  src: url("${base}/fonts/Saans-TRIAL-Light.ttf") format("truetype");
-  font-weight: 300;
+  font-family: "PP Telegraf";
+  src: url("${base}/fonts/PPTelegraf-Regular.otf") format("opentype");
+  font-weight: 100 499;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: "Serrif";
-  src: url("${base}/fonts/Serrif-TRIAL-Light.otf") format("opentype");
-  font-weight: 300;
+  font-family: "PP Telegraf";
+  src: url("${base}/fonts/PPTelegraf-Medium.otf") format("opentype");
+  font-weight: 500 900;
   font-style: normal;
   font-display: swap;
 }`;
+  }
   document.head.appendChild(style);
 }
 
@@ -87,8 +114,9 @@ export function mount(target: string | HTMLElement, options: MountOptions) {
     mountPoint.dataset.theme = options.theme;
   }
   const root = createRoot(mountPoint);
-  // Typesetting rule: no one- or two-letter word left at a line's end.
-  keepShortWordsAttached(mountPoint);
+  // Typesetting on the rendered text: no word of a sentence alone on a
+  // line, and the French thin space drawn in the face.
+  typesetText(mountPoint);
   root.render(
     <React.StrictMode>
       <App apiBase={options.apiBase} cta={options.cta} />

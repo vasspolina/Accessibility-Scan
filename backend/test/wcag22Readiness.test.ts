@@ -83,7 +83,18 @@ describe("WCAG 2.2 readiness", () => {
     const r = buildWcag22Readiness([]);
     expect(r.standard).toMatch(/WCAG 2\.2/);
     expect(r.standard).toMatch(/EN 301 549/);
-    expect(r.expectedFrom).toMatch(/2026/);
+    // v4.1.1 was published on 2 September 2026 and is still not cited in
+    // the Official Journal; the expected date moved into 2027.
+    expect(r.expectedFrom).toBe("early 2027");
+  });
+
+  // The widget drops this value into a sentence in the report's language
+  // and falls back to it unchanged, so an untranslated value would print an
+  // English season inside a German sentence.
+  it("names the season in the report's language", () => {
+    expect(buildWcag22Readiness([], { lang: "de" }).expectedFrom).toBe("Anfang 2027");
+    expect(buildWcag22Readiness([], { lang: "es" }).expectedFrom).toBe("principios de 2027");
+    expect(buildWcag22Readiness([], { lang: "fr" }).expectedFrom).toBe("début 2027");
   });
 });
 

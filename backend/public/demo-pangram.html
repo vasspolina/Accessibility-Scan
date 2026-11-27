@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Accessibility scan&nbsp;– demo, foundry look</title>
+    <link rel="stylesheet" href="./demo-pangram.css" data-demo-pangram />
+  </head>
+  <body>
+    <!-- demo.html with the widget's CSS stripped: demo-pangram.js removes the
+         stylesheets and style attributes the widget adds and links
+         demo-pangram.css in their place, here and inside the widget. The
+         widget bundle is the same file demo.html loads. -->
+    <main>
+      <h1>Accessibility scan</h1>
+      <div
+        id="a11y-widget-business-root"
+        data-api-base="https://a11y-checker-v2-production.up.railway.app"
+      ></div>
+    </main>
+
+    <script src="./demo-pangram.js" defer></script>
+    <script src="./widget-business.js" defer></script>
+  </body>
+</html>

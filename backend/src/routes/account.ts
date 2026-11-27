@@ -37,7 +37,7 @@ import { allVerdicts } from "../storage/verdicts.js";
  */
 /** The operator, or null after having replied. Same contract as
  *  requireAccount, for the routes only the deployer may call. */
-async function requireAdmin(request: FastifyRequest, reply: FastifyReply): Promise<boolean> {
+export async function requireAdmin(request: FastifyRequest, reply: FastifyReply): Promise<boolean> {
   const status = storageStatus();
   if (!status.configured) {
     await reply.status(501).send({ error: "Not set up", detail: status.reason, storage: status });
@@ -114,7 +114,7 @@ export async function accountRoutes(app: FastifyInstance) {
     const status = storageStatus();
     const parsed = createBody.safeParse(request.body);
     if (!parsed.success) {
-      return reply.status(400).send({ error: "Invalid request body", details: parsed.error.flatten() });
+      return reply.status(400).send({ error: "Something in that request wasn't right. Reload the page and try again.", details: parsed.error.flatten() });
     }
     const account = createAccount(parsed.data.email, parsed.data.label);
     const key = createApiKey(account.id, parsed.data.keyName);
@@ -123,7 +123,7 @@ export async function accountRoutes(app: FastifyInstance) {
       // Shown once and never again — only the hash is kept.
       apiKey: key.key,
       apiKeyId: key.id,
-      warning: "Copy this key now. It is stored only as a hash and cannot be shown again.",
+      warning: "Copy this key now. It is stored only as a hash and can't be shown again.",
       storage: status,
     };
   });
@@ -153,7 +153,7 @@ export async function accountRoutes(app: FastifyInstance) {
     if (!account) return;
     const name = z.object({ name: z.string().max(120).default("default") }).safeParse(request.body ?? {});
     const key = createApiKey(account.id, name.success ? name.data.name : "default");
-    return { apiKey: key.key, apiKeyId: key.id, warning: "Copy this key now. It cannot be shown again." };
+    return { apiKey: key.key, apiKeyId: key.id, warning: "Copy this key now. It can't be shown again." };
   });
 
   app.delete("/api/account/keys/:id", { config: storedRouteLimit }, async (request, reply) => {

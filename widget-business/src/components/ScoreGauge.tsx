@@ -1,12 +1,15 @@
 import { ScoreDial } from "./ScoreDial";
 import { t, tf } from "../lib/strings";
+import { getLang } from "../lib/i18n";
 import { useState } from "react";
-import type { ReactNode } from "react";
 import { SeverityTag } from "./SeverityTag";
 import type { AccessibilityFinding } from "../api/scanClient";
 import { groupFindings } from "./FindingsList";
 import { plainForRule } from "../lib/wcagPlain";
 import { Card } from "./Card";
+import { openFinding } from "../lib/openFinding";
+import { METHOD_LINE } from "../lib/testMethod";
+import { useReportView } from "./ReportViewContext";
 
 /* The stat tiles ARE the Card component's anatomy — layer-01 fill, subtle
    hairline, 2px corner, 16px padding — so they use it rather than a div
@@ -43,12 +46,13 @@ const PREVIEW_LIMIT = 3;
 // tool is not entitled to make on the evidence it has. The good lines say what
 // was looked for and found clean, and stop there.
 export const SUMMARIES: Record<"good" | "middling" | "poor", string[]> = {
-  // One plain line per band. The rotating quips this replaced read as
-  // slogans, and a verdict about somebody's site is not the place for one:
-  // it says what the scan found and what that does not cover, then stops.
-  good: ["90 or more. Little to fix. A person would still find more."],
-  middling: ["70 to 89. What the scan found stops some visitors. Most get through."],
-  poor: ["Under 70. What the scan found stops some people from using the site."],
+  // One plain line per band, said beside the number as what that range
+  // means for visitors (user's copy, 24 Nov 2026, for the band under 70;
+  // the other two follow its form). It names the range itself, so the
+  // band needs no label of its own.
+  good: ["A score of 90 or more means the scan found little to fix."],
+  middling: ["A score from 70 to 89 means some visitors may struggle with parts of your site."],
+  poor: ["A score below 70 means some visitors may be unable to use parts of your site."],
 };
 
 /**
@@ -79,33 +83,39 @@ export function scoreSummary(score: number, seed: string): string {
    means. Split, each one can be taken in on its own — and the last two, the
    ones that stop somebody quoting 87 as proof of compliance, stop being the
    tail of a paragraph nobody finished. */
-/* What the score counts, in the words of scoreFindings
+/* How the score works, three paragraphs in the user's words (24 Nov
+   2026), true to scoreFindings
    (backend/src/services/merge/scoring.ts), which is the one place that
-   knows. It used to say the score counts only what an automated scan
-   could establish, and it does not: AI-review findings whose criterion
-   survived the allow-list (mergeFindings.ts) count too — the card shows
-   that criterion; a stripped one shows none and does not count — and axe's
-   best-practice rules count with no criterion at all. What is left out is
-   what scoreFindings and summarizeSeverity leave out: design notes, dark
-   patterns, AAA, WCAG 2.2-only criteria. computeScore caps each severity's
-   penalty, which is why the second point exists. English keys; the screen renders them through t(),
-   the plain-text summary and the email stay English. Keep
+   knows. axe's best-practice rules count with no criterion at all. What is
+   left out is what scoreFindings and summarizeSeverity leave out: design
+   notes, dark patterns, AAA, WCAG 2.2-only criteria, and since 22 Nov 2026
+   every AI review finding (they counted when their criterion survived the
+   allow-list, which billed one repair twice when the model retold a rule's
+   finding). computeScore caps each severity's
+   penalty, which is why the second point exists. English keys; the screen and the plain-text summary render them through
+   t(), the email stays English for now. Keep
    backend/src/services/mail/sendReport.ts in step. */
 export const SCORE_POINTS = [
-  "It counts the accessibility problems this scan found, weighted by how much each one costs a visitor.",
-  "Each severity has a limit: past it, more problems of that severity no longer lower the score.",
-  "Notes on the design and misleading patterns do not count. Neither do the optional advanced level (AAA) or checks new in WCAG 2.2, the newer accessibility guidelines.",
-  "When the AI review runs, its findings count too, if their card names a WCAG requirement. Those can be wrong.",
-  "A scan of this kind reaches between a third and a half of accessibility problems.",
-  "The rest need a person with a keyboard and a screen reader.",
-  "It is not a statement that the site meets the law.",
+  "Issues cost points based on their impact on visitors. Each severity level has a maximum deduction.",
+  "The score excludes design notes, misleading patterns, AAA checks, WCAG 2.2 checks and AI findings.",
+  "A scan finds roughly a third to half of accessibility issues. A person needs to check for other barriers and verify AI findings. The score alone can't establish legal compliance.",
 ];
 
-/* The same words for the plain-text summary — one source, so the copied
+/* A heading in the plain-text summary takes a colon, and French sets a
+   no-break space before it. */
+function asHeading(text: string): string {
+  return `${text}${getLang() === "fr" ? "\u00a0:" : ":"}`;
+}
+
+/* The same words for the plain-text summary – one source, so the copied
    text and the screen can never disagree about what the score means. A
    heading and one point a line, as in the email: run together, "It" in the
-   first sentence read as the last issue in the list above it. */
-export const SCORE_CAVEAT_LINES = ["What the score counts:", ...SCORE_POINTS.map((p) => `- ${p}`)];
+   first sentence read as the last issue in the list above it. A function,
+   not a constant, so it is in the reader's language at the moment of
+   copying. */
+export function scoreCaveatLines(): string[] {
+  return [asHeading(t("How the score works")), ...SCORE_POINTS.map((p) => `- ${t(p)}`)];
+}
 
 // A plain-text version of the same verdict, for pasting into an email or
 // a message to whoever owns the fix — no HTML, no table, nothing that
@@ -124,76 +134,80 @@ export function buildPlainSummary({
   allFindings: AccessibilityFinding[];
 }): string {
   const grouped = groupFindings(allFindings);
-  const scannedAt = new Date(seed).toLocaleDateString("en-GB", {
+  const lang = getLang();
+  const scannedAt = new Date(seed).toLocaleDateString(lang === "en" ? "en-GB" : lang, {
     year: "numeric",
     month: "long",
     day: "numeric",
   });
   const lines = [
-    `Accessibility scan: ${url}`,
-    `Scanned ${scannedAt}`,
+    tf("Accessibility scan: {url}", { url }),
+    tf("Scanned {date}", { date: scannedAt }),
     "",
-    `Score: ${score}/100`,
-    scoreSummary(score, seed),
+    tf("Score: {score}/100", { score }),
+    t(scoreSummary(score, seed)),
     "",
   ];
   if (grouped.length === 0) {
-    lines.push("Nothing found that needs a fix.");
+    lines.push(t("Nothing here needs a fix."));
   } else {
-    lines.push("Issues found, most severe first:");
+    lines.push(asHeading(t("Findings, most severe first")));
     for (const group of grouped) {
       const rep = group[0];
       const plain = plainForRule(rep.ruleId);
       const title = plain?.plain ?? rep.title ?? rep.description;
       const count = group.length > 1 ? ` (${group.length}×)` : "";
-      lines.push(`- [${SEVERITY_LABEL[rep.severity]}] ${title}${count}`);
+      lines.push(`- [${t(SEVERITY_LABEL[rep.severity])}] ${title}${count}`);
     }
   }
-  lines.push("", ...SCORE_CAVEAT_LINES);
+  lines.push("", ...scoreCaveatLines());
   return lines.join("\n");
 }
 
-/* "Do this first" — the one fix that settles the most at once.
+/* The report's lead: the first repair, said as what was found, then "Fix
+ * this first" (reviewer's note, 22 Nov 2026: "lead the report with a
+ * finding such as Two fields are missing labels. Fix these first.").
  *
- * From ui_kits/scan-app/checker.prompt.md: "Anti-pattern: opening on a list
- * of 34 findings with no order of attack. Correct: the band states what one
- * fix settles."
+ * The group is the first in the schedule's own order (groupFindings: most
+ * severe, then most widespread), so the lead and the list below never
+ * disagree about what comes first. A group here is ONE fault with N
+ * instances, keyed on the rule, so fixing it settles all N: the claim is
+ * true by construction.
  *
- * The claim has to be provable, because this report's own rule is that a
- * statement is unhedged only when it is true by construction. It is: a
- * group here is ONE fault with N instances — groupFindings keys on ruleId —
- * so fixing it does resolve all N. That is a weaker claim than the design's
- * "the shared header", which groups by component and needs selector
- * analysis in the scanner; this one needs nothing the widget does not
- * already have, and it does not overstate.
+ * Measured findings only. An AI card is the model's view and needs a person
+ * to confirm it; it does not get to open the report. A report whose only
+ * findings are the model's opens on the score, as before.
  *
- * Only critical and serious count. "Do this first" is advice about order of
- * attack, and a minor issue is never the thing to do first however many
- * times it occurs.
- *
- * Exported because the report-actions panel renders it now and ScoreGauge
- * still needs the same answer — computing it twice from the same findings
- * would be two places for the two to drift apart.
+ * It replaced the key's "Start here" column (which named the most
+ * widespread serious fault), so the report says where to start once.
  */
-export function computeDoFirst(
+export function computeFirstFix(
   findings: AccessibilityFinding[]
-): { title: string; settles: number; outOf: number } | null {
-  const worstFirst = groupFindings(findings).filter(
-    (g) => g[0].severity === "critical" || g[0].severity === "serious"
-  );
-  const topGroup =
-    worstFirst.length > 0
-      ? worstFirst.reduce((a, b) => (b.length > a.length ? b : a))
-      : null;
-  /* Suppressed at one instance, deliberately. "Fixing this settles 1 of 1"
-   * is noise, and the anti-pattern the band exists to prevent. A list with
-   * no order of attack. Does not arise when there is one thing to do. */
-  if (!topGroup || topGroup.length <= 1) return null;
-  return {
-    title: plainForRule(topGroup[0].ruleId)?.plain ?? topGroup[0].title ?? "",
-    settles: topGroup.length,
-    outOf: worstFirst.reduce((n, g) => n + g.length, 0),
-  };
+): { id: string; what: string; count: number } | null {
+  // A banner that hides the page from screen readers has its own stop-press
+  // ("Start here: a screen reader can't get past your cookie banner"), which
+  // outranks every other fault. Two places saying where to start would name
+  // two different things.
+  if (findings.some((f) => f.ruleId === "consent-blocks-reader")) return null;
+  const group = groupFindings(findings).find((g) => g[0].source !== "ai-review");
+  if (!group) return null;
+  const rep = group[0];
+  const count = group.length;
+  const plain = plainForRule(rep.ruleId);
+  // The rule's own count sentence where it has one ("2 form fields are not
+  // joined to a label in the code."), its first sentence only.
+  const found = plain?.found?.(count).match(/^.*?[.!?](?=\s|$)/)?.[0];
+  const title = (plain?.plain ?? rep.title ?? rep.description).trim().replace(/[.!?]$/, "");
+  const what = found ?? (count > 1 ? `${title} (${count}\u00d7).` : `${title}.`);
+  return { id: rep.id, what, count };
+}
+
+/* Best-practice rules with no numbered criterion arrive as the literal
+   "WCAG (see rule help)": not a criterion, so treated as none. */
+function criterionOf(rep: AccessibilityFinding): string | null {
+  return rep.wcagCriterion && rep.wcagCriterion !== "N/A"
+    ? (rep.wcagCriterion.match(/^\d\.\d+\.\d+/)?.[0] ?? null)
+    : null;
 }
 
 /* The band as its range, not an adjective: "middling" told a reader
@@ -207,26 +221,9 @@ const BAND_WORD = (score: number) =>
    rather than only the one the template happened to draw. */
 const DIAL_R = 42;
 const DIAL_C = 2 * Math.PI * DIAL_R;
-
-/* A titled purple panel wrapping a white card — the design's repeated left
-   column unit. The eyebrow is an h3 rather than a styled span so the three
-   panels are reachable as headings. */
-function SumPanel({
-  title,
-  grow = false,
-  children,
-}: {
-  title: string;
-  grow?: boolean;
-  children: ReactNode;
-}) {
-  return (
-    <section className={`a11y-sum-panel${grow ? " a11y-sum-grow" : ""}`}>
-      <h3 className="a11y-sum-eyebrow">{title}</h3>
-      <div className="a11y-sum-card">{children}</div>
-    </section>
-  );
-}
+/* The C's stroke: the reference's is about an eighth of the letter's
+   width (82 of 690 units), so 12 in this 100-unit box, round ended. */
+const DIAL_W = 12;
 
 export function ScoreGauge({
   score,
@@ -236,8 +233,14 @@ export function ScoreGauge({
   allFindings,
   total,
   tookSeconds,
+  warning,
 }: {
   score: number;
+  /* Checks that did not finish, said as the key's third column beside
+     Score … and What the score counts (user's instruction, 24 Nov 2026,
+     "combine in 3 columns"): it qualifies the score, so it stands with
+     the key rather than in a bubble under it. */
+  warning?: { title: string; subtitle: string };
   /* For the run pills beside the dial: how many issues, and how long it
      took. Both come from the report rather than being recounted here. */
   total: number;
@@ -257,12 +260,18 @@ export function ScoreGauge({
   url: string;
   allFindings: AccessibilityFinding[];
 }) {
+  const { inChat } = useReportView();
   const [copied, setCopied] = useState(false);
   const grouped = groupFindings(findings);
+  const dialShare = Math.max(0, Math.min(100, score)) / 100;
   const preview = grouped.slice(0, PREVIEW_LIMIT);
   /* The same answer the report-actions panel gets, from the same shared
      helper — computing it twice would be two places to disagree. */
-  const doFirst = computeDoFirst(findings);
+  const first = computeFirstFix(findings);
+  const firstId = inChat ? "a11y-first-fix-heading-chat" : "a11y-first-fix-heading";
+  const countsId = inChat ? "a11y-sum-counts-heading-chat" : "a11y-sum-counts-heading";
+  const warningId = inChat ? "a11y-sum-warning-heading-chat" : "a11y-sum-warning-heading";
+  const issuesId = inChat ? "a11y-sum-issues-heading-chat" : "a11y-sum-issues-heading";
 
   /* "Do this first" — the one fix that settles the most at once.
    *
@@ -296,120 +305,50 @@ export function ScoreGauge({
   }
   return (
     <div className="a11y-score">
+      {/* The first repair leads, before the number (reviewer's note, 22 Nov
+          2026: "Once I have a report, the first thing I see is my score").
+          The sentence goes to the finding in the schedule; the line under
+          it says how the claim was established. */}
+      {first && (
+        <section className="a11y-first-fix" aria-labelledby={firstId}>
+          <h2 className="a11y-first-fix-label" id={firstId}>{t("Start here")}</h2>
+          <p className="a11y-first-fix-lead">
+            <a
+              href={`#a11y-finding-${first.id}`}
+              onClick={(e) => {
+                e.preventDefault();
+                openFinding(e.currentTarget, first.id);
+              }}
+            >
+              {first.what} {first.count > 1 ? t("Fix these first.") : t("Fix this first.")}
+            </a>
+          </p>
+          <p className="a11y-first-fix-how">{t(METHOD_LINE.automated)}</p>
+        </section>
+      )}
       {/* Professional mode gets an explicit results header in this slot
           (App.tsx); business mode had none, which left heading navigation
           with no way to jump straight to the score at all. */}
-      <h2 className="a11y-section-title" id="a11y-score-heading" data-nav-label={t("Score")}>{t("Your score")}</h2>
+      <h2
+        className="a11y-section-title"
+        id="a11y-score-heading"
+        data-nav-label={t("Score")}
+      >
+        {t("Your score")}
+      </h2>
 
-      {/* The design's scan-summary template: the run and its worst findings,
-          then three titled panels. Ported from
-          templates/scan-summary/Summary.jsx in the design project — read
-          from there rather than from a screenshot, which is how the arc
-          arithmetic and every token below are the design's own. The scan
-          summary (its heading, the dial, the top three) comes first, straight
-          under the title (user's instruction, 4 Nov 2026): it was the
-          design's right column, and with the columns stacked it sat below
-          the three panels. */}
-      <div className="a11y-sum-grid">
-        <div className="a11y-sum-col">
-          <section className="a11y-sum-run" aria-labelledby="a11y-sum-run-heading">
-            <h3 className="a11y-sum-eyebrow" id="a11y-sum-run-heading">{t("Scan summary")}</h3>
-
-            <div className="a11y-sum-dial-card">
-              {/* One label carries the whole thing, and every part of the
-                  drawing is hidden — the arc, the numeral and the pills all
-                  repeat it. Announced once, as a sentence. */}
-              <div
-                className="a11y-sum-dial"
-                role="img"
-                aria-label={
-                  tookSeconds != null
-                    ? tf("Score {score} out of 100, {band}. Issues found: {count}, in {seconds} seconds.", {
-                        score,
-                        band: t(BAND_WORD(score)),
-                        count: total,
-                        seconds: tookSeconds,
-                      })
-                    : tf("Score {score} out of 100, {band}. Issues found: {count}.", {
-                        score,
-                        band: t(BAND_WORD(score)),
-                        count: total,
-                      })
-                }
-              >
-                <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
-                  <circle cx="50" cy="50" r={DIAL_R} fill="none"
-                    stroke="var(--orange-20)" strokeWidth="9" />
-                  <circle cx="50" cy="50" r={DIAL_R} fill="none"
-                    stroke="var(--orange-50)" strokeWidth="9" strokeLinecap="round"
-                    strokeDasharray={`${(Math.max(0, Math.min(100, score)) / 100) * DIAL_C} ${DIAL_C}`}
-                    transform="rotate(-90 50 50)" />
-                </svg>
-                <span className="a11y-sum-dial-face" aria-hidden="true">
-                  <span className="a11y-sum-dial-num">{score}</span>
-                  <span className="a11y-sum-dial-of">{t("out of 100")}</span>
-                </span>
-              </div>
-            </div>
-
-            {preview.length === 0 ? (
-              <p className="a11y-score-clean">{t("Nothing here needs a fix.")}</p>
-            ) : (
-              <div className="a11y-sum-table">
-                <div className="a11y-sum-thead" aria-hidden="true">
-                  <span className="a11y-sum-cell-no">{t("No.")}</span>
-                  <span className="a11y-sum-cell-item">{t("Item")}</span>
-                  <span className="a11y-sum-cell-count">{t("Instances")}</span>
-                </div>
-                <ul className="a11y-sum-rows">
-                  {preview.map((group, i) => {
-                    const rep = group[0];
-                    const plain = plainForRule(rep.ruleId);
-                    const title = plain?.plain ?? rep.title ?? rep.description;
-                    /* Best-practice rules with no numbered criterion arrive
-                       as the literal "WCAG (see rule help)" — not a criterion
-                       and not meaningful beside the "WCAG" prefix, so it is
-                       treated as having none rather than displayed. */
-                    const criterion =
-                      rep.wcagCriterion && rep.wcagCriterion !== "N/A"
-                        ? (rep.wcagCriterion.match(/^\d\.\d+\.\d+/)?.[0] ?? null)
-                        : null;
-                    return (
-                      <li key={rep.id} className="a11y-sum-row">
-                        <span className="a11y-sum-cell-item">
-                          {/* The round marker is held to the title's first
-                              word, so a wrap never strands it at a line end. */}
-                          <span className="a11y-sum-row-title">
-                            <span className="a11y-sum-nobreak">
-                              <span className="a11y-sum-cell-no" aria-hidden="true">{i + 1}</span>
-                              {title.split(" ")[0]}
-                            </span>
-                            {title.includes(" ") ? ` ${title.slice(title.indexOf(" ") + 1)}` : ""}
-                          </span>
-                          <span className="a11y-sum-row-marks">
-                            {criterion && (
-                              <span className="a11y-sum-chip">WCAG {criterion}</span>
-                            )}
-                            <SeverityTag
-                              severity={rep.severity}
-                              label={t(SEVERITY_LABEL[rep.severity])}
-                            />
-                          </span>
-                        </span>
-                        <span className="a11y-sum-cell-count">
-                          {group.length}&#8202;&times;
-                        </span>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            )}
-          </section>
-
-          {/* Plain text, not the report's own HTML: the point is to leave the
-              widget entirely — an email or a Slack message to whoever owns
-              the fix, not a screenshot of this card. */}
+      {/* The score as a type specimen (user's references, 25 Nov 2026: a
+          foundry's tester and its C on the glyph's guide lines). Centred
+          throughout: the title as the specimen's small caption with Copy
+          summary as the small pill under it, the C dial on three guide
+          lines that run the full width, what the range means under it as
+          the specimen line, then each issue as a specimen of its own, a
+          small caption (criterion, severity, places) over the title. How
+          the score works and the warning follow as yellow cards. */}
+      <div className="a11y-sum-grid a11y-sum-specimen">
+        {/* Plain text, not the report's own HTML: the point is to leave the
+            widget entirely, an email or a message to whoever owns the fix. */}
+        {!inChat && (
           <div className="a11y-sum-actions">
             <button type="button" className="a11y-show-all a11y-score-copy" onClick={copySummary}>
               {copied ? t("Copied") : t("Copy summary as plain text")}
@@ -418,46 +357,133 @@ export function ScoreGauge({
               {copied ? t("Summary copied to the clipboard.") : ""}
             </span>
           </div>
-        </div>
+        )}
 
-        <div className="a11y-sum-col">
-          {doFirst && (
-            <SumPanel title={t("Do this first")}>
-              {/* The title in quotes rather than lowercased: lowercasing
-                  broke German nouns ("zu blass zum lesen") and acronyms. */}
-              <p className="a11y-sum-lead">
-                {tf("Fixing “{title}” settles {settles} of the {outOf} most serious findings at once.", {
-                  title: doFirst.title,
-                  settles: doFirst.settles,
-                  outOf: doFirst.outOf,
-                })}
-              </p>
-            </SumPanel>
-          )}
+        <section className="a11y-sum-run" aria-labelledby="a11y-sum-run-heading">
+          <h3 className="a11y-sr-only" id="a11y-sum-run-heading">{t("Scan summary")}</h3>
 
-          <SumPanel title={tf("What a score of {band} means", { band: t(BAND_WORD(score)) })}>
-            {/* No second line: points 05 and 06 under "What the score counts"
-                already say what a scan reaches and what needs a person. */}
-            <p className="a11y-sum-lead">{t(scoreSummary(score, seed))}</p>
-          </SumPanel>
-
-          {/* Set as the displaay.net Info block (user's instruction, 4 Nov
-              2026): two columns, each point's number over a rule and its
-              words under it. The number follows the words in the markup and
-              is drawn first, so a screen reader hears the sentence alone. */}
-          <section className="a11y-sum-panel a11y-sum-counts" aria-labelledby="a11y-sum-counts-heading">
-            <h3 className="a11y-sum-eyebrow" id="a11y-sum-counts-heading">{t("What the score counts")}</h3>
-            <div className="a11y-sum-specimens">
-              {SCORE_POINTS.map((point, i) => (
-                <p key={point} className="a11y-sum-specimen">
-                  <span className="a11y-sum-specimen-text">{t(point)}</span>
-                  <span className="a11y-sum-specimen-num" aria-hidden="true">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                </p>
-              ))}
+          <div className="a11y-sum-dial-card">
+            {/* One label carries the whole thing, and every part of the
+                drawing is hidden: the arc and the numeral repeat it. */}
+            <div
+              className="a11y-sum-dial"
+              role="img"
+              aria-label={
+                tookSeconds != null
+                  ? tf("Score {score} out of 100, {band}. Issues found: {count}, in {seconds} seconds.", {
+                      score,
+                      band: t(BAND_WORD(score)),
+                      count: total,
+                      seconds: tookSeconds,
+                    })
+                  : tf("Score {score} out of 100, {band}. Issues found: {count}.", {
+                      score,
+                      band: t(BAND_WORD(score)),
+                      count: total,
+                    })
+              }
+            >
+              {/* The dial as a C (user's reference, 25 Nov 2026, a type
+                  foundry's C): one thick stroke with round ends and no
+                  track. The arc is the score, centred on the left, so the
+                  opening on the right is what is missing. An SVG circle's
+                  stroke starts at three o'clock and runs clockwise, so
+                  turning it by 180·(1 − s) degrees centres an arc of s·C
+                  on nine o'clock. */}
+              <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+                <circle cx="50" cy="50" r={DIAL_R} fill="none"
+                  strokeWidth={DIAL_W} strokeLinecap="round"
+                  strokeDasharray={`${dialShare * DIAL_C} ${DIAL_C}`}
+                  transform={`rotate(${180 * (1 - dialShare)} 50 50)`} />
+              </svg>
+              <span className="a11y-sum-dial-face" aria-hidden="true">
+                <span className="a11y-sum-dial-num">{score}</span>
+              </span>
             </div>
+          </div>
+
+          {/* What the range means, the specimen line under the number. */}
+          <p className="a11y-sum-verdict">{t(scoreSummary(score, seed))}</p>
+        </section>
+
+        {preview.length === 0 ? (
+          <p className="a11y-score-clean">{t("Nothing here needs a fix.")}</p>
+        ) : (
+          <section className="a11y-sum-issues" aria-labelledby={issuesId}>
+            <h3 className="a11y-sum-label" id={issuesId}>
+              {findings.length === 1 ? t("1 issue found") : tf("{count} issues found", { count: findings.length })}
+            </h3>
+            {/* role="list" said out loud: WebKit drops the list role from a
+                list drawn without markers. */}
+            {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
+            <ul className="a11y-sum-specs" role="list">
+              {preview.map((group) => {
+                const rep = group[0];
+                const title = plainForRule(rep.ruleId)?.plain ?? rep.title ?? rep.description;
+                const crit = criterionOf(rep);
+                // The card's square at the left: the first place in the
+                // group the scanner could picture. Decorative here (alt=""):
+                // the title beside it names the fault, and the opened
+                // finding shows the picture with its outline.
+                const shot = group.find((f) => f.elementScreenshot)?.elementScreenshot;
+                return (
+                  <li key={rep.id} className="a11y-sum-spec" data-shot={shot ? "" : undefined}>
+                    {shot && (
+                      <img className="a11y-sum-spec-shot" src={`data:image/jpeg;base64,${shot}`} alt="" />
+                    )}
+                    <div className="a11y-sum-spec-body">
+                      <a
+                        className="a11y-sum-spec-title"
+                        href={`#a11y-finding-${rep.id}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          openFinding(e.currentTarget, rep.id);
+                        }}
+                      >
+                        {title}
+                      </a>
+                      {/* Under the words, the criterion, the severity and
+                          the places, each a small outlined pill. */}
+                      <p className="a11y-sum-spec-cap">
+                        {crit && <span className="a11y-sum-spec-pill a11y-sum-spec-crit">{crit}</span>}
+                        <span className="a11y-sum-spec-pill">
+                          <SeverityTag severity={rep.severity} label={t(SEVERITY_LABEL[rep.severity])} />
+                        </span>
+                        {group.length > 1 && (
+                          <span className="a11y-sum-spec-pill">{tf("{count} places", { count: group.length })}</span>
+                        )}
+                      </p>
+                    </div>
+                    {/* Shown on hover and focus; the title above is the link's name. */}
+                    <span className="a11y-sum-spec-go" aria-hidden="true">{t("See the finding")}</span>
+                  </li>
+                );
+              })}
+            </ul>
           </section>
+        )}
+
+        {/* How the score works and the warning are plain text under titles
+            (user's reference, 27 Nov 2026, "this can be plain text with
+            titles like this", on the yellow cards beside the "Can people
+            use it?" section): no ground, no corners, no icon. Each title is
+            set as a report section's title; the points are prose under it,
+            one line apart. Side by side where there is room. The warning
+            is a status, so it waits its turn to be read. */}
+        <div className="a11y-sum-plains">
+          <section className="a11y-sum-plain" aria-labelledby={countsId}>
+            <h3 className="a11y-sum-plain-title" id={countsId}>{t("How the score works")}</h3>
+            {SCORE_POINTS.map((point) => (
+              <p key={point} className="a11y-sum-plain-text">{t(point)}</p>
+            ))}
+          </section>
+          {warning && (
+            <section className="a11y-sum-plain" role="status" aria-labelledby={warningId}>
+              <h3 className="a11y-sum-plain-title" id={warningId}>{t("Warning")}</h3>
+              <p className="a11y-sum-plain-text">{warning.title}</p>
+              <p className="a11y-sum-plain-text">{warning.subtitle}</p>
+            </section>
+          )}
         </div>
       </div>
     </div>

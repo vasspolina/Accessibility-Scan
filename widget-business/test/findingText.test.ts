@@ -62,3 +62,20 @@ describe("whatWeFound", () => {
     expect(whatWeFound(f, plain, 1, plain.plain)).toBe("1 pop-up has nothing naming it.");
   });
 });
+
+describe("the validator's messages as code", () => {
+  it("marks the examples after For example: as one code span", () => {
+    const f = finding({
+      ruleId: "markup-validation",
+      description:
+        "The page's HTML has 9 markup validity issues. For example: <style> element is not permitted as content under <body> (line 14); <div> element is not permitted as content under <button> (line 439). Invalid markup forces browsers and assistive technology to guess at the page structure, and different ones guess differently.",
+    });
+    expect(whatWeFound(f, undefined, 1, "Markup errors")).toBe(
+      "The page's HTML has 9 markup validity issues. For example: `<style> element is not permitted as content under <body> (line 14); <div> element is not permitted as content under <button> (line 439)`. Invalid markup forces browsers and assistive technology to guess at the page structure, and different ones guess differently."
+    );
+  });
+  it("leaves other findings' words alone", () => {
+    const f = finding({ ruleId: "image-alt", description: "For example: an image (line 3). More." });
+    expect(whatWeFound(f, undefined, 1, "x")).toBe("For example: an image (line 3). More.");
+  });
+});

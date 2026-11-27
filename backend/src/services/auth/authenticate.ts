@@ -42,9 +42,64 @@ export interface FormAuth {
   submitSelector?: string;
 }
 
-export type AuthConfig = CookieAuth | FormAuth;
+/**
+ * A signed-in browser session, captured once and replayed into each page's
+ * fresh browser context. Internal only: no route accepts it from a caller.
+ *
+ * Built by captureSession (auth/session.ts) for a site audit. Signing in
+ * again for every crawled page would submit the password up to ten times in
+ * a few minutes, which is how accounts get locked and how a login form's rate
+ * limit turns the second half of an audit into reports on the sign-in page.
+ * Playwright's storage state carries the cookies with every flag intact
+ * (__Host- cookies are refused without Secure and a host-only domain) and the
+ * page's localStorage, where many single-page apps keep their token.
+ *
+ * Same rules as the credentials it came from: memory only, for one audit,
+ * never logged, stored or put in the report.
+ */
+export interface SessionAuth {
+  kind: "session";
+  state: SessionState;
+  // The sign-in form's path, when the session came from one. A crawled page
+  // that lands back on it has been signed out, and is reported as such
+  // instead of being scanned as if it were the page asked for.
+  loginPath?: string;
+}
+
+export interface SessionState {
+  cookies: Array<{
+    name: string;
+    value: string;
+    domain: string;
+    path: string;
+    expires: number;
+    httpOnly: boolean;
+    secure: boolean;
+    sameSite: "Strict" | "Lax" | "None";
+  }>;
+  origins: Array<{ origin: string; localStorage: Array<{ name: string; value: string }> }>;
+}
+
+export type AuthConfig = CookieAuth | FormAuth | SessionAuth;
 
 export class AuthError extends Error {}
+
+/**
+ * Whether a page asked for under a captured session landed on the sign-in
+ * form instead. Pure, so it is tested without a browser. The page that IS the
+ * sign-in form, asked for by name, is not a lost session.
+ */
+export function sessionWasLost(landedUrl: string, requestedUrl: string, loginPath: string): boolean {
+  const path = (u: string) => {
+    try {
+      return new URL(u).pathname.replace(/\/+$/, "") || "/";
+    } catch {
+      return "";
+    }
+  };
+  const login = loginPath.replace(/\/+$/, "") || "/";
+  return path(landedUrl) === login && path(requestedUrl) !== login;
+}
 
 // Ordered by specificity: an explicit autocomplete token beats a type, which
 // beats a guessed name.
@@ -107,6 +162,9 @@ async function firstMatching(page: Page, selectors: string[]): Promise<string | 
  * credentials themselves.
  */
 export async function authenticate(page: Page, auth: AuthConfig, target?: string): Promise<void> {
+  // A captured session is loaded when the context is made (withPage's
+  // storageState), so there is nothing left to do on the page.
+  if (auth.kind === "session") return;
   if (auth.kind === "cookies") {
     // No password involved at all, which is why this is the recommended path.
     // The target URL comes from the caller: authentication runs BEFORE
@@ -144,7 +202,7 @@ export async function authenticate(page: Page, auth: AuthConfig, target?: string
     const passSel = auth.passwordSelector ?? (await firstMatching(page, PASSWORD_SELECTORS));
     if (!userSel || !passSel) {
       throw new AuthError(
-        "Couldn't find the username and password fields on that page. Check the login address, or supply the field selectors."
+        "Couldn't find the username and password fields on that page. Check that the login address opens the sign-in form itself."
       );
     }
 

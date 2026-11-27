@@ -8,6 +8,8 @@ import type { AxeRunResult, FreshCaptureResult } from "./render/renderPage.js";
 import { extractContext } from "./contextExtraction/extractContext.js";
 import { reviewPage } from "./aiReview/reviewPage.js";
 import { attachAltTextSuggestions } from "./aiReview/suggestAltText.js";
+import { attachCodeFixes, pickCodeFixCandidates, suggestCodeFixes } from "./aiReview/suggestCodeFix.js";
+import { attachPlainLanguage, rewriteFindings } from "./plainLanguage/rewriteFindings.js";
 import {
   axeToFindings,
   aiToFindings,
@@ -16,12 +18,14 @@ import {
   dropDuplicateConsentClaims,
   applyAgeEnrichments,
   dropSpeculativeFindings,
+  foldAiIntoMeasured,
   dropBannerShadowedAriaHiddenFocus,
   wcagTagsToLabel,
 } from "./merge/mergeFindings.js";
 import { evaluateTypography } from "./typography/analyzeTypography.js";
 import { evaluateMotion } from "./motion/analyzeMotion.js";
 import { evaluateMedia } from "./media/analyzeMedia.js";
+import { lookUpEmbedCaptions } from "./media/captionTracks.js";
 import { evaluateConsentA11y, consentA11yUndecided } from "./consentA11y/evaluateConsentA11y.js";
 import { evaluateScreenReaderScript } from "./screenReader/analyzeScreenReader.js";
 import { evaluateControlContrast } from "./contrast/analyzeControlContrast.js";
@@ -35,15 +39,21 @@ import { evaluateDialogs } from "./dialog/analyzeDialogs.js";
 import { evaluateForcedColors } from "./forcedColors/analyzeForcedColors.js";
 import { evaluateReadingOrder } from "./readingOrder/analyzeReadingOrder.js";
 import { evaluateReadability } from "./readability/analyzeReadability.js";
+import { evaluateReflowHeight } from "./reflowHeight/analyzeReflowHeight.js";
+import { evaluatePixelContrast } from "./contrast/pixelContrast.js";
+import { evaluateFormErrors, notePanelFindings, panelViolations } from "./interaction/openAndMeasure.js";
 import { evaluateMobile } from "./mobile/analyzeMobile.js";
 import { evaluateDarkPatterns } from "./darkPatterns/analyzeDarkPatterns.js";
 import { evaluateTextResize } from "./textResize/analyzeTextResize.js";
 import { validateMarkup } from "./markup/validateMarkup.js";
+import { evaluateOverlay } from "./overlay/analyzeOverlay.js";
 import { summarizeSeverity, scoreFindings, summarizeCategories } from "./merge/scoring.js";
 import { buildConformance } from "./conformance/buildConformance.js";
 import { normalizeReportLang } from "./conformance/criteriaText.js";
 import { buildWcag22Readiness } from "./conformance/wcag22Readiness.js";
 import { checkPdfDocument } from "./documents/checkPdf.js";
+import { inventoryDocuments } from "./documents/inventoryDocuments.js";
+import { checkLinkedPdfs, documentUndecidedRows, LINKED_PDF_SAMPLE } from "./documents/linkedDocuments.js";
 import { downscalePreview } from "./render/downscalePreview.js";
 import { attachElementScreenshots, selectorTargetsOneElement } from "./render/cropThumbnail.js";
 import type { AccessibilityFinding, AccessibilityReport } from "../types/report.js";
@@ -152,6 +162,10 @@ async function attachEvidence(
       const shot = shots.shots[finding.selector];
       if (shot) {
         finding.elementScreenshot = shot;
+        const box = shots.boxes?.[finding.selector];
+        if (box) finding.elementBox = box;
+        const shows = shots.shows?.[finding.selector];
+        if (shows) finding.pictureShows = shows;
         continue;
       }
       // No picture, and the page told us why. Nearly always this is correct
@@ -192,19 +206,19 @@ const UNPICTURABLE_NOTES: Record<
   string
 > = {
   hidden:
-    "No picture: this was not visible on the page when it was scanned. Something reveals it, such as opening a panel or moving focus to it.",
+    "No picture: this element was hidden when we scanned, for example inside a closed menu, a folded section or a popup. Open that part of the page to see it. The technical details for this finding identify the exact element.",
   offscreen:
-    "No picture: this sits off the edge of the screen until it is used. Skip links are built this way on purpose.",
+    "No picture: this sits off the edge of the screen until the keyboard reaches it or a slider brings it into view. Skip links are built this way on purpose.",
   "no-usable-image":
-    "No picture: the element is there, but photographing it produced nothing worth showing. A blank rectangle, or whatever is sitting on top of it. The technical details for this finding identify the exact element.",
+    "No picture: the element is there, but its photograph came out blank or showed something covering it, such as a cookie banner. The technical details for this finding identify the exact element.",
   "too-large":
-    "No picture: this covers a whole region of the page rather than one component, and a photograph of the entire section would not show you which part of it is at fault. The technical details for this finding identify the exact element.",
+    "No picture: this covers a whole region of the page, not one component. A photograph of the entire section would not show which part is at fault. The technical details for this finding identify the exact element.",
   missing:
-    "No picture: the element was on the page when we judged it, and gone when we went back to photograph it. Banners that appear once per visitor do this.",
+    "No picture: the element was on the page when we checked it, and gone when we went back to photograph it. Banners that appear once per visitor do this.",
   "not-attempted":
-    "No picture: each scan photographs a limited number of elements, and this one was past that limit. Scanning again may reach it.",
+    "No picture: a scan photographs a limited number of elements in a limited time, and this one came after that limit. The technical details for this finding identify the exact element.",
   unreachable:
-    "No picture: this element could not be located again on the return visit. Pages that rebuild themselves on every load do this.",
+    "No picture: this element couldn't be located again on the return visit. Pages that rebuild themselves on every load do this.",
 };
 
 function originOfUrl(url: string): string {
@@ -408,12 +422,16 @@ export async function scanUrlToReport(
      see services/progress/milestones.ts for the list and the mapping from
      the render's internal phase names. Progress only: it changes nothing
      about the scan, and a missing listener costs nothing. */
-  onMilestone?: (id: MilestoneId) => void
+  onMilestone?: (id: MilestoneId) => void,
+  /* Whether a sample of the PDFs the page links to is opened and checked.
+     The documents are counted either way. A site audit counts and opens
+     none: see the measurement beside AUDIT_BUDGET_MS in routes/audit.ts. */
+  linkedPdfs: "open-sample" | "count-for-site-audit" = "open-sample"
 ): Promise<AccessibilityReport> {
   const safeUrl = trustPrivateHosts ? new URL(rawUrl) : await assertSafeUrl(rawUrl);
 
   // A PDF is not a page. Rendering one in Chromium and running axe over the
-  // viewer produced "Could not load or scan the page", which told the reader
+  // viewer produced "Couldn't load or scan the page", which told the reader
   // nothing about a document the accessibility rules very much cover.
   if (looksLikePdf(safeUrl)) return documentReport(safeUrl);
 
@@ -437,7 +455,9 @@ export async function scanUrlToReport(
     // CPU, and it was the arithmetic rather than the page that ran out.
     //
     // Signing in costs a page load of its own before the scan starts.
-    env.RENDER_TIMEOUT_MS + (auth ? 55_000 : 35_000)
+    // A captured session (a site audit's) is loaded with the context and
+    // costs nothing.
+    env.RENDER_TIMEOUT_MS + (auth && auth.kind !== "session" ? 55_000 : 35_000)
   ,
     trustPrivateHosts,
     // The render speaks phase names; the narration speaks milestones. The
@@ -448,6 +468,29 @@ export async function scanUrlToReport(
       if (id) onMilestone(id);
     } : undefined);
 
+  // What the page links to, and a look inside the first PDFs among them.
+  // Started here and collected at the end, so it runs beside the AI review
+  // and the probes below instead of after them. It resolves always and
+  // touches nothing the score is built from: see linkedDocuments.ts.
+  const linkedDocumentsPromise = checkLinkedPdfs(
+    inventoryDocuments(
+      renderResult.domSignals.pageLinks,
+      renderResult.finalUrl,
+      renderResult.domSignals.pageLinksNotRead
+    ),
+    {
+      limit: LINKED_PDF_SAMPLE,
+      // The same guard as the scanned address, on every address the page
+      // names and every redirect those answer with. The CLI's local trust
+      // lifts it for the same reason it lifts it for the page.
+      guard: trustPrivateHosts ? undefined : assertSafeUrl,
+      // A signed-in scan sees links the document fetch cannot follow: it
+      // carries no session, on purpose. Asking anyway would report every
+      // one of them as a file that will not open, which is not what is true.
+      skip: auth ? "behind-login" : linkedPdfs === "count-for-site-audit" ? "site-audit" : undefined,
+    }
+  );
+
   const context = extractContext(safeUrl.toString(), renderResult);
   // Started but deliberately not awaited yet: the AI review is the single
   // longest step (~20s), and none of the deterministic layers below depend on
@@ -456,6 +499,13 @@ export async function scanUrlToReport(
   const aiReviewPromise = reviewPage(context, renderResult.screenshotBase64, includeAiReview);
 
   const automatedFindings = axeToFindings(renderResult.axe);
+  // The plain-language rewrite needs only axe's findings, so it starts now
+  // and runs beside the AI review and the probes below. It is an AI layer,
+  // so the reader's "AI review off" switches it off too; and it runs only
+  // where the deployer set PLAIN_LANGUAGE_IN_SCANS (by default the model
+  // is the pilot's alone).
+  const reportLang = normalizeReportLang(language);
+  const plainPromise = rewriteFindings(automatedFindings, reportLang, includeAiReview);
   const deterministic: AccessibilityFinding[] = [];
   deterministic.push(...evaluateTypography(renderResult.typographyBlocks));
   deterministic.push(
@@ -476,6 +526,19 @@ export async function scanUrlToReport(
   deterministic.push(...evaluateReadingOrder(renderResult.readingOrder));
   deterministic.push(...evaluateReadability(renderResult.readability));
   deterministic.push(...evaluateMobile(renderResult.mobileSignals));
+  deterministic.push(...evaluateReflowHeight(renderResult.reflowHeight));
+  deterministic.push(...evaluatePixelContrast(renderResult.pixelContrast));
+  // What axe found inside menus, accordions and tabs once they were opened,
+  // each saying which control opens it; and what the empty-submit test of
+  // the forms proved (services/interaction/openAndMeasure.ts).
+  const opened = panelViolations(renderResult.openedPanels);
+  deterministic.push(...notePanelFindings(axeToFindings(opened.axe as AxeRunResult), opened.foundIn));
+  const formErrors = evaluateFormErrors(renderResult.formErrors);
+  deterministic.push(...formErrors.findings);
+  // Asked of YouTube and Vimeo now and awaited when the report is built, so
+  // the lookups run beside the AI review instead of after it. Never throws:
+  // an unanswered lookup is "unknown" and the embed stays undecided.
+  const embedCaptionsLookup = lookUpEmbedCaptions(renderResult.domSignals.mediaEmbeds);
   deterministic.push(...evaluateDarkPatterns(renderResult.darkPatternSignals));
   // The consent banner's screen-reader mechanics — a separate layer from the
   // dark-pattern checks on the same banner: those judge the fairness of the
@@ -500,6 +563,15 @@ export async function scanUrlToReport(
   deterministic.push(...evaluateTextResize(renderResult.textResizeSignals));
   deterministic.push(...(await validateMarkup(renderResult.finalUrl, trustPrivateHosts)));
 
+  // The AI fixes need only the measured findings and their snippets, all of
+  // which exist now, so they run beside the page review that is still in
+  // flight and cost no extra wall-clock time. Same switch as the review.
+  const codeFixPromise = suggestCodeFixes(
+    pickCodeFixCandidates([...automatedFindings, ...deterministic]),
+    includeAiReview,
+    reportLang
+  );
+
   // Everything above ran while the AI review was in flight; collect it now.
   // The render is done; if the AI layer is still thinking, that wait is
   // now the visible activity.
@@ -517,14 +589,20 @@ export async function scanUrlToReport(
   // And where a deterministic rule already proved the same consent problem,
   // the model's retelling of it goes: two cards for one fault inflate the
   // count the score is built on, and the measured one carries the picture.
-  const aiFindings = dropSpeculativeFindings(
-    dropDuplicateConsentClaims(
-      dropContradictedConsentClaims(
-        aiToFindings(aiReview.findings),
-        renderResult.darkPatternSignals.consentBanner
-      ),
-      deterministic
-    )
+  //
+  // Last, an AI card that retells a measured finding on the same element
+  // folds into that card as its supporting note: one repair, one card.
+  const aiFindings = foldAiIntoMeasured(
+    dropSpeculativeFindings(
+      dropDuplicateConsentClaims(
+        dropContradictedConsentClaims(
+          aiToFindings(aiReview.findings),
+          renderResult.darkPatternSignals.consentBanner
+        ),
+        deterministic
+      )
+    ),
+    [...automatedFindings, ...deterministic]
   );
   const merged = mergeFindings(automatedFindings, aiFindings);
   merged.push(...deterministic);
@@ -544,6 +622,13 @@ export async function scanUrlToReport(
     // model wrote none or every note failed to attach.
     logger.info(ageStats, "age enrichments");
   }
+
+  const codeFixes = await codeFixPromise;
+  const codeFixesAttached = attachCodeFixes(findings, codeFixes);
+  if (codeFixes.size > 0) logger.info({ received: codeFixes.size, attached: codeFixesAttached }, "code fixes attached");
+
+  const plainRewrite = await plainPromise;
+  attachPlainLanguage(findings, plainRewrite, reportLang);
 
   if (captureEvidence) {
     await attachEvidence(findings, renderResult, includeAiReview);
@@ -579,6 +664,11 @@ export async function scanUrlToReport(
     incompleteChecks: renderResult.incompleteChecks,
     lang: normalizeReportLang(language),
   });
+  const embedCaptions = await embedCaptionsLookup;
+
+  // Collected after the score on purpose: nothing below this line can move
+  // it. The documents go on the report beside the findings, never among them.
+  const documents = await linkedDocumentsPromise;
 
   return {
     url: safeUrl.toString(),
@@ -587,6 +677,7 @@ export async function scanUrlToReport(
     summary,
     categorySummary,
     findings: findings.map((f) => ({ ...f, fingerprint: fingerprintFinding(f) })),
+    ...(documents.total > 0 ? { documents } : {}),
     screenReaderScript: renderResult.screenReaderScript,
     conformance,
     wcag22,
@@ -601,7 +692,8 @@ export async function scanUrlToReport(
       [
         ...consentA11yUndecided(renderResult.darkPatternSignals),
         ...formErrorAssociationUndecided(renderResult.domSignals.forms),
-        ...evaluateMedia(renderResult.domSignals.mediaElements, renderResult.domSignals.mediaEmbeds),
+        ...formErrors.undecided,
+        ...evaluateMedia(renderResult.domSignals.mediaElements, renderResult.domSignals.mediaEmbeds, embedCaptions),
         ...evaluateInteraction(renderResult.domSignals.listeners, {
           liveRegions: renderResult.domSignals.liveRegions,
           hasControls:
@@ -611,6 +703,9 @@ export async function scanUrlToReport(
           titleTooltips: renderResult.domSignals.titleTooltips,
           unmarkedScripts: renderResult.domSignals.unmarkedScripts,
         }),
+        // The linked documents, as the same kind of thing: something the
+        // scan saw and a person has to take from here.
+        ...documentUndecidedRows(documents),
       ]
     ),
     pagePreview: await downscalePreview(renderResult.screenshotBase64),
@@ -637,6 +732,15 @@ export async function scanUrlToReport(
       })(),
       aiReviewErrorKind: aiReview.errorKind,
       model: aiReview.model,
+      plainLanguage: plainRewrite.meta,
+      // Evaluated here, in the return, and nowhere above: by this line the
+      // score, the severity and category counts and the conformance table
+      // are already computed from `findings`, and this never joins them.
+      // See analyzeOverlay.ts for why it is a statement and not a finding.
+      overlays: (() => {
+        const overlays = evaluateOverlay(renderResult.domSignals.overlay);
+        return overlays.length ? overlays : undefined;
+      })(),
     },
   };
 }

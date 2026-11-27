@@ -48,25 +48,39 @@ export function FindingsList({
   findings: AccessibilityFinding[];
   asNotes?: boolean;
 }) {
-  const { professional, showInstances } = useReportView();
+  const { professional } = useReportView();
 
   if (findings.length === 0) {
     return <p className="a11y-empty">{t("Nothing found here.")}</p>;
   }
 
   const grouped = groupFindings(findings);
-  // The findings schedules (one per section) all carry the same columns, so a
-  // column sits at the same x in every section; the user asked for that on
-  // 3 Nov 2026. Level is dropped from a table where no finding names one
-  // (user's instruction, 4 Nov 2026: an empty column only pushed the issue
-  // over); the cell reads the group's first finding, so the test does too.
-  // Instances is decided for the whole report
-  // (see ReportView.showInstances): an empty column is deleted from every
-  // table, not just from the ones where it happens to be empty. The notes
-  // table keeps its own rule, since its Instances is its only second column.
-  const ownCount = grouped.some((group) => group.length > 1);
-  const showLevel = grouped.some((group) => Boolean(group[0]?.wcagLevel));
-  const showCount = asNotes ? ownCount : (showInstances ?? ownCount);
+  // A column with nothing in it, in this table, is dropped header and all
+  // (user's instruction, 18 Nov 2026: "if there is no items under raw, then
+  // do not show table header either"). This replaces the report-wide
+  // decision of 17 Nov, which kept Level and Instances in every section's
+  // table so they lined up, and left a header over an empty column in a
+  // section where no finding had one. Every column is built, then any whose
+  // cells are all blank goes: WCAG for best-practice rules, Level, Instances.
+  const fullHeaders = asNotes
+    ? [
+        { key: "issue", label: t("Note") },
+        { key: "count", label: t("Instances"), align: "right" as const },
+      ]
+    : [
+        // Two columns, set as a list of questions (user's reference,
+        // 24 Nov 2026): the issue, and its severity as a coloured word at
+        // the end of the row. WCAG, Level, Fix and Instances are the first
+        // line of the opened finding (findingRow's comment). The severity
+        // badge that sat over the title (23 Nov 2026) is this word now.
+        { key: "issue", label: t("Issue") },
+        { key: "severity", label: t("Severity") },
+      ];
+  const fullRows = grouped.map((group) => findingRow(group, { asNotes, showCount: true }));
+  const blank = (cell: unknown) => cell === "" || cell === null || cell === undefined || cell === false;
+  const keep = fullHeaders.map((_, i) => fullRows.some((row) => !blank(row.cells[i])));
+  const headers = fullHeaders.filter((_, i) => keep[i]);
+  const rows = fullRows.map((row) => ({ ...row, cells: row.cells.filter((_, i) => keep[i]) }));
 
   return (
     <>
@@ -76,9 +90,9 @@ export function FindingsList({
           only rendering, kept for print (see FindingGroup's own comment). */}
       {!professional && (
         // The notes shape carries its own class because the table's column
-        // rules are position-based: nth-child(2) is Severity in the full
-        // shape and the note's own text in this one. Without the marker the
-        // phone-width rule that drops Severity dropped every note.
+        // rules were position-based: nth-child(2) was Severity in the full
+        // shape and the note's own text in this one. Without the marker a
+        // phone-width rule that dropped Severity dropped every note.
         <div
           className={`a11y-findings-table${asNotes ? " a11y-notes-table" : ""}`}
           onClick={expandRowOnClick}
@@ -86,28 +100,8 @@ export function FindingsList({
           <DataTable
             schedule
             caption={asNotes ? t("Notes on the design") : t("Findings, most severe first")}
-            headers={
-              asNotes
-                ? [
-                    { key: "issue", label: t("Note") },
-                    ...(showCount
-                      ? [{ key: "count", label: t("Instances"), align: "right" as const }]
-                      : []),
-                  ]
-                : [
-                    // Hidden at phone width by CSS (see .a11y-finding-sev-col)
-                    // — Severity folds into the Issue cell there instead.
-                    { key: "severity", label: t("Severity") },
-                    { key: "issue", label: t("Issue") },
-                    { key: "wcag", label: "WCAG" },
-                    { key: "fix", label: t("Who fixes this") },
-                    ...(showLevel ? [{ key: "level", label: t("Level") }] : []),
-                    ...(showCount
-                      ? [{ key: "count", label: t("Instances"), align: "right" as const }]
-                      : []),
-                  ]
-            }
-            rows={grouped.map((group) => findingRow(group, { asNotes, showLevel, showCount }))}
+            headers={headers}
+            rows={rows}
           />
         </div>
       )}

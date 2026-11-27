@@ -17,9 +17,10 @@ const DATE_LOCALE: Record<Lang, string> = { en: "en-GB", de: "de-DE", es: "es-ES
 function formatDate(iso: string): string {
   // European format, house style.
   return new Date(iso).toLocaleDateString(DATE_LOCALE[getLang()], {
+    // No year: the runs stand under their year's line, and "2026" over
+    // "22 Nov 2026" said it twice.
     day: "numeric",
     month: "short",
-    year: "numeric",
   });
 }
 
@@ -36,10 +37,47 @@ function ruleLabel(ruleId: string): string {
  * "just now"; the one below it carries "earlier", which is true of every
  * same-day run and claims no more precision than the date already does.
  */
-function groupByYear(
-  entries: { scannedAt: string; score: number; note?: string }[]
-): { year: string; runs: { scannedAt: string; score: number; note?: string }[] }[] {
-  const out: { year: string; runs: typeof entries }[] = [];
+type Run = { scannedAt: string; score: number; note?: string; times: number };
+
+/* Runs in a row on the same day with the same score and note are one line
+   with a count (user's instruction, 25 Nov 2026, "no repetition"): twenty
+   lines of "24 Nov 2026 – 62 / 100" said one thing twenty times. */
+function collapseRepeats(entries: { scannedAt: string; score: number; note?: string }[]): Run[] {
+  const out: Run[] = [];
+  for (const e of entries) {
+    const prev = out[out.length - 1];
+    if (
+      prev &&
+      new Date(prev.scannedAt).toDateString() === new Date(e.scannedAt).toDateString() &&
+      prev.score === e.score &&
+      prev.note === e.note
+    ) {
+      prev.times += 1;
+    } else {
+      out.push({ ...e, times: 1 });
+    }
+  }
+  return out;
+}
+
+/* A fact reads "Score is up – 46 then, 48 now": what changed, then the
+   figures. Set as a programme, the first part is the small italic call-out
+   and the rest the large line beside it; the dash stays for a screen
+   reader. A line with no dash (or an unforeseen translation) is set whole. */
+function Fact({ text }: { text: string }) {
+  const m = /^(.+?)\s[–—]\s(.+)$/su.exec(text);
+  if (!m) return <span className="a11y-hist-fact-value">{text}</span>;
+  return (
+    <>
+      <span className="a11y-hist-fact-label">{m[1]}</span>
+      <span className="a11y-sr-only"> – </span>
+      <span className="a11y-hist-fact-value">{m[2]}</span>
+    </>
+  );
+}
+
+function groupByYear(entries: Run[]): { year: string; runs: Run[] }[] {
+  const out: { year: string; runs: Run[] }[] = [];
   for (const e of entries) {
     const year = String(new Date(e.scannedAt).getFullYear());
     const last = out[out.length - 1];
@@ -94,14 +132,16 @@ export function ScanHistory({
 
   const sameDayAsCurrent = (iso: string) =>
     new Date(iso).toDateString() === new Date(current.scannedAt).toDateString();
-  const runsByYear = groupByYear([
-    { scannedAt: current.scannedAt, score: current.score, note: t("just now") },
-    ...previous.map((e) => ({
-      scannedAt: e.scannedAt,
-      score: e.score,
-      note: sameDayAsCurrent(e.scannedAt) ? t("earlier") : undefined,
-    })),
-  ]);
+  const runsByYear = groupByYear(
+    collapseRepeats([
+      { scannedAt: current.scannedAt, score: current.score, note: t("just now") },
+      ...previous.map((e) => ({
+        scannedAt: e.scannedAt,
+        score: e.score,
+        note: sameDayAsCurrent(e.scannedAt) ? t("earlier") : undefined,
+      })),
+    ])
+  );
 
   // The section doesn't vanish under the person who just pressed Delete —
   // that would drop keyboard focus to <body> and say nothing to a screen
@@ -151,11 +191,17 @@ export function ScanHistory({
             {runsByYear.map(({ year, runs }) => (
               <Fragment key={year}>
                 <li className="a11y-hist-year">{year}</li>
+                {/* Set as a programme: the date and the note are small
+                    italic call-outs either side of the score. The dash and
+                    the comma that join them in a sentence are kept for a
+                    screen reader and clipped for the eye. */}
                 {runs.map((e) => (
-                  <li key={e.scannedAt}>
-                    {formatDate(e.scannedAt)} &mdash;{" "}
+                  <li key={e.scannedAt} className="a11y-hist-run">
+                    <span className="a11y-hist-date">{formatDate(e.scannedAt)}</span>
+                    <span className="a11y-sr-only"> &mdash; </span>
                     <span className="a11y-hist-score">{e.score} / 100</span>
-                    {e.note ? <em>, {e.note}</em> : null}
+                    {e.times > 1 ? <span className="a11y-hist-times"> {e.times}×</span> : null}
+                    {e.note ? <em className="a11y-hist-note"><span className="a11y-sr-only">, </span>{e.note}</em> : null}
                   </li>
                 ))}
               </Fragment>
@@ -164,14 +210,15 @@ export function ScanHistory({
         </div>
 
         <div className="a11y-hist-col">
+          <div className="a11y-hist-card">
           <h3 className="a11y-hist-head">{t("Since last time")}</h3>
           {/* The three numbers used to be stat tiles. As lines they read as
               the sentences they always were, and the score line can say
               "not comparable" without a tile having to show a number it
               does not believe. */}
           <ul className="a11y-hist-facts">
-            <li>
-              {comparable
+            <li className="a11y-hist-fact">
+              <Fact text={comparable
                 ? tf(
                     flat
                       ? "Score unchanged – {then} then, {now} now"
@@ -181,27 +228,30 @@ export function ScanHistory({
                     { then: last.score, now: current.score }
                   )
                 : t(
-                    "Not comparable – we scored the earlier scan by different rules. Some checks that used to sit outside the number now count towards it, so the two are not a fair comparison and we claim no change."
-                  )}
+                    "Not comparable – we scored the earlier scan by different rules. Some checks now count towards the score that did not before, so we do not compare the two."
+                  )} />
             </li>
-            <li>
-              {diff.fixed.length === 0
-                ? t("Problems gone – none found this time")
-                : tf("Problems gone – {rules}", { rules: diff.fixed.map(ruleLabel).join(", ") })}
+            <li className="a11y-hist-fact">
+              <Fact text={diff.fixed.length === 0
+                ? t("Problems fixed – none")
+                : tf("Problems fixed – {rules}", { rules: diff.fixed.map(ruleLabel).join(", ") })} />
             </li>
             {/* "none weren't there before" is a double negative, and the
                 design's own copy has it. Said the way round it means. */}
-            <li>
-              {diff.appeared.length === 0
-                ? t("New problems – none appeared")
-                : tf("New problems – {rules}", { rules: diff.appeared.map(ruleLabel).join(", ") })}
+            <li className="a11y-hist-fact">
+              <Fact text={diff.appeared.length === 0
+                ? t("New problems – none")
+                : tf("New problems – {rules}", { rules: diff.appeared.map(ruleLabel).join(", ") })} />
             </li>
           </ul>
+          </div>
 
+          {/* A card of its own, like the one above: the label on a black
+              pill, the promise as a sentence, and the control that undoes
+              it inside the same card, under the words that promise it. */}
+          <div className="a11y-hist-card">
           <h3 className="a11y-hist-head">{t("Where this lives")}</h3>
-          <ul className="a11y-hist-facts">
-            <li>{t("Kept in this browser only, never sent anywhere.")}</li>
-          </ul>
+          <p className="a11y-hist-promise">{t("Kept in this browser only, never sent anywhere.")}</p>
           {/* The design writes "Delete this history at any time" as a line
               of prose. It is the one genuinely destructive action here, so
               it stays a real control with its confirmation, sitting under
@@ -214,6 +264,7 @@ export function ScanHistory({
           >
             {t("Delete this history")}
           </button>
+          </div>
         </div>
       </div>
 

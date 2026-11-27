@@ -1,5 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { fixKindForFinding, fixKindForRule, isKeyboardCheck, FIX_KINDS } from "../src/lib/testMethod";
+import { fixKindForFinding, fixKindForRule, fixHint, isKeyboardCheck, FIX_KINDS, RULE_HINTS, ALL_RULE_HINTS } from "../src/lib/testMethod";
+import { setLang } from "../src/lib/i18n";
+import { t } from "../src/lib/strings";
 import type { AccessibilityFinding } from "../src/api/scanClient";
 
 function finding(over: Partial<AccessibilityFinding> = {}): AccessibilityFinding {
@@ -194,5 +196,42 @@ describe("fixKindForRule: the undecided checks", () => {
   it("falls back to code for a rule it has never seen", () => {
     expect(fixKindForRule("some-future-axe-rule").key).toBe("code");
     expect(fixKindForRule(undefined).key).toBe("code");
+  });
+});
+
+describe("fixHint", () => {
+  // Reported on a content card reading "It belongs with whoever writes the
+  // page rather than with a developer": true, and no help in deciding who
+  // to send it to or what they should change. The sentence names both.
+  it("names the person and the change for a rule narrower than its desk", () => {
+    expect(fixHint(finding({ ruleId: "link-text-vague" }))).toMatch(/Read more/);
+    expect(fixHint(finding({ ruleId: "media-video-captions" }))).toMatch(/YouTube or Vimeo/);
+    expect(fixHint(finding({ ruleId: "dark-consent-no-reject" }))).toMatch(/Reject all/);
+    expect(fixHint(finding({ ruleId: "typo-leading-tight" }))).toMatch(/line spacing/);
+  });
+
+  it("sends a dark pattern with no rule of its own to whoever decides marketing", () => {
+    const aiDark = finding({ category: "dark-pattern", ruleId: undefined, source: "ai-review" });
+    expect(fixHint(aiDark)).toMatch(/marketing/);
+  });
+
+  it("falls back to the desk's own sentence", () => {
+    expect(fixHint(finding({ ruleId: "image-alt" }))).toBe(FIX_KINDS.code.hint);
+    expect(fixHint(finding({ ruleId: "pdf-not-tagged" }))).toBe(FIX_KINDS.document.hint);
+  });
+
+  // Every specific sentence must agree with the desk the badge shows.
+  it("never names a designer on a content card, or a writer on a design card", () => {
+    for (const id of Object.keys(RULE_HINTS)) {
+      const key = fixKindForRule(id).key;
+      if (key === "content") expect(RULE_HINTS[id], id).not.toMatch(/designer/i);
+      if (key === "design") expect(RULE_HINTS[id], id).toMatch(/^Your designer/);
+    }
+  });
+
+  it("translates every specific sentence", () => {
+    setLang("de");
+    for (const hint of ALL_RULE_HINTS) expect(t(hint), hint).not.toBe(hint);
+    setLang("en");
   });
 });

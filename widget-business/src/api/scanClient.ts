@@ -58,12 +58,24 @@ export interface AccessibilityFinding {
   // Absent on reports saved before it was sent.
   pictureReason?: "hidden" | "offscreen" | "missing" | "too-large" | "no-usable-image" | "not-attempted" | "unreachable";
   pictureFrame?: string;
+  // What the picture shows when it is not simply the element: the part of
+  // the page a hidden one is folded into, a skip link with the keyboard on
+  // it, the top of a region, or the screen with something lying over it.
+  pictureShows?: "container" | "focused" | "top" | "covered";
   // One sentence from the age-inclusive review, shown as its own line.
   ageNote?: string;
+  // The AI review's words on this same fault, folded in on the server.
+  aiSupport?: string;
   // AI-suggested alt text for an image that's missing one. A non-empty
   // string is ready-to-use alt text; an empty string means the image looks
   // decorative and should get alt=""; undefined means none was generated.
   suggestedAltText?: string;
+  // The AI fix: the element's captured markup with the fault corrected.
+  // Absent when the AI layer did not run or declined this element.
+  suggestedCode?: { before: string; after: string; note?: string; model: string };
+  // The self-hosted model's plain-language wording of an axe finding. Words
+  // only: severity, criterion and score are measured, never the model's.
+  plain?: { title: string; explanation: string; fix: string; model: string; lang: string };
 }
 
 // One announcement in the screen-reader preview. An approximation of what a
@@ -198,11 +210,23 @@ export interface AccessibilityReport {
     incompleteChecks?: string[];
     // Only when the Tab walk was cut short: how many stops it did walk.
     tabWalkStops?: number;
+    // Third-party accessibility overlays seen on the page. A statement about
+    // how the page was measured, never a finding: see OverlayNotes.
+    overlays?: DetectedOverlay[];
     // Set when what was checked was a document rather than a web page. Several
     // sections of the report do not apply to one.
     documentKind?: "pdf";
     documentPages?: number;
     model?: string;
+    // The plain-language rewrite: whether it ran, and how many of the page's
+    // axe rules it reached.
+    plainLanguage?: {
+      status: "completed" | "partial" | "timed_out" | "failed" | "not_configured" | "disabled_by_request" | "off_for_scans";
+      model?: string;
+      rules: number;
+      rewritten: number;
+      ms: number;
+    };
   };
 }
 
@@ -243,7 +267,29 @@ export interface ConsistencyIssue {
   count?: number;
 }
 
+/** An accessibility overlay the scan saw (backend types/report.ts). */
+export interface DetectedOverlay {
+  vendor: string;
+  /** The script as the page loaded it, query string removed. Absent when
+   *  the widget was there and its script came from an unrecognised address. */
+  scriptUrl?: string;
+  /** Whether the vendor's widget element was in the document when the page
+   *  was measured. False: the script tag was there, the widget had not
+   *  started. */
+  widgetOnPage: boolean;
+}
+
+/** The same, rolled up over a site crawl (backend aggregateAudit.ts). */
+export interface SiteOverlay {
+  vendor: string;
+  scriptUrl?: string;
+  pageCount: number;
+  widgetPageCount: number;
+}
+
 export interface SiteAudit {
+  // Overlays seen on the scanned pages. Optional: older reports carry none.
+  overlays?: SiteOverlay[];
   entryUrl: string;
   scannedAt: string;
   pagesScanned: number;
@@ -368,7 +414,7 @@ export async function scanUrl(
         await delay(1500 * attempt);
         continue;
       }
-      throw new ScanError(t("Could not reach the scanner service. Please try again shortly."));
+      throw new ScanError(t("Couldn't reach the scanner service. Please try again shortly."));
     }
 
     if (TRANSIENT_STATUSES.has(response.status) && attempt < MAX_ATTEMPTS) {
@@ -403,7 +449,7 @@ export async function scanUrl(
     return response.json();
   }
 
-  throw new ScanError(t("Could not reach the scanner service. Please try again shortly."));
+  throw new ScanError(t("Couldn't reach the scanner service. Please try again shortly."));
 }
 
 export async function auditSite(
@@ -428,7 +474,7 @@ export async function auditSite(
     if (err instanceof DOMException && err.name === "AbortError") {
       throw new ScanError(t("The audit stopped responding, so we gave up waiting. Please try again."));
     }
-    throw new ScanError(t("Could not reach the scanner service. Please try again shortly."));
+    throw new ScanError(t("Couldn't reach the scanner service. Please try again shortly."));
   }
 
   if (response.status === 429) throw new ScanError(t(RATE_LIMITED));

@@ -184,7 +184,7 @@ export async function historyRoutes(app: FastifyInstance) {
     if (!account) return;
     const parsed = verdictBody.safeParse(request.body);
     if (!parsed.success) {
-      return reply.status(400).send({ error: "Invalid request body", details: parsed.error.flatten() });
+      return reply.status(400).send({ error: "Something in that request wasn't right. Reload the page and try again.", details: parsed.error.flatten() });
     }
     const { verdict, error } = recordVerdict(account.id, {
       origin: parsed.data.origin,

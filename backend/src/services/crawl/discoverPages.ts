@@ -7,6 +7,10 @@
 // the page types that matter (contact, about, products, checkout) are nearly
 // always one click from the home page.
 //
+// The candidates are the entry page's links and, after them, the addresses
+// in the site's own sitemap (crawl/sitemap.ts). The sitemap adds the pages a
+// home page does not link to; it does not raise the number scanned.
+//
 // Same-origin only. Following off-site links would scan somebody else's
 // property without their consent, and bill this service for it.
 
@@ -25,6 +29,20 @@ const SKIP_EXTENSIONS =
 const SKIP_PATH =
   /\/(logout|signout|sign-out|log-out|cart|basket|checkout\/(complete|success)|wp-admin|admin|api)(\/|$)/i;
 
+// Signed in, the crawl acts as the customer, and a GET link can still end
+// their session or change their account (plenty of sites sign out on GET
+// /logout, and some cancel or delete from a confirmation link). With cookies
+// the customer gave us, following one would sign THEM out. So a signed-in
+// crawl also skips anything whose address or words read as signing out,
+// deleting, cancelling or unsubscribing, in the four report languages.
+const SIGNED_IN_SKIP =
+  /log[-_ ]?out|log[-_ ]?off|sign[-_ ]?out|sign[-_ ]?off|abmeld|ausloggen|d[ée]connex|se[-_ ]d[ée]connecter|cerrar[-_ ]sesi[oó]n|salir|delete|remove|deactivat|close[-_ ]account|cancel|unsubscribe|l[oö]schen|k[uü]ndig|supprim|r[ée]silier|eliminar|borrar|darse[-_ ]de[-_ ]baja|revoke|reset/i;
+
+/** Pure check of one candidate link for a signed-in crawl; exported for tests. */
+export function unsafeWhenSignedIn(url: URL, text: string): boolean {
+  return SIGNED_IN_SKIP.test(`${url.pathname} ${url.search}`) || SIGNED_IN_SKIP.test(text);
+}
+
 /**
  * Picks up to `limit` same-origin pages from the links found on the entry
  * page, including the entry page itself as the first result.
@@ -34,8 +52,16 @@ const SKIP_PATH =
  */
 export function selectPagesToAudit(
   entryUrl: string,
-  links: Array<{ href: string; text: string }>,
-  limit: number
+  links: Array<{ href: string; text: string; fromSitemap?: boolean }>,
+  limit: number,
+  // The site's robots rules, when it has any. They apply to the pages the
+  // scanner picks for itself and never to the entry page: that address was
+  // typed by a person, which is a visit, and robots.txt is about crawlers.
+  isAllowed?: (pathAndQuery: string) => boolean,
+  // Told how many candidates the rules took out, so the audit can say so.
+  onExcluded?: (url: string) => void,
+  // The crawl runs signed in: skip links that sign out or change the account.
+  signedIn = false
 ): DiscoveredPage[] {
   let entry: URL;
   try {
@@ -52,7 +78,7 @@ export function selectPagesToAudit(
   // visitor makes contact, buys something, or reads terms. A blocked contact
   // form costs more than a blocked blog post.
   const ranked = [...links]
-    .map((link) => ({ link, score: pageImportance(link) }))
+    .map((link) => ({ link, score: link.fromSitemap ? sitemapImportance(link.href) : pageImportance(link) }))
     .sort((a, b) => b.score - a.score);
 
   for (const { link } of ranked) {
@@ -69,10 +95,16 @@ export function selectPagesToAudit(
     if (!/^https?:$/.test(url.protocol)) continue;
     if (SKIP_EXTENSIONS.test(url.pathname)) continue;
     if (SKIP_PATH.test(url.pathname)) continue;
+    if (signedIn && unsafeWhenSignedIn(url, link.text)) continue;
 
     const normalized = normalize(url).toString();
     if (seen.has(normalized)) continue;
     seen.add(normalized);
+
+    if (isAllowed && !isAllowed(`${url.pathname}${url.search}`)) {
+      onExcluded?.(normalized);
+      continue;
+    }
 
     const label = link.text.replace(/\s+/g, " ").trim().slice(0, 60);
     pages.push({ url: normalized, label: label || url.pathname });
@@ -93,17 +125,59 @@ function normalize(url: URL): URL {
   return copy;
 }
 
-// Higher is more worth auditing. Weighted by consequence to the business:
+// The kinds of page worth auditing first, by consequence to the business:
 // somewhere a visitor transacts or makes contact, over somewhere they browse.
+const PAGE_KINDS: Array<[string, number]> = [
+  ["contact|enquir|inquir|support|help", 100],
+  ["book|reserv|appointment|register|sign[- ]?up|join", 95],
+  ["shop|product|store|pricing|price|plan|buy", 90],
+  ["about|team|who[- ]we[- ]are", 80],
+  ["service|what[- ]we[- ]do|solution", 75],
+  ["accessib|terms|privacy|legal", 70],
+  ["news|blog|article|event", 40],
+];
+
+// A page known only from the sitemap has no link text, so its address is all
+// there is to rank it by, and an address alone misleads. Measured on two
+// real sitemaps. On gov.uk, ranked like a link, the pages picked beside the
+// home page were a research paper ("...supporting-research..."), an internal
+// manual ("enquiry-manual") and two more, each on a keyword inside a long
+// slug. On wordpress.org it was /facebook, /facebook-2 and /facebook-3, on
+// the "book" in them.
+//
+// So a sitemap page takes a kind only where its address is itself the page's
+// name: one short segment such as /contact or /about-us (or the same under a
+// language code, /en/contact-us), with the keyword at the start of a word.
+// Every other sitemap page ranks under any link a visitor can see on the
+// entry page, and is scanned only when those run out.
+const SITEMAP_FILL = 5;
+function sitemapImportance(href: string): number {
+  let segments: string[];
+  try {
+    segments = new URL(href).pathname.split("/").filter(Boolean);
+  } catch {
+    return SITEMAP_FILL;
+  }
+  if (segments.length === 2 && /^[a-z]{2}(-[a-z]{2})?$/i.test(segments[0])) segments = segments.slice(1);
+  if (segments.length !== 1) return SITEMAP_FILL;
+  const words = segments[0]
+    .replace(/\.[a-z0-9]+$/i, "")
+    .toLowerCase()
+    .split(/[-_]+/);
+  if (words.length > 3) return SITEMAP_FILL;
+  const name = words.join(" ");
+  for (const [kind, score] of PAGE_KINDS) {
+    if (new RegExp(`\\b(?:${kind})`).test(name)) return score;
+  }
+  return SITEMAP_FILL;
+}
+
+// Higher is more worth auditing.
 function pageImportance(link: { href: string; text: string }): number {
   const haystack = `${link.href} ${link.text}`.toLowerCase();
-  if (/contact|enquir|inquir|support|help/.test(haystack)) return 100;
-  if (/book|reserv|appointment|register|sign[- ]?up|join/.test(haystack)) return 95;
-  if (/shop|product|store|pricing|price|plan|buy/.test(haystack)) return 90;
-  if (/about|team|who[- ]we[- ]are/.test(haystack)) return 80;
-  if (/service|what[- ]we[- ]do|solution/.test(haystack)) return 75;
-  if (/accessib|terms|privacy|legal/.test(haystack)) return 70;
-  if (/news|blog|article|event/.test(haystack)) return 40;
+  for (const [kind, score] of PAGE_KINDS) {
+    if (new RegExp(kind).test(haystack)) return score;
+  }
   // Deep paths tend to be individual articles — one is a useful sample, but
   // they shouldn't crowd out the top-level pages.
   const depth = (link.href.match(/\//g) ?? []).length;

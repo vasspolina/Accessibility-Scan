@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { t } from "../lib/strings";
 
 /**
  * The progress bar and the notification, brought across from the kit.
@@ -62,30 +63,25 @@ export function ProgressBar({
 
 export type NotificationKind = "error" | "success" | "warning" | "info";
 
-const GLYPH: Record<NotificationKind, string> = {
-  error: "!",
-  success: "✓",
-  warning: "!",
-  info: "i",
-};
-
 export function Notification({
   kind = "info",
   title,
   subtitle,
+  className,
 }: {
   kind?: NotificationKind;
   title: ReactNode;
   subtitle?: ReactNode;
+  /** An extra class for a notice with its own look (the yellow note). */
+  className?: string;
 }) {
   return (
-    <div className={`a11y-note a11y-note-${kind}`} role={kind === "error" ? "alert" : "status"}>
-      {/* The glyph repeats the kind, which the colour also carries and the
-          title states. Hidden, so it is the sighted reader's second channel
-          rather than a third thing announced. */}
-      <span className="a11y-note-glyph" aria-hidden="true">
-        {GLYPH[kind] ?? GLYPH.info}
-      </span>
+    <div className={`a11y-note a11y-note-${kind}${className ? ` ${className}` : ""}`} role={kind === "error" ? "alert" : "status"}>
+      {/* No icon before the words (user's instruction, 25 Nov 2026, "delete
+          these icons", on the enamel pins that marked info, error and
+          success): the title says the kind. A warning keeps its small badge
+          with the word "Warning" (23 Nov 2026), which is read out. */}
+      {kind === "warning" && <span className="a11y-note-badge">{t("Warning")}</span>}
       <div className="a11y-note-body">
         <div className="a11y-note-title">{title}</div>
         {subtitle && <div className="a11y-note-sub">{subtitle}</div>}

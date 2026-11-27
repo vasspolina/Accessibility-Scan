@@ -141,13 +141,13 @@ ${t(
 )}
 
 *${t(
-  "Note: under Article 14 of the European Accessibility Act, to claim disproportionate burden takes more than a mention. You must carry out and document an assessment, keep it for five years, and inform the relevant market surveillance authority."
+  "Note: under Article 14 of the European Accessibility Act, claiming disproportionate burden takes more than a mention. You must carry out and document an assessment, keep it for five years, and inform the relevant market surveillance authority."
 )}*
 
 ### ${t("Content outside the scope of the legislation")}
 
 ${t(
-  "[List here anything on the site that the accessibility rules do not cover. Examples: third party content you neither fund nor control, archived material, or office file formats published before the relevant date. Where an accessible alternative exists, say so. Delete this section if it does not apply.]"
+  "[List here anything on the site that the accessibility rules do not cover. Examples: third-party content you neither fund nor control, archived material, or office file formats published before the relevant date. Where an accessible alternative exists, say so. Delete this section if it does not apply.]"
 )}`;
 
   // "Method used to prepare the statement" is a required element of the model
@@ -157,7 +157,7 @@ ${t(
   const checkedOn = tf("This statement is based on an automated check carried out on {date}.", { date });
   const assessmentNote = conformance
     ? `${t(
-        "**Method used:** self assessment, carried out by the site owner with an automated accessibility checker. It was not a third party evaluation."
+        "**Method used:** self-assessment, carried out by the site owner with an automated accessibility checker. It was not a third-party evaluation."
       )}
 
 ${checkedOn} ${tf("The check covers the {total} Level A and AA success criteria in WCAG 2.1.", { total: conformance.total })}
@@ -279,6 +279,11 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
   const [organisation, setOrganisation] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [copied, setCopied] = useState(false);
+  /* The draft folds under a caret, shut at first (user's instruction, 24
+     Nov 2026, "make into carret and add copy button on top of it"): Copy
+     sits on the step's line above it, so the text can be taken without
+     opening it. */
+  const [draftOpen, setDraftOpen] = useState(false);
 
   const failing = report.conformance?.failed ?? 0;
   // Below roughly a fifth of criteria failing reads as "partially conformant";
@@ -341,7 +346,6 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
   return (
     <section className="a11y-section a11y-stmt" aria-labelledby="a11y-stmt-heading">
       <SectionHeader
-        eyebrow="European law"
         title="Your accessibility statement"
         id="a11y-stmt-heading"
         navLabel="Accessibility statement"
@@ -352,20 +356,15 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
         )}
       </p>
 
-      {/* Numbered steps, from the reference's licence builder. This section
-          has always been a two-step job — say who it is for, then take the
-          text — and it read as a form followed by an unrelated block of
-          prose. The numbers say there are two things to do and that you are
-          on the first, which is most of what that layout is for.
-
-          The numbers are decoration: each step already has a real heading
-          the marker sits beside, so a screen reader hears the heading and
-          not "one, two". */}
+      {/* One panel (user's instruction, 25 Nov 2026, "combine these two in
+          one design, no need to number it"): the two fields and the facts
+          they feed share the blue panel, the fields on top and the facts
+          under them, so what you type and where it lands read as one thing.
+          The step numbers went with it. No submit: the facts and the
+          statement below follow the fields as they are typed. */}
+      <div className="a11y-stmt-form">
       <div className="a11y-stmt-step">
-        <h3 className="a11y-stmt-step-head">
-          <span className="a11y-stmt-step-num" aria-hidden="true">{tf("Step {number}:", { number: 1 })}</span>
-          {t("Tell us who this is for")}
-        </h3>
+        <h3 className="a11y-stmt-step-head">{t("Tell us who this is for")}</h3>
       </div>
 
       <div className="a11y-stmt-fields">
@@ -391,24 +390,14 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
         </label>
       </div>
 
-      {/* The statement's declared facts as a spec sheet — the same shape the
-          reference uses for a typeface's own specification: a small label
-          over a large value, one card per fact, the first one filled.
-
-          A <dl>, not a table. These are name/value pairs and always were —
-          the table had a single column and a header reading "What this
-          statement says", which is a list wearing a table's clothes. A
-          definition list says the same thing to a screen reader in fewer
-          words, and it is what lets the facts sit side by side on a wide
+      {/* The statement's declared facts. A <dl>, not a table: these are
+          name/value pairs, and a definition list says so to a screen reader
+          in fewer words, and lets the facts sit side by side on a wide
           screen and stack on a narrow one without a scrollbar. */}
       <dl className="a11y-spec-grid" aria-label={t("What this statement declares")}>
         <SpecCard field={t("Prepared for")} value={organisation.trim() || t("[Your organisation]")} lead />
         <SpecCard field={t("Website")} value={report.url} />
-        <SpecCard
-          field={t("Checked against")}
-          value="EN 301 549 · WCAG 2.1 AA"
-          gloss={t("The EU's technical standard for digital accessibility")}
-        />
+        <SpecCard field={t("Checked against")} value="EN 301 549 — WCAG 2.1 AA" />
         <SpecCard
           field={t("Position")}
           value={position === "partially" ? t("Partially conformant") : t("Non-conformant")}
@@ -424,28 +413,31 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
         />
       </dl>
 
+      {/* One caret (user's instruction, 25 Nov 2026, "combine in one
+          carret"): the step's own line opens the draft, the triangle before
+          its number. Copy stays at the line's far end (24 Nov 2026, "the
+          button can be at same row on far right"), so the draft can be
+          taken shut. The second line, "The statement", that used to open
+          it is gone. */}
       <div className="a11y-stmt-step">
         <h3 className="a11y-stmt-step-head">
-          <span className="a11y-stmt-step-num" aria-hidden="true">{tf("Step {number}:", { number: 2 })}</span>
-          {t("Take the statement")}
+          <button
+            type="button"
+            className="a11y-stmt-toggle"
+            aria-expanded={draftOpen}
+            aria-controls="a11y-stmt-draft"
+            onClick={() => setDraftOpen((v) => !v)}
+          >
+            <span className="a11y-stmt-toggle-words">{t("Take the statement")}</span>
+          </button>
         </h3>
+        <button type="button" className="a11y-sr-play a11y-stmt-copy" onClick={copy}>
+          {copied ? t("Copied") : t("Copy")}
+        </button>
       </div>
 
-      {/* The draft, its label and its Copy on one card, the way the design
-          draws it. Copy used to sit in a row above the text with no visible
-          tie to it; on the bar it is unmistakably the control for the block
-          it sits on. */}
-      <div className="a11y-stmt-card">
-        <h4 className="a11y-stmt-card-title">{t("The statement")}</h4>
-        <div className="a11y-stmt-code">
-          <div className="a11y-stmt-code-bar">
-            <span className="a11y-stmt-code-label" aria-hidden="true">
-              {t("Generated statement")}
-            </span>
-            <button type="button" className="a11y-sr-play" onClick={copy}>
-              {copied ? t("Copied") : t("Copy")}
-            </button>
-          </div>
+      <div className="a11y-stmt-card" data-open={draftOpen || undefined}>
+        <div className="a11y-stmt-code" id="a11y-stmt-draft" hidden={!draftOpen}>
           {/* Focusable on purpose. The block scrolls (overflow: auto), and a
               scrollable box that can't be focused is unreachable by keyboard —
               you can see there's more text and have no way to get to it. Giving
@@ -473,10 +465,14 @@ export function AccessibilityStatement({ report }: { report: AccessibilityReport
         {/* No "Says partially conformant, based on N failed criteria" line:
             the Position and Problems disclosed cards above say both. */}
       </div>
+      {/* Take the statement and its draft close the blue panel, under the
+          facts they are built from (user's instruction, 25 Nov 2026, "put
+          this in this one"). */}
+      </div>
 
       <p className="a11y-conf-caveat">
         <strong>{t("Read it before you publish.")}</strong>{" "}
-        {t("Make sure it matches the testing you have actually done. A starting point, not legal advice.")}
+        {t("Not legal advice.")}
       </p>
     </section>
   );

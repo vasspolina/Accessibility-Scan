@@ -1,7 +1,10 @@
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { createLinePlayer, type LinePlayer, type PlayerState, type SpeechEngine } from "../lib/linePlayer";
 import { t, tf } from "../lib/strings";
 import { StatusChip } from "./SectionHeader";
+import { useReportView } from "./ReportViewContext";
 import type { ScreenReaderScript } from "../api/scanClient";
+import { Icon } from "./Icon";
 
 // Lets an owner hear their own page the way a screen-reader user does. Reading
 // a list of violations is abstract; hearing "button, unlabelled" where your
@@ -16,19 +19,50 @@ function speechSupported(): boolean {
   return typeof window !== "undefined" && "speechSynthesis" in window;
 }
 
+// Speech through the browser's engine, one utterance per line. A little
+// quicker than default: real screen-reader users run far faster than this,
+// but much beyond 1.2 stops being intelligible to someone hearing it for
+// the first time.
+const browserEngine: SpeechEngine<SpeechSynthesisUtterance> = {
+  make: (text) => {
+    const u = new SpeechSynthesisUtterance(text);
+    u.rate = 1.15;
+    return u;
+  },
+  speak: (u) => window.speechSynthesis.speak(u),
+  cancel: () => window.speechSynthesis.cancel(),
+};
+
+// Keys that type: the transcript's arrow keys leave them alone.
+function isTypingTarget(el: EventTarget | null): boolean {
+  if (!(el instanceof HTMLElement)) return false;
+  if (el.isContentEditable) return true;
+  if (el instanceof HTMLTextAreaElement || el instanceof HTMLSelectElement) return true;
+  return el instanceof HTMLInputElement && !["checkbox", "radio", "button", "submit"].includes(el.type);
+}
+
 export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) {
-  const [playing, setPlaying] = useState(false);
-  const [current, setCurrent] = useState<number | null>(null);
+  const [player, setPlayer] = useState<PlayerState>({ status: "idle", line: null });
+  const playing = player.status === "playing";
+  const active = player.status !== "idle";
+  const current = player.line;
   const [expanded, setExpanded] = useState(false);
   // Whether the accordion is open. Closed by default: this is the longest
   // section in the report and the one you consult rather than read.
   const [open, setOpen] = useState(false);
+  // In the conversation the panel is open and the heading is a plain
+  // heading: a block there is the whole answer to "show me", so a toggle to
+  // press before the transcript shows would only ask again.
+  const { inChat } = useReportView();
+  const panelOpen = inChat || open;
   const [onlyIssues, setOnlyIssues] = useState(false);
   const panelId = useId();
-  // Guards against an utterance that finished because we cancelled it
-  // advancing playback. Cancel() fires onend just like a natural finish.
-  const stoppedRef = useRef(false);
   const supported = useMemo(speechSupported, []);
+  const sectionRef = useRef<HTMLElement>(null);
+  const playRef = useRef<HTMLButtonElement>(null);
+  // Whether keyboard focus was last on Previous, Next or Stop, which leave
+  // the screen when reading ends. Focus then goes to Play, not the page top.
+  const transportFocusRef = useRef(false);
   // Where "Skip the transcript" sends focus. The show-all/show-fewer
   // toggle just past the table, rather than every per-line play button in
   // between, which on a normal page numbers over a hundred.
@@ -37,49 +71,68 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
   const lines = script.lines;
   const issueCount = useMemo(() => lines.filter((l) => l.issue).length, [lines]);
 
-  // Always stop speaking when the component goes away or the report changes —
-  // audio outliving the thing that started it is jarring and inescapable.
-  const stop = useCallback(() => {
-    stoppedRef.current = true;
-    if (speechSupported()) window.speechSynthesis.cancel();
-    setPlaying(false);
-    setCurrent(null);
+  // The player lives as long as the component. Its lines follow the script;
+  // a new script stops the old one mid-sentence rather than reading on.
+  const texts = useMemo(() => lines.map((l) => l.text), [lines]);
+  const playerRef = useRef<LinePlayer | null>(null);
+  if (supported && !playerRef.current) {
+    playerRef.current = createLinePlayer(browserEngine, texts, setPlayer);
+  }
+  useEffect(() => {
+    playerRef.current?.setLines(texts);
+  }, [texts]);
+
+  // Always stop speaking when the component goes away — audio outliving the
+  // thing that started it is jarring and inescapable.
+  useEffect(() => () => playerRef.current?.stop(), []);
+
+  const speakFrom = useCallback((startIndex: number) => {
+    playerRef.current?.play(startIndex);
   }, []);
 
-  useEffect(() => stop, [stop]);
+  // Escape stops reading from anywhere on the page, the way a real screen
+  // reader is silenced with one key, and only while there is something to
+  // stop. A control that already used the key (a menu closing) keeps it.
+  useEffect(() => {
+    if (!active) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape" || e.defaultPrevented) return;
+      e.preventDefault();
+      playerRef.current?.stop();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [active]);
 
-  const speakFrom = useCallback(
-    (startIndex: number) => {
-      if (!supported) return;
-      window.speechSynthesis.cancel();
-      stoppedRef.current = false;
-      setPlaying(true);
+  // When reading ends, by itself or by Stop, the transport buttons leave.
+  // If focus was on one of them it would drop to the page; it goes to Play.
+  const wasActive = useRef(false);
+  useLayoutEffect(() => {
+    if (wasActive.current && !active && transportFocusRef.current) {
+      transportFocusRef.current = false;
+      const root = sectionRef.current?.getRootNode() as Document | ShadowRoot | undefined;
+      const focused = root?.activeElement;
+      if (!focused || !sectionRef.current?.contains(focused)) {
+        playRef.current?.focus({ preventScroll: true });
+      }
+    }
+    wasActive.current = active;
+  }, [active]);
 
-      const speakAt = (i: number) => {
-        if (stoppedRef.current || i >= lines.length) {
-          setPlaying(false);
-          setCurrent(null);
-          return;
-        }
-        setCurrent(i);
-        const utterance = new SpeechSynthesisUtterance(lines[i].text);
-        // A little quicker than default: real screen-reader users run far
-        // faster than this, but much beyond 1.2 stops being intelligible to
-        // someone hearing it for the first time.
-        utterance.rate = 1.15;
-        utterance.onend = () => {
-          if (!stoppedRef.current) speakAt(i + 1);
-        };
-        utterance.onerror = () => {
-          setPlaying(false);
-          setCurrent(null);
-        };
-        window.speechSynthesis.speak(utterance);
-      };
-      speakAt(startIndex);
-    },
-    [lines, supported]
-  );
+  // Inside the preview, while reading or paused, the left and right arrows
+  // go back and on one line. Not character keys (WCAG 2.1.4), and only with
+  // focus in the preview, so they never take the arrows from the page.
+  const onSectionKeyDown = (e: React.KeyboardEvent) => {
+    if (!active || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    if (isTypingTarget(e.target)) return;
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      playerRef.current?.previous();
+    } else if (e.key === "ArrowRight") {
+      e.preventDefault();
+      playerRef.current?.next();
+    }
+  };
 
   if (lines.length === 0) return null;
 
@@ -90,145 +143,32 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
   const filtered = onlyIssues ? entries.filter((e) => e.line.issue) : entries;
   const visible = expanded ? filtered : filtered.slice(0, 12);
 
-  return (
-    <section className="a11y-section a11y-sr" aria-labelledby="a11y-sr-heading">
-      {/* Carbon accordion. This section is the longest thing in the report by
-          a wide margin — 120 rows on a normal page — and it is supplementary:
-          you open it to hear a problem, not to read it end to end. Collapsed
-          by default it costs one row instead of a screenful.
-
-          The heading holds the button rather than sitting inside it, so the
-          heading stays a heading in the accessibility tree and screen-reader
-          users can still jump between sections by heading. */}
-      {/* Play sits beside the accordion toggle rather than inside it. Nesting a
-          button in a button is invalid HTML and assistive tech handles it
-          unpredictably, so the two are siblings in one row and the rule that
-          closes the header belongs to the row. */}
-      {/* The accordion row and the lead are the section head, wrapped so the
-          two-column grid treats them as one item. Grid rows are shared between
-          columns, so loose head siblings get pushed below a tall content item
-          — 2,200px, in the section where that was measured. */}
-      <div className="a11y-section-head">
-      <div className="a11y-accordion-row">
-        <h2 className="a11y-section-title a11y-accordion-title" id="a11y-sr-heading" data-nav-label={t("Screen reader preview")}>
-          <button
-            type="button"
-            className="a11y-accordion-head"
-            aria-expanded={open}
-            aria-controls={panelId}
-            onClick={() => setOpen((v) => !v)}
-          >
-            <span>
-              {t("Screen reader preview")}{" "}
-              <span className="a11y-section-count">
-                {lines.length === 1
-                  ? t("(1 announcement)")
-                  : tf("({count} announcements)", { count: lines.length })}
-              </span>
-            </span>
-            {/* The count of problems stays visible while collapsed. A closed
-                section with nothing to show for it gives no reason to open it. */}
-            {issueCount > 0 && (
-              <StatusChip>
-                {issueCount === 1
-                  ? t("1 says nothing useful")
-                  : tf("{count} say nothing useful", { count: issueCount })}
-              </StatusChip>
-            )}
-            <svg className="a11y-accordion-chevron" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-              <path d="M8 11L3 6l.7-.7L8 9.6l4.3-4.3L13 6z" fill="currentColor" />
-            </svg>
-          </button>
-        </h2>
-        {supported && (
-          <button
-            type="button"
-            className="a11y-sr-play"
-            onClick={() => {
-              if (playing) {
-                stop();
-                return;
-              }
-              // Opening on play is the point of having the button out here:
-              // you press it from a closed section and the transcript is there
-              // to follow, with the current line highlighted as it reads.
-              setOpen(true);
-              speakFrom(current ?? 0);
-            }}
-          >
-            {playing ? (
-              <>
-                <span aria-hidden="true">■</span> {t("Stop")}
-              </>
-            ) : (
-              <>
-                <span aria-hidden="true">▶</span> {t("Play the page aloud")}
-              </>
-            )}
-          </button>
-        )}
-      </div>
-
-      {/* Stays visible when collapsed, and that is not a detail. With it hidden
-          inside the panel this section shrank to a bare title, while every
-          other section on the page shows a title and a line saying what it is
-          — so it stopped reading as a section at all and became a stray
-          heading between two tall ones. Easy to scroll straight past, which is
-          exactly what happened. */}
-      <p className="a11y-section-desc">
-        {t(
-          "How your page sounds to someone who can't see it, in the order they hear it."
-        )}
-      </p>
-      </div>
-
-      {/* Hidden rather than unrendered: the accordion button's aria-controls
-          points here, and it must never point at an element that does not
-          exist. */}
-      <div id={panelId} hidden={!open}>
-      <div className="a11y-sr-controls">
-        {/* Play itself now lives in the header row above, so it is reachable
-            without opening the section. What stays here is what only makes
-            sense alongside the transcript.
-
-            The status span stays mounted while empty — a live region that
-            appears already carrying text announces unreliably. */}
-        {supported ? (
-          /* Not a live region: the utterance itself is the audio feedback,
-             and announcing every line here would talk over it. The row
-             highlight below (current === i) carries the same progress for
-             sighted users. */
-          <span className="a11y-sr-status">
-            {playing ? tf("On line {line} of {total}", { line: (current ?? 0) + 1, total: lines.length }) : ""}
-          </span>
-        ) : (
-          <p className="a11y-sr-status">
-            {t("Your browser can't play audio for this, so the transcript below is read only.")}
-          </p>
-        )}
-        {/* Filtering beats paging here. Carbon would page a 120-row data
-            table, but this is a reading order, and page 4 of 10 of a
-            narrative is meaningless. What a reader actually wants is the 16
-            lines that go wrong, which is the same "show only what's failing"
-            control the conformance list already uses. */}
-        {issueCount > 0 && (
-          <label className="a11y-ai-toggle">
-            <input
-              type="checkbox"
-              checked={onlyIssues}
-              onChange={(e) => setOnlyIssues(e.target.checked)}
-            />
-            {issueCount === 1
-              ? t("Only the one that says nothing useful")
-              : tf("Only the {count} that say nothing useful", { count: issueCount })}
-          </label>
-        )}
-      </div>
-
+  // The filter and the skip link stand in Play's row (user's reference,
+  // 25 Nov 2026, "design these like these, all in one row": a black pill
+  // beside grey ones). While it reads they drop to a row of their own under
+  // the bar, so only the transport sticks: on a 375px phone the whole bar
+  // stuck was 300px, more than a third of the screen.
+  const showTools = panelOpen && (issueCount > 0 || filtered.length > 12);
+  const tools = (
+    <>
+      {issueCount > 0 && (
+        <label className="a11y-ai-toggle a11y-sr-filter">
+          <input
+            type="checkbox"
+            checked={onlyIssues}
+            onChange={(e) => setOnlyIssues(e.target.checked)}
+          />
+          {/* The checkbox is clipped, not removed: it stays the control and
+              its name is the label. The mark shows its state on the pill. */}
+          {onlyIssues && <Icon name="checkmark" />}
+          {issueCount === 1
+            ? t("Only the one that says nothing useful")
+            : tf("Only the {count} that say nothing useful", { count: issueCount })}
+        </label>
+      )}
       {/* A row-by-row transcript is exactly the kind of block WCAG 2.4.1
-          exists for: on a normal page it's over a hundred consecutive tab
-          stops, one per play button, with nothing letting a keyboard user
-          get past it in fewer presses than that. */}
+          exists for: on a normal page it is over a hundred consecutive tab
+          stops, one per play button. */}
       {filtered.length > 12 && (
         <button
           type="button"
@@ -238,6 +178,204 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           {t("Skip the transcript")}
         </button>
       )}
+    </>
+  );
+
+  return (
+    <section
+      ref={sectionRef}
+      className="a11y-section a11y-sr"
+      aria-labelledby="a11y-sr-heading"
+      onKeyDown={onSectionKeyDown}
+    >
+      {/* An accordion. This section is the longest thing in the report by
+          a wide margin — 120 rows on a normal page — and it is supplementary:
+          you open it to hear a problem, not to read it end to end. Collapsed
+          by default it costs one row instead of a screenful.
+
+          The heading holds the button rather than sitting inside it, so the
+          heading stays a heading in the accessibility tree and screen-reader
+          users can still jump between sections by heading. */}
+      {/* The accordion row and the lead are the section head, wrapped so the
+          two-column grid treats them as one item. Grid rows are shared between
+          columns, so loose head siblings get pushed below a tall content item
+          — 2,200px, in the section where that was measured. */}
+      <div className="a11y-section-head">
+      <div className="a11y-accordion-row">
+        {inChat ? (
+          <h2 className="a11y-section-title" id="a11y-sr-heading">
+            {/* No "(120 announcements)" after it (user's instruction, 25 Nov
+                2026, "delete (120 announcements)"). */}
+            {t("Screen reader simulation")}
+          </h2>
+        ) : (
+        <h2 className="a11y-section-title a11y-accordion-title" id="a11y-sr-heading" data-nav-label={t("Screen reader simulation")}>
+          <button
+            type="button"
+            className="a11y-accordion-head"
+            aria-expanded={open}
+            aria-controls={panelId}
+            onClick={() => setOpen((v) => !v)}
+          >
+            <span>
+              {t("Screen reader simulation")}
+              {/* The total rides in the badge when there are problems ("3 of
+                  16 say nothing useful", user's choice, 24 Nov 2026), so the
+                  head says the count once; with none it stays beside the
+                  title. */}
+              {issueCount === 0 && (
+                <>
+                  {" "}
+                  <span className="a11y-section-count">
+                    {lines.length === 1
+                      ? t("(1 announcement)")
+                      : tf("({count} announcements)", { count: lines.length })}
+                  </span>
+                </>
+              )}
+            </span>
+            {/* The count of problems stays visible while collapsed. A closed
+                section with nothing to show for it gives no reason to open it. */}
+            {issueCount > 0 && (
+              <StatusChip>
+                {issueCount === 1
+                  ? tf("1 of {total} says nothing useful", { total: lines.length })
+                  : tf("{count} of {total} say nothing useful", { count: issueCount, total: lines.length })}
+              </StatusChip>
+            )}
+            <Icon name="chevron--down" className="a11y-accordion-chevron" />
+          </button>
+        </h2>
+        )}
+      </div>
+
+      </div>
+
+      {/* The controls are one card that stays on screen when the section is
+          closed, so Play is reachable without opening it (it used to sit
+          beside the accordion toggle and wrapped into the heading's focus
+          ring on a narrow column). Play comes first and is the solid pill;
+          the filter and the skip link only make sense beside the transcript,
+          so they appear with it. */}
+      {/* While it reads, the bar holds the whole transport and sticks to
+          the top of the scroll, so Stop is in reach however far down the
+          transcript the highlighted line has gone (user's report,
+          24 Nov 2026: "there is no way to stop screen reader from reading
+          page"). The first button is one element throughout, Play, Pause,
+          Resume, so the focus that pressed it stays on it. */}
+      <div className="a11y-sr-bar" data-active={active ? "true" : undefined}>
+        {supported && (
+        <button
+          ref={playRef}
+          type="button"
+          className="a11y-btn a11y-btn-primary a11y-sr-play"
+          onClick={() => {
+            const p = playerRef.current;
+            if (!p) return;
+            if (player.status === "playing") {
+              p.pause();
+              return;
+            }
+            if (player.status === "paused") {
+              p.resume();
+              return;
+            }
+            // Opening on play is the point of having the button out here:
+            // you press it from a closed section and the transcript is there
+            // to follow, with the current line highlighted as it reads.
+            setOpen(true);
+            p.play(0);
+          }}
+        >
+          {player.status === "playing" ? (
+            <>
+              <Icon name="pause--filled" /> {t("Pause")}
+            </>
+          ) : player.status === "paused" ? (
+            <>
+              <Icon name="play--filled--alt" /> {t("Resume")}
+            </>
+          ) : (
+            <>
+              <Icon name="play--filled--alt" /> {t("Play the page aloud")}
+            </>
+          )}
+        </button>
+        )}
+        {showTools && !active && tools}
+        {supported && active && (
+          <span
+            className="a11y-sr-transport"
+            onFocus={() => {
+              transportFocusRef.current = true;
+            }}
+            onBlur={(e) => {
+              if (e.relatedTarget && e.relatedTarget !== playRef.current) transportFocusRef.current = false;
+            }}
+          >
+            <button
+              type="button"
+              className="a11y-btn a11y-sr-ctl"
+              aria-keyshortcuts="ArrowLeft"
+              onClick={() => playerRef.current?.previous()}
+            >
+              <Icon name="skip--back--filled" /> <span className="a11y-sr-ctl-word">{t("Previous line")}</span>
+            </button>
+            <button
+              type="button"
+              className="a11y-btn a11y-sr-ctl"
+              aria-keyshortcuts="ArrowRight"
+              onClick={() => playerRef.current?.next()}
+            >
+              <Icon name="skip--forward--filled" /> <span className="a11y-sr-ctl-word">{t("Next line")}</span>
+            </button>
+            <button
+              type="button"
+              className="a11y-btn a11y-sr-ctl"
+              aria-keyshortcuts="Escape"
+              onClick={() => {
+                playerRef.current?.stop();
+                playRef.current?.focus({ preventScroll: true });
+              }}
+            >
+              <Icon name="stop--filled--alt" /> <span className="a11y-sr-ctl-word">{t("Stop")}</span>
+            </button>
+          </span>
+        )}
+        {/* The status span stays mounted while empty: a live region that
+            appears already carrying text announces unreliably. Not a live
+            region: the utterance is the audio feedback, and announcing each
+            line would talk over it. The highlighted row carries the same
+            progress for sighted users. */}
+        {supported ? (
+          <span className="a11y-sr-status">
+            {player.status === "playing"
+              ? tf("On line {line} of {total}", { line: (current ?? 0) + 1, total: lines.length })
+              : player.status === "paused"
+                ? tf("Paused on line {line} of {total}", { line: (current ?? 0) + 1, total: lines.length })
+                : ""}
+          </span>
+        ) : null}
+        {/* The keys, said once in words while they work. The buttons carry
+            them as aria-keyshortcuts too. */}
+        {supported && active && (
+          <p className="a11y-sr-keys">
+            {t("Esc stops reading. The left and right arrow keys go back or on one line.")}
+          </p>
+        )}
+        {!supported && (
+          <p className="a11y-sr-status">
+            {t("Your browser can't play audio for this, so read the transcript below instead.")}
+          </p>
+        )}
+      </div>
+
+      {showTools && active && <div className="a11y-sr-bar a11y-sr-tools">{tools}</div>}
+
+      {/* Hidden rather than unrendered: the accordion button's aria-controls
+          points here, and it must never point at an element that does not
+          exist. */}
+      <div id={panelId} hidden={!panelOpen}>
 
       {/* The design's announcement log: a light card on the report's own
           ground, white pill rows, the silent lines tinted purple with
@@ -269,12 +407,14 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
                   <span className="a11y-sr-line-text">{line.text}</span>
                   <span className="a11y-sr-only">. {t("Play aloud from this line")}</span>
                   {line.issue && <span className="a11y-sr-issue">{line.issue}</span>}
+                  {line.issue && <Icon name="warning--alt" className="a11y-sr-flag" />}
                 </button>
               ) : (
                 <p className="a11y-sr-row" data-issue={line.issue ? "true" : undefined}>
                   <span className="a11y-sr-num" aria-hidden="true">{i + 1}</span>
                   <span className="a11y-sr-line-text">{line.text}</span>
                   {line.issue && <span className="a11y-sr-issue">{line.issue}</span>}
+                  {line.issue && <Icon name="warning--alt" className="a11y-sr-flag" />}
                 </p>
               )}
             </li>

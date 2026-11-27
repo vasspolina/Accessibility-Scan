@@ -36,7 +36,7 @@ export function AccountKey({
   async function keep() {
     setError(null);
     if (!looksLikeKey(draft)) {
-      setError(t("That is not an account key. One starts with ascan_ and is 70 characters long."));
+      setError(t("That is not an account key. An account key starts with ascan_ and is 70 characters long."));
       return;
     }
     setBusy(true);
@@ -71,7 +71,7 @@ export function AccountKey({
         <>
           <span className="a11y-settings-state">
             {who ? `${t("Signed in as")} ${who}. ` : `${t("Key kept.")} `}
-            {t("Scans from now on are saved, and the open questions can be answered.")}
+            {t("From now on your scans are saved, and you can answer the open questions.")}
           </span>
           <Button variant="ghost" size="sm" onClick={forget}>
             {t("Forget this key")}

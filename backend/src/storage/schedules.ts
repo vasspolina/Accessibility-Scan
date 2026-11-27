@@ -1,4 +1,5 @@
-import { randomUUID } from "node:crypto";
+import { randomBytes, randomUUID } from "node:crypto";
+import { maskWebhook } from "../services/notify/webhook.js";
 import { getDb } from "./db.js";
 
 /**
@@ -13,6 +14,10 @@ export interface Schedule {
   url: string;
   everyHours: number;
   notifyEmail: string | null;
+  // The webhook, masked to its host and last four characters: the full
+  // address is a secret (anyone holding a Slack hook can post to the
+  // channel), so it is never sent back once stored.
+  notifyWebhook: string | null;
   enabled: boolean;
   nextRunAt: string;
   lastRunAt: string | null;
@@ -28,6 +33,7 @@ export const MAX_EVERY_HOURS = 24 * 90;
 type Row = {
   id: string; account_id?: string; url: string; every_hours: number; notify_email: string | null; enabled: number;
   next_run_at: string; last_run_at: string | null; last_score: number | null; last_scan_id: string | null; last_error: string | null; created_at: string;
+  notify_webhook: string | null; webhook_secret?: string | null;
 };
 
 const toSchedule = (r: Row): Schedule => ({
@@ -35,6 +41,7 @@ const toSchedule = (r: Row): Schedule => ({
   url: r.url,
   everyHours: r.every_hours,
   notifyEmail: r.notify_email,
+  notifyWebhook: maskWebhook(r.notify_webhook),
   enabled: r.enabled === 1,
   nextRunAt: r.next_run_at,
   lastRunAt: r.last_run_at,
@@ -44,12 +51,12 @@ const toSchedule = (r: Row): Schedule => ({
   createdAt: r.created_at,
 });
 
-const COLS = "id, account_id, url, every_hours, notify_email, enabled, next_run_at, last_run_at, last_score, last_scan_id, last_error, created_at";
+const COLS = "id, account_id, url, every_hours, notify_email, enabled, next_run_at, last_run_at, last_score, last_scan_id, last_error, created_at, notify_webhook";
 
 export function createSchedule(
   accountId: string,
-  input: { url: string; everyHours: number; notifyEmail?: string }
-): { schedule?: Schedule; error?: string } {
+  input: { url: string; everyHours: number; notifyEmail?: string; notifyWebhook?: string }
+): { schedule?: Schedule; webhookSecret?: string; error?: string } {
   const db = getDb();
   if (!db) return { error: "storage not configured" };
   const hours = Math.round(input.everyHours);
@@ -62,6 +69,7 @@ export function createSchedule(
     url: input.url,
     everyHours: hours,
     notifyEmail: input.notifyEmail?.trim() || null,
+    notifyWebhook: maskWebhook(input.notifyWebhook?.trim() || null),
     enabled: true,
     // First run is due now: a person who sets up a schedule wants to see
     // it work, not wait a day to find out the URL was wrong.
@@ -72,10 +80,17 @@ export function createSchedule(
     lastError: null,
     createdAt: now.toISOString(),
   };
+  const webhook = input.notifyWebhook?.trim() || null;
+  // Made here and shown once, in the answer to this request: the receiver
+  // keeps it to check each alert's x-a11y-signature.
+  const webhookSecret = webhook ? randomBytes(24).toString("hex") : undefined;
   db.prepare(
-    `INSERT INTO schedules (${COLS}) VALUES (?, ?, ?, ?, ?, 1, ?, NULL, NULL, NULL, NULL, ?)`
-  ).run(schedule.id, accountId, schedule.url, schedule.everyHours, schedule.notifyEmail, schedule.nextRunAt, schedule.createdAt);
-  return { schedule };
+    `INSERT INTO schedules (${COLS}, webhook_secret) VALUES (?, ?, ?, ?, ?, 1, ?, NULL, NULL, NULL, NULL, ?, ?, ?)`
+  ).run(
+    schedule.id, accountId, schedule.url, schedule.everyHours, schedule.notifyEmail, schedule.nextRunAt, schedule.createdAt,
+    webhook, webhookSecret ?? null
+  );
+  return { schedule, ...(webhookSecret ? { webhookSecret } : {}) };
 }
 
 export function listSchedules(accountId: string): Schedule[] {
@@ -112,13 +127,28 @@ export function deleteSchedule(accountId: string, id: string): boolean {
 
 /** What the scheduler should run now. Account id travels with each row
  *  because the run saves under it. */
-export function dueSchedules(limit: number, now = new Date()): Array<Schedule & { accountId: string }> {
+export function dueSchedules(limit: number, now = new Date()): Array<Schedule & ScheduleSecrets & { accountId: string }> {
   const db = getDb();
   if (!db) return [];
   const rows = db
-    .prepare(`SELECT ${COLS} FROM schedules WHERE enabled = 1 AND next_run_at <= ? ORDER BY next_run_at ASC LIMIT ?`)
+    .prepare(`SELECT ${COLS}, webhook_secret FROM schedules WHERE enabled = 1 AND next_run_at <= ? ORDER BY next_run_at ASC LIMIT ?`)
     .all(now.toISOString(), limit) as Row[];
-  return rows.map((r) => ({ ...toSchedule(r), accountId: r.account_id! }));
+  return rows.map((r) => ({ ...toSchedule(r), ...secretsOf(r), accountId: r.account_id! }));
+}
+
+/** The unmasked webhook and its signing secret: for the scheduler only, never for a response. */
+export interface ScheduleSecrets {
+  webhookUrl: string | null;
+  webhookSecret: string | null;
+}
+const secretsOf = (r: Row): ScheduleSecrets => ({ webhookUrl: r.notify_webhook, webhookSecret: r.webhook_secret ?? null });
+
+/** One schedule's webhook and secret, for a test alert sent by its owner. */
+export function scheduleSecrets(accountId: string, id: string): ScheduleSecrets | null {
+  const db = getDb();
+  if (!db) return null;
+  const row = db.prepare(`SELECT ${COLS}, webhook_secret FROM schedules WHERE id = ? AND account_id = ?`).get(id, accountId) as Row | undefined;
+  return row ? secretsOf(row) : null;
 }
 
 /**

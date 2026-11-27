@@ -1,5 +1,6 @@
+import type { ReactNode } from "react";
 import type { ProView } from "./ProSummary";
-import { t } from "../lib/strings";
+import { t, tf } from "../lib/strings";
 import { expandRowOnClick } from "../lib/rowExpand";
 import type { AccessibilityFinding, ConformanceSummary } from "../api/scanClient";
 import { plainForRule } from "../lib/wcagPlain";
@@ -34,9 +35,13 @@ export function ProfessionalTable({
   findings,
   conformance,
   view,
+  action,
 }: {
   findings: AccessibilityFinding[];
   conformance?: ConformanceSummary;
+  /* The one control that stands beside the heading: the findings as a CSV
+     (FindingsCsvButton). Passed in because it needs the whole report. */
+  action?: ReactNode;
   /* Which region shows — the tabs above (in ProSummary) drive it. */
   view: ProView;
 }) {
@@ -51,7 +56,7 @@ export function ProfessionalTable({
     const known = criterionNames[num];
     const name = known ? `${num} ${known.name} (${known.level})` : (rep.wcagCriterion ?? num);
     const en = enClauseFor(rep.wcagCriterion, rep.wcagLevel);
-    return en ? `${name} · ${en}` : name;
+    return en ? `${name} — ${en}` : name;
   };
 
   const rows = grouped.map((group) => {
@@ -66,7 +71,7 @@ export function ProfessionalTable({
         // badge, the rule-id chip, and the issue text together already
         // ran past a phone's width with Severity as a separate column,
         // forcing horizontal scroll before a reader reached the row.
-        <span key="title" className="a11y-pro-title-cell">
+        <span key="title" className="a11y-pro-title-cell" data-finding={rep.id}>
           <SeverityTag severity={rep.severity} label={severityWord[rep.severity]} />
           <span>
             {title}
@@ -84,6 +89,17 @@ export function ProfessionalTable({
                 </span>
               </>
             )}
+          </span>
+          {/* The criterion and the count under the title on a narrow table,
+              where their columns are hidden (user's instruction, 24 Nov
+              2026, "optimise properly for mobile": at 320px both columns
+              broke every word letter by letter). Hidden while the columns
+              show, so nothing is said twice. */}
+          <span className="a11y-pro-fold">
+            {criterionLine(rep) && <span className="a11y-pro-fold-line">{criterionLine(rep)}</span>}
+            <span className="a11y-pro-fold-line">
+              {group.length === 1 ? t("1 place") : tf("{count} places", { count: group.length })}
+            </span>
           </span>
         </span>,
         criterionLine(rep),
@@ -119,7 +135,7 @@ export function ProfessionalTable({
       <p className="a11y-empty">{t("Nothing found here.")}</p>
     ) : (
       <DataTable
-        /* Carbon's width rule: columns size to their content and only need
+        /* The width rule: columns size to their content and only need
            the 16px spacing between them. Instances shrinks to fit (1% +
            nowrap in the stylesheet), the issue statement takes the room
            that remains — it is the row's point, and now carries Severity
@@ -162,9 +178,12 @@ export function ProfessionalTable({
     >
       {/* Its own heading: without one, heading navigation skipped the
           table and the rail listed the section as nameless. */}
-      <h2 className="a11y-section-title" id="a11y-pro-findings-heading">
-        {t("Findings")} <span className="a11y-section-count">({grouped.length})</span>
-      </h2>
+      <div className="a11y-findings-head">
+        <h2 className="a11y-section-title" id="a11y-pro-findings-heading">
+          {t("Findings")} <span className="a11y-section-count a11y-count-dot">{grouped.length}</span>
+        </h2>
+        {action}
+      </div>
       {view === "issues" ? issuesTable : cleanList}
     </section>
   );

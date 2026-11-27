@@ -7,22 +7,28 @@ import { getDecidedBy, setDecidedBy } from "../lib/apiKey";
 import { Select } from "./Select2";
 import { Input } from "./Input";
 import { Button } from "./Button";
-import { levelFraming, plainForRule, plainFixForRule } from "../lib/wcagPlain";
+import { levelFraming, plainForRule } from "../lib/wcagPlain";
+import { findingFix, findingTitle, modelPlain } from "../lib/modelPlain";
 import { whatWeFound } from "../lib/findingText";
 import { pictureNoteText } from "../lib/failureText";
-import { useReportView } from "./ReportViewContext";
+import { toPoints } from "../lib/cardText";
+import { learnMoreClick, useReportView } from "./ReportViewContext";
 import { enClauseFor } from "../lib/audienceMode";
 import { DataTable } from "./DataTable";
 import { ElementShot } from "./ElementShot";
 import {
   fixKindForFinding,
+  fixHint,
   isKeyboardCheck,
   isAiFinding,
   aiHint,
   keyboardHint,
+  methodLine,
 } from "../lib/testMethod";
+import { Icon } from "./Icon";
+import { getLang } from "../lib/i18n";
 
-const severityLabel: Record<AccessibilityFinding["severity"], string> = {
+export const severityLabel: Record<AccessibilityFinding["severity"], string> = {
   critical: "Fix first",
   serious: "Fix soon",
   moderate: "Fix eventually",
@@ -315,6 +321,16 @@ function fieldLabel(purpose: string): string {
  * Reported on a card headed "Screen reader hears exhibition dates with no
  * artwork description", whose affected-element list read, in full: Heading.
  */
+
+/** How wide a card of the expanded finding runs on the mosaic (user's
+ *  reference, 18 Nov 2026: tiles of different widths on one grid). Measured on the words, so a one-line
+ *  answer is a narrow tile set large and a paragraph takes the width it
+ *  needs. s spans two of six columns, m three, l four. */
+export function tileSize(text: string | null | undefined): "s" | "m" | "l" {
+  const n = (text ?? "").length;
+  return n <= 90 ? "s" : n <= 200 ? "m" : "l";
+}
+
 export function labelNamesSomething(label: string): boolean {
   const generic = new Set([...Object.values(KIND_WORDS).map(kindLabel), t("Element")]);
   return !generic.has(label.trim());
@@ -505,6 +521,10 @@ function dedupeOccurrences(findings: AccessibilityFinding[]): OccurrenceEntry[] 
     const existing = byKey.get(key);
     if (existing) {
       existing.count += 1;
+      // The row shows its representative's AI fix; when the first of a run
+      // of identical elements had none and a later one does, the later one
+      // speaks for the row.
+      if (!existing.rep.suggestedCode && f.suggestedCode) existing.rep = f;
     } else {
       byKey.set(key, { rep: f, count: 1, label });
       order.push(key);
@@ -522,13 +542,48 @@ function devElementRefs(findings: AccessibilityFinding[]): string[] {
   const refs: string[] = [];
   for (const f of findings) {
     const snippet = f.elementSnippet?.replace(/\s+/g, " ").trim();
-    const ref = snippet ? `${f.selector}  ·  ${snippet}` : f.selector;
+    const ref = snippet ? `${f.selector} — ${snippet}` : f.selector;
     if (ref && !seen.has(ref)) {
       seen.add(ref);
       refs.push(ref);
     }
   }
   return refs;
+}
+
+/* A tile's words: one sentence as a line, a longer text as points
+   (toPoints decides). The list is a real ul, so a screen reader announces
+   how many points there are. */
+/** "No picture: the element is there…" → label "No picture", body "The
+ *  element is there…". Every picture note in every language leads with a
+ *  short phrase and a colon (French with a space before it); a note that
+ *  does not keeps its words whole and goes without a label. */
+export function splitPictureNote(text: string | undefined): { label: string; body: string } | null {
+  if (!text) return null;
+  const m = text.match(/^([^:.]{2,24}?)\s?:\s+([\s\S]+)$/);
+  if (!m) return { label: "", body: text };
+  const body = m[2];
+  return { label: m[1], body: body.charAt(0).toLocaleUpperCase() + body.slice(1) };
+}
+
+function TileBody({ text }: { text: string }) {
+  const points = toPoints(text);
+  if (!points) {
+    return (
+      <span className="a11y-fd-body">
+        <CodeText text={text} />
+      </span>
+    );
+  }
+  return (
+    <ul className="a11y-fd-body a11y-fd-points" role="list">
+      {points.map((p, i) => (
+        <li key={i}>
+          <CodeText text={p} />
+        </li>
+      ))}
+    </ul>
+  );
 }
 
 // One titled group = every occurrence of the same issue on the page. The
@@ -543,26 +598,41 @@ function devElementRefs(findings: AccessibilityFinding[]): string[] {
 export function FindingDetails({
   findings,
   asNotes = false,
+  meta = false,
+  badged = false,
 }: {
   findings: AccessibilityFinding[];
   asNotes?: boolean;
+  /** The row above already carries the method badge ("From the AI review.
+   *  Not confirmed."), so the opened finding does not say where it came
+   *  from a second time. */
+  badged?: boolean;
+  /** The schedule's opened row: WCAG, level, fix kind and count as one
+   *  "Key: value" line at the top, since the row no longer has columns
+   *  for them. The printed cards and the professional table carry them
+   *  in their own heads and leave this off. */
+  meta?: boolean;
 }) {
   const [showAll, setShowAll] = useState(false);
-  const { professional, criterionNames } = useReportView();
+  const { professional, criterionNames, ask } = useReportView();
 
   const rep = findings[0];
   const count = findings.length;
   const plain = plainForRule(rep.ruleId);
-  const title = plain?.plain ?? rep.title ?? rep.description;
+  const title = findingTitle(rep);
   const fix = fixKindForFinding(rep);
   const keyboardCheck = isKeyboardCheck(rep);
   const fromAi = isAiFinding(rep);
-  const whatToDo = plainFixForRule(rep.ruleId) ?? rep.suggestedFix;
+  const whatToDo = findingFix(rep);
+  const worded = modelPlain(rep);
   const entries = dedupeOccurrences(findings);
   const measured = whatWeFound(rep, plain, entries.length, title);
   const locatesSomething = entries.some(
-    (e) => labelNamesSomething(e.label) || e.rep.elementScreenshot
+    // An AI fix is shown in the element's row, so a row that carries one is
+    // kept even when its label and picture identify nothing on their own.
+    (e) => labelNamesSomething(e.label) || e.rep.elementScreenshot || e.rep.suggestedCode
   );
+  const pictureNote = splitPictureNote(pictureNoteText(rep));
   const cluster = dominantComponent(findings);
   const summarize = entries.length > SUMMARY_THRESHOLD;
   const visibleEntries = summarize && !showAll ? entries.slice(0, SUMMARY_THRESHOLD) : entries;
@@ -581,6 +651,23 @@ export function FindingDetails({
        applying, and the cell collapsed to 33px with both columns inside
        it. Measured, in all three engines. */
     <div className="a11y-fd">
+      {meta && (
+        <p className="a11y-fd-meta">
+          {[
+            !asNotes && criterion ? `${t("WCAG:")} ${criterion}` : "",
+            !asNotes && rep.wcagLevel ? levelFraming(rep.wcagLevel) : "",
+            // The fix kind alone ("Content fix"): a "Fix:" key before it said
+            // fix twice (user's instruction, 25 Nov 2026).
+            !asNotes ? fix.label : "",
+            // French sets a space before the colon, as its "WCAG :" key does.
+            count > 1 ? `${t("Instances")}${getLang() === "fr" ? " :" : ":"} ${count}` : "",
+          ]
+            .filter(Boolean)
+            .map((item) => (
+              <span key={item}>{item}</span>
+            ))}
+        </p>
+      )}
       {/* Two real column boxes, the kit's own composition. The children
           used to sit flat in the grid with grid-column rules assigning
           each to a side — which row-locked them: a grid row is as tall as
@@ -602,21 +689,36 @@ export function FindingDetails({
           of these answers something different — who does the work, whether
           you can check it without them, and where the finding came from — so
           each gets its own line and its own label. */}
-      <p className="a11y-method-hint">
-        <strong>{t("Who fixes this")}</strong> {fix.hint}
-      </p>
+      <div className="a11y-method-hint" data-size={tileSize(fixHint(rep))}>
+        <strong>{t("Who fixes this")}</strong> <TileBody text={fixHint(rep)} />
+      </div>
       {keyboardCheck && (
-        <p className="a11y-method-hint">
-          <strong>{t("Check it yourself")}</strong> {keyboardHint()}
-        </p>
+        <div className="a11y-method-hint" data-size={tileSize(keyboardHint())}>
+          <strong>{t("Check it yourself")}</strong> <TileBody text={keyboardHint()} />
+        </div>
       )}
-      {fromAi && (
-        <p className="a11y-method-hint">
-          <strong>{t("Where this came from")}</strong> {aiHint()}
-        </p>
+      {fromAi && !badged && (
+        <div className="a11y-method-hint" data-size={tileSize(aiHint())}>
+          <strong>{t("Where this came from")}</strong> <TileBody text={aiHint()} />
+        </div>
       )}
-      {!rep.elementScreenshot && pictureNoteText(rep) && (
-        <p className="a11y-picture-note">{pictureNoteText(rep)}</p>
+      {/* The model worded this card; the check, its severity and its
+          criterion are still the rule's. Said once, under the same label
+          the AI review's provenance uses. */}
+      {worded && (
+        <div className="a11y-method-hint" data-size="l">
+          <strong>{t("Where this came from")}</strong>{" "}
+          <TileBody text={tf("A rule check found this. {model}, our own language model, wrote the words. The check set the severity.", { model: worded.model })} />
+        </div>
+      )}
+      {/* A row like its siblings, its label the note's own lead ("No
+          picture", "Kein Bild", "Sin imagen", "Pas d'image"), so no new
+          string is needed. It sat bare on the bubble, its en dash hung past
+          the bubble's edge (user's screenshot, 25 Nov 2026, "fix"). */}
+      {!rep.elementScreenshot && pictureNote && (
+        <div className="a11y-method-hint a11y-picture-note" data-size={tileSize(pictureNote.body)}>
+          {pictureNote.label && <strong>{pictureNote.label}</strong>} <TileBody text={pictureNote.body} />
+        </div>
       )}
       {/* The rule's own account of what was found where it has one, and
           the finding's description otherwise. axe supplies a requirement
@@ -633,31 +735,43 @@ export function FindingDetails({
           shown anywhere at all. Measured across the European sweep: 32 of
           80 AI findings arrived as a headline and three badges. */}
       {measured && (
-        <p className="a11y-finding-measured">
-          <strong className="a11y-fd-title">{t("What we found")}</strong> <CodeText text={measured} />
-        </p>
+        <div className="a11y-finding-measured" data-size={tileSize(measured)}>
+          <strong className="a11y-fd-title">{t("What we found")}</strong> <TileBody text={measured} />
+        </div>
       )}
       {/* Its own line, not folded into the text above: rules with a
           plain-language account replace the description entirely, which
           made the first of these notes invisible on the very rule it
           attached to. */}
       {rep.ageNote && (
-        <p className="a11y-finding-measured">
-          <strong>{t("Past sixty")}</strong> <CodeText text={rep.ageNote} />
-        </p>
+        <div className="a11y-finding-measured" data-size={tileSize(rep.ageNote)}>
+          <strong>{t("Past sixty")}</strong> <TileBody text={rep.ageNote} />
+        </div>
+      )}
+      {/* The AI review's account of the same fault (aiSupport, folded in
+          on the server by foldAiIntoMeasured) is not shown: it retold What
+          we found and Why this matters in other words, three cards saying
+          one thing (user's instruction, 25 Nov 2026, "no repetition"). */}
+      {/* The model's account of what happens on this page, from the
+          elements it was shown. Beside the curated "why", not instead of
+          it: the curated line is reviewed, this one is not. */}
+      {worded && (
+        <div className="a11y-finding-measured" data-size={tileSize(worded.explanation)}>
+          <strong className="a11y-fd-title">{t("On this page")}</strong> <TileBody text={worded.explanation} />
+        </div>
       )}
       {/* Shared explanation — shown once for the whole group */}
       {plain && (
-        <p className="a11y-finding-impact">
-          <strong className="a11y-fd-title">{t("Why this matters")}</strong> <CodeText text={plain.impact} />
-        </p>
+        <div className="a11y-finding-impact" data-size={tileSize(plain.impact)}>
+          <strong className="a11y-fd-title">{t("Why this matters")}</strong> <TileBody text={plain.impact} />
+        </div>
       )}
       {/* Curated, hand-verified research context — never generated per
           scan, which is how invented statistics happen. */}
       {plain?.research && (
-        <p className="a11y-finding-research">
-          <strong>{t("What the research shows")}</strong> <CodeText text={plain.research} />
-        </p>
+        <div className="a11y-finding-research" data-size={tileSize(plain.research)}>
+          <strong>{t("What the research shows")}</strong> <TileBody text={plain.research} />
+        </div>
       )}
       </div>
 
@@ -670,7 +784,7 @@ export function FindingDetails({
           <p>
             <strong className="a11y-fd-title">{t("What to do")}</strong>
           </p>
-          <ul>
+          <ul role="list">
             {whatToDo.map((step) => (
               <li key={step}>
                 <CodeText text={step} />
@@ -679,8 +793,11 @@ export function FindingDetails({
           </ul>
         </div>
       ) : (
-        <p className="a11y-finding-todo">
-          <strong className="a11y-fd-title">{t("What to do")}</strong> <CodeText text={whatToDo} />
+        <p className="a11y-finding-todo" data-size={tileSize(whatToDo)}>
+          {/* One body span, so the row lays out as label and words, the
+              way every other part does (TileBody's span). */}
+          <strong className="a11y-fd-title">{t("What to do")}</strong>{" "}
+          <span className="a11y-fd-body"><CodeText text={whatToDo} /></span>
         </p>
       )}
       {/* The WCAG and Level columns fold in here at phone width, the same
@@ -689,27 +806,20 @@ export function FindingDetails({
           nothing here carried them, so a phone reader lost the criterion
           and, more to the point, the sentence saying the item is required
           by law. Hidden above that width, where both columns show. */}
-      {!asNotes && (criterion || rep.wcagLevel) && (
+      {!meta && !asNotes && (criterion || rep.wcagLevel) && (
         <p className="a11y-finding-level-fold">
           {criterion && (
             <>
               <strong>{t("WCAG:")}</strong> {criterion}
-              {rep.wcagLevel ? " · " : ""}
+              {rep.wcagLevel ? " — " : ""}
             </>
           )}
           {rep.wcagLevel && levelFraming(rep.wcagLevel)}
         </p>
       )}
-      {rep.helpUrl && (
-        <p className="a11y-fd-learn">
-          <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
-            {t("Learn more about this issue")} <span aria-hidden="true">↗</span>
-          </a>
-        </p>
-      )}
 
       {locatesSomething && (
-      <div className="a11y-affected">
+      <div className="a11y-affected" data-size={visibleEntries.length === 1 && !summarize ? tileSize(visibleEntries[0].label) : "l"}>
         <p className="a11y-affected-label">
           <strong>{count > 1 ? t("Affected elements") : t("Affected element")}</strong>
         </p>
@@ -772,7 +882,7 @@ export function FindingDetails({
                   <p className="a11y-pro-line">
                     <strong>{t("WCAG:")}</strong> {num}
                     {known ? ` ${known.name} (${known.level})` : rep.wcagLevel ? ` (${rep.wcagLevel})` : ""}
-                    {en ? <span className="a11y-pro-en"> · {en}</span> : null}
+                    {en ? <span className="a11y-pro-en"> — {en}</span> : null}
                   </p>
                 )}
                 <p className="a11y-pro-line">
@@ -795,8 +905,8 @@ export function FindingDetails({
                 )}
                 {rep.helpUrl && (
                   <p className="a11y-pro-line">
-                    <a className="a11y-learn-more" href={rep.helpUrl} target="_blank" rel="noopener noreferrer">
-                      {t("Fix technique")} <span aria-hidden="true">↗</span>
+                    <a className="a11y-learn-more" href={rep.helpUrl}>
+                      {t("Fix technique")} <Icon name="arrow--right" />
                     </a>
                   </p>
                 )}
@@ -813,14 +923,11 @@ export function FindingDetails({
           <summary>{t("The technical version")}</summary>
           {/* Only when it was not already shown in the open part of the
               card above. It nearly always is now. */}
-          {!measured && rep.description && (
+          {/* Not when it only repeats the row's title, and no WCAG line:
+              the criterion is in the row and in the line above. */}
+          {!measured && rep.description && rep.description.trim() !== title.trim() && (
             <p>
               <strong>{t("What we found:")}</strong> <CodeText text={rep.description} />
-            </p>
-          )}
-          {rep.wcagCriterion && rep.wcagCriterion !== "N/A" && (
-            <p>
-              <strong>{t("WCAG criterion:")}</strong> {rep.wcagCriterion}
             </p>
           )}
           {rep.ruleId && (
@@ -839,6 +946,23 @@ export function FindingDetails({
             ))}
           </ul>
         </details>
+      )}
+      {/* Learn more stands last, under the technical version (or the
+          professional block), as a prompt pill like the opening
+          questions' "Ask this" (user's word, 25 Nov 2026, "put links about
+          learn more under technical description also make it into prompt
+          button"). A press asks the chat about the issue with the help page
+          as its source; a modified click, or no chat, opens the page. */}
+      {rep.helpUrl && (
+        <p className="a11y-fd-learn">
+          <a
+            className="a11y-learn-more a11y-learn-prompt"
+            href={rep.helpUrl}
+            onClick={learnMoreClick(ask, tf("Tell me more about this: {issue}", { issue: title }), rep.helpUrl)}
+          >
+            {t("Learn more about this issue")} <Icon name="arrow--right" />
+          </a>
+        </p>
       )}
       {/* The owner's mark, on every path a group's details render —
           the card and the professional table's expand row alike. */}
@@ -864,48 +988,41 @@ export function CountPill({ count }: { count: number }) {
   return <span className="a11y-count-pill">{count}</span>;
 }
 
-// One DataTable row for a group: severity, title plus its WCAG/fix-kind
-// context, and the occurrence count. asNotes drops the severity cell — a
-// remark on the design isn't ranked the way a defect is, and wearing "Fix
-// first"/"Minor polish" made these read as scored findings however plainly
-// the section above already said otherwise.
+// One DataTable row for a group, set as a list of questions (user's
+// reference, 24 Nov 2026, a type foundry's FAQ: a solid triangle, the
+// question on one line, its category at the far end in its own colour, and
+// the answer opening under it in a round bubble). Two cells: the issue, and
+// the severity as a coloured word at the end of the row; the list is sorted
+// by severity, so the words run in groups like the reference's categories.
+// The WCAG criterion, level, fix kind and count that had columns of their
+// own are now the first line of the opened finding (FindingDetails' meta
+// strip), set "Key: value" in a mono face. asNotes keeps its count column
+// and has no severity: a remark on the design is not ranked like a defect.
 export function findingRow(
   findings: AccessibilityFinding[],
   {
     asNotes = false,
-    showLevel = true,
     showCount = true,
   }: { asNotes?: boolean; showLevel?: boolean; showCount?: boolean } = {}
 ): { id: string; cells: ReactNode[]; expand: ReactNode } {
   const rep = findings[0];
   const count = findings.length;
-  const plain = plainForRule(rep.ruleId);
-  const title = plain?.plain ?? rep.title ?? rep.description;
-  const fix = fixKindForFinding(rep);
+  const title = findingTitle(rep);
   const keyboardCheck = isKeyboardCheck(rep);
   const fromAi = isAiFinding(rep);
 
   const issueCell = (
-    <span className="a11y-finding-issue">
-      {/* Severity's own column (below) is hidden at phone width — its
-          badge plus the Issue text plus the arrow column already exceeded
-          the viewport there, forcing horizontal scroll before a reader
-          reached the row's actual content — and folds in here instead,
-          above the title. a11y-finding-sev-fold is itself hidden by
-          default and only shown at that same narrow width, so wide
-          screens see Severity in its column, not doubled up. */}
-      {!asNotes && (
-        <span className="a11y-finding-sev-fold">
-          <SeverityTag severity={rep.severity} label={t(severityLabel[rep.severity])} />
-        </span>
-      )}
+    // data-finding: the score summary's links find this row by it (lib/openFinding).
+    <span className="a11y-finding-issue" data-finding={rep.id}>
       <span className="a11y-finding-title">{title}</span>
       {(keyboardCheck || fromAi || (rep.triage && rep.triage.state !== "open")) && (
         <span className="a11y-finding-meta-line">
           {keyboardCheck && (
             <span className="a11y-method-badge a11y-method-keyboard">{t("Keyboard test")}</span>
           )}
-          {fromAi && <span className="a11y-method-badge a11y-method-ai">{t("AI review")}</span>}
+          {/* The method beside the claim (reviewer's note, 22 Nov 2026):
+              not only that the model wrote it, but that no one confirmed it. */}
+          {fromAi && <span className="a11y-method-badge a11y-method-ai">{methodLine(rep)}</span>}
           {rep.triage && rep.triage.state !== "open" && (
             <span className={`a11y-method-badge a11y-triage-badge a11y-triage-${rep.triage.state}`}>
               {t(TRIAGE_BADGE[rep.triage.state])}
@@ -916,45 +1033,17 @@ export function findingRow(
     </span>
   );
 
-  // Best-practice rules with no numbered criterion arrive as the literal
-  // string "WCAG (see rule help)". Used to strip a leading "WCAG" and show
-  // the rest — "(see rule help)" — which just traded one confusing string
-  // for another: a reader has no way to know what that parenthetical means
-  // sitting alone in the WCAG column. Nothing has the same effect as
-  // nothing: leave the cell blank, same as any other row with no criterion.
-  const criterion =
-    rep.wcagCriterion && rep.wcagCriterion !== "N/A"
-      ? (rep.wcagCriterion.match(/^\d\.\d+\.\d+/)?.[0] ?? "")
-      : "";
-
   return {
     id: rep.id,
     cells: asNotes
       ? [issueCell, ...(showCount ? [count > 1 ? <CountPill key="n" count={count} /> : ""] : [])]
       : [
-          // Severity's own column. Hidden at phone width by CSS
-          // (a11y-finding-sev-col), where the folded copy inside
-          // issueCell takes over instead.
-          <span key="sev" className="a11y-finding-sev-col">
-            <SeverityTag severity={rep.severity} label={t(severityLabel[rep.severity])} />
-          </span>,
           issueCell,
-          criterion,
-          <span key="fix" className={`a11y-method-badge a11y-fix-${fix.key}`}>
-            {fix.label}
+          <span key="sev" className={`a11y-finding-sev-word a11y-finding-sev-${rep.severity}`}>
+            {t(severityLabel[rep.severity])}
           </span>,
-          // Column dropped entirely by FindingsList when no group in the
-          // table has a level at all — an empty column is worse than no
-          // column, and best-practice rules (no numbered criterion) never
-          // carry one.
-          ...(showLevel ? [rep.wcagLevel ? levelFraming(rep.wcagLevel) : ""] : []),
-          // Same reasoning as Level: a group of dark-pattern or notes
-          // findings is almost always singular, so "Instances" reads
-          // blank on every row — drop the whole column rather than ship
-          // an empty one.
-          ...(showCount ? [count > 1 ? <CountPill key="n" count={count} /> : ""] : []),
         ],
-    expand: <FindingDetails findings={findings} asNotes={asNotes} />,
+    expand: <FindingDetails findings={findings} asNotes={asNotes} meta badged />,
   };
 }
 
@@ -978,7 +1067,7 @@ export function FindingGroup({
   // Deterministic findings get a plain-language title from the rule map; AI
   // findings write their own. Only fall back to the description when neither
   // exists — it's a paragraph, which reads badly as a heading.
-  const title = plain?.plain ?? rep.title ?? rep.description;
+  const title = findingTitle(rep);
   const detailsId = `a11y-group-${rep.id}`;
   // Where the change is made, and whether the owner can confirm it without
   // help. Two separate questions, two separate marks.
@@ -1043,7 +1132,9 @@ export function FindingGroup({
           {keyboardCheck && (
             <span className="a11y-method-badge a11y-method-keyboard">{t("Keyboard test")}</span>
           )}
-          {fromAi && <span className="a11y-method-badge a11y-method-ai">{t("AI review")}</span>}
+          {/* The method beside the claim (reviewer's note, 22 Nov 2026):
+              not only that the model wrote it, but that no one confirmed it. */}
+          {fromAi && <span className="a11y-method-badge a11y-method-ai">{methodLine(rep)}</span>}
           {rep.triage && rep.triage.state !== "open" && (
             <span className={`a11y-method-badge a11y-triage-badge a11y-triage-${rep.triage.state}`}>
               {t(TRIAGE_BADGE[rep.triage.state])}
@@ -1070,7 +1161,7 @@ export function FindingGroup({
           And aria-controls above pointed at an element that did not exist
           while collapsed, which is exactly what that attribute must not do. */}
       <div id={detailsId} className="a11y-finding-details" hidden={!expanded}>
-        <FindingDetails findings={findings} asNotes={asNotes} />
+        <FindingDetails findings={findings} asNotes={asNotes} badged />
       </div>
     </li>
   );
@@ -1133,7 +1224,7 @@ function TriageControl({ finding }: { finding: AccessibilityFinding }) {
       setSaved({ state: d.state, decidedBy: d.decidedBy, decidedAt: d.decidedAt });
       setOpen(false);
     } catch (err) {
-      setError(err instanceof ScanError ? err.message : t("Could not save the decision."));
+      setError(err instanceof ScanError ? err.message : t("Couldn't save the decision."));
     } finally {
       setBusy(false);
     }
@@ -1206,13 +1297,18 @@ function Occurrence({
   const { professional } = useReportView();
   return (
     <li className="a11y-occurrence">
-      <div className="a11y-occurrence-head">
-        <span className="a11y-occurrence-label">{label}</span>
-        {repeatCount > 1 && <span className="a11y-occurrence-count">{repeatCount}×</span>}
-      </div>
-      <ElementShot finding={finding} showLocator={professional} />
+      {/* With a picture the name rides on it as a speech bubble (ElementShot);
+          without one it stays a plain label here. */}
+      {(!finding.elementScreenshot || repeatCount > 1) && (
+        <div className="a11y-occurrence-head">
+          {!finding.elementScreenshot && <span className="a11y-occurrence-label">{label}</span>}
+          {repeatCount > 1 && <span className="a11y-occurrence-count">{repeatCount}×</span>}
+        </div>
+      )}
+      <ElementShot finding={finding} showLocator={professional} bubble={finding.elementScreenshot ? label : undefined} />
       {hasAlt && <AltTextSuggestion value={finding.suggestedAltText!} />}
       {finding.suggestedColour && <ColourSuggestion suggestion={finding.suggestedColour} />}
+      {finding.suggestedCode && <CodeFixSuggestion fix={finding.suggestedCode} />}
     </li>
   );
 }
@@ -1288,7 +1384,7 @@ function ColourSuggestion({
       </p>
       <p className="a11y-colour-fix-note">
         {tf(
-          "Same hue, dark enough to reach {ratio}:1 against {background}, where {required}:1 is the minimum. Adjust it to taste as long as it stays at or above that.",
+          "Same hue, {ratio}:1 against {background}, where {required}:1 is the minimum.",
           { ratio: suggestion.ratio, background: suggestion.background, required: suggestion.required }
         )}
       </p>
@@ -1299,6 +1395,69 @@ function ColourSuggestion({
 // Renders the AI's alt-text suggestion for an image missing one. An empty
 // value is meaningful — it means the image is decorative and the right fix
 // is an empty alt attribute, not a description.
+// The AI fix: the element as it is, then as it would pass, with a copy
+// button on the fixed one. Both are shown because "here is new markup" alone
+// asks the reader to diff it in their head, and the reader is usually not the
+// person who wrote the original. Labelled as the AI's on every occurrence: it
+// is written from the markup alone and can be wrong, which the backend's
+// validateCodeFix narrows but cannot rule out.
+function CodeFixSuggestion({ fix }: { fix: NonNullable<AccessibilityFinding["suggestedCode"]> }) {
+  const [copied, setCopied] = useState(false);
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(fix.after);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // Clipboard blocked: the markup is on screen to copy by hand.
+    }
+  }
+
+  return (
+    <div className="a11y-code-fix">
+      {/* Set after a shop's list (user's reference, 25 Nov 2026): the
+          title, the warning under it as a red word, then each markup as a
+          white card over its name, and Copy as one black pill. The name
+          comes first in the markup for screen readers; CSS order puts the
+          card above it. */}
+      <p className="a11y-code-fix-label">
+        <strong>{t("AI fix")}</strong>{" "}
+        <span className="a11y-code-fix-warn">{t("Written by AI. Check it before you use it.")}</span>
+      </p>
+      {fix.note && <p className="a11y-code-fix-note">{fix.note}</p>}
+      <div className="a11y-code-fix-cols">
+        <div className="a11y-code-fix-col">
+          <p className="a11y-code-fix-key">{t("Current markup")}</p>
+          {/* Scrollable, so keyboard-reachable; a group, not a region, for the
+              same reason as the professional snippet above. */}
+          <pre className="a11y-code-fix-pre" tabIndex={0} role="group" aria-label={t("Current markup")}>
+            <code>{fix.before}</code>
+          </pre>
+        </div>
+        <div className="a11y-code-fix-col">
+          <p className="a11y-code-fix-key">{t("Fixed markup")}</p>
+          <pre className="a11y-code-fix-pre a11y-code-fix-after" tabIndex={0} role="group" aria-label={t("Fixed markup")}>
+            <code>{fix.after}</code>
+          </pre>
+        </div>
+      </div>
+      <button
+        type="button"
+        className="a11y-copy-btn"
+        onClick={copy}
+        aria-label={copied ? t("Copied the fixed markup") : t("Copy the fixed markup")}
+      >
+        <Icon name={copied ? "checkmark" : "copy"} />
+        <span>{copied ? t("Copied") : t("Copy")}</span>
+      </button>
+      <span className="a11y-sr-only" role="status">
+        {copied ? t("Fixed markup copied to the clipboard.") : ""}
+      </span>
+    </div>
+  );
+}
+
 function AltTextSuggestion({ value }: { value: string }) {
   const [copied, setCopied] = useState(false);
 
@@ -1326,28 +1485,34 @@ function AltTextSuggestion({ value }: { value: string }) {
     }
   }
 
+  /* A card to copy from (user's instruction, 23 Nov 2026, "design, what to
+     copy needs to be in a card"), like the chat's code card: the label and
+     Copy on one bar at the top, the alt text under it. The card is what
+     Copy acts on, so it is a control's ground, not a content card. */
   return (
-    <div className="a11y-alt-suggestion">
-      <p className="a11y-alt-suggestion-label">
-        <Sentence
-          text={t("{label}, written from the actual image:")}
-          parts={{ label: <strong>{t("Suggested alt text")}</strong> }}
-        />
-      </p>
-      <div className="a11y-alt-suggestion-value">
-        <code>{value}</code>
+    <div className="a11y-alt-suggestion a11y-alt-card">
+      <div className="a11y-alt-card-head">
+        <p className="a11y-alt-suggestion-label">
+          <Sentence
+            text={t("{label}, written from the actual image:")}
+            parts={{ label: <strong>{t("Suggested alt text")}</strong> }}
+          />
+        </p>
         <button
           type="button"
-          className="a11y-alt-copy"
+          className="a11y-btn a11y-alt-copy"
           onClick={copy}
           aria-label={copied ? t("Copied the suggested alt text") : t("Copy the suggested alt text")}
         >
           {copied ? t("Copied") : t("Copy")}
         </button>
-        <span className="a11y-sr-only" role="status">
-          {copied ? t("Alt text copied to the clipboard.") : ""}
-        </span>
       </div>
+      <p className="a11y-alt-suggestion-value">
+        <code>{value}</code>
+      </p>
+      <span className="a11y-sr-only" role="status">
+        {copied ? t("Alt text copied to the clipboard.") : ""}
+      </span>
     </div>
   );
 }

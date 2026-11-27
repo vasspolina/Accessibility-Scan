@@ -6,7 +6,7 @@ import {
   PLAIN_RULE_FIXES,
   UNDECIDED_EXPLANATIONS,
 } from "../src/lib/wcagPlain";
-import { AI_HINT, FIX_KINDS, KEYBOARD_HINT } from "../src/lib/testMethod";
+import { AI_HINT, ALL_RULE_HINTS, FIX_KINDS, KEYBOARD_HINT } from "../src/lib/testMethod";
 
 // The voice guide (docs/VOICE.md), enforced rather than requested — the same
 // treatment the research lines already get. A guide that lives only in a
@@ -37,6 +37,7 @@ function allCopy(): Array<[string, string]> {
   for (const [key, kind] of Object.entries(FIX_KINDS)) {
     out.push([`hint:${key}`, kind.hint]);
   }
+  ALL_RULE_HINTS.forEach((hint, i) => out.push([`hint:rule[${i}]`, hint]));
   out.push(["hint:ai", AI_HINT]);
   out.push(["hint:keyboard", KEYBOARD_HINT]);
   return out;
@@ -46,11 +47,15 @@ describe("titles", () => {
   // Name the problem in two to six words, sentence case, no trailing stop.
   // A title is a label, not a sentence — the length cap is what stopped the
   // long-sentence titles that wrapped to three lines on a phone.
+  // Two titles are longer by the user's own wording (24 Nov 2026, the score
+  // summary's copy): "You can't see which item has keyboard focus" and "Tab
+  // order differs from the order on screen", eight words each.
+  const LONGER_BY_USER: Record<string, number> = { "keyboard-no-visible-focus": 8, "reading-order-mismatch": 8 };
   it("run two to six words", () => {
     for (const [id, r] of Object.entries(PLAIN_RULE_EXPLANATIONS)) {
       const words = r.plain.trim().split(/\s+/);
       expect(words.length, `${id} title has ${words.length} words`).toBeGreaterThanOrEqual(2);
-      expect(words.length, `${id} title has ${words.length} words`).toBeLessThanOrEqual(6);
+      expect(words.length, `${id} title has ${words.length} words`).toBeLessThanOrEqual(LONGER_BY_USER[id] ?? 6);
     }
   });
 
