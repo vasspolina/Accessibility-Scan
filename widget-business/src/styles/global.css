@@ -8457,10 +8457,10 @@
   margin: 0; padding: var(--cds-spacing-05) 0 var(--cds-spacing-07); border: 0; border-radius: 0; background: none;
   font-size: 22px;
 }
-/* An opened design note's cards hang their label pills half above the
-   card, so the note keeps 32px clear between the row's rule and the first
-   pill ("add space here", 27 Nov 2026): 16px for the overhang, 32px more. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret > .a11y-dn-detail[class][class][class][class][class][class][class] { padding-top: calc(var(--cds-spacing-05) + var(--cds-spacing-07)); }
+/* An opened design note starts 16px under the row's rule. (It was 48px
+   while its cards hung label pills over their top edge, "add space here",
+   27 Nov 2026; the pills went with the plain-text finding the same day.) */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret > .a11y-dn-detail[class][class][class][class][class][class][class] { padding-top: var(--cds-spacing-05); }
 
 /* The technical version's lines start at the row's edge now that its
    yellow panel is gone, 16px under the rule. */
@@ -8596,3 +8596,68 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-grid > .a11y-prompt[class][class][class][class][class][class][class][class][class][class][class][class][class][class] { border: 0; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-q[class][class][class][class][class][class][class][class][class][class][class][class][class][class] { color: ButtonText; }
 }
+
+/* ═══ THE OPENED FINDING AS PLAIN TEXT, ONE UNDER ANOTHER (user's
+   reference, 27 Nov 2026, "make this into plain text too, one under
+   another", with the foundry's menu of tight lines) ════════════════════
+   No grey ground, no cream cards, no label pills, no two columns: the
+   opened finding (and the opened design note, which uses the same parts)
+   is one column of plain text on the page's paper. Each part's label is a
+   line in the menu's grey (--prompt-line, #6f6f6f, 4.9:1; dark #a8a8a8) at
+   the prose size, with its words in ink right under it, set tight (1.15);
+   the parts stand 24px apart. The meta line (WCAG, level, fix, instances)
+   is set left in the same grey. The affected elements keep their pictures
+   and suggestions, on the paper. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd[class][class][class][class][class][class][class][class][class][class][class][class] {
+  display: block; margin: 0; padding: var(--cds-spacing-05) 0 var(--cds-spacing-07); border: 0; border-radius: 0; box-shadow: none;
+  background: none; color: var(--ink); text-align: left;
+  --ink: inherit; --paper: inherit;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col[class][class][class][class][class][class][class][class][class][class][class][class] {
+  display: block; margin: 0; padding: 0; gap: 0; grid-template-columns: none; background: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > *[class][class][class][class][class][class][class][class][class][class][class][class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > *:not([class]):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8):not(.a11y-z9):not(.a11y-z10):not(.a11y-z11):not(.a11y-z12) {
+  display: block; position: static; width: auto; max-width: none; min-height: 0; flex: none; grid-column: auto;
+  margin: 0 0 var(--cds-spacing-06); padding: 0; border: 0; border-radius: 0; box-shadow: none;
+  background: none; color: var(--ink); text-align: left;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 22px; font-weight: 400; line-height: 1.15; letter-spacing: 0;
+  --ink: inherit; --paper: inherit;
+}
+/* The labels: the old pills, whatever element carries them (a strong, a
+   p with the label inside, or the affected elements' p). Heavier than the
+   cards' own label rules, which centred them at a fixed width. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > * > :is(strong:first-child, .a11y-fd-title, .a11y-affected-label, p:first-child):not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20),
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > * > p:first-child > :is(strong, span):not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20) {
+  display: block; position: static; inset: auto; width: auto; min-width: 0; max-width: none; min-height: 0; height: auto;
+  margin: 0; padding: 0; justify-self: start; align-self: start;
+  border: 0; border-radius: 0; background: none; box-shadow: none; transform: none; translate: none; rotate: none;
+  color: var(--prompt-line); text-align: left; text-transform: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 22px; font-weight: 400; line-height: 1.15; letter-spacing: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > * > :is(strong:first-child, .a11y-fd-title, .a11y-affected-label, p:first-child):not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20)::before,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > * > :is(strong:first-child, .a11y-fd-title, .a11y-affected-label, p:first-child):not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20)::after { content: none; display: none; }
+/* The suggested alt text and its siblings lose their cream card. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-affected :is(.a11y-alt-card, .a11y-alt-suggestion):not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20) {
+  margin: var(--cds-spacing-03) 0 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; --ink: inherit; --paper: inherit; color: var(--ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > * > :not(:first-child)[class][class][class][class][class][class][class][class][class][class][class][class] {
+  margin-inline: 0; padding-inline: 0; text-align: left; font-size: 22px; line-height: 1.15; background: none;
+}
+/* Lists inside a part keep their hung dashes, flush with the label. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > * :is(ul, ol)[class][class][class][class][class][class][class][class][class][class][class][class] { margin: 0; padding: 0; }
+/* The affected elements: each element on the paper, one under another. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-affected .a11y-occurrence-list[class][class][class][class][class][class][class][class][class][class][class][class] {
+  display: block; margin: var(--cds-spacing-03) 0 0; padding: 0; gap: 0; grid-template-columns: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-affected .a11y-occurrence-list > li[class][class][class][class][class][class][class][class][class][class][class][class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-affected .a11y-occurrence-list > li:not([class]):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8):not(.a11y-z9):not(.a11y-z10):not(.a11y-z11):not(.a11y-z12) {
+  margin: 0 0 var(--cds-spacing-05); padding: 0; border: 0; border-radius: 0; background: none; text-align: left; --ink: inherit; --paper: inherit;
+}
+/* The meta line, set left in the grey. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-meta[class][class][class][class][class][class][class][class][class][class][class][class] {
+  justify-content: flex-start; margin: 0 0 var(--cds-spacing-06); padding: 0; gap: var(--cds-spacing-02) var(--cds-spacing-06);
+  background: none; color: var(--prompt-line); font-size: 22px; line-height: 1.15; text-align: left;
+}
+/* The picture of the element stands at the left edge with the words. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-affected .a11y-shot:not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20) { margin-inline: 0 auto; }
