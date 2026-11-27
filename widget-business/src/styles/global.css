@@ -8467,6 +8467,12 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-details > :not(summary)[class][class][class][class][class][class][class] { margin-inline: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-details > summary + *[class][class][class][class][class][class][class] { margin-top: var(--cds-spacing-05); }
 
+/* An opened check result's row: the places count stands on the line under
+   the sentence, set left with it, not beside it at the far end ("put 2
+   places on next line", 27 Nov 2026). */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-group .a11y-conf-row > .a11y-conf-status[class][class][class][class][class][class][class] { grid-column: 2; grid-row: 2; justify-self: start; text-align: left; margin: 0; padding: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-group .a11y-conf-row > :is(.a11y-conf-id, .a11y-conf-body)[class][class][class][class][class][class][class] { grid-row: 1; }
+
 /* The screen reader simulation and the conformance report: shut, the
    section is just its row, with no panel round it. Open, the panel keeps
    its own setting under a plain head. */
@@ -8521,3 +8527,12 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8)::before,
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:not(.a11y-dt-expand-row) > td:last-child:not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6)::after { display: none; }
 }
+
+/* ═══ NO ROUND CORNERS ON CARDS (user's instruction, 27 Nov 2026, "dont do
+   round corners on cards", on the legal head's three cream cards) ═════════
+   Every card and every panel that holds content is square: the legal head's
+   cards, the score's issue specimens and their pictures, the opened
+   finding's grey ground and its cream cards, the yellow notes, the report
+   actions' panel, the statement form, the scan form and the screen reader
+   simulation's panel. Fields, buttons, pills and rounds keep their shape. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-band, .a11y-legal-panel, .a11y-legal-std, .a11y-sum-spec, .a11y-sum-spec-shot, .a11y-fd, .a11y-affected, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-steps, .a11y-finding-todo, .a11y-method-hint, .a11y-note, .a11y-ra-panel, .a11y-stmt-form, .a11y-url-form, section.a11y-sr, .a11y-dn-detail, .a11y-affected > li)[class][class][class][class][class][class][class][class][class][class] { border-radius: 0; }
