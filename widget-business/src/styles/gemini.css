@@ -76,6 +76,7 @@
   --tip-ink: #ffd2d3;
   --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 2px 9px 2px rgb(0 0 0 / 0.15);
   --row: 51px;
+  --icon-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 4 6 14 7.41 15.41 15 7.83 15 28 17 28 17 7.83 24.59 15.41 26 14 16 4z'/%3E%3C/svg%3E");
   --open: #fff5c2;
   --row-hover: #fff5c2;
   --chat-box: #f0f0f0;
@@ -1252,6 +1253,51 @@
 .a11y-widget-biz .g-tools .g-icon-btn svg { width: 21px; height: 21px; }
 .a11y-widget-biz .g-list-delete { border-radius: 7px; background: var(--accent); color: var(--on-accent); }
 .a11y-widget-biz .g-list-delete:hover:not(:disabled) { background: var(--pill); color: var(--on-pill); }
+
+/* Every disclosure's caret as an arrow at the row's right end (user's
+   "make all carets look like this", 27 Nov 2026): pointing down in the grey
+   while shut, up in ink while open. */
+.a11y-widget-biz { --arrow: 24px; }
+.a11y-widget-biz :is(.a11y-finding-header, .a11y-dn-bar, .a11y-tech-details > summary, .a11y-accordion-head, .a11y-undecided-q)::after,
+.a11y-widget-biz .a11y-datatable tr:has(.a11y-dt-toggle) > td:last-child::after {
+  content: ""; flex: none; align-self: center; width: var(--arrow); height: var(--arrow);
+  background: var(--ink-2); transform: rotate(180deg);
+  -webkit-mask: var(--icon-arrow) center / var(--arrow) no-repeat; mask: var(--icon-arrow) center / var(--arrow) no-repeat;
+}
+.a11y-widget-biz :is(.a11y-finding-header, .a11y-dn-bar, .a11y-accordion-head, .a11y-undecided-q)[aria-expanded="true"]::after,
+.a11y-widget-biz .a11y-tech-details[open] > summary::after,
+.a11y-widget-biz .a11y-datatable tr:has(.a11y-dt-toggle[aria-expanded="true"]) > td:last-child::after { background: var(--ink); transform: none; }
+/* The old carets go. */
+.a11y-widget-biz :is(.a11y-finding-header, .a11y-dn-bar, .a11y-tech-details > summary)::before { content: none; display: none; }
+.a11y-widget-biz :is(.a11y-acr-caret, .a11y-accordion-chevron), .a11y-widget-biz .a11y-undecided-q > svg { display: none; }
+/* Card rows: the arrow takes the last column, at the end of the first line. */
+.a11y-widget-biz .a11y-finding-header,
+.a11y-widget-biz .a11y-finding-header:not(:has(> .a11y-shot)) { grid-template-columns: minmax(0, 1fr) 138px 184px var(--arrow); }
+.a11y-widget-biz .a11y-finding-header::after { grid-column: 4; grid-row: 1; align-self: start; margin-top: 2px; }
+.a11y-widget-biz .a11y-finding-header > :is(.a11y-finding-desc, .a11y-finding-meta) { grid-column: 1; }
+.a11y-widget-biz .a11y-finding-header > .a11y-shot { grid-column: 2; }
+.a11y-widget-biz .a11y-finding-header > .a11y-sev { grid-column: 3; }
+.a11y-widget-biz .a11y-finding-header:not(:has(> .a11y-shot)) > .a11y-finding-meta { grid-column: 1; grid-row: 2; justify-self: start; }
+/* Flex rows: the arrow at the far end. */
+.a11y-widget-biz :is(.a11y-dn-bar, .a11y-accordion-head, .a11y-tech-details > summary) { display: flex; align-items: center; gap: 12px; }
+.a11y-widget-biz .a11y-dn-bar-title { flex: 1 1 auto; }
+.a11y-widget-biz .a11y-accordion-head > span { flex: 1 1 auto; }
+.a11y-widget-biz .a11y-tech-details > summary { justify-content: space-between; }
+.a11y-widget-biz .a11y-undecided-q { grid-template-columns: minmax(0, 1fr) auto var(--arrow); }
+.a11y-widget-biz .a11y-undecided-q::after { grid-column: 3; grid-row: 1; align-self: start; margin-top: 2px; }
+.a11y-widget-biz .a11y-undecided-q .a11y-undecided-what { grid-column: 1; }
+.a11y-widget-biz .a11y-undecided-q .a11y-undecided-kind { grid-column: 2; }
+.a11y-widget-biz .a11y-undecided-answer { padding-inline-start: 0; }
+/* The findings table: the toggle's button spans the whole row (still a real
+   button, focus ring and all), its cell takes no width, and the arrow sits
+   after the severity. */
+.a11y-widget-biz .a11y-datatable tr:has(.a11y-dt-toggle) { position: relative; }
+.a11y-widget-biz .a11y-dt-toggle-cell { width: 0; padding: 0 !important; }
+.a11y-widget-biz .a11y-datatable .a11y-dt-toggle { position: absolute; inset: 0; width: 100%; min-height: 0; padding: 0; border-radius: 0; background: transparent; }
+.a11y-widget-biz .a11y-datatable .a11y-dt-toggle > * { display: none; }
+.a11y-widget-biz .a11y-datatable .a11y-dt-toggle:focus-visible { outline-offset: -2px; }
+.a11y-widget-biz .a11y-datatable tr:has(.a11y-dt-toggle) > td:last-child { white-space: nowrap; text-align: end; }
+.a11y-widget-biz .a11y-datatable tr:has(.a11y-dt-toggle) > td:last-child::after { display: inline-block; vertical-align: -5px; margin-inline-start: 14px; }
 
 /* The form's report (a page behind a login) keeps the product shell. */
 .a11y-widget-biz .a11y-shell-with-nav > .a11y-shell-main { display: grid; grid-template-columns: 259px minmax(0, 1fr); gap: 15px; padding: 18px; }
