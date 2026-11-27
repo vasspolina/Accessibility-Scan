@@ -1144,6 +1144,19 @@
    body text, 14px on 17px for small print, letters +0.02em; paragraphs one
    body line (17px) apart; rows 44px, the margin 250px. */
 
+/* The design notes' rows carry the solid caret again (user's "add carets
+   back", 27 Nov 2026), as the findings rows do: right while shut, down
+   while open. */
+.a11y-widget-biz .a11y-dn-caret-head { margin: 0; }
+.a11y-widget-biz .a11y-dn-bar { display: flex; align-items: baseline; gap: 10px; width: 100%; text-align: start; }
+.a11y-widget-biz .a11y-dn-bar::before {
+  content: ""; flex: none; align-self: center; width: 20px; height: 20px; background: currentColor;
+  -webkit-mask: var(--icon-caret) center / 20px no-repeat; mask: var(--icon-caret) center / 20px no-repeat;
+  transition: transform 0.15s ease;
+}
+.a11y-widget-biz .a11y-dn-bar[aria-expanded="true"]::before { transform: rotate(90deg); }
+.a11y-widget-biz .a11y-dn-bar-title { flex: 1 1 auto; min-width: 0; }
+
 /* The form's report (a page behind a login) keeps the product shell. */
 .a11y-widget-biz .a11y-shell-with-nav > .a11y-shell-main { display: grid; grid-template-columns: 225px minmax(0, 1fr); gap: 13px; padding: 16px; }
 .a11y-widget-biz .a11y-shell-nav { position: sticky; top: 16px; align-self: start; display: flex; flex-direction: column; gap: 2px; }
