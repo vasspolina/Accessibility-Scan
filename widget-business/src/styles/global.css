@@ -8536,3 +8536,63 @@
    actions' panel, the statement form, the scan form and the screen reader
    simulation's panel. Fields, buttons, pills and rounds keep their shape. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-band, .a11y-legal-panel, .a11y-legal-std, .a11y-sum-spec, .a11y-sum-spec-shot, .a11y-fd, .a11y-affected, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-steps, .a11y-finding-todo, .a11y-method-hint, .a11y-note, .a11y-ra-panel, .a11y-stmt-form, .a11y-url-form, section.a11y-sr, .a11y-dn-detail, .a11y-affected > li)[class][class][class][class][class][class][class][class][class][class] { border-radius: 0; }
+
+/* ═══ THE OPENING QUESTIONS AS A MENU OF LINES (user's reference, 27 Nov
+   2026, "design opening prompts like this", a foundry's filter menu) ═════
+   No cards: the questions are a list of lines set tight, 29px at 1.15 (22px
+   on a phone), in a mid grey (#6f6f6f on white, 4.9:1; #a8a8a8 on black,
+   8.4:1), turning ink on hover and keyboard focus. 6px between questions,
+   since most run to two lines. The group's name (Ask about this page, Help
+   me, Report a barrier) stays first in each button's name and is clipped
+   for the eye; the "Ask this" and "Start a report" pills are gone; the WCAG
+   number stays its own button, a small grey figure at the end of its
+   question's last line. Report a barrier is a line like the others. On a
+   phone the sideways row of cards is the same list. */
+.a11y-widget-biz { --prompt-line: #6f6f6f; }
+.a11y-widget-biz[data-theme="dark"] { --prompt-line: #a8a8a8; }
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz:not([data-theme="light"]) { --prompt-line: #a8a8a8; }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-grid[class][class][class][class][class][class][class][class][class][class][class][class][class][class] {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+  grid-template-columns: none; overflow: visible; margin: 0; padding: 0; scroll-snap-type: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-grid > .a11y-prompt[class][class][class][class][class][class][class][class][class][class][class][class][class][class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-grid > .a11y-prompt[class][class][class][class][class][class][class][class][class][class][class][class][class][class]:is(:hover, :focus-within) {
+  --ink: inherit; --paper: inherit; --focus: inherit; --note: inherit; --note-ink: inherit;
+  display: block; position: static; width: auto; max-width: 100%; min-width: 0; min-height: 0; aspect-ratio: auto; flex: none;
+  margin: 0; padding: 0; border: 0; border-radius: 0; outline: 0; box-shadow: none;
+  background: none; color: var(--prompt-line); text-align: left; transform: none; rotate: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-q[class][class][class][class][class][class][class][class][class][class][class][class][class][class] {
+  display: inline; position: static; width: auto; min-height: 0; margin: 0; padding: 0;
+  border: 0; border-radius: 0; background: none; color: var(--prompt-line); box-shadow: none; text-align: left;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 29px; font-weight: 400; line-height: 1.15; letter-spacing: 0;
+  cursor: pointer;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-q[class][class][class][class][class][class][class][class][class][class][class][class][class][class]::after,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-q[class][class][class][class][class][class][class][class][class][class][class][class][class][class]::before { content: none; display: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-q[class][class][class][class][class][class][class][class][class][class][class][class][class][class]:enabled:is(:hover, :focus-visible) { color: var(--ink); background: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-q[class][class][class][class][class][class][class][class][class][class][class][class][class][class]:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-q[class][class][class][class][class][class][class][class][class][class][class][class][class][class]:disabled { color: var(--prompt-line); cursor: default; text-decoration: line-through; text-decoration-thickness: 1px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-q > :is(.a11y-prompt-ask)[class][class][class][class][class][class][class][class][class][class][class][class][class][class] {
+  display: inline; margin: 0; padding: 0; font: inherit; letter-spacing: inherit; color: inherit; background: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-q > .a11y-prompt-label[class][class][class][class][class][class][class][class][class][class][class][class][class][class] {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-q > .a11y-prompt-go[class][class][class][class][class][class][class][class][class][class][class][class][class][class] { display: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-wcag[class][class][class][class][class][class][class][class][class][class][class][class][class][class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-wcag[class][class][class][class][class][class][class][class][class][class][class][class][class][class]:enabled:hover {
+  display: inline; position: static; min-height: 0; height: auto; margin: 0 0 0 0.5em; padding: 0;
+  border: 0; border-radius: 0; background: none; color: var(--prompt-line); box-shadow: none; transform: none; translate: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 18px; font-weight: 400; line-height: 1; letter-spacing: 0; vertical-align: baseline;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-wcag[class][class][class][class][class][class][class][class][class][class][class][class][class][class]:enabled:is(:hover, :focus-visible) { color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+@media (max-width: 671px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-q[class][class][class][class][class][class][class][class][class][class][class][class][class][class] { font-size: 22px; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-grid > .a11y-prompt[class][class][class][class][class][class][class][class][class][class][class][class][class][class] { border: 0; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-q[class][class][class][class][class][class][class][class][class][class][class][class][class][class] { color: ButtonText; }
+}
