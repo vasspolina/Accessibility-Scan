@@ -956,3 +956,11 @@ main.wrap > .plates--hero {
 @media (max-width: 671px) {
   .plates--hero .plates__track .plate:nth-child(n) { min-height: 50svh; padding: var(--s07) 0; }
 }
+
+/* The header stays at the top on scroll (user's instruction, 27 Nov 2026,
+   "make this sticky"), with its yellow band, over the page; on a sub page
+   the section row under it then marks the section being read. */
+header.wrap { position: sticky; top: 0; z-index: 5; }
+/* A section link lands under the sticky header, not behind it. */
+html:has(header .toc) { scroll-padding-top: 220px; }
+@media (max-width: 1055px) { header.wrap { position: static; } html:has(header .toc) { scroll-padding-top: 0; } }
