@@ -864,3 +864,67 @@ main.wrap > form.signup { margin-bottom: var(--s12); padding-bottom: var(--s10);
   .acc__panel .acc__body > .terms { grid-column: 1; grid-row: auto; margin-top: var(--s08); grid-template-columns: minmax(0, 7em) minmax(0, 1fr); }
   .acc__panel > .acc__lede, .acc__panel .acc__body > p { font-size: 24px; letter-spacing: 0; line-height: 1.15; }
 }
+
+/* ---------- The header as a foundry's top bar (user's references, 27 Nov
+   2026, "make these like these", then "ad like these on sub pages") ----------
+   The wordmark and the three main pages are one line of big type, the
+   wordmark and the page you are on in black, the others grey; Newsletters is
+   a small grey link at the right. A 1px rule runs under each side, broken
+   between them. A sub page adds a second row under the rule: its sections
+   as small grey links, the one being read in black, with a rule under the
+   row (the old "On this page" rail beside the text, moved up). The crumb is
+   kept for screen readers only, since the black page name says it.
+   Grey #5e5e5e on the band's #fcfb9e measures 6.0:1. */
+.top {
+  grid-template-columns: auto auto auto auto minmax(0, 1fr) minmax(max-content, 20%);
+  align-items: end; column-gap: var(--s05); row-gap: 0;
+  padding-block: var(--s04) var(--s06);
+}
+.top .nav, .top .nav ul { display: contents; }
+.top .crumb {
+  position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
+}
+.top .brand, .top .nav a {
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-variation-settings: normal;
+  font-size: clamp(32px, 3.4vw, 56px); line-height: 1.05; letter-spacing: -0.01em;
+}
+.top .brand { color: #000; }
+.top .nav a {
+  display: inline; min-height: 0; padding: 0; border: 0; border-radius: 0; background: none;
+  color: #5e5e5e; text-decoration: none;
+}
+.top .nav a[aria-current] { background: none; color: #000; }
+.top .nav li:last-child { grid-column: 6; padding-bottom: 0.3em; }
+.top .nav li:last-child a { font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; }
+.top .brand:hover, .top .nav a:hover, .top .toc a:hover {
+  background: none; color: #000; text-decoration: underline; text-decoration-thickness: 1px;
+}
+.top::before, .top::after {
+  content: ""; grid-row: 2; height: 1px; margin-top: var(--s02); background: #000;
+}
+.top::before { grid-column: 1 / 6; }
+.top::after { grid-column: 6; }
+.top .toc {
+  position: static; grid-column: 1 / -1; grid-row: 3;
+  padding-block: var(--s03); border-bottom: 1px solid #000;
+}
+.top .toc ul { flex-direction: row; flex-wrap: wrap; column-gap: var(--s07); row-gap: var(--s02); }
+.top .toc a {
+  display: inline; min-height: 0; padding: 0; border: 0; border-radius: 0; background: none;
+  color: #5e5e5e; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; text-decoration: none;
+}
+.top .toc a[aria-current] { background: none; color: #000; }
+/* The rail's column beside the text is gone with the rail. */
+.toc-layout { grid-template-columns: minmax(0, 1fr); }
+
+/* Narrower: the words wrap as a run, one rule under them. */
+@media (max-width: 1055px) {
+  .top { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: var(--s04); row-gap: var(--s02); }
+  .top::before, .top::after { content: none; }
+  .top .nav li:last-child { padding-bottom: 0; }
+  .top .nav li:last-child a { font-size: inherit; }
+  .top .nav li:last-child a, .top .brand, .top .nav a { font-size: clamp(32px, 3.4vw, 56px); }
+  .top .brand { flex-basis: 100%; }
+  .top .toc { flex-basis: 100%; margin-top: var(--s03); border-top: 1px solid #000; }
+}
