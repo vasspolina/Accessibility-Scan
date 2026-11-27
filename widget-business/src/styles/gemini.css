@@ -1157,6 +1157,35 @@
 .a11y-widget-biz .a11y-dn-bar[aria-expanded="true"]::before { transform: rotate(90deg); }
 .a11y-widget-biz .a11y-dn-bar-title { flex: 1 1 auto; min-width: 0; }
 
+/* The statement's form as a fill-in form on grey (user's "make this into
+   a fill in form on grey background", 27 Nov 2026): one grey card, 14px
+   corners; the step titles inside it; each field a white box with a light
+   edge and its label above; the facts as columns of label over value, the
+   position's explanation on its own line; Take the statement and Copy at
+   the foot. */
+.a11y-widget-biz .a11y-stmt .a11y-stmt-form {
+  display: grid; gap: 21px; padding: 21px 25px 25px; border-radius: 14px; background: var(--chat-box);
+}
+.a11y-widget-biz .a11y-stmt-step-head { margin: 0; font-size: 21px; line-height: 25px; }
+.a11y-widget-biz .a11y-stmt-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 17px; }
+.a11y-widget-biz .a11y-stmt-field { display: grid; gap: 6px; font-size: 17px; line-height: 21px; color: var(--ink-2); }
+.a11y-widget-biz .a11y-stmt .a11y-stmt-field input[type] {
+  min-height: 50px; padding: 0 16px !important; border: 0 !important; border-radius: 10px;
+  background: var(--bg); box-shadow: inset 0 0 0 1px var(--box-edge-rest); color: var(--ink);
+}
+.a11y-widget-biz .a11y-stmt .a11y-stmt-field input[type]:focus-visible { outline: none; padding-bottom: 0 !important; box-shadow: inset 0 0 0 1px var(--box-edge-focus), 0 4px 18px rgb(0 0 0 / 0.08); }
+.a11y-widget-biz .a11y-stmt .a11y-spec-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 17px; margin: 0; }
+.a11y-widget-biz .a11y-stmt .a11y-spec-grid > div { padding: 0; border: 0; background: none; }
+.a11y-widget-biz .a11y-spec-label { margin: 0 0 4px; font-size: 14px; line-height: 17px; color: var(--ink-2); }
+.a11y-widget-biz .a11y-spec-value { margin: 0; font-size: 17px; line-height: 21px; color: var(--ink); overflow-wrap: anywhere; }
+.a11y-widget-biz .a11y-spec-gloss { display: block; margin-top: 4px; font-size: 14px; line-height: 17px; color: var(--ink-2); }
+.a11y-widget-biz .a11y-stmt .a11y-stmt-step:has(.a11y-stmt-toggle) { display: flex; align-items: center; justify-content: space-between; gap: 13px; }
+.a11y-widget-biz .a11y-stmt-toggle { padding: 0; font-size: 21px; line-height: 25px; text-align: start; }
+.a11y-widget-biz .a11y-stmt .a11y-stmt-code { margin: 0; background: var(--bg); }
+.a11y-widget-biz .a11y-stmt .a11y-stmt-card { margin: 0; padding: 0; border: 0; background: none; }
+.a11y-widget-biz .a11y-stmt .a11y-stmt-card:not([data-open]) { display: none; }
+.a11y-widget-biz .a11y-stmt > .a11y-conf-caveat { margin-top: 13px; }
+
 /* The form's report (a page behind a login) keeps the product shell. */
 .a11y-widget-biz .a11y-shell-with-nav > .a11y-shell-main { display: grid; grid-template-columns: 225px minmax(0, 1fr); gap: 13px; padding: 16px; }
 .a11y-widget-biz .a11y-shell-nav { position: sticky; top: 16px; align-self: start; display: flex; flex-direction: column; gap: 2px; }
