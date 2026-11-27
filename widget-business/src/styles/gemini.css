@@ -1232,6 +1232,27 @@
   .a11y-widget-biz .a11y-conf-body { grid-column: 1 / -1; grid-row: 2; margin-top: 4px; }
 }
 
+/* Every button as Send this report (user's "make all buttons look like
+   this one", 27 Nov 2026): green fill, black words, 10px corners, 42px
+   tall, 14px sides; teal with light words on hover. A chosen button takes
+   the teal, so it stands apart. Icon buttons are 42px squares. */
+.a11y-widget-biz :is(.a11y-btn, .a11y-seg, .a11y-show-all, .a11y-sim-btn, .a11y-ra-pdf, .a11y-blockflag-jump, .g-pill:not(.g-brand), .a11y-cta-link, .a11y-settings-opt, .a11y-report-actions .a11y-ra-pdf) {
+  min-height: 42px; padding: 0 14px; border: 0; border-radius: 10px; box-shadow: none;
+  background: var(--accent); color: var(--on-accent); font-size: 17px; line-height: 21px; text-decoration: none;
+}
+.a11y-widget-biz :is(.a11y-btn, .a11y-seg, .a11y-show-all, .a11y-sim-btn, .a11y-ra-pdf, .a11y-blockflag-jump, .g-pill:not(.g-brand), .a11y-cta-link, .a11y-settings-opt, .a11y-report-actions .a11y-ra-pdf):hover:not(:disabled) { background: var(--pill); color: var(--on-pill); }
+.a11y-widget-biz :is(.a11y-btn-primary, .g-pill-accent, .a11y-seg-on, .a11y-sim-btn-active, .a11y-settings-opt[aria-pressed="true"], .g-nav > .g-pill[aria-current], .a11y-btn[aria-pressed="true"]) { background: var(--pill); color: var(--on-pill); }
+.a11y-widget-biz :is(.a11y-btn, .a11y-seg, .a11y-show-all, .a11y-sim-btn, .a11y-ra-pdf, .a11y-blockflag-jump, .g-pill:not(.g-brand), .a11y-cta-link, .a11y-settings-opt, .a11y-report-actions .a11y-ra-pdf):disabled { background: var(--fill); color: var(--ink-2); }
+.a11y-widget-biz .a11y-btn-ghost { min-height: 0; padding: 0; background: transparent; color: var(--ink); border-radius: 0; }
+.a11y-widget-biz .a11y-btn-ghost:hover:not(:disabled) { background: transparent; color: var(--ink); }
+.a11y-widget-biz :is(.g-tools .g-icon-btn, .g-send) {
+  width: 42px; height: 42px; border-radius: 10px; background: var(--accent); color: var(--on-accent); box-shadow: none;
+}
+.a11y-widget-biz :is(.g-tools .g-icon-btn, .g-send):hover:not(:disabled) { background: var(--pill); color: var(--on-pill); }
+.a11y-widget-biz .g-tools .g-icon-btn svg { width: 18px; height: 18px; }
+.a11y-widget-biz .g-list-delete { border-radius: 6px; background: var(--accent); color: var(--on-accent); }
+.a11y-widget-biz .g-list-delete:hover:not(:disabled) { background: var(--pill); color: var(--on-pill); }
+
 /* The form's report (a page behind a login) keeps the product shell. */
 .a11y-widget-biz .a11y-shell-with-nav > .a11y-shell-main { display: grid; grid-template-columns: 225px minmax(0, 1fr); gap: 13px; padding: 16px; }
 .a11y-widget-biz .a11y-shell-nav { position: sticky; top: 16px; align-self: start; display: flex; flex-direction: column; gap: 2px; }
