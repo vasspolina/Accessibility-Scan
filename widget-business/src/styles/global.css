@@ -8396,30 +8396,30 @@
 }
 
 /* The rows: one shape for every disclosure button. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary)[class][class][class][class][class][class][class][class] {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8) {
   position: relative; width: 100%; min-height: 0;
   margin: 0; padding: var(--cds-spacing-04) 48px var(--cds-spacing-04) 0;
   border: 0; border-bottom: 1px solid var(--row-rule); border-radius: 0; outline-offset: 2px;
   background: none; color: var(--ink); box-shadow: none; text-align: left;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary)[class][class][class][class][class][class][class][class] {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8) {
   font-size: 29px; line-height: 1.1; letter-spacing: 0;
 }
 /* The start triangle (a ::before mask on most, an svg on some) is gone;
    the arrow takes the ::before at the far end. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary)[class][class][class][class][class][class][class][class] > svg { display: none; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary)[class][class][class][class][class][class][class][class]::before {
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8) > svg { display: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8)::before {
   content: ""; position: absolute; inset: var(--cds-spacing-04) 0 auto auto; display: block;
   width: 32px; height: 32px; margin: 0; padding: 0; border: 0; border-radius: 0;
   background: var(--row-arrow); -webkit-mask: var(--row-arrow-mask) center / contain no-repeat; mask: var(--row-arrow-mask) center / contain no-repeat;
   transform: none; rotate: none; translate: none; transition: rotate 0.15s;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header)[aria-expanded="true"][class][class][class][class][class][class][class][class]::before,
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-details[open] > summary[class][class][class][class][class][class][class][class]::before { rotate: 180deg; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary)[class][class][class][class][class][class][class][class]:hover { background: none; color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-details > summary[class][class][class][class][class][class][class][class]::-webkit-details-marker { display: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-details[open] > summary:not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8)::before { rotate: 180deg; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8):hover { background: none; color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-details > summary:not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8)::-webkit-details-marker { display: none; }
 @media (prefers-reduced-motion: reduce) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary)[class][class][class][class][class][class][class][class]::before { transition: none; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8)::before { transition: none; }
 }
 /* Everything inside a row is ink on paper: the check results' status
    grounds and the screen reader head's blue are gone; the coloured status
@@ -8457,6 +8457,15 @@
   margin: 0; padding: var(--cds-spacing-05) 0 var(--cds-spacing-07); border: 0; border-radius: 0; background: none;
   font-size: 22px;
 }
+/* An opened design note's cards hang their label pills half above the
+   card, so the note keeps 32px clear between the row's rule and the first
+   pill ("add space here", 27 Nov 2026): 16px for the overhang, 32px more. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret > .a11y-dn-detail[class][class][class][class][class][class][class] { padding-top: calc(var(--cds-spacing-05) + var(--cds-spacing-07)); }
+
+/* The technical version's lines start at the row's edge now that its
+   yellow panel is gone, 16px under the rule. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-details > :not(summary)[class][class][class][class][class][class][class] { margin-inline: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-details > summary + *[class][class][class][class][class][class][class] { margin-top: var(--cds-spacing-05); }
 
 /* The screen reader simulation and the conformance report: shut, the
    section is just its row, with no panel round it. Open, the panel keeps
@@ -8490,8 +8499,8 @@
 }
 
 @media (max-width: 671px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary)[class][class][class][class][class][class][class][class] { font-size: 22px; padding-inline-end: 36px; }
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary)[class][class][class][class][class][class][class][class]::before { width: 24px; height: 24px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8) { font-size: 22px; padding-inline-end: 36px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8)::before { width: 24px; height: 24px; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:not(.a11y-dt-expand-row) > td:not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6) { font-size: 22px; }
   /* The check results on a phone: label, then the count, at the start;
      the arrow keeps its own 36px at the end. */
@@ -8505,10 +8514,10 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:not(.a11y-dt-expand-row) > td:last-child:not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6)::after { width: 24px; height: 24px; }
 }
 @media (forced-colors: active) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary)[class][class][class][class][class][class][class][class]::before { background: CanvasText; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8)::before { background: CanvasText; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:not(.a11y-dt-expand-row) > td:last-child:not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6)::after { background: CanvasText; }
 }
 @media print {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary)[class][class][class][class][class][class][class][class]::before,
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8)::before,
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:not(.a11y-dt-expand-row) > td:last-child:not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6)::after { display: none; }
 }
