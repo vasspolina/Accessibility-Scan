@@ -1186,6 +1186,14 @@
 .a11y-widget-biz .a11y-stmt .a11y-stmt-card:not([data-open]) { display: none; }
 .a11y-widget-biz .a11y-stmt > .a11y-conf-caveat { margin-top: 13px; }
 
+/* A row's badge in a column beside its title (user's "the badge can go
+   into column next to text", 27 Nov 2026), not on a line under it. */
+.a11y-widget-biz td[data-col="issue"] .a11y-finding-issue { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 13px; }
+.a11y-widget-biz td[data-col="issue"] .a11y-finding-title { flex: 0 1 auto; }
+.a11y-widget-biz td[data-col="issue"] .a11y-finding-meta-line { display: inline-flex; flex-wrap: wrap; gap: 5px; margin: 0; }
+.a11y-widget-biz td[data-col="issue"] .a11y-finding-meta-line > * { margin: 0; }
+.a11y-widget-biz .a11y-finding-header:not(:has(> .a11y-shot)) > .a11y-finding-meta { grid-row: 1; grid-column: 3; justify-self: end; }
+
 /* The form's report (a page behind a login) keeps the product shell. */
 .a11y-widget-biz .a11y-shell-with-nav > .a11y-shell-main { display: grid; grid-template-columns: 225px minmax(0, 1fr); gap: 13px; padding: 16px; }
 .a11y-widget-biz .a11y-shell-nav { position: sticky; top: 16px; align-self: start; display: flex; flex-direction: column; gap: 2px; }
