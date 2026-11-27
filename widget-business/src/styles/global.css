@@ -8340,32 +8340,35 @@
 }
 
 /* ═══ HOW THE SCORE WORKS AND THE WARNING AS PLAIN TEXT (user's reference,
-   27 Nov 2026, "this can be plain text with titles like this", on the two
-   yellow cards beside the "Can people use it?" section) ═══════════════════
-   No ground, no corners, no padding, no icon. Each title is set as the
-   principle groups' titles ("Can people use it?": 43px, 1.1, no tracking,
-   16px under it; 29px on a phone); the points are the prose under it, one
-   line apart. The warning stands under how the score works, 48px apart, at
-   every width ("one under another", the same day). */
+   27 Nov 2026, "this can be plain text with titles like this"; then "one
+   under another"; then "typeset like this", a foundry's licence FAQ) ═════
+   No ground, no corners, no icon. One under another, set as the FAQ: each
+   title 29px at 1.15, 20px over its words; the words at the 22px prose
+   size, opened up to 1.4 with +0.01em, one empty line between paragraphs;
+   the second part stands under a 1px light rule (--row-rule), 40px below
+   the first part's last line and 40px above its own title. 22px titles on
+   a phone. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-plains {
   grid-column: 1 / -1; min-width: 0;
-  display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--cds-spacing-09);
-  margin: var(--cds-spacing-10) 0 0; align-items: start;
+  display: block; margin: var(--cds-spacing-10) 0 0;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-plain {
   min-width: 0; margin: 0; padding: 0; border: 0; background: none; color: var(--ink); text-align: left;
 }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-plain + .a11y-sum-plain {
+  margin-top: var(--cds-spacing-08); padding-top: var(--cds-spacing-08); border-top: 1px solid var(--row-rule);
+}
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-plain > .a11y-sum-plain-title {
-  margin: 0 0 var(--cds-spacing-05); padding: 0; font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-size: 43px; font-weight: 400; line-height: 1.1; letter-spacing: 0; text-transform: none;
+  margin: 0 0 20px; padding: 0; font-family: "Jokker", "DejaVu Sans", sans-serif;
+  font-size: 29px; font-weight: 400; line-height: 1.15; letter-spacing: 0; text-transform: none;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-plain > .a11y-sum-plain-text {
   margin: 0 0 1lh; padding: 0; max-width: none; font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-size: inherit; font-weight: 400; line-height: 1.1; letter-spacing: inherit; overflow-wrap: break-word;
+  font-size: 22px; font-weight: 400; line-height: 1.4; letter-spacing: 0.01em; overflow-wrap: break-word;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-plain > .a11y-sum-plain-text:last-child { margin-bottom: 0; }
 @media (max-width: 671px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-plain > .a11y-sum-plain-title { font-size: 29px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-plain > .a11y-sum-plain-title { font-size: 22px; }
 }
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-plain { break-inside: avoid; }
