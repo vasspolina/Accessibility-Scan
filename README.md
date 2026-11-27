@@ -4,6 +4,8 @@ Accessibility Scan checks a page, or a whole site, in a real browser at desktop 
 
 **Try it:** https://a11y-checker-v2-production.up.railway.app/demo.html
 
+**In Claude Code:** `/plugin marketplace add vasspolina/Accessibility-Scan`, then `/plugin install a11y-scan@accessibility-scan`. Claude scans any page you name, `localhost` included, fixes what it finds and scans again ([docs/SKILL.md](docs/SKILL.md)).
+
 ## What a scan runs
 
 Every scan renders the page in headless Chromium and layers:

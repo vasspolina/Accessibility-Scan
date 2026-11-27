@@ -116,10 +116,10 @@ export function VisionSimulator({
 
   return (
     <section className="a11y-section a11y-sim" aria-labelledby="a11y-sim-heading">
-      <h2 className="a11y-section-title" id="a11y-sim-heading" data-nav-label={t("Through other eyes")}>{t("Your page, through other eyes")}</h2>
+      <h2 className="a11y-section-title" id="a11y-sim-heading" data-nav-label={t("Through other eyes")}>{t("How your page looks with different vision conditions")}</h2>
       <p className="a11y-section-desc">
         {t(
-          "Switch views to see what your page loses."
+          "Switch views to see which text, images, and controls become harder to see."
         )}
       </p>
 

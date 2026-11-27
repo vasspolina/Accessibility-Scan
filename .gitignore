@@ -12,6 +12,8 @@ dist/
 # Built by backend/Dockerfile at deploy time. To serve it from the local dev
 # server, build it once: cd backend && npm run build:widget-business
 backend/public/widget-business.js
+# The Gemini-style demo's bundle, built the same way: npm run build:widget-gemini
+backend/public/widget-business-gemini.js
 
 # 1.5MB serving copy of reference/ui-kit.html — see reference/README.md
 widget-business/public/ui-kit.html

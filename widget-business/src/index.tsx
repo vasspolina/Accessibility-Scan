@@ -23,12 +23,15 @@ export interface MountOptions {
 }
 
 // @font-face is IGNORED inside a shadow-root stylesheet, so the face is
-// declared once at document level. The face is Jokker VF (trial), served
-// beside the other fonts (user's instruction, 26 Nov 2026, "use Jokker font
-// instead of pp telegraph"): a variable font over weights 100–900, which
-// global.css pins at 200 so it draws as thin as the Telegraf Ultralight it
-// replaces. Check the trial terms before the public site uses it. Before
-// it, one face for everything (user's
+// declared once at document level. One face, one weight, for everything
+// (user's instructions, 26 Nov 2026, "use Jokker font instead of pp
+// telegraph", "use regular", "now just use only regular joker for
+// everything"): Jokker VF (trial), served beside the other fonts, a variable
+// font over weights 100–900 that global.css pins at Regular 400, upright
+// only. The mono (PP Lettra Mono) and the callouts' serif (EB Garamond) are
+// no longer declared; the notes on them below are history, and their files
+// stay on the server for the other pages. Check the trial terms before the
+// public site uses it. Before it, one face for everything (user's
 // instruction, 24 Nov 2026, "use pp telegraph thin for all fonts"): PP
 // Telegraf Ultralight, the family's thinnest cut (it has none named Thin),
 // declared for the whole weight range 100–900 so any weight a rule or the
@@ -60,35 +63,28 @@ function injectFonts(apiBase: string) {
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
-}
+}`;
+  // The Gemini-style demo (`vite build --mode gemini`) is set in PP Telegraf
+  // (user's instruction, 26 Nov 2026, "use pp telegraph font"): Regular for
+  // 400 and Medium for 500 up, from the files beside Jokker. A build-time
+  // constant, so the product bundle declares Jokker only.
+  if (import.meta.env.MODE === "gemini") {
+    style.textContent += `
 @font-face {
-  font-family: "PP Lettra Mono";
-  src: url("${base}/fonts/PPLettraMono-Ultralight.otf") format("opentype");
+  font-family: "PP Telegraf";
+  src: url("${base}/fonts/PPTelegraf-Regular.otf") format("opentype");
   font-weight: 100 499;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: "PP Lettra Mono";
-  src: url("${base}/fonts/PPLettraMono-Medium.otf") format("opentype");
+  font-family: "PP Telegraf";
+  src: url("${base}/fonts/PPTelegraf-Medium.otf") format("opentype");
   font-weight: 500 900;
   font-style: normal;
   font-display: swap;
-}
-@font-face {
-  font-family: "EB Garamond";
-  src: url("${base}/fonts/EBGaramond-latin-400-normal.woff2") format("woff2");
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "EB Garamond";
-  src: url("${base}/fonts/EBGaramond-latin-400-italic.woff2") format("woff2");
-  font-weight: 100 900;
-  font-style: italic;
-  font-display: swap;
 }`;
+  }
   document.head.appendChild(style);
 }
 

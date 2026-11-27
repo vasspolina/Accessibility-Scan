@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState, type FocusEvent, type FormEvent, type MutableRefObject, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type FocusEvent, type FormEvent, type MutableRefObject, type ReactNode } from "react";
 import { t, tf } from "../lib/strings";
-import { getLang } from "../lib/i18n";
+import { getLang, LANG_NAMES, SUPPORTED_LANGS } from "../lib/i18n";
 import { CAPS_RUN, smarten } from "../lib/typography";
 import { Button } from "./Button";
 import { LanguageMenu } from "./LanguageMenu";
@@ -132,6 +132,11 @@ export interface ChatApi {
 /** Past this, the next message starts a fresh API conversation seeded with
  *  the latest report, rather than running into the server's caps (60
  *  messages, 400k characters) mid-turn. The thread on screen is kept. */
+// The Gemini-style demo build (`vite build --mode gemini`, demo-gemini.html)
+// takes a placeholder in the box and tooltip words on the rail's icon
+// buttons. A build-time constant, so the product bundle is unchanged.
+const GEMINI = import.meta.env.MODE === "gemini";
+
 const MAX_HISTORY_MESSAGES = 50;
 const MAX_HISTORY_CHARS = 300_000;
 
@@ -668,6 +673,8 @@ export function ScanChat({
   const [picks, setPicks] = useState(() => pickOpeningPrompts());
   const [busy, setBusy] = useState(false);
   const [announcement, setAnnouncement] = useState("");
+  // The Gemini view's Copy under a finished reply: which reply was copied.
+  const [copiedId, setCopiedId] = useState<number | null>(null);
   /** Where the reader was before the conversation took them to a block:
    *  the scroll position and what had focus. While it is set, the dock
    *  offers Back, to return to where they were before the block opened. */
@@ -1471,6 +1478,403 @@ export function ScanChat({
   // Switching threads mid-turn would land the reply in the wrong one.
   const switchLocked = busy || loading;
 
+  if (GEMINI) {
+    // The demo's own view (demo-gemini.html), built only in the gemini mode.
+    // Laid out after the user's reference of 26 Nov 2026 (a type foundry's
+    // shop page): small label pills stacked in the left margin, a row of
+    // fixed-width tabs over a 1px rule, then two columns, each a 13px title
+    // over a rule and rows between 1px rules. One face, three sizes (16, 13,
+    // 11px). The chat's behaviour stays: Send only once there is text,
+    // tooltips on icon buttons, Copy under a finished reply. The same state
+    // and handlers as the product's view below.
+    const canSend = !!draft.trim() || attached.length > 0;
+    const composer = (
+      <form className="g-composer" onSubmit={send} aria-label={t("New scan")}>
+        {/* The label is kept for screen readers; the field shows the same
+            words as its placeholder, one line tall until something is typed. */}
+        <label className="a11y-sr-only" htmlFor="a11y-chat-input">
+          {prompt}
+        </label>
+        <div className="g-field">
+          <textarea
+            id="a11y-chat-input"
+            className="g-input"
+            placeholder={prompt}
+            rows={1}
+            value={draft}
+            autoComplete="off"
+            enterKeyHint="send"
+            maxLength={4000}
+            onChange={(e) => {
+              setDraft(e.target.value);
+              e.target.style.height = "0px";
+              e.target.style.height = e.target.scrollHeight + "px";
+            }}
+            aria-describedby={suggestion ? "a11y-chat-tabhint" : undefined}
+            onPaste={(e) => {
+              const files = Array.from(e.clipboardData.files).filter((f) => f.type.startsWith("image/"));
+              if (!files.length) return;
+              if (!e.clipboardData.getData("text/plain")) e.preventDefault();
+              void attachFiles(files);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Tab" && !e.shiftKey && !e.altKey && !e.ctrlKey && !e.metaKey && suggestion) {
+                e.preventDefault();
+                setDraft(suggestion);
+                const el = e.currentTarget;
+                requestAnimationFrame(() => {
+                  el.style.height = "0px";
+                  el.style.height = el.scrollHeight + "px";
+                  el.setSelectionRange(el.value.length, el.value.length);
+                });
+                return;
+              }
+              if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+                e.preventDefault();
+                e.currentTarget.form?.requestSubmit();
+              }
+            }}
+          />
+          <div className="g-tools">
+            {backTo && (
+              <button type="button" className="g-pill g-pill-quiet" onClick={goBack}>
+                {t("Back")}
+              </button>
+            )}
+            <input
+              ref={fileRef}
+              type="file"
+              accept={IMAGE_TYPES.join(",")}
+              multiple
+              hidden
+              onChange={(e) => {
+                const files = Array.from(e.target.files ?? []);
+                e.target.value = "";
+                void attachFiles(files);
+              }}
+            />
+            <button
+              type="button"
+              className="g-icon-btn"
+              aria-label={t("Add an image")}
+              data-tip={t("Add an image")}
+              disabled={attached.length >= MAX_IMAGES_PER_MESSAGE}
+              onClick={() => fileRef.current?.click()}
+            >
+              <Icon name="add" size={20} />
+            </button>
+            <VoiceControl iconOnly />
+            {/* Send as in a Gemini chat box (user's "design as chat like
+                gemini chat", 26 Nov 2026): a round arrow at the right that
+                appears once there is something to send; Enter still submits
+                the form without it. */}
+            {canSend && (
+              <button type="submit" className="g-send" aria-label={t("Send")} data-tip={t("Send")} disabled={busy || loading}>
+                <Icon name="arrow--up" size={18} />
+              </button>
+            )}
+          </div>
+        </div>
+        {attached.length > 0 && (
+          <ul className="g-attached" role="list" aria-label={t("Attached images")}>
+            {attached.map((img) => (
+              <li key={img.id}>
+                <img src={imageSrc(img)} alt={img.name} />
+                <button type="button" className="g-icon-btn g-attached-remove" aria-label={tf("Remove {name}", { name: img.name })} onClick={() => removeImage(img)}>
+                  <Icon name="close" size={12} />
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        {attachNote && <p className="g-small">{attachNote}</p>}
+        {suggestion && (
+          <p className="g-small g-tabhint" id="a11y-chat-tabhint">
+            <span className="a11y-sr-only">{t("Press Tab to use this suggestion:")} </span>
+            <kbd aria-hidden="true">Tab</kbd> {smarten(suggestion, getLang())}
+          </p>
+        )}
+        {(addressIn(draft) || (report && report.meta.documentKind !== "pdf")) && (
+          <p className="g-small">
+            <button type="button" className="g-text-btn" onClick={onSignInForm}>
+              {t("Scan a page behind a login")}
+            </button>
+          </p>
+        )}
+      </form>
+    );
+
+    const opening = !barrier && turns.length === 0;
+
+    return (
+      <div className="g-app" data-opening={opening ? "" : undefined}>
+        {/* The left margin: the name and the ways to start, stacked pills. */}
+        <nav className="g-nav" aria-label={t("Conversations")}>
+          <span className="g-pill g-brand">Accessible Scan</span>
+          <button type="button" className="g-pill" onClick={newChat} disabled={switchLocked} aria-current={opening ? "page" : undefined}>
+            {t("New chat")}
+          </button>
+          {onReportBarrier && (
+            <button type="button" className="g-pill" onClick={onReportBarrier} disabled={switchLocked} aria-current={barrier ? "page" : undefined}>
+              {t("Report a barrier")}
+            </button>
+          )}
+          <GeminiLanguage value={language} onChange={onLanguageChange} />
+          {/* Recent, in the margin under the pills (user's instruction, 26 Nov 2026: "move recent ... underneath buttons"). */}
+          {chats.length > 0 && (
+            <section className="g-nav-recent" aria-labelledby="g-recent-title">
+              <h3 className="g-nav-title" id="g-recent-title">
+                {t("Recent")}
+              </h3>
+              {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
+              <ul className="g-list" role="list">
+                {chats.map((c) => (
+                  <li key={c.id} className="g-list-row" data-current={c.id === chatId ? "" : undefined}>
+                    <button
+                      type="button"
+                      className="g-list-btn g-list-ellipsis"
+                      aria-current={c.id === chatId ? "page" : undefined}
+                      disabled={switchLocked && c.id !== chatId}
+                      onClick={() => openChat(c)}
+                    >
+                      {c.title}
+                    </button>
+                    <button
+                      type="button"
+                      className="g-icon-btn g-list-delete"
+                      aria-label={tf("Delete {title}", { title: c.title })}
+                      data-tip={t("Delete")}
+                      disabled={switchLocked && c.id === chatId}
+                      onClick={() => removeChat(c)}
+                    >
+                      <Icon name="trash-can" size={14} />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+        </nav>
+
+        <div className="g-page" ref={rootRef} onFocus={keepFocusClear}>
+          {/* The page's title is for screen readers only, and so is the
+              conversation column's (user's "delete this", 26 Nov 2026, on
+              both): the outline stays, nothing is drawn. */}
+          <h2 className="a11y-sr-only" id="a11y-newscan-title">
+            {t("New scan")}
+          </h2>
+
+          <div className="g-cols">
+            <section className="g-col g-col-main" aria-labelledby="g-col-main-title">
+              <h3 className="a11y-sr-only" id="g-col-main-title">
+                {barrier ? t("Report a barrier") : t("Conversation")}
+              </h3>
+              {barrier ? (
+                <div className="g-barrier">{barrier}</div>
+              ) : (
+                <>
+                  {turns.length > 0 && (
+                    // eslint-disable-next-line jsx-a11y/no-redundant-roles
+                    <ol className="g-thread" role="list" aria-label={t("Conversation")}>
+                      {turns.map((turn, i) => {
+                        const prev = i > 0 ? turns[i - 1] : null;
+                        const cont = !!prev && prev.who !== "you" && prev.who !== "notice" && turn.who !== "you" && turn.who !== "notice";
+                        const label = (
+                          <p className={cont ? "a11y-sr-only" : "g-who"}>{turn.who === "you" ? t("You") : t("Assistant")}</p>
+                        );
+                        const cls = `g-row${turn.who === "you" ? " g-row-you" : ""}${cont ? " g-row-cont" : ""}`;
+                        if (turn.who === "you") {
+                          return (
+                            <li key={turn.id} className={cls}>
+                              {label}
+                              <div className="g-text">
+                                {turn.images && turn.images.length > 0 && (
+                                  <ul className="g-msg-images" role="list">
+                                    {turn.images.map((img) => (
+                                      <li key={img.id}>
+                                        <img src={imageSrc(img)} alt={img.name} />
+                                      </li>
+                                    ))}
+                                  </ul>
+                                )}
+                                {turn.text && <p>{capsWrap(smarten(turn.text, getLang()))}</p>}
+                              </div>
+                            </li>
+                          );
+                        }
+                        if (turn.who === "notice") {
+                          return (
+                            <li key={turn.id} className={cls}>
+                              <BlockedNotice message={turn.message} onSignIn={onSignInForm} />
+                            </li>
+                          );
+                        }
+                        if (turn.who === "scan") {
+                          const running = turn.state === "running";
+                          const steps = running ? milestones : turn.steps;
+                          const current = running ? steps[steps.length - 1] : null;
+                          const fresh = turn.resultKey && turn.resultKey === currentKey && report;
+                          const [before, after] = t(
+                            running ? "Checking {url}." : turn.state === "done" ? "Checked {url}." : "Couldn't check {url}."
+                          ).split("{url}");
+                          return (
+                            <li key={turn.id} className={cls} data-busy={running ? "" : undefined}>
+                              {label}
+                              <div className="g-text">
+                                <p>{urlInSentence(before, turn.url, after)}</p>
+                                {steps.length > 0 && (
+                                  <StepFold folded={turn.state === "done"}>
+                                    <ol className="g-steps" role="list">
+                                      {NARRATION_STEPS.filter((s) => steps.includes(s.id))
+                                        .sort((a, b) => narrationIndex(a.id) - narrationIndex(b.id))
+                                        .map((s) => {
+                                          const result = fresh
+                                            ? stepResult(s.id, fresh)
+                                            : turn.state === "failed" && s.id === steps[steps.length - 1]
+                                              ? t("Did not finish")
+                                              : null;
+                                          return (
+                                            <li key={s.id} className="g-step" data-now={s.id === current ? "" : undefined} aria-current={s.id === current ? "step" : undefined}>
+                                              {narrationLabel(s.id)}
+                                              {result && <span className="g-step-result"> – {result}</span>}
+                                            </li>
+                                          );
+                                        })}
+                                    </ol>
+                                  </StepFold>
+                                )}
+                              </div>
+                            </li>
+                          );
+                        }
+                        if (turn.who === "block") {
+                          const fresh = turn.resultKey === currentKey;
+                          const body = fresh ? renderSection(turn.section) : null;
+                          if (turn.section === "stop" && !body) return null;
+                          return (
+                            <li key={turn.id} id={`a11y-chat-block-${turn.id}`} className={`${cls} g-row-block`}>
+                              {fresh ? (
+                                <>
+                                  {turn.section === "findings" && renderSection("protable")}
+                                  {body}
+                                </>
+                              ) : (
+                                <p className="g-small">
+                                  {sectionLabel(turn.section)} – {t("From an earlier scan. Run it again to see it.")}
+                                </p>
+                              )}
+                            </li>
+                          );
+                        }
+                        // A reply from the assistant.
+                        return (
+                          <li key={turn.id} className={cls} aria-busy={turn.streaming ? true : undefined} data-busy={turn.streaming ? "" : undefined}>
+                            {label}
+                            <div className="g-text">
+                              {turn.text ? renderReply(turn.text, turn.marks) : turn.searching === undefined && waiting(t("Thinking…"))}
+                              {turn.streaming && turn.searching !== undefined && waiting(searchingLine(turn.searching))}
+                            </div>
+                            {!turn.streaming && turn.id === lastReplyId && confirmAddress && (
+                              <p className="g-confirm">
+                                <button type="button" className="g-pill" disabled={busy || loading} onClick={() => void ask(tf("Yes, check {url}", { url: confirmAddress }))}>
+                                  {tf("Check {url}", { url: confirmAddress })}
+                                </button>
+                              </p>
+                            )}
+                            {turn.sources && turn.sources.length > 0 && (
+                              <p className="g-small">
+                                {t("Sources")}:{" "}
+                                {turn.sources.map((s, j) => (
+                                  <span key={s.url}>
+                                    {j > 0 && ", "}
+                                    <a href={s.url} target="_blank" rel="noopener noreferrer">
+                                      {s.title}
+                                    </a>
+                                  </span>
+                                ))}
+                              </p>
+                            )}
+                            {!turn.streaming && turn.text && (
+                              <p className="g-small g-actions">
+                                <button
+                                  type="button"
+                                  className="g-text-btn"
+                                  onClick={async () => {
+                                    try {
+                                      await navigator.clipboard.writeText(turn.text.replace(SENTINELS, ""));
+                                      setCopiedId(turn.id);
+                                      setAnnouncement(t("Copied to clipboard"));
+                                    } catch {
+                                      /* clipboard refused: nothing copied, nothing claimed */
+                                    }
+                                  }}
+                                >
+                                  {copiedId === turn.id ? t("Copied") : t("Copy")}
+                                </button>
+                              </p>
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ol>
+                  )}
+                  <div className="g-dock" ref={dockRef}>
+                    {composer}
+                    {/* The report's sections under the box once a scan has
+                        run (user's "this can go underneath chat when scan
+                        was done", 26 Nov 2026); each adds its block to the
+                        thread. */}
+                    {offered.length > 0 && (
+                      <div className="g-tabs" role="group" aria-label={t("Show from the report")}>
+                        {offered.map((sec) => (
+                          <button key={sec.key} type="button" className="g-tab" onClick={() => showSection(sec.key, { takeFocus: true })}>
+                            {sec.label()}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </section>
+
+            {/* The starter questions beside the box, only before the
+                conversation starts; after that the conversation takes the
+                width. */}
+            {opening && (
+              <aside className="g-col g-col-side" aria-labelledby="g-questions-title">
+                <section>
+                  <h3 className="g-col-title" id="g-questions-title">
+                    {t("Questions to start with")}
+                  </h3>
+                  {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
+                  <ul className="g-list" role="list">
+                    {picks.slice(0, 3).map((p) => (
+                      <li key={p.group}>
+                        <button type="button" className="g-list-btn" disabled={busy || loading} onClick={() => void ask(t(p.prompt))}>
+                          <span className="a11y-sr-only">{t(p.group)}: </span>
+                          {smarten(t(p.prompt), getLang())}
+                        </button>
+                      </li>
+                    ))}
+                    <li>
+                      <button type="button" className="g-list-btn g-list-quiet" onClick={() => setPicks((last) => pickOpeningPrompts(Math.random, last))}>
+                        {t("Other questions")}
+                      </button>
+                    </li>
+                  </ul>
+                </section>
+              </aside>
+            )}
+          </div>
+          <p className="a11y-sr-only" role="status">
+            {announcement}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="a11y-chat-layout">
       {/* The conversations panel, on the left (user's
@@ -2004,5 +2408,76 @@ function StepFold({ folded, children }: { folded: boolean; children: ReactNode }
       </summary>
       {children}
     </details>
+  );
+}
+
+/** The demo view's language control: a pill in the left margin naming the
+ *  chosen language, opening the four languages under it. A disclosure, as
+ *  LanguageMenu is:
+ *  Escape, a press outside and focus leaving close it. */
+function GeminiLanguage({ value, onChange }: { value: Lang; onChange: (lang: Lang) => void }) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const listId = useId();
+
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: PointerEvent) => {
+      if (rootRef.current && !e.composedPath().includes(rootRef.current)) setOpen(false);
+    };
+    document.addEventListener("pointerdown", onDown);
+    return () => document.removeEventListener("pointerdown", onDown);
+  }, [open]);
+
+  return (
+    <div
+      className="g-lang"
+      ref={rootRef}
+      onKeyDown={(e) => {
+        if (e.key === "Escape" && open) {
+          e.stopPropagation();
+          setOpen(false);
+          toggleRef.current?.focus();
+        }
+      }}
+      onBlur={(e) => {
+        if (open && !e.currentTarget.contains(e.relatedTarget as Node | null)) setOpen(false);
+      }}
+    >
+      <button
+        type="button"
+        ref={toggleRef}
+        className="g-pill"
+        aria-expanded={open}
+        aria-controls={listId}
+        onClick={() => setOpen((o) => !o)}
+      >
+        {t("Language")}
+        <span className="a11y-sr-only">, </span>
+        <span className="g-lang-current" lang={value}>
+          {LANG_NAMES[value]}
+        </span>
+      </button>
+      <ul className="g-menu-list" id={listId} role="list" hidden={!open}>
+        {SUPPORTED_LANGS.map((l) => (
+          <li key={l}>
+            <button
+              type="button"
+              className="g-menu-item"
+              lang={l}
+              aria-pressed={l === value}
+              onClick={() => {
+                onChange(l);
+                setOpen(false);
+                toggleRef.current?.focus();
+              }}
+            >
+              {LANG_NAMES[l]}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

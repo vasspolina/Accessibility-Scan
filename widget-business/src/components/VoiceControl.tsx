@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getLang } from "../lib/i18n";
 import { t, tf } from "../lib/strings";
+import { Icon } from "./Icon";
 import {
   SPEECH_LANG,
   collectControls,
@@ -49,7 +50,9 @@ function recogniserClass(): (new () => Recognition) | null {
  */
 const listening = { current: false };
 
-export function VoiceControl() {
+/** `iconOnly` (the Gemini-style demo's box): the toggle is a microphone
+ *  icon button named "Voice control", with that name as its tooltip. */
+export function VoiceControl({ iconOnly = false }: { iconOnly?: boolean } = {}) {
   const Rec = typeof window === "undefined" ? null : recogniserClass();
   const [on, setOn] = useState(listening.current);
   const [status, setStatus] = useState("");
@@ -282,9 +285,15 @@ export function VoiceControl() {
 
   return (
     <span className="a11y-voice" ref={wrapRef}>
-      <button type="button" className="a11y-btn a11y-btn-ghost a11y-btn-md" aria-pressed={on} onClick={toggle}>
-        {t("Voice control")}
-      </button>
+      {iconOnly ? (
+        <button type="button" className="g-icon-btn" aria-pressed={on} aria-label={t("Voice control")} data-tip={t("Voice control")} onClick={toggle}>
+          <Icon name="microphone" size={20} />
+        </button>
+      ) : (
+        <button type="button" className="a11y-btn a11y-btn-ghost a11y-btn-md" aria-pressed={on} onClick={toggle}>
+          {t("Voice control")}
+        </button>
+      )}
       <span className="a11y-voice-note" role="status">
         {status}
       </span>

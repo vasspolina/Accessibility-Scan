@@ -1168,8 +1168,8 @@ export const UNDECIDED_FR: Record<string, { what: string; ask: string }> = {
     ask: "Ouvrez la page sur un téléphone et tournez-le dans les deux sens. Tout doit continuer à fonctionner, pour les personnes dont le téléphone est fixé à un fauteuil ou un support.",
   },
   "interaction-no-status-region": {
-    what: "Rien sur cette page n’est prévu pour annoncer les changements sans rechargement, comme une liste filtrée ou un message « Enregistré ». Un lecteur d’écran reste muet pendant ce temps.",
-    ask: "Demandez à votre équipe de développement si quelque chose se met à jour ici sans chargement de page. Si oui, cette mise à jour a besoin d’une région live (aria-live) pour être dite autant que montrée.",
+    what: "La page a des boutons ou des formulaires, mais rien n’est prévu pour lire les changements à voix haute. Si une liste se filtre ou si « Enregistré » s’affiche sans rechargement, un lecteur d’écran ne dit rien.",
+    ask: "Utilisez les boutons et formulaires de la page et regardez si quelque chose change sans rechargement. Si oui, demandez à votre équipe de développement de placer ce message dans une région live (aria-live), pour qu’un lecteur d’écran le lise.",
   },
   "interaction-acts-on-change": {
     what: "Des menus ou des cases dont le code laisse penser qu’ils agissent dès qu’on les règle, sans bouton. Nous ne les avons pas essayés, car cela pourrait passer une vraie commande.",

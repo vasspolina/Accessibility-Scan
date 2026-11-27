@@ -1,0 +1,16 @@
+{
+  "name": "accessibility-scan",
+  "owner": { "name": "Polina Vasilyeva" },
+  "metadata": {
+    "description": "Accessibility Scan for Claude Code: WCAG 2.2 and EN 301 549 findings from a real browser."
+  },
+  "plugins": [
+    {
+      "name": "a11y-scan",
+      "source": "./plugins/a11y-scan",
+      "description": "Scan any page, including localhost, for WCAG 2.2 A/AA faults, read the findings, fix the code and scan again.",
+      "category": "development",
+      "keywords": ["accessibility", "a11y", "wcag", "en-301-549", "axe-core"]
+    }
+  ]
+}

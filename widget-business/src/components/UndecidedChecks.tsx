@@ -161,7 +161,10 @@ export function UndecidedChecks({
                     )}
                     {r.helpUrl && (
                       <a
-                        className="a11y-learn-more"
+                        /* The black prompt pill of the opened finding's
+                           Learn more (user's word, 26 Nov 2026, "this
+                           should be button"); it already asks the chat. */
+                        className="a11y-learn-more a11y-learn-prompt"
                         href={r.helpUrl}
                         onClick={learnMoreClick(
                           ask,
