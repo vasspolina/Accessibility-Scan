@@ -820,9 +820,8 @@ main.wrap > form.signup { margin-bottom: var(--s12); padding-bottom: var(--s10);
   font-weight: 400; font-style: normal; font-display: swap;
 }
 .acc__btn[aria-expanded="true"] {
+  /* No rule above the opened title (user's instruction, 27 Nov 2026, "delete line above"). */
   padding: var(--s07) var(--s07) var(--s05);
-  background-image: linear-gradient(#000 0 0);
-  background-repeat: no-repeat; background-size: calc(100% - 2 * var(--s07)) 4px; background-position: left var(--s07) top var(--s06);
   color: #000; font-weight: 500; font-size: 56px; line-height: 1; letter-spacing: -0.02em;
   font-feature-settings: "ss01", "ss02", "ss05";
 }
@@ -927,4 +926,33 @@ main.wrap > form.signup { margin-bottom: var(--s12); padding-bottom: var(--s10);
   .top .nav li:last-child a, .top .brand, .top .nav a { font-size: clamp(32px, 3.4vw, 56px); }
   .top .brand { flex-basis: 100%; }
   .top .toc { flex-basis: 100%; margin-top: var(--s03); border-top: 1px solid #000; }
+}
+
+/* ---------- About opens on its slogans (user's instruction, 27 Nov 2026,
+   "dont say about just say We're a design studio in Berlin building websites
+   that work for everyone. and other slogans on slider") ----------
+   No "About BarrierFreeWeb" title: the yellow hero is a slider of the
+   studio's line and the four statements, set as the hero title was (black
+   Jokker Regular, 7vw with a 48px floor and 160px cap, 0.95, -0.015em),
+   left, top, on the band. The first slide's words are the page's h1. The
+   arrows and the count sit on the band under the words. */
+main.wrap:has(> .plates--hero) { padding-top: 0; }
+main.wrap > .plates--hero {
+  --ink: #000; --focus: #198038; --bubble: #fff; --bubble-ink: #000; --solid: #000; --solid-ink: #fff;
+  color: #000; margin: 0 0 var(--s12); padding-bottom: var(--s10);
+  border-image: linear-gradient(var(--y) 0 0) fill 0 / 0 / 0 100vw;
+}
+.plates--hero .plates__track .plate:nth-child(n) {
+  min-height: 60svh; padding: var(--s09) 0; place-items: start; align-content: start;
+  background: transparent; color: #000;
+}
+.plates--hero .plates__track .plate:nth-child(n)::before { content: none; }
+.plates--hero .plates__track .plate:nth-child(n) :is(p, h1) {
+  max-width: 20ch; margin: 0; color: inherit; text-align: start;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-variation-settings: normal;
+  font-size: clamp(48px, 7vw, 160px); line-height: 0.95; letter-spacing: -0.015em; text-wrap: balance;
+}
+.plates--hero .plates__bar { justify-content: flex-start; margin-top: 0; }
+@media (max-width: 671px) {
+  .plates--hero .plates__track .plate:nth-child(n) { min-height: 50svh; padding: var(--s07) 0; }
 }
