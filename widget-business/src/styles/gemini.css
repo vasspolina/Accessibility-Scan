@@ -1209,6 +1209,29 @@
 .a11y-widget-biz .a11y-accordion-title { margin: 0; }
 .a11y-widget-biz .a11y-accordion-row { background: none; }
 
+/* The legal checklist typeset (user's "typeset properly", 27 Nov 2026):
+   each criterion a row between rules in three columns, the number and
+   level at 14px over the criterion's name at 17px, what was found at 17px,
+   and the count at the right end in its status colour. */
+.a11y-widget-biz .a11y-conf-list { list-style: none; margin: 0; padding: 0; }
+.a11y-widget-biz .a11y-conf-row {
+  display: grid; grid-template-columns: minmax(180px, 260px) minmax(0, 1fr) auto; column-gap: 21px; align-items: baseline;
+  margin: 0; padding: 10px 0 11px; border-bottom: 1px solid var(--rule-soft);
+}
+.a11y-widget-biz .a11y-conf-id { display: grid; gap: 2px; }
+.a11y-widget-biz .a11y-conf-key { font-size: 14px; line-height: 17px; color: var(--ink-2); }
+.a11y-widget-biz .a11y-conf-key em { font-style: normal; margin-inline-start: 0.4em; }
+.a11y-widget-biz .a11y-conf-name { font-size: 17px; line-height: 21px; color: var(--ink); }
+.a11y-widget-biz .a11y-conf-body { font-size: 17px; line-height: 21px; color: var(--ink); }
+.a11y-widget-biz .a11y-conf-body strong { font-weight: inherit; }
+.a11y-widget-biz .a11y-conf-status { justify-self: end; white-space: nowrap; font-size: 17px; line-height: 21px; color: var(--ink-2); transform: none; }
+.a11y-widget-biz .a11y-conf-status[data-status="failed"] { color: var(--error); }
+.a11y-widget-biz .a11y-conf-status[data-status="passed"] { color: var(--ok); }
+@media (max-width: 640px) {
+  .a11y-widget-biz .a11y-conf-row { grid-template-columns: minmax(0, 1fr) auto; }
+  .a11y-widget-biz .a11y-conf-body { grid-column: 1 / -1; grid-row: 2; margin-top: 4px; }
+}
+
 /* The form's report (a page behind a login) keeps the product shell. */
 .a11y-widget-biz .a11y-shell-with-nav > .a11y-shell-main { display: grid; grid-template-columns: 225px minmax(0, 1fr); gap: 13px; padding: 16px; }
 .a11y-widget-biz .a11y-shell-nav { position: sticky; top: 16px; align-self: start; display: flex; flex-direction: column; gap: 2px; }
