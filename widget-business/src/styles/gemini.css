@@ -1194,6 +1194,21 @@
 .a11y-widget-biz td[data-col="issue"] .a11y-finding-meta-line > * { margin: 0; }
 .a11y-widget-biz .a11y-finding-header:not(:has(> .a11y-shot)) > .a11y-finding-meta { grid-row: 1; grid-column: 3; justify-self: end; }
 
+/* The fold-out heads of the conformance report and the screen reader
+   simulation: their arrows sized (unsized, the SVG filled the row), the
+   caret first and turned while open, the head one row like the others. */
+.a11y-widget-biz .a11y-accordion-head {
+  display: flex; align-items: center; gap: 10px; width: 100%; padding: 0;
+  font-size: 21px; line-height: 25px; text-align: start; background: none;
+}
+.a11y-widget-biz .a11y-accordion-head:hover:not(:disabled) { background: none; }
+.a11y-widget-biz .a11y-accordion-head :is(.a11y-acr-caret, .a11y-accordion-chevron) { flex: none; width: 20px; height: 20px; transition: transform 0.15s ease; }
+.a11y-widget-biz .a11y-accordion-head[aria-expanded="true"] .a11y-acr-caret { transform: rotate(90deg); }
+.a11y-widget-biz .a11y-accordion-head .a11y-accordion-chevron { transform: rotate(-90deg); }
+.a11y-widget-biz .a11y-accordion-head[aria-expanded="true"] .a11y-accordion-chevron { transform: none; }
+.a11y-widget-biz .a11y-accordion-title { margin: 0; }
+.a11y-widget-biz .a11y-accordion-row { background: none; }
+
 /* The form's report (a page behind a login) keeps the product shell. */
 .a11y-widget-biz .a11y-shell-with-nav > .a11y-shell-main { display: grid; grid-template-columns: 225px minmax(0, 1fr); gap: 13px; padding: 16px; }
 .a11y-widget-biz .a11y-shell-nav { position: sticky; top: 16px; align-self: start; display: flex; flex-direction: column; gap: 2px; }
