@@ -1041,3 +1041,148 @@ html:has(header .toc) { scroll-padding-top: 220px; }
 @media (max-width: 671px) {
   .cols:has(> .text > h2:first-child) > .card p { font-size: 18px; }
 }
+
+/* The EAA statement as one panel of type (user's instruction, 28 Nov
+   2026, "typeset this like this keep italicks", on a specimen of big
+   running type in two colours on an olive panel): full bleed, the title
+   in the statements' Jokker Heavy Italic, the rest running on in Jokker
+   Regular at the same size, its phrases white and black in turn, the
+   audit link a small black label at the foot, right. Olive #7d9254, fixed
+   in both themes: white words 3.4:1 (large text only), black 6.1:1, so
+   every small word on it is black. */
+.cols.cols--eaa {
+  display: block; box-sizing: border-box; width: 100vw; margin-left: calc(50% - 50vw);
+  padding: var(--s09) var(--s10) var(--s08); border-top: 0;
+  background: #7d9254; color: #000; --ink: #000; --focus: #000;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-variation-settings: "wght" 400;
+  font-size: clamp(36px, 5.6vw, 104px); line-height: 1.04; letter-spacing: -0.015em;
+}
+.cols.cols--eaa > :is(.text, .card) {
+  display: inline; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; color: inherit;
+  font: inherit; letter-spacing: inherit; font-variation-settings: inherit;
+}
+.cols.cols--eaa :is(h2, p, span) {
+  display: inline; margin: 0; padding: 0; font: inherit; letter-spacing: inherit; font-variation-settings: inherit; color: inherit;
+}
+.content > .eaa-title {
+  display: block; margin: 0; padding: var(--s04) 0 var(--s06); border-top: 1px solid #000;
+  color: var(--ink); font-size: clamp(36px, 5.6vw, 104px); line-height: 1.0; font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 900; font-variation-settings: "wght" 900, "slnt" -16; letter-spacing: -0.025em;
+}
+.cols.cols--eaa > .text > p > span + span,
+.cols.cols--eaa > .card > p:first-child { color: #fff; }
+.cols.cols--eaa > .text > p > span:first-child { color: #000; }
+.cols.cols--eaa > .card > p:first-child { color: #000; }
+.cols.cols--eaa > .card > .action {
+  display: block; margin-top: var(--s07); text-align: right; font-size: 24px; line-height: 1.2; letter-spacing: 0;
+}
+.cols.cols--eaa .action .btn {
+  display: inline; min-height: 0; padding: 0; border: 0; border-radius: 0; background: none; color: #000;
+  font: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em;
+}
+.cols.cols--eaa .action .btn:hover { background: none; color: #000; text-decoration-thickness: 2px; }
+.cols.cols--eaa .action .btn:focus-visible { outline: 2px solid #000; outline-offset: 4px; }
+@media (max-width: 671px) {
+  .cols.cols--eaa { padding: var(--s07) var(--s05) var(--s06); font-size: 36px; line-height: 1.05; }
+  .cols.cols--eaa > .card > .action { font-size: 18px; }
+}
+@media (forced-colors: active) {
+  .cols.cols--eaa { border: 1px solid CanvasText; }
+}
+
+/* Notes as violet panels (user's instruction, 28 Nov 2026, "make notes
+   like this", on a violet note card: a white first line, a paler second,
+   room, small words at the foot): the side-note cards and the EAA notice.
+   Violet #5a2df0 in both themes, white 6.9:1, lavender #dcd6ff 4.8:1; 6px
+   corners; Jokker Regular, the first line 24px white, the rest lavender,
+   the last line 18px at the foot when there is more than one. */
+.card:not(:has(> .offer)), .notice {
+  --ink: #fff; --focus: #fff;
+  border-radius: 6px; background: #5a2df0; color: #dcd6ff;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-size: 24px; line-height: 1.2; letter-spacing: 0;
+}
+.card:not(:has(> .offer)) {
+  display: flex; flex-direction: column; gap: 0; min-height: 200px; padding: var(--s05) var(--s05) var(--s05);
+}
+.card:not(:has(> .offer)) > * { margin: 0; }
+.card:not(:has(> .offer)) > :first-child { color: #fff; font: inherit; }
+.card:not(:has(> .offer)) > :last-child:not(:first-child) { margin-top: auto; padding-top: var(--s07); font-size: 18px; line-height: 1.3; }
+.card:not(:has(> .offer)) > :first-child + :not(:last-child) { margin-top: 0; }
+.card:not(:has(> .offer)) p + p { margin-top: 0; }
+.card:not(:has(> .offer)) a:not(.btn) { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+.card:not(:has(> .offer)) a:not(.btn):hover, .notice a:hover { background: none; color: #fff; text-decoration-thickness: 2px; }
+.card:not(:has(> .offer)) a:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.card:not(:has(> .offer)) .btn { border-color: #fff; background: #fff; color: #5a2df0; }
+.notice { padding: var(--s05); color: #fff; text-align: left; }
+@media (max-width: 671px) {
+  .card:not(:has(> .offer)), .notice { font-size: 18px; }
+  .card:not(:has(> .offer)) { min-height: 160px; }
+  .card:not(:has(> .offer)) > :last-child:not(:first-child) { font-size: 15px; }
+}
+@media (forced-colors: active) {
+  .card:not(:has(> .offer)), .notice { border: 1px solid CanvasText; }
+}
+
+/* The menu as a small row over a rule, and the page as a big crumb under
+   it (user's instruction, 28 Nov 2026, "add this interaction to menu", on
+   a type foundry's header: grey menu words over a rule, then "Parent /
+   Page" in big type, the parent grey, a pale slash, the page black). The
+   wordmark and the four pages are 18px grey (#5e5e5e on the band, 6.0:1),
+   the page you are on black, hover black; one 1px black rule under them.
+   Under it the breadcrumb, until now for screen readers only, is shown in
+   the big type: Home grey and a link, the slash #a3a39a (decorative), the
+   page black. Home has one crumb and shows none. */
+.top { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: var(--s07); row-gap: 0; padding-block: var(--s04) var(--s06); }
+.top::before { content: ""; order: 2; flex: 0 0 100%; height: 1px; margin-top: var(--s03); background: #000; }
+.top::after { content: none; }
+.top .brand, .top .nav a, .top .nav li:last-child a {
+  font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; color: #5e5e5e;
+}
+.top .brand { order: 1; flex-basis: auto; }
+.top .nav li { order: 1; padding: 0; }
+.top .nav li:last-child { grid-column: auto; padding-bottom: 0; }
+.top .nav a[aria-current] { color: #000; }
+.top .brand:hover, .top .nav a:hover { color: #000; }
+.top .crumb {
+  position: static; width: auto; height: auto; margin: var(--s04) 0 0; overflow: visible; clip-path: none; white-space: normal;
+  order: 3; flex: 0 0 100%;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-variation-settings: normal;
+  font-size: clamp(40px, 5.6vw, 96px); line-height: 1.02; letter-spacing: -0.02em;
+}
+.top .crumb ol { display: flex; flex-wrap: wrap; align-items: baseline; }
+.top .crumb li + li::before { content: "/" / ""; padding-inline: 0.04em; color: #a3a39a; }
+.top .crumb a { color: #5e5e5e; text-decoration: none; }
+.top .crumb a:hover { color: #000; }
+.top .crumb a:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+.top .crumb [aria-current] { color: #000; }
+.top .crumb:not(:has(li + li)) {
+  position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+.top .toc { order: 4; flex: 0 0 100%; margin-top: var(--s06); border-top: 1px solid #000; }
+@media (max-width: 1055px) {
+  .top .brand { flex-basis: auto; }
+  .top .brand, .top .nav a, .top .nav li:last-child a { font-size: 18px; }
+}
+@media (max-width: 671px) {
+  .top { column-gap: var(--s05); row-gap: var(--s02); }
+  .top .crumb { font-size: 40px; }
+}
+
+/* An opened offer typeset (user's instruction, 28 Nov 2026, "typeset
+   these"): the lede a real lede, EB Garamond 32px at 1.15 on a 26ch
+   measure; the terms a ruled index, each term and its description on one
+   row between 1px rules in the edge grey (#8e8e93, both themes), 12px
+   above and below, the term column 35%; the lede starts on the first
+   row's line. */
+.acc__panel > .acc__lede { padding-top: var(--s04); max-width: 26ch; font-size: 32px; line-height: 1.15; }
+.acc__panel .acc__body > p { max-width: 40ch; }
+.acc__panel .acc__body > .terms { grid-template-columns: minmax(0, 35%) minmax(0, 1fr); column-gap: 0; row-gap: 0; }
+.acc__panel .terms :is(dt, dd) { padding-block: var(--s04); border-top: 1px solid var(--edge); }
+.acc__panel .terms dt { padding-right: var(--s06); }
+.acc__panel .terms > div:last-child > :is(dt, dd) { border-bottom: 1px solid var(--edge); }
+@media (max-width: 671px) {
+  .acc__panel > .acc__lede { font-size: 24px; padding-top: 0; }
+  .acc__panel .terms dt { padding-right: var(--s04); }
+}
+/* The big crumb makes a sub page's sticky header about 290px at 1440px:
+   a section link lands under it, not behind it. */
+@media (min-width: 1056px) { html:has(header .crumb li + li):has(header .toc) { scroll-padding-top: 320px; } }
