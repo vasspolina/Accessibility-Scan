@@ -1775,3 +1775,42 @@ main.wrap > .title {
   font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 100; font-variation-settings: "wght" 100, "slnt" 0;
   letter-spacing: 0;
 }
+
+/* The Accessibility page opens on a statement (user's instruction, 28
+   Nov 2026, "typeset this as this", on its two opening paragraphs beside
+   a violet note, shown a statement slide): the Services statement's
+   setting, a hairline, a 16px caption (the section's data-topic, drawn,
+   alt text ""), the words in Jokker wght 100 at the logo's size in
+   red-orange, the closing phrase slanted. Its note is no card: a label
+   row at the statement's foot, like the EAA statement's, a hairline, the
+   sentence in ink at the left and its link from the middle in the link
+   grey with the icon set's arrow, ink on hover. */
+.cols.cols--statement[data-topic]::before { content: attr(data-topic) / ""; }
+.cols.cols--statement > .card:nth-child(n) {
+  /* The note card's own white ink and focus are given back to the page's. */
+  --ink: inherit; --focus: inherit; --edge: inherit; --link-grey: inherit;
+  display: block; min-height: 0; margin: var(--s09) 0 0; padding: var(--s04) 0 0;
+  border: 0; border-top: 1px solid var(--edge); border-radius: 0; background: none; color: var(--ink);
+}
+.cols.cols--statement > .card > p:nth-child(n) {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--gutter); align-items: baseline;
+  margin: 0; max-width: none; color: var(--ink);
+  font-size: 22px; line-height: 1.2; letter-spacing: 0; font-weight: 500; font-variation-settings: "wght" 500, "slnt" 0;
+}
+.cols.cols--statement > .card a:nth-child(n) {
+  justify-self: start; padding: 0; border-radius: 0; background: none; color: var(--link-grey); text-decoration: none;
+  font-weight: 400; font-variation-settings: "wght" 400, "slnt" 0;
+}
+.cols.cols--statement > .card a::after {
+  content: ""; display: inline-block; width: 0.9em; height: 0.9em; margin-left: 0.25em; vertical-align: -0.1em; background: currentColor;
+  -webkit-mask: var(--arrow-right) center / contain no-repeat; mask: var(--arrow-right) center / contain no-repeat;
+}
+.cols.cols--statement > .card a:is(:hover, :focus-visible) { background: none; color: var(--ink); }
+.cols.cols--statement > .card a:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+@media (max-width: 671px) {
+  .cols.cols--statement > .card:nth-child(n) { margin-top: var(--s07); }
+  .cols.cols--statement > .card > p:nth-child(n) { grid-template-columns: minmax(0, 1fr); row-gap: var(--s02); font-size: 18px; }
+}
+@media (forced-colors: active) {
+  .cols.cols--statement > .card a::after { background: LinkText; forced-color-adjust: none; }
+}
