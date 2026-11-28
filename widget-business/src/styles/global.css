@@ -11661,6 +11661,26 @@
   letter-spacing: 0;
 }
 
+/* ── Shell, sections and navigation, continued ── */
+:where(.a11y-widget-biz .a11y-report h2:is(.a11y-section-title, .a11y-legal-title, .a11y-results-title):not(.a11y-sr-only):not(.a11y-accordion-title):not(.a11y-w22-title)) {
+  margin: 0 0 var(--cds-spacing-06);
+  color: var(--prompt-line);
+  font-family: "Jokker", "DejaVu Sans", sans-serif;
+  font-size: 58px;
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: 0;
+  text-transform: none;
+}
+@media (max-width: 671px) {
+  :where(.a11y-widget-biz .a11y-report h2:is(.a11y-section-title, .a11y-legal-title, .a11y-results-title):not(.a11y-sr-only):not(.a11y-accordion-title):not(.a11y-w22-title)) {
+    font-size: 36px;
+  }
+}
+:where(.a11y-widget-biz .a11y-report .a11y-findings-head > h2.a11y-section-title) {
+  margin: 0;
+}
+
 /* ── Findings and the opened finding, continued ── */
 :where(.a11y-widget-biz .a11y-fd .a11y-affected .a11y-occurrence-list > li[class]) {
   margin: 0 0 var(--cds-spacing-05);
@@ -11692,26 +11712,6 @@
 }
 :where(.a11y-widget-biz .a11y-report h2:is(.a11y-section-title, .a11y-legal-title, .a11y-results-title):not(.a11y-sr-only):not(.a11y-accordion-title):not(.a11y-w22-title) .a11y-count-dot) {
   margin-inline-start: var(--cds-spacing-03);
-}
-
-/* ── Shell, sections and navigation, continued ── */
-:where(.a11y-widget-biz .a11y-report h2:is(.a11y-section-title, .a11y-legal-title, .a11y-results-title):not(.a11y-sr-only):not(.a11y-accordion-title):not(.a11y-w22-title)) {
-  margin: 0 0 var(--cds-spacing-06);
-  color: var(--prompt-line);
-  font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-size: 58px;
-  font-weight: 400;
-  line-height: 1.05;
-  letter-spacing: 0;
-  text-transform: none;
-}
-@media (max-width: 671px) {
-  :where(.a11y-widget-biz .a11y-report h2:is(.a11y-section-title, .a11y-legal-title, .a11y-results-title):not(.a11y-sr-only):not(.a11y-accordion-title):not(.a11y-w22-title)) {
-    font-size: 36px;
-  }
-}
-:where(.a11y-widget-biz .a11y-report .a11y-findings-head > h2.a11y-section-title) {
-  margin: 0;
 }
 
 /* ── Chat, conversations and Report a barrier, continued ── */
@@ -14357,4 +14357,12 @@
 }
 :where(.a11y-widget-biz .a11y-principle-group + .a11y-principle-group) {
   margin-top: var(--cds-spacing-12);
+}
+:where(.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-fd-col > * > :is(strong, p, .a11y-fd-title, .a11y-affected-label):first-child) {
+  font-size: 22px;
+  line-height: 1.25;
+}
+:where(.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd .a11y-fd-col > * > :first-child > strong) {
+  font-size: inherit;
+  line-height: inherit;
 }
