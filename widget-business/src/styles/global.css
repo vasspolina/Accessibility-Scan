@@ -8381,10 +8381,10 @@
    "make all carrest look like these", a type foundry's FAQ) ═══════════════
    Every disclosure is a plain row: no fill, no round ends, no panel ground
    while shut; the words on the page's paper in ink; a 1px light rule under
-   each row; and at the far end the icon set's solid caret (caret--right,
-   32px Carbon path, as a mask) in a mid grey, pointing right shut and down
-   open ("change arrow to caret", 28 Nov 2026; it was arrow--down, down shut
-   and up open, until then). The triangle at the start is gone. The rows' titles are
+   each row; and at the far end a thin arrow from the icon set
+   (arrow--down, 32px Carbon path, as a mask) in a mid grey, pointing down
+   shut and up open, centred on the row's height ("bring arrows back",
+   28 Nov 2026, after a few hours as the solid caret). The triangle at the start is gone. The rows' titles are
    29px (the step above the 22px prose, so an opened answer reads smaller
    than its question, as in the reference); 22px on a phone. Section-level
    folds (Ready for WCAG 2.2?, the screen reader simulation, the
@@ -8396,7 +8396,7 @@
    designer and developer list, the design notes, the WCAG 2.2 items, the
    statement's steps, the screen reader simulation and conformance report
    heads, the technical version and the dark-pattern cards. */
-.a11y-widget-biz { --row-hover: #0e6027; --row-arrow: #6f6f6f; --row-rule: #d0d0d0; --row-arrow-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M12 8 22 16 12 24z'/%3E%3C/svg%3E"); }
+.a11y-widget-biz { --row-hover: #0e6027; --row-arrow: #6f6f6f; --row-rule: #d0d0d0; --row-arrow-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M24.59 16.59 17 24.17V4h-2v20.17l-7.59-7.58L6 18l10 10 10-10-1.41-1.41z'/%3E%3C/svg%3E"); }
 .a11y-widget-biz[data-theme="dark"] { --row-hover: #6fdc8c; --row-arrow: #a8a8a8; --row-rule: #3a3a3c; }
 @media (prefers-color-scheme: dark) {
   .a11y-widget-biz:not([data-theme="light"]) { --row-hover: #6fdc8c; --row-arrow: #a8a8a8; --row-rule: #3a3a3c; }
@@ -8422,7 +8422,7 @@
   transform: none; rotate: none; translate: none; transition: rotate 0.15s;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header)[aria-expanded="true"][class][class][class][class][class][class][class][class]::before,
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-details[open] > summary:not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8)::before { rotate: 90deg; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-details[open] > summary:not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8)::before { rotate: 180deg; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8):hover { background: none; color: var(--row-hover); text-decoration: none; }
 /* Hover is dark green words, no underline ("do not underline, make text
    dark green on hover", 27 Nov 2026): #0e6027 on white is 7.4:1, #6fdc8c
@@ -8512,7 +8512,7 @@
   background: var(--row-arrow); -webkit-mask: var(--row-arrow-mask) center / contain no-repeat; mask: var(--row-arrow-mask) center / contain no-repeat;
   transition: rotate 0.15s;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:has(.a11y-dt-toggle[aria-expanded="true"]) > td:last-child:not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6)::after { rotate: 90deg; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:has(.a11y-dt-toggle[aria-expanded="true"]) > td:last-child:not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6)::after { rotate: 180deg; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:has(.a11y-dt-toggle:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:not(.a11y-dt-expand-row):hover .a11y-finding-title { color: var(--row-hover); text-decoration: none; }
 @media (prefers-reduced-motion: reduce) {
