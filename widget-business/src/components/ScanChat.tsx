@@ -2138,7 +2138,9 @@ export function ScanChat({
                       </>
                     ) : (
                       <p className="a11y-chat-stale">
-                        {sectionLabel(turn.section)} – {t("From an earlier scan. Run it again to see it.")}
+                        <span className="a11y-chat-stale-name">{sectionLabel(turn.section)}</span>
+                        <span className="a11y-sr-only"> – </span>
+                        <span className="a11y-chat-stale-note">{t("From an earlier scan. Run it again to see it.")}</span>
                       </p>
                     )}
                   </div>
