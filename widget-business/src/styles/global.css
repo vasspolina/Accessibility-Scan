@@ -8812,3 +8812,33 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist :is(.a11y-hist-run, .a11y-hist-fact):not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) { grid-template-columns: 120px max-content max-content minmax(0, 1fr); }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-fact:not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) { grid-template-columns: 120px minmax(0, 1fr); }
 }
+
+/* ═══ EVERY BADGE AS ONE WHITE PILL (user's instruction, 28 Nov 2026, "all
+   badges in the app need to be this size make them white in white
+   background", on the score's issue pills: 1.1.1, Fix first, 2 places) ═══
+   One badge: 18px words at 1.1, 2px 12px inside, a 1px edge in the words'
+   own colour, round ends, filled with the paper (white on the light page,
+   and on the cream cards; black in dark), no tilt. Each badge keeps its
+   words' colour. Covers the score's issue pills, the section titles'
+   counts, the opened finding's meta pills, severity, rule, level and pro
+   chips, principle counts, the checklist status, the WCAG 2.2 count, the
+   warning badge, the fix-kind badges and the conversations' Open mark.
+   The coloured status words at the end of a row (Fix first in the
+   findings, Code fix, Would fail today, the check results' marks, the
+   screen reader head's count) are words at the row's size, not badges. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-spec-pill, .a11y-count-dot, .a11y-section-count, .a11y-fd-meta > *, .a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-pro-chip, .a11y-principle-count, .a11y-conf-status, .a11y-next-count, .a11y-sum-warning-badge, .a11y-method-badge, .a11y-chats-open):not(.a11y-b1):not(.a11y-b2):not(.a11y-b3):not(.a11y-b4):not(.a11y-b5):not(.a11y-b6):not(.a11y-b7):not(.a11y-b8):not(.a11y-b9):not(.a11y-b10):not(.a11y-b11):not(.a11y-b12):not(.a11y-b13):not(.a11y-b14):not(.a11y-b15):not(.a11y-b16):not(.a11y-b17):not(.a11y-b18):not(.a11y-b19):not(.a11y-b20):not(.a11y-b21):not(.a11y-b22):not(.a11y-b23):not(.a11y-b24):not(.a11y-b25):not(.a11y-b26) {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.3em;
+  width: auto; min-width: 0; height: auto; min-height: 0; margin: 0; padding: 2px 12px;
+  border: 1px solid currentColor; border-radius: 999px; background: var(--paper); box-shadow: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
+  text-transform: none; white-space: nowrap; vertical-align: middle;
+  transform: none; rotate: none; translate: none; position: relative; top: auto; inset: auto;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-spec-pill, .a11y-count-dot, .a11y-section-count, .a11y-fd-meta > *, .a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-pro-chip, .a11y-principle-count, .a11y-conf-status, .a11y-next-count, .a11y-sum-warning-badge, .a11y-method-badge, .a11y-chats-open):not(.a11y-b1):not(.a11y-b2):not(.a11y-b3):not(.a11y-b4):not(.a11y-b5):not(.a11y-b6):not(.a11y-b7):not(.a11y-b8):not(.a11y-b9):not(.a11y-b10):not(.a11y-b11):not(.a11y-b12):not(.a11y-b13):not(.a11y-b14):not(.a11y-b15):not(.a11y-b16):not(.a11y-b17):not(.a11y-b18):not(.a11y-b19):not(.a11y-b20):not(.a11y-b21):not(.a11y-b22):not(.a11y-b23):not(.a11y-b24):not(.a11y-b25):not(.a11y-b26)::before,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-spec-pill, .a11y-count-dot, .a11y-section-count, .a11y-fd-meta > *, .a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-pro-chip, .a11y-principle-count, .a11y-conf-status, .a11y-next-count, .a11y-sum-warning-badge, .a11y-method-badge, .a11y-chats-open):not(.a11y-b1):not(.a11y-b2):not(.a11y-b3):not(.a11y-b4):not(.a11y-b5):not(.a11y-b6):not(.a11y-b7):not(.a11y-b8):not(.a11y-b9):not(.a11y-b10):not(.a11y-b11):not(.a11y-b12):not(.a11y-b13):not(.a11y-b14):not(.a11y-b15):not(.a11y-b16):not(.a11y-b17):not(.a11y-b18):not(.a11y-b19):not(.a11y-b20):not(.a11y-b21):not(.a11y-b22):not(.a11y-b23):not(.a11y-b24):not(.a11y-b25):not(.a11y-b26)::after { content: none; display: none; }
+/* The meta pills sat on the cream with a black edge; they take the paper
+   like the rest, words and edge in ink. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-meta > *:not(.a11y-b1):not(.a11y-b2):not(.a11y-b3):not(.a11y-b4):not(.a11y-b5):not(.a11y-b6):not(.a11y-b7):not(.a11y-b8):not(.a11y-b9):not(.a11y-b10):not(.a11y-b11):not(.a11y-b12):not(.a11y-b13):not(.a11y-b14):not(.a11y-b15):not(.a11y-b16):not(.a11y-b17):not(.a11y-b18):not(.a11y-b19):not(.a11y-b20):not(.a11y-b21):not(.a11y-b22):not(.a11y-b23):not(.a11y-b24):not(.a11y-b25):not(.a11y-b26):not(.a11y-b17) { color: var(--ink); }
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-spec-pill, .a11y-count-dot, .a11y-section-count, .a11y-fd-meta > *, .a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-pro-chip, .a11y-principle-count, .a11y-conf-status, .a11y-next-count, .a11y-sum-warning-badge, .a11y-method-badge, .a11y-chats-open):not(.a11y-b1):not(.a11y-b2):not(.a11y-b3):not(.a11y-b4):not(.a11y-b5):not(.a11y-b6):not(.a11y-b7):not(.a11y-b8):not(.a11y-b9):not(.a11y-b10):not(.a11y-b11):not(.a11y-b12):not(.a11y-b13):not(.a11y-b14):not(.a11y-b15):not(.a11y-b16):not(.a11y-b17):not(.a11y-b18):not(.a11y-b19):not(.a11y-b20):not(.a11y-b21):not(.a11y-b22):not(.a11y-b23):not(.a11y-b24):not(.a11y-b25):not(.a11y-b26) { border-color: CanvasText; background: Canvas; }
+}
