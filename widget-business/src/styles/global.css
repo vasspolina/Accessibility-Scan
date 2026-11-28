@@ -10863,17 +10863,17 @@
   }
 }
 
+/* ── Screen reader simulation and vision, continued ── */
+:where(.a11y-widget-biz .a11y-sr .a11y-sr-bar .a11y-sr-status:not(:empty)) {
+  margin-top: var(--cds-spacing-03);
+}
+
 /* ── Findings and the opened finding, continued ── */
 :where(
   .a11y-widget-biz a.a11y-learn-more.a11y-learn-prompt,
   .a11y-widget-biz a.a11y-learn-more.a11y-learn-prompt:visited
 ) {
   margin-top: var(--cds-spacing-05);
-}
-
-/* ── Screen reader simulation and vision, continued ── */
-:where(.a11y-widget-biz .a11y-sr .a11y-sr-bar .a11y-sr-status:not(:empty)) {
-  margin-top: var(--cds-spacing-03);
 }
 
 /* ── History, statement, report actions, professional, continued ── */
@@ -13399,6 +13399,9 @@
 :where(.a11y-widget-biz .a11y-fd > .a11y-fd-meta) {
   margin-bottom: var(--cds-spacing-05);
 }
+:where(.a11y-widget-biz .a11y-principle-group .a11y-principle-title) {
+  text-box: trim-end text alphabetic;
+}
 
 /* ── Buttons, fields and shared controls, continued ── */
 :where(.a11y-widget-biz .a11y-yellow-note) {
@@ -14201,4 +14204,8 @@
   padding: var(--cds-spacing-04) 0 0;
   border-bottom: 0;
   border-top: 1px solid var(--row-rule);
+}
+:where(.a11y-widget-biz .a11y-principle-group .a11y-principle-title) {
+  margin-bottom: var(--cds-spacing-05);
+  padding-bottom: calc(0.175em + 2px);
 }
