@@ -1723,3 +1723,55 @@ p.act-statement a:hover .act-statement__text span + span { color: #000; }
 @media (max-width: 671px) {
   .cols.cols--eaa, .bubble__text, .chat__label { font-size: 24px; }
 }
+
+/* An opened offer as an info block (user's instructions, 28 Nov 2026,
+   "typeset", then "something like these but keep typesizes", on a
+   specimen page's info: a label column beside groups of lines, each group
+   a title in ink over its lines in grey, set solid, no rules between
+   them). Two columns, five and seven of twelve, each opening on a
+   hairline at the same height: the lede at the left at its own size (the
+   logo's), its lines never ending on one word; at the right the offer's
+   terms as groups two across, the term in ink and its description under
+   it in the link grey (5.9:1 or better on the paper), both the index's
+   24px, at 1.2, 32px between groups. No rules between groups and none to
+   close: the next offer's rule does. An offer's paragraphs stand in the
+   right column over the terms. One column under 1056px of window, the
+   groups still two across; one across on a phone at 18px. */
+.acc .acc__panel {
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-rows: repeat(5, auto) 1fr;
+  column-gap: var(--gutter); padding: var(--s03) 0 var(--s09);
+}
+.acc__panel > .acc__lede {
+  grid-column: 1; grid-row: 1 / -1; max-width: none; margin: 0; padding-top: var(--s05);
+  border-top: 1px solid var(--edge); text-wrap: pretty;
+}
+.acc__panel .acc__body > :is(p, .terms) { grid-column: 2; grid-row: auto; max-width: none; }
+.acc__panel .acc__body > :first-child:nth-child(n) { margin-top: 0; padding-top: var(--s05); border-top: 1px solid var(--edge); }
+.acc__panel .acc__body > .terms {
+  grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--gutter); row-gap: var(--s07);
+  font-size: 24px; line-height: 1.2; letter-spacing: 0;
+}
+.acc__panel .acc__body > p + .terms { margin-top: var(--s07); }
+.acc__panel .terms > div { display: block; }
+.acc__panel .terms > div:nth-child(n) > :is(dt, dd) { padding: 0; border: 0; }
+.acc__panel .terms dd { color: var(--link-grey); text-wrap: pretty; }
+@media (max-width: 1055px) {
+  .acc .acc__panel { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; }
+  .acc__panel > .acc__lede { grid-column: 1; grid-row: auto; margin-bottom: var(--s07); }
+  .acc__panel .acc__body > :is(p, .terms) { grid-column: 1; }
+}
+@media (max-width: 671px) {
+  .acc__panel > .acc__lede { padding-top: var(--s04); margin-bottom: var(--s06); }
+  .acc__panel .acc__body > :first-child:nth-child(n) { padding-top: var(--s04); }
+  .acc__panel .acc__body > .terms { grid-template-columns: minmax(0, 1fr); row-gap: var(--s05); font-size: 18px; line-height: 1.3; }
+}
+
+/* The opening title in Jokker's thinnest (user's instruction, 28 Nov
+   2026, "use thin here", on "We're a design studio in Berlin…" in Regular
+   on the yellow band): wght 100, like the statements; its size, leading
+   and place are unchanged, its tracking 0 (the thin strokes need no
+   tightening). Black on the yellow, 18:1. */
+main.wrap > .title {
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 100; font-variation-settings: "wght" 100, "slnt" 0;
+  letter-spacing: 0;
+}
