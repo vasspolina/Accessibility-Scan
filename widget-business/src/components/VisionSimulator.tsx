@@ -33,13 +33,12 @@ interface Condition {
   cssFilter?: string;
 }
 
-/* The normal-vision note claims "as most visitors see it" — which is false
-   when the stage shows the page with its cookie banner set aside. The note
-   tells the truth for whichever image is actually on the stage. */
+/* The normal-vision note claims "as most visitors see it", which is false
+   when the stage shows the page with its cookie banner set aside. That view
+   says nothing then: a line explaining the set-aside banner was deleted as
+   over-explaining (user's word, 28 Nov 2026). */
 function noteFor(c: Condition, behindConsent: boolean): string {
-  if (c.id === "none" && behindConsent) {
-    return t("Your page with the cookie banner set aside.");
-  }
+  if (c.id === "none" && behindConsent) return "";
   return t(c.note);
 }
 
@@ -175,10 +174,12 @@ export function VisionSimulator({
           picture they change stand together on one screen. The prevalence
           leads it: a fact about the chosen condition, said where the
           condition is explained. */}
-      <p className="a11y-sim-note">
-        {active.prevalence && <strong>{t(active.prevalence)}. </strong>}
-        {noteFor(active, behindConsent)}
-      </p>
+      {(active.prevalence || noteFor(active, behindConsent)) && (
+        <p className="a11y-sim-note">
+          {active.prevalence && <strong>{t(active.prevalence)}. </strong>}
+          {noteFor(active, behindConsent)}
+        </p>
+      )}
     </section>
   );
 }

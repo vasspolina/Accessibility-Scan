@@ -79,17 +79,12 @@ export function UndecidedChecks({
       <div className="a11y-section-head">
       {/* h2: this is a top-level section of the report, same as its siblings. */}
       <h2 className="a11y-section-title" id="a11y-undecided-heading" data-nav-label={t("Designer and developer")}>
-        {t("For your designer and developer")}{" "}
+        {t("For Your Designer and Developer")}{" "}
         <span className="a11y-section-count a11y-count-dot">{rows.length}</span>
       </h2>
-      {/* Two sentences: what the checker did, and that none of it is
-          scored. The heading names who decides and the Call column says
-          whose, so the lead no longer repeats either. */}
-      <p className="a11y-section-desc">
-        {rows.length === 1
-          ? t("The scan couldn't decide this one.")
-          : t("The scan couldn't decide these.")}
-      </p>
+      {/* No line under the title: "The scan couldn't decide these." was
+          deleted as over-explaining (user's word, 28 Nov 2026), and the
+          title is in title case at the user's word the same day. */}
       </div>
       {rows.length > 0 && (
         /* A list, not a table. It was a one-column DataTable, which meant

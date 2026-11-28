@@ -297,7 +297,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
             </>
           ) : (
             <>
-              <Icon name="play--filled--alt" /> {t("Play the page aloud")}
+              <Icon name="play--filled--alt" /> {t("Listen to the page")}
             </>
           )}
         </button>
