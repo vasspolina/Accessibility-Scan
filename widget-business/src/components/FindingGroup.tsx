@@ -930,18 +930,21 @@ export function FindingDetails({
               <strong>{t("What we found:")}</strong> <CodeText text={rep.description} />
             </p>
           )}
-          {rep.ruleId && (
-            <p>
-              <strong>{t("Rule:")}</strong> <code>{rep.ruleId}</code>
-            </p>
-          )}
-          <p>
-            <strong>{count > 1 ? t("Affected elements:") : t("Affected element:")}</strong>
-          </p>
-          <ul className="a11y-tech-elements">
-            {devElementRefs(findings).map((ref, i) => (
+          {/* The rule and each element are grey fields to copy from, like
+              the suggested alt text (user's word, 28 Nov 2026, "make this
+              into a form with copy"). */}
+          {rep.ruleId && <TechField label={unColon(t("Rule:"))} value={rep.ruleId} />}
+          <ul className="a11y-tech-elements" role="list">
+            {devElementRefs(findings).map((ref, i, all) => (
               <li key={i}>
-                <code>{ref}</code>
+                <TechField
+                  label={
+                    all.length > 1
+                      ? `${unColon(t("Affected element:"))} ${i + 1}`
+                      : unColon(t("Affected element:"))
+                  }
+                  value={ref}
+                />
               </li>
             ))}
           </ul>
@@ -1453,6 +1456,51 @@ function CodeFixSuggestion({ fix }: { fix: NonNullable<AccessibilityFinding["sug
       </button>
       <span className="a11y-sr-only" role="status">
         {copied ? t("Fixed markup copied to the clipboard.") : ""}
+      </span>
+    </div>
+  );
+}
+
+/** A label key written with its colon ("Rule:", "Règle :") as a field's
+ *  name, which carries none. */
+function unColon(label: string): string {
+  return label.replace(/\s*:\s*$/, "");
+}
+
+/* One line of the technical version as a grey field to copy from: its name
+   and Copy on a bar at the top, the value under it, as the suggested alt
+   text's card. Copy writes the value exactly as shown. */
+function TechField({ label, value }: { label: string; value: string }) {
+  const [copied, setCopied] = useState(false);
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // Clipboard blocked: the value is still shown to copy by hand.
+    }
+  }
+
+  return (
+    <div className="a11y-tech-field">
+      <div className="a11y-tech-field-head">
+        <p className="a11y-tech-field-label">{label}</p>
+        <button
+          type="button"
+          className="a11y-btn a11y-tech-copy"
+          onClick={copy}
+          aria-label={copied ? tf("Copied {what}", { what: label }) : tf("Copy {what}", { what: label })}
+        >
+          {copied ? t("Copied") : t("Copy")}
+        </button>
+      </div>
+      <p className="a11y-tech-field-value">
+        <code>{value}</code>
+      </p>
+      <span className="a11y-sr-only" role="status">
+        {copied ? t("Copied to the clipboard.") : ""}
       </span>
     </div>
   );

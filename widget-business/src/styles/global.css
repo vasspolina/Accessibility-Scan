@@ -8716,3 +8716,54 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > * > *:not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20):not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20) { grid-column: 1; }
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > * > :first-child:not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20):not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20) { grid-row: auto; }
 }
+
+/* ═══ THE TECHNICAL VERSION AS FIELDS TO COPY FROM (user's instruction,
+   28 Nov 2026, "make this into a form with copy") ═════════════════════════
+   The rule and each affected element are grey filled fields, as the
+   suggested alt text: --form-field (#e6e6e6) with black words in both
+   themes, no edge, 20px corners, 16px 20px inside, 8px apart; the field's
+   name (18px) and a white Copy pill on a bar at the top, the value under it
+   at the prose size. The value is code, so the face's contextual
+   alternates and ligatures are off: Jokker drew "(2)" in a selector as a
+   circled two. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-details > .a11y-tech-elements[class][class][class][class][class][class][class][class] {
+  display: flex; flex-direction: column; gap: var(--cds-spacing-03); margin: var(--cds-spacing-03) 0 0; padding: 0; list-style: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-details > .a11y-tech-elements > li[class][class][class][class][class][class][class][class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-details > .a11y-tech-elements > li:not([class]):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8) {
+  margin: 0; padding: 0; list-style: none; text-indent: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-details > .a11y-tech-elements > li:not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8)::before { content: none; display: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-field[class][class][class][class][class][class][class][class] {
+  margin: var(--cds-spacing-03) 0 0; padding: var(--cds-spacing-05) 20px; border: 0; border-radius: 20px;
+  background: var(--form-field); color: var(--form-field-ink); --ink: var(--form-field-ink); text-align: left;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-elements .a11y-tech-field[class][class][class][class][class][class][class][class] { margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-field > .a11y-tech-field-head[class][class][class][class][class][class][class][class] {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--cds-spacing-05); margin: 0 0 var(--cds-spacing-03);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-field .a11y-tech-field-label[class][class][class][class][class][class][class][class] {
+  margin: 0; padding: 0; color: inherit; font-size: 18px; line-height: 1.2; letter-spacing: 0; text-indent: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-field .a11y-tech-copy[class][class][class][class][class][class][class][class]:not(:hover) { background: #fff; color: #000; border-color: transparent; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-field .a11y-tech-field-value[class][class][class][class][class][class][class][class] {
+  margin: 0; padding: 0; color: inherit; font-size: 22px; line-height: 1.25; text-indent: 0; overflow-wrap: anywhere;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-field .a11y-tech-field-value > code[class][class][class][class][class][class][class][class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-field .a11y-tech-field-value > code:not([class]):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8) {
+  padding: 0; background: none; color: inherit; font: inherit; letter-spacing: 0;
+  font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0, "dlig" 0, "case" 0;
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-field[class][class][class][class][class][class][class][class] { border: 1px solid CanvasText; }
+}
+
+/* ═══ THE WCAG 2.2 ITEMS' CALL AT THE ROW'S SIZE (user's instruction, 28 Nov
+   2026, "same size as main text") ═══════════════════════════════════════
+   Would fail today, Needs a person, Not measured and Nothing found are set
+   at the size of the question beside them (29px, 22px on a phone), keeping
+   their colours. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-toggle :is(.a11y-w22-call, .a11y-w22-call *)[class][class][class][class][class][class][class][class][class][class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-toggle .a11y-w22-call *:not([class]):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8):not(.a11y-z9):not(.a11y-z10) {
+  font-size: inherit; line-height: inherit; letter-spacing: inherit;
+}
