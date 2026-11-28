@@ -8340,35 +8340,34 @@
 }
 
 /* ═══ HOW THE SCORE WORKS AND THE WARNING AS PLAIN TEXT (user's reference,
-   27 Nov 2026, "this can be plain text with titles like this"; then "one
-   under another"; then "typeset like this", a foundry's licence FAQ) ═════
-   No ground, no corners, no icon. One under another, set as the FAQ: each
-   title 29px at 1.15, 20px over its words; the words at the 22px prose
-   size, opened up to 1.4 with +0.01em, one empty line between paragraphs;
-   the second part stands under a 1px light rule (--row-rule), 40px below
-   the first part's last line and 40px above its own title. 22px titles on
-   a phone. */
+   27 Nov 2026, "this can be plain text with titles like this"; "one under
+   another"; "typeset like this"; then "design it like these", a foundry's
+   Info block of DESCRIPTION and DETAILS) ═══════════════════════════════════
+   Two equal columns, 16px apart: each title a small capital label (18px,
+   +0.04em, uppercase) over a 1px ink rule, 12px between the words and the
+   rule and 16px under it; the words at the 22px prose size, 1.25, one empty
+   line between paragraphs. A lone How the score works keeps its half. One
+   column under 672px, 40px between the two. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-plains {
   grid-column: 1 / -1; min-width: 0;
-  display: block; margin: var(--cds-spacing-10) 0 0;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--cds-spacing-08) var(--cds-spacing-05);
+  margin: var(--cds-spacing-10) 0 0; align-items: start;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-plain {
   min-width: 0; margin: 0; padding: 0; border: 0; background: none; color: var(--ink); text-align: left;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-plain + .a11y-sum-plain {
-  margin-top: var(--cds-spacing-08); padding-top: var(--cds-spacing-08); border-top: 1px solid var(--row-rule);
-}
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-plain > .a11y-sum-plain-title {
-  margin: 0 0 20px; padding: 0; font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-size: 29px; font-weight: 400; line-height: 1.15; letter-spacing: 0; text-transform: none;
+  margin: 0 0 var(--cds-spacing-05); padding: 0 0 var(--cds-spacing-04); border-bottom: 1px solid var(--ink);
+  font-family: "Jokker", "DejaVu Sans", sans-serif;
+  font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.04em; text-transform: uppercase;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-plain > .a11y-sum-plain-text {
   margin: 0 0 1lh; padding: 0; max-width: none; font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-size: 22px; font-weight: 400; line-height: 1.4; letter-spacing: 0.01em; overflow-wrap: break-word;
+  font-size: 22px; font-weight: 400; line-height: 1.25; letter-spacing: 0; overflow-wrap: break-word;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-plain > .a11y-sum-plain-text:last-child { margin-bottom: 0; }
 @media (max-width: 671px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-plain > .a11y-sum-plain-title { font-size: 22px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-plains { grid-template-columns: minmax(0, 1fr); }
 }
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-plain { break-inside: avoid; }
@@ -8456,13 +8455,16 @@
 /* The designer and developer list: the caret's column goes. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q[class][class][class][class][class][class][class][class][class] { grid-template-columns: 0 minmax(0, 1fr) auto; column-gap: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-kind[class][class][class][class][class][class][class][class][class] { margin-inline-start: var(--cds-spacing-05); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-caret, .a11y-legal-row)[class][class][class][class][class][class][class][class][class] { --ink: inherit; --paper: inherit; --plate-text: inherit; color: var(--ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-caret, .a11y-legal-row)[class][class][class][class][class][class][class][class][class] { --ink: inherit; --paper: inherit; --plate-text: inherit; --row-ink: var(--ink); color: var(--ink); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-row :is(.a11y-legal-col-result, .a11y-legal-row-label, .a11y-legal-count, .a11y-legal-row-desc, .a11y-legal-row-meaning)[class][class][class][class][class][class][class][class][class][class] { --ink: inherit; color: inherit; background: none; padding-inline-start: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-dn-bar, .a11y-accordion-head, .a11y-finding-header) :where(*):not(.a11y-sev, .a11y-legal-mark, .a11y-status-chip, .a11y-method-badge, .a11y-finding-sev-word, .a11y-undecided-kind) { color: inherit; background: none; }
 /* An opened row's answer sits under its question at the prose size, one
-   line under the row's rule. */
+   line under the row's rule, in ink: the check results' old blue and green
+   plates set white words on their groups, which went white on the paper
+   once the plates were gone ("why is this empty?", 28 Nov 2026). */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-caret > .a11y-legal-group, .a11y-dn-caret > .a11y-dn-detail, .a11y-undecided-answer, .a11y-w22-detail)[class][class][class][class][class][class] {
   margin: 0; padding: var(--cds-spacing-05) 0 var(--cds-spacing-07); border: 0; border-radius: 0; background: none;
+  --ink: inherit; --paper: inherit; --plate-text: inherit; color: var(--ink);
   font-size: 22px;
 }
 /* An opened design note starts 16px under the row's rule. (It was 48px
