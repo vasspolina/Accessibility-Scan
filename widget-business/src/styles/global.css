@@ -829,8 +829,6 @@
 }
 @media (max-width: 671px) {
   :where(.a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-chat-text ol > li)::before {
-    inset-inline-start: -34px;
-    top: calc((1lh - 24px) / 2);
     letter-spacing: 0;
   }
 }
@@ -864,8 +862,6 @@
   --card-plate: var(--plate-4);
 }
 :where(.a11y-widget-biz .a11y-chat-text ol:not(.a11y-chat-plan)[class] > li)::before {
-  inset-inline-start: -56px;
-  top: calc((1lh - 44px) / 2);
   letter-spacing: 0;
 }
 :where(.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-q)::after {
@@ -2773,7 +2769,6 @@
 
 /* ── Chat, conversations and Report a barrier, continued ── */
 :where(.a11y-widget-biz .a11y-chat-text ol:not(.a11y-chat-plan) > li)::before {
-  position: static;
   display: inline-grid;
   place-content: center;
   box-sizing: border-box;
@@ -2786,26 +2781,33 @@
   width: 1.7em;
   min-width: 1.7em;
   height: 1.7em;
-  margin: 0 0.4em 0 0;
   font-size: 0.62em;
-  vertical-align: 0.05em;
+  position: absolute;
+  inset-inline-start: -2.35em;
+  top: calc((1.1em / 0.62 - 1.7em) / 2);
+  margin: 0;
+  vertical-align: baseline;
 }
 :where(.a11y-widget-biz .a11y-chat-text ol:not(.a11y-chat-plan)[class] > li)::before {
-  position: static;
   padding: 0;
   border: 1.5px solid currentColor;
   border-radius: 50%;
   width: 1.7em;
   min-width: 1.7em;
   height: 1.7em;
-  margin: 0 0.4em 0 0;
   font-size: 0.62em;
+  position: absolute;
+  inset-inline-start: -2.35em;
+  top: calc((1.1em / 0.62 - 1.7em) / 2);
+  margin: 0;
 }
 @media (max-width: 671px) {
   :where(.a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-chat-text ol > li)::before {
     width: 1.7em;
     height: 1.7em;
     font-size: 0.62em;
+    inset-inline-start: -2.35em;
+    top: calc((1.1em / 0.62 - 1.7em) / 2);
   }
 }
 
@@ -13872,7 +13874,7 @@
 }
 @media (max-width: 671px) {
   :where(.a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-chat-text ol:not(.a11y-chat-plan)) {
-    padding-inline-start: 0;
+    padding-inline-start: 1.5em;
   }
 }
 
