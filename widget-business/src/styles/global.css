@@ -1060,7 +1060,7 @@
 .a11y-widget-biz .a11y-legal-count { grid-column: 4; justify-self: end; }
 @media (max-width: 1055px) {
   .a11y-widget-biz .a11y-legal-row { grid-template-columns: minmax(0, 1fr) auto; margin-bottom: var(--cds-spacing-05); }
-  .a11y-widget-biz .a11y-legal-row-label { grid-column: 1; grid-row: 1; }
+  .a11y-widget-biz .a11y-legal-row-label { grid-column: 1; grid-row: 1; white-space: normal; overflow-wrap: break-word; }
   .a11y-widget-biz .a11y-legal-count { grid-column: 2; grid-row: 1; }
   .a11y-widget-biz .a11y-legal-row-meaning { grid-column: 1 / -1; grid-row: 2; }
   .a11y-widget-biz .a11y-legal-mark { grid-column: 1 / -1; grid-row: 3; }
@@ -8340,32 +8340,38 @@
 }
 
 /* ═══ HOW THE SCORE WORKS AND THE WARNING AS PLAIN TEXT (user's reference,
-   27 Nov 2026, "this can be plain text with titles like this", on the two
-   yellow cards beside the "Can people use it?" section) ═══════════════════
-   No ground, no corners, no padding, no icon. Each title is set as the
-   principle groups' titles ("Can people use it?": 43px, 1.1, no tracking,
-   16px under it; 29px on a phone); the points are the prose under it, one
-   line apart. The two stand side by side, 32px apart, where each gets
-   320px; one column under. */
+   27 Nov 2026, "this can be plain text with titles like this"; "one under
+   another"; "typeset like this"; then "design it like these", a foundry's
+   Info block of DESCRIPTION and DETAILS) ═══════════════════════════════════
+   Two equal columns, 16px apart: each title a small capital label (18px,
+   +0.04em, uppercase) over a 1px ink rule, 12px between the words and the
+   rule and 16px under it; the words at the 22px prose size, 1.25. Paragraph
+   breaks are indents, not empty lines (Hochuli, Detail in typography, p.47;
+   "lets do indents based on jost hochuy study instead of paragraph breaks",
+   28 Nov 2026): a paragraph that follows a paragraph has no space above it
+   and its first line set in 1em; the first under the label stays flush. A
+   lone How the score works keeps its half. One column under 672px, 40px
+   between the two. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-plains {
   grid-column: 1 / -1; min-width: 0;
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: var(--cds-spacing-07);
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--cds-spacing-08) var(--cds-spacing-05);
   margin: var(--cds-spacing-10) 0 0; align-items: start;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-plain {
   min-width: 0; margin: 0; padding: 0; border: 0; background: none; color: var(--ink); text-align: left;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-plain > .a11y-sum-plain-title {
-  margin: 0 0 var(--cds-spacing-05); padding: 0; font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-size: 43px; font-weight: 400; line-height: 1.1; letter-spacing: 0; text-transform: none;
+  margin: 0 0 var(--cds-spacing-05); padding: 0 0 var(--cds-spacing-04); border-bottom: 1px solid var(--ink);
+  font-family: "Jokker", "DejaVu Sans", sans-serif;
+  font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.04em; text-transform: uppercase;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-plain > .a11y-sum-plain-text {
-  margin: 0 0 1lh; padding: 0; max-width: none; font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-size: inherit; font-weight: 400; line-height: 1.1; letter-spacing: inherit; overflow-wrap: break-word;
+  margin: 0; padding: 0; max-width: none; text-indent: 0; font-family: "Jokker", "DejaVu Sans", sans-serif;
+  font-size: 22px; font-weight: 400; line-height: 1.25; letter-spacing: 0; overflow-wrap: break-word;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-plain > .a11y-sum-plain-text:last-child { margin-bottom: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-plain > .a11y-sum-plain-text + .a11y-sum-plain-text { text-indent: 1em; }
 @media (max-width: 671px) {
-  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-plain > .a11y-sum-plain-title { font-size: 29px; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-plains { grid-template-columns: minmax(0, 1fr); }
 }
 @media print {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-plain { break-inside: avoid; }
@@ -8389,10 +8395,10 @@
    designer and developer list, the design notes, the WCAG 2.2 items, the
    statement's steps, the screen reader simulation and conformance report
    heads, the technical version and the dark-pattern cards. */
-.a11y-widget-biz { --row-arrow: #6f6f6f; --row-rule: #d0d0d0; --row-arrow-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M24.59 16.59 17 24.17V4h-2v20.17l-7.59-7.58L6 18l10 10 10-10-1.41-1.41z'/%3E%3C/svg%3E"); }
-.a11y-widget-biz[data-theme="dark"] { --row-arrow: #a8a8a8; --row-rule: #3a3a3c; }
+.a11y-widget-biz { --row-hover: #0e6027; --row-arrow: #6f6f6f; --row-rule: #d0d0d0; --row-arrow-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M24.59 16.59 17 24.17V4h-2v20.17l-7.59-7.58L6 18l10 10 10-10-1.41-1.41z'/%3E%3C/svg%3E"); }
+.a11y-widget-biz[data-theme="dark"] { --row-hover: #6fdc8c; --row-arrow: #a8a8a8; --row-rule: #3a3a3c; }
 @media (prefers-color-scheme: dark) {
-  .a11y-widget-biz:not([data-theme="light"]) { --row-arrow: #a8a8a8; --row-rule: #3a3a3c; }
+  .a11y-widget-biz:not([data-theme="light"]) { --row-hover: #6fdc8c; --row-arrow: #a8a8a8; --row-rule: #3a3a3c; }
 }
 
 /* The rows: one shape for every disclosure button. */
@@ -8416,7 +8422,12 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header)[aria-expanded="true"][class][class][class][class][class][class][class][class]::before,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-details[open] > summary:not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8)::before { rotate: 180deg; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8):hover { background: none; color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8):hover { background: none; color: var(--row-hover); text-decoration: none; }
+/* Hover is dark green words, no underline ("do not underline, make text
+   dark green on hover", 27 Nov 2026): #0e6027 on white is 7.4:1, #6fdc8c
+   on black 12:1. The row's own words take it; the coloured kind and status
+   words keep theirs. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary):hover :is(.a11y-undecided-what, .a11y-dn-bar-title, .a11y-legal-row-label, .a11y-legal-count, .a11y-legal-row-meaning, .a11y-stmt-toggle-words, .a11y-w22-q, .a11y-finding-desc)[class][class][class][class][class][class][class][class][class][class][class] { color: var(--row-hover); text-decoration: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-details > summary:not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8)::-webkit-details-marker { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8)::before { transition: none; }
@@ -8448,19 +8459,22 @@
 /* The designer and developer list: the caret's column goes. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q[class][class][class][class][class][class][class][class][class] { grid-template-columns: 0 minmax(0, 1fr) auto; column-gap: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-kind[class][class][class][class][class][class][class][class][class] { margin-inline-start: var(--cds-spacing-05); }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-caret, .a11y-legal-row)[class][class][class][class][class][class][class][class][class] { --ink: inherit; --paper: inherit; --plate-text: inherit; color: var(--ink); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-caret, .a11y-legal-row)[class][class][class][class][class][class][class][class][class] { --ink: inherit; --paper: inherit; --plate-text: inherit; --row-ink: var(--ink); color: var(--ink); }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-row :is(.a11y-legal-col-result, .a11y-legal-row-label, .a11y-legal-count, .a11y-legal-row-desc, .a11y-legal-row-meaning)[class][class][class][class][class][class][class][class][class][class] { --ink: inherit; color: inherit; background: none; padding-inline-start: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-dn-bar, .a11y-accordion-head, .a11y-finding-header) :where(*):not(.a11y-sev, .a11y-legal-mark, .a11y-status-chip, .a11y-method-badge, .a11y-finding-sev-word, .a11y-undecided-kind) { color: inherit; background: none; }
 /* An opened row's answer sits under its question at the prose size, one
-   line under the row's rule. */
+   line under the row's rule, in ink: the check results' old blue and green
+   plates set white words on their groups, which went white on the paper
+   once the plates were gone ("why is this empty?", 28 Nov 2026). */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-caret > .a11y-legal-group, .a11y-dn-caret > .a11y-dn-detail, .a11y-undecided-answer, .a11y-w22-detail)[class][class][class][class][class][class] {
   margin: 0; padding: var(--cds-spacing-05) 0 var(--cds-spacing-07); border: 0; border-radius: 0; background: none;
+  --ink: inherit; --paper: inherit; --plate-text: inherit; color: var(--ink);
   font-size: 22px;
 }
-/* An opened design note's cards hang their label pills half above the
-   card, so the note keeps 32px clear between the row's rule and the first
-   pill ("add space here", 27 Nov 2026): 16px for the overhang, 32px more. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret > .a11y-dn-detail[class][class][class][class][class][class][class] { padding-top: calc(var(--cds-spacing-05) + var(--cds-spacing-07)); }
+/* An opened design note starts 16px under the row's rule. (It was 48px
+   while its cards hung label pills over their top edge, "add space here",
+   27 Nov 2026; the pills went with the plain-text finding the same day.) */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-dn-caret > .a11y-dn-detail[class][class][class][class][class][class][class] { padding-top: var(--cds-spacing-05); }
 
 /* The technical version's lines start at the row's edge now that its
    yellow panel is gone, 16px under the rule. */
@@ -8499,7 +8513,7 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:has(.a11y-dt-toggle[aria-expanded="true"]) > td:last-child:not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6)::after { rotate: 180deg; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:has(.a11y-dt-toggle:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:not(.a11y-dt-expand-row):hover .a11y-finding-title { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:not(.a11y-dt-expand-row):hover .a11y-finding-title { color: var(--row-hover); text-decoration: none; }
 @media (prefers-reduced-motion: reduce) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:not(.a11y-dt-expand-row) > td:last-child:not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6)::after { transition: none; }
 }
@@ -8528,11 +8542,398 @@
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:not(.a11y-dt-expand-row) > td:last-child:not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6)::after { display: none; }
 }
 
-/* ═══ NO ROUND CORNERS ON CARDS (user's instruction, 27 Nov 2026, "dont do
-   round corners on cards", on the legal head's three cream cards) ═════════
-   Every card and every panel that holds content is square: the legal head's
-   cards, the score's issue specimens and their pictures, the opened
-   finding's grey ground and its cream cards, the yellow notes, the report
-   actions' panel, the statement form, the scan form and the screen reader
-   simulation's panel. Fields, buttons, pills and rounds keep their shape. */
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-band, .a11y-legal-panel, .a11y-legal-std, .a11y-sum-spec, .a11y-sum-spec-shot, .a11y-fd, .a11y-affected, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-steps, .a11y-finding-todo, .a11y-method-hint, .a11y-note, .a11y-ra-panel, .a11y-stmt-form, .a11y-url-form, section.a11y-sr, .a11y-dn-detail, .a11y-affected > li)[class][class][class][class][class][class][class][class][class][class] { border-radius: 0; }
+
+/* ═══ THE OPENING QUESTIONS AS A MENU OF LINES (user's reference, 27 Nov
+   2026, "design opening prompts like this", a foundry's filter menu) ═════
+   No cards: the questions are a list of lines set tight, 29px at 1.15 (22px
+   on a phone), in a mid grey (#6f6f6f on white, 4.9:1; #a8a8a8 on black,
+   8.4:1), turning ink on hover and keyboard focus. 6px between questions,
+   since most run to two lines. The group's name (Ask about this page, Help
+   me, Report a barrier) stays first in each button's name and is clipped
+   for the eye; the "Ask this" and "Start a report" pills are gone; the WCAG
+   number stays its own button, a small grey figure at the end of its
+   question's last line. Report a barrier is a line like the others. On a
+   phone the sideways row of cards is the same list. */
+.a11y-widget-biz { --prompt-line: #6f6f6f; }
+.a11y-widget-biz[data-theme="dark"] { --prompt-line: #a8a8a8; }
+@media (prefers-color-scheme: dark) {
+  .a11y-widget-biz:not([data-theme="light"]) { --prompt-line: #a8a8a8; }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-grid[class][class][class][class][class][class][class][class][class][class][class][class][class][class] {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+  grid-template-columns: none; overflow: visible; margin: 0; padding: 0; scroll-snap-type: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-grid > .a11y-prompt[class][class][class][class][class][class][class][class][class][class][class][class][class][class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-grid > .a11y-prompt[class][class][class][class][class][class][class][class][class][class][class][class][class][class]:is(:hover, :focus-within) {
+  --ink: inherit; --paper: inherit; --focus: inherit; --note: inherit; --note-ink: inherit;
+  display: block; position: static; width: auto; max-width: 100%; min-width: 0; min-height: 0; aspect-ratio: auto; flex: none;
+  margin: 0; padding: 0; border: 0; border-radius: 0; outline: 0; box-shadow: none;
+  background: none; color: var(--prompt-line); text-align: left; transform: none; rotate: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-q[class][class][class][class][class][class][class][class][class][class][class][class][class][class] {
+  display: inline; position: static; width: auto; min-height: 0; margin: 0; padding: 0;
+  border: 0; border-radius: 0; background: none; color: var(--prompt-line); box-shadow: none; text-align: left;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 29px; font-weight: 400; line-height: 1.15; letter-spacing: 0;
+  cursor: pointer;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-q[class][class][class][class][class][class][class][class][class][class][class][class][class][class]::after,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-q[class][class][class][class][class][class][class][class][class][class][class][class][class][class]::before { content: none; display: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-q[class][class][class][class][class][class][class][class][class][class][class][class][class][class]:enabled:is(:hover, :focus-visible) { color: var(--ink); background: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-q[class][class][class][class][class][class][class][class][class][class][class][class][class][class]:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-q[class][class][class][class][class][class][class][class][class][class][class][class][class][class]:disabled { color: var(--prompt-line); cursor: default; text-decoration: line-through; text-decoration-thickness: 1px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-q > :is(.a11y-prompt-ask)[class][class][class][class][class][class][class][class][class][class][class][class][class][class] {
+  display: inline; margin: 0; padding: 0; font: inherit; letter-spacing: inherit; color: inherit; background: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-q > .a11y-prompt-label[class][class][class][class][class][class][class][class][class][class][class][class][class][class] {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-q > .a11y-prompt-go[class][class][class][class][class][class][class][class][class][class][class][class][class][class] { display: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-wcag[class][class][class][class][class][class][class][class][class][class][class][class][class][class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-wcag[class][class][class][class][class][class][class][class][class][class][class][class][class][class]:enabled:hover {
+  display: inline; position: static; min-height: 0; height: auto; margin: 0 0 0 0.5em; padding: 0;
+  border: 0; border-radius: 0; background: none; color: var(--prompt-line); box-shadow: none; transform: none; translate: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 18px; font-weight: 400; line-height: 1; letter-spacing: 0; vertical-align: baseline;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-wcag[class][class][class][class][class][class][class][class][class][class][class][class][class][class]:enabled:is(:hover, :focus-visible) { color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+@media (max-width: 671px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-q[class][class][class][class][class][class][class][class][class][class][class][class][class][class] { font-size: 22px; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-grid > .a11y-prompt[class][class][class][class][class][class][class][class][class][class][class][class][class][class] { border: 0; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-q[class][class][class][class][class][class][class][class][class][class][class][class][class][class] { color: ButtonText; }
+}
+
+/* ═══ THE OPENED FINDING AS PLAIN TEXT, ONE UNDER ANOTHER (user's
+   reference, 27 Nov 2026, "make this into plain text too, one under
+   another", with the foundry's menu of tight lines) ════════════════════
+   No grey ground, no cream cards, no label pills, no two columns: the
+   opened finding (and the opened design note, which uses the same parts)
+   is one column of plain text on the page's paper. Each part's label is a
+   line in the menu's grey (--prompt-line, #6f6f6f, 4.9:1; dark #a8a8a8) at
+   the prose size, with its words in ink right under it, set tight (1.15);
+   the parts stand 24px apart. The meta line (WCAG, level, fix, instances)
+   is set left in the same grey. The affected elements keep their pictures
+   and suggestions, on the paper. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd[class][class][class][class][class][class][class][class][class][class][class][class] {
+  display: block; margin: 0; padding: var(--cds-spacing-05) 0 var(--cds-spacing-07); border: 0; border-radius: 0; box-shadow: none;
+  background: none; color: var(--ink); text-align: left;
+  --ink: inherit; --paper: inherit;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col[class][class][class][class][class][class][class][class][class][class][class][class] {
+  display: block; margin: 0; padding: 0; gap: 0; grid-template-columns: none; background: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > *[class][class][class][class][class][class][class][class][class][class][class][class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > *:not([class]):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8):not(.a11y-z9):not(.a11y-z10):not(.a11y-z11):not(.a11y-z12) {
+  display: block; position: static; width: auto; max-width: none; min-height: 0; flex: none; grid-column: auto;
+  margin: 0 0 var(--cds-spacing-06); padding: 0; border: 0; border-radius: 0; box-shadow: none;
+  background: none; color: var(--ink); text-align: left;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 22px; font-weight: 400; line-height: 1.15; letter-spacing: 0;
+  --ink: inherit; --paper: inherit;
+}
+/* The labels: the old pills, whatever element carries them (a strong, a
+   p with the label inside, or the affected elements' p). Heavier than the
+   cards' own label rules, which centred them at a fixed width. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > * > :is(strong:first-child, .a11y-fd-title, .a11y-affected-label, p:first-child):not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20),
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > * > p:first-child > :is(strong, span):not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20) {
+  display: block; position: static; inset: auto; width: auto; min-width: 0; max-width: none; min-height: 0; height: auto;
+  margin: 0; padding: 0; justify-self: start; align-self: start;
+  border: 0; border-radius: 0; background: none; box-shadow: none; transform: none; translate: none; rotate: none;
+  color: var(--prompt-line); text-align: left; text-transform: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 22px; font-weight: 400; line-height: 1.15; letter-spacing: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > * > :is(strong:first-child, .a11y-fd-title, .a11y-affected-label, p:first-child):not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20)::before,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > * > :is(strong:first-child, .a11y-fd-title, .a11y-affected-label, p:first-child):not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20)::after { content: none; display: none; }
+/* The suggested alt text is a grey filled field, as the form's fields
+   ("make this into a grey fill form", 28 Nov 2026): --form-field (#e6e6e6,
+   as the form fields), no edge, 20px corners, 16px 20px inside, its label and the
+   words black in both themes; its Copy pill is white so it shows on the grey. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-affected :is(.a11y-alt-card, .a11y-alt-suggestion):not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20) {
+  margin: var(--cds-spacing-04) 0 0; padding: var(--cds-spacing-05) 20px; border: 0; border-radius: 20px; background: var(--form-field); box-shadow: none; --ink: inherit; --paper: inherit; color: var(--form-field-ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-affected :is(.a11y-alt-card, .a11y-alt-suggestion) :is(button, .a11y-copy-btn):not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20):not(:hover) { background: #fff; color: #000; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > * > :not(:first-child)[class][class][class][class][class][class][class][class][class][class][class][class] {
+  margin-inline: 0; padding-inline: 0; text-align: left; font-size: 22px; line-height: 1.15; background: none;
+}
+/* Lists inside a part keep their hung dashes, flush with the label. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > * :is(ul, ol)[class][class][class][class][class][class][class][class][class][class][class][class] { margin: 0; padding: 0; }
+/* The affected elements: each element on the paper, one under another. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-affected .a11y-occurrence-list[class][class][class][class][class][class][class][class][class][class][class][class] {
+  display: block; margin: var(--cds-spacing-03) 0 0; padding: 0; gap: 0; grid-template-columns: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-affected .a11y-occurrence-list > li[class][class][class][class][class][class][class][class][class][class][class][class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-affected .a11y-occurrence-list > li:not([class]):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8):not(.a11y-z9):not(.a11y-z10):not(.a11y-z11):not(.a11y-z12) {
+  margin: 0 0 var(--cds-spacing-05); padding: 0; border: 0; border-radius: 0; background: none; text-align: left; --ink: inherit; --paper: inherit;
+}
+/* The meta line, set left in the grey. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-meta[class][class][class][class][class][class][class][class][class][class][class][class] {
+  justify-content: flex-start; margin: 0 0 var(--cds-spacing-06); padding: 0; gap: var(--cds-spacing-02) var(--cds-spacing-06);
+  background: none; color: var(--prompt-line); font-size: 22px; line-height: 1.15; text-align: left;
+}
+/* The picture of the element stands at the left edge with the words. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-affected .a11y-shot:not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20) { margin-inline: 0 auto; }
+/* The meta line's items (WCAG, level, fix, instances) are the outlined
+   pills the cards' labels were ("and these into these", 27 Nov 2026): the
+   cream (--hl-cap-a) with black words in both themes (19:1), a 1px black
+   edge, round ends, 4px 14px inside, 22px words, 8px apart. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-meta:not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20) { gap: var(--cds-spacing-03); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-meta > *:not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20) {
+  display: inline-flex; align-items: center; margin: 0; padding: 4px 14px;
+  border: 1px solid #000; border-radius: 999px; background: var(--hl-cap-a); color: #000;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 22px; font-weight: 400; line-height: 1.15; letter-spacing: 0; white-space: nowrap;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-meta > *:not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20)::before,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-meta > *:not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20)::after { content: none; display: none; }
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-meta > *:not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20) { border-color: CanvasText; }
+}
+
+/* ═══ LEARN MORE WITH NO BACKGROUND (user's instruction, 28 Nov 2026, "make
+   learn more button with no background") ═══════════════════════════════
+   The pill under the technical version keeps its shape (1px ink edge,
+   round ends, 18px words, the arrow after them) on the paper, ink words;
+   hover is the rows' dark green words and edge. 16px under the row above. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz a.a11y-learn-more.a11y-learn-prompt[class][class][class][class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz a.a11y-learn-more.a11y-learn-prompt[class][class][class][class]:visited {
+  margin-top: var(--cds-spacing-05); border: 1px solid var(--ink); background: none; color: var(--ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz a.a11y-learn-more.a11y-learn-prompt[class][class][class][class]:hover {
+  border-color: var(--row-hover); background: none; color: var(--row-hover);
+}
+
+/* ═══ THE OPENED FINDING IN TWO COLUMNS (user's instruction, 28 Nov 2026,
+   "make it in two columns", on the plain-text parts) ════════════════════
+   Each part is a row of two columns, as a key and its value: the grey label
+   in a 240px column, its words (and lists, pictures, fields) in the rest,
+   16px apart, both starting on the same line. The meta pills and the
+   technical version keep the full width. One column under 672px. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > *:not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20):not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20) {
+  display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 0 var(--cds-spacing-05); align-items: start;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > * > *:not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20):not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20) { grid-column: 2; min-width: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > * > :first-child:not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20):not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20) { grid-column: 1; grid-row: 1; white-space: normal; overflow-wrap: break-word; }
+@media (max-width: 671px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > *:not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20):not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20) { grid-template-columns: minmax(0, 1fr); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > * > *:not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20):not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20) { grid-column: 1; }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > * > :first-child:not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20):not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20) { grid-row: auto; }
+}
+
+/* ═══ THE TECHNICAL VERSION AS FIELDS TO COPY FROM (user's instruction,
+   28 Nov 2026, "make this into a form with copy") ═════════════════════════
+   The rule and each affected element are grey filled fields, as the
+   suggested alt text: --form-field (#e6e6e6) with black words in both
+   themes, no edge, 20px corners, 16px 20px inside, 8px apart; the field's
+   name (18px) and a white Copy pill on a bar at the top, the value under it
+   at the prose size. The value is code, so the face's contextual
+   alternates and ligatures are off: Jokker drew "(2)" in a selector as a
+   circled two. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-details > .a11y-tech-elements[class][class][class][class][class][class][class][class] {
+  display: flex; flex-direction: column; gap: var(--cds-spacing-03); margin: var(--cds-spacing-03) 0 0; padding: 0; list-style: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-details > .a11y-tech-elements > li[class][class][class][class][class][class][class][class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-details > .a11y-tech-elements > li:not([class]):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8) {
+  margin: 0; padding: 0; list-style: none; text-indent: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-details > .a11y-tech-elements > li:not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8)::before { content: none; display: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-field[class][class][class][class][class][class][class][class] {
+  margin: var(--cds-spacing-03) 0 0; padding: var(--cds-spacing-05) 20px; border: 0; border-radius: 20px;
+  background: var(--form-field); color: var(--form-field-ink); --ink: var(--form-field-ink); text-align: left;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-elements .a11y-tech-field[class][class][class][class][class][class][class][class] { margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-field > .a11y-tech-field-head[class][class][class][class][class][class][class][class] {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--cds-spacing-05); margin: 0 0 var(--cds-spacing-03);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-field .a11y-tech-field-label[class][class][class][class][class][class][class][class] {
+  margin: 0; padding: 0; color: inherit; font-size: 18px; line-height: 1.2; letter-spacing: 0; text-indent: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-field .a11y-tech-copy[class][class][class][class][class][class][class][class]:not(:hover) { background: #fff; color: #000; border-color: transparent; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-field .a11y-tech-field-value[class][class][class][class][class][class][class][class] {
+  margin: 0; padding: 0; color: inherit; font-size: 22px; line-height: 1.25; text-indent: 0; overflow-wrap: anywhere;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-field .a11y-tech-field-value > code[class][class][class][class][class][class][class][class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-field .a11y-tech-field-value > code:not([class]):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8) {
+  padding: 0; background: none; color: inherit; font: inherit; letter-spacing: 0;
+  font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0, "dlig" 0, "case" 0;
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-tech-field[class][class][class][class][class][class][class][class] { border: 1px solid CanvasText; }
+}
+
+/* ═══ THE WCAG 2.2 ITEMS' CALL AT THE ROW'S SIZE (user's instruction, 28 Nov
+   2026, "same size as main text") ═══════════════════════════════════════
+   Would fail today, Needs a person, Not measured and Nothing found are set
+   at the size of the question beside them (29px, 22px on a phone), keeping
+   their colours. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-toggle :is(.a11y-w22-call, .a11y-w22-call *)[class][class][class][class][class][class][class][class][class][class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-toggle .a11y-w22-call *:not([class]):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8):not(.a11y-z9):not(.a11y-z10) {
+  font-size: inherit; line-height: inherit; letter-spacing: inherit;
+}
+
+/* ═══ PREVIOUS SCANS AS THE INFO BLOCK (user's instruction, 28 Nov 2026,
+   "typeset properly", after a foundry's Info block of DESCRIPTION, DETAILS
+   and CREDITS) ═════════════════════════════════════════════════════════
+   Two equal columns 16px apart: the runs on the left, Since last time and
+   Where this lives on the right. Each group opens on a small capital label
+   (the year over the runs, the two headings over theirs: 18px, +0.04em,
+   uppercase) over a 1px ink rule, and closes on a 1px ink rule 12px under
+   its last line. Inside, every row is a key and its value, 18px at 1.35,
+   set solid: the date or the fact's name in a 200px column, the score, the
+   repeat count and the note beside it (the score no longer display size).
+   The groups on the right stand 40px apart. One column under 672px. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-cols:not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--cds-spacing-08) var(--cds-spacing-05); align-items: start; margin: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-col:not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) { display: flex; flex-direction: column; gap: var(--cds-spacing-08); min-width: 0; margin: 0; padding: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-card:not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) { display: block; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist :is(.a11y-hist-runs > .a11y-hist-year, .a11y-hist-card > .a11y-hist-head):not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) {
+  display: block; position: static; grid-column: 1 / -1; width: auto; margin: 0 0 var(--cds-spacing-04); padding: 0 0 var(--cds-spacing-04);
+  border: 0; border-bottom: 1px solid var(--ink); background: none; color: var(--ink);
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.04em; text-transform: uppercase;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist :is(.a11y-hist-runs, .a11y-hist-facts):not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) {
+  display: block; margin: 0; padding: 0 0 var(--cds-spacing-04); border: 0; border-bottom: 1px solid var(--ink); list-style: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist :is(.a11y-hist-run, .a11y-hist-fact):not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) {
+  display: grid; grid-template-columns: 200px max-content max-content minmax(0, 1fr); align-items: baseline; gap: 0 var(--cds-spacing-04);
+  margin: 0; padding: 0; border: 0; list-style: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.35; letter-spacing: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-fact:not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) { grid-template-columns: 200px minmax(0, 1fr); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist :is(.a11y-hist-run, .a11y-hist-fact):not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12)::before { content: none; display: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist :is(.a11y-hist-run, .a11y-hist-fact) > :not(.a11y-sr-only):not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) {
+  position: static; top: auto; flex: none; width: auto; min-width: 0; margin: 0; padding: 0;
+  color: var(--ink); background: none; font: inherit; letter-spacing: inherit; font-style: normal; white-space: normal;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist :is(.a11y-hist-run > .a11y-hist-date, .a11y-hist-fact > .a11y-hist-fact-label):not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) { grid-column: 1; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-card > .a11y-hist-promise:not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) {
+  margin: 0 0 var(--cds-spacing-04); padding: 0; font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.35; letter-spacing: 0;
+}
+@media (max-width: 671px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-cols:not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) { grid-template-columns: minmax(0, 1fr); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist :is(.a11y-hist-run, .a11y-hist-fact):not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) { grid-template-columns: 120px max-content max-content minmax(0, 1fr); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-fact:not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) { grid-template-columns: 120px minmax(0, 1fr); }
+}
+
+/* ═══ EVERY BADGE AS ONE WHITE PILL (user's instruction, 28 Nov 2026, "all
+   badges in the app need to be this size make them white in white
+   background", on the score's issue pills: 1.1.1, Fix first, 2 places) ═══
+   One badge: 18px words at 1.1, 2px 12px inside, a 1px edge in the words'
+   own colour, round ends, filled with the paper (white on the light page,
+   and on the cream cards; black in dark), no tilt. Each badge keeps its
+   words' colour. Covers the score's issue pills, the section titles'
+   counts, the opened finding's meta pills, severity, rule, level and pro
+   chips, principle counts, the checklist status, the WCAG 2.2 count, the
+   warning badge, the fix-kind badges and the conversations' Open mark.
+   The coloured status words at the end of a row (Fix first in the
+   findings, Code fix, Would fail today, the check results' marks, the
+   screen reader head's count) are words at the row's size, not badges. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-spec-pill, .a11y-count-dot, .a11y-section-count, .a11y-fd-meta > *, .a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-pro-chip, .a11y-principle-count, .a11y-conf-status, .a11y-next-count, .a11y-sum-warning-badge, .a11y-method-badge, .a11y-chats-open):not(.a11y-b1):not(.a11y-b2):not(.a11y-b3):not(.a11y-b4):not(.a11y-b5):not(.a11y-b6):not(.a11y-b7):not(.a11y-b8):not(.a11y-b9):not(.a11y-b10):not(.a11y-b11):not(.a11y-b12):not(.a11y-b13):not(.a11y-b14):not(.a11y-b15):not(.a11y-b16):not(.a11y-b17):not(.a11y-b18):not(.a11y-b19):not(.a11y-b20):not(.a11y-b21):not(.a11y-b22):not(.a11y-b23):not(.a11y-b24):not(.a11y-b25):not(.a11y-b26) {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.3em;
+  width: auto; min-width: 0; height: auto; min-height: 0; margin: 0; padding: 2px 12px;
+  border: 1px solid currentColor; border-radius: 999px; background: var(--paper); box-shadow: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.1; letter-spacing: 0;
+  text-transform: none; white-space: nowrap; vertical-align: middle;
+  transform: none; rotate: none; translate: none; position: relative; top: auto; inset: auto;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-spec-pill, .a11y-count-dot, .a11y-section-count, .a11y-fd-meta > *, .a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-pro-chip, .a11y-principle-count, .a11y-conf-status, .a11y-next-count, .a11y-sum-warning-badge, .a11y-method-badge, .a11y-chats-open):not(.a11y-b1):not(.a11y-b2):not(.a11y-b3):not(.a11y-b4):not(.a11y-b5):not(.a11y-b6):not(.a11y-b7):not(.a11y-b8):not(.a11y-b9):not(.a11y-b10):not(.a11y-b11):not(.a11y-b12):not(.a11y-b13):not(.a11y-b14):not(.a11y-b15):not(.a11y-b16):not(.a11y-b17):not(.a11y-b18):not(.a11y-b19):not(.a11y-b20):not(.a11y-b21):not(.a11y-b22):not(.a11y-b23):not(.a11y-b24):not(.a11y-b25):not(.a11y-b26)::before,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-spec-pill, .a11y-count-dot, .a11y-section-count, .a11y-fd-meta > *, .a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-pro-chip, .a11y-principle-count, .a11y-conf-status, .a11y-next-count, .a11y-sum-warning-badge, .a11y-method-badge, .a11y-chats-open):not(.a11y-b1):not(.a11y-b2):not(.a11y-b3):not(.a11y-b4):not(.a11y-b5):not(.a11y-b6):not(.a11y-b7):not(.a11y-b8):not(.a11y-b9):not(.a11y-b10):not(.a11y-b11):not(.a11y-b12):not(.a11y-b13):not(.a11y-b14):not(.a11y-b15):not(.a11y-b16):not(.a11y-b17):not(.a11y-b18):not(.a11y-b19):not(.a11y-b20):not(.a11y-b21):not(.a11y-b22):not(.a11y-b23):not(.a11y-b24):not(.a11y-b25):not(.a11y-b26)::after { content: none; display: none; }
+/* The meta pills sat on the cream with a black edge; they take the paper
+   like the rest, words and edge in ink. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-meta > *:not(.a11y-b1):not(.a11y-b2):not(.a11y-b3):not(.a11y-b4):not(.a11y-b5):not(.a11y-b6):not(.a11y-b7):not(.a11y-b8):not(.a11y-b9):not(.a11y-b10):not(.a11y-b11):not(.a11y-b12):not(.a11y-b13):not(.a11y-b14):not(.a11y-b15):not(.a11y-b16):not(.a11y-b17):not(.a11y-b18):not(.a11y-b19):not(.a11y-b20):not(.a11y-b21):not(.a11y-b22):not(.a11y-b23):not(.a11y-b24):not(.a11y-b25):not(.a11y-b26):not(.a11y-b17) { color: var(--ink); }
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-spec-pill, .a11y-count-dot, .a11y-section-count, .a11y-fd-meta > *, .a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-pro-chip, .a11y-principle-count, .a11y-conf-status, .a11y-next-count, .a11y-sum-warning-badge, .a11y-method-badge, .a11y-chats-open):not(.a11y-b1):not(.a11y-b2):not(.a11y-b3):not(.a11y-b4):not(.a11y-b5):not(.a11y-b6):not(.a11y-b7):not(.a11y-b8):not(.a11y-b9):not(.a11y-b10):not(.a11y-b11):not(.a11y-b12):not(.a11y-b13):not(.a11y-b14):not(.a11y-b15):not(.a11y-b16):not(.a11y-b17):not(.a11y-b18):not(.a11y-b19):not(.a11y-b20):not(.a11y-b21):not(.a11y-b22):not(.a11y-b23):not(.a11y-b24):not(.a11y-b25):not(.a11y-b26) { border-color: CanvasText; background: Canvas; }
+}
+
+/* ═══ SECTION TITLES LARGE AND GREY (user's instruction, 28 Nov 2026, "make
+   titles of each section look like this and in grey color", a foundry's
+   header: big grey words over a light rule) ═══════════════════════════════
+   Each report section's title is 43px at 1.05, no tracking, in the menu's
+   grey (--prompt-line, #6f6f6f, 4.9:1 on white; #a8a8a8 on black), over a
+   1px light rule (--row-rule) 12px under it, 24px over what follows. The
+   section's black rule above goes. A title that is itself a disclosure row
+   (Ready for WCAG 2.2?, the screen reader simulation, the conformance
+   report) keeps its row. 29px on a phone. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report > :has(h2:is(.a11y-section-title, .a11y-top-title, .a11y-legal-title, .a11y-results-title):not(.a11y-sr-only):not(.a11y-accordion-title):not(.a11y-w22-title)):not(.a11y-t1):not(.a11y-t2):not(.a11y-t3):not(.a11y-t4):not(.a11y-t5):not(.a11y-t6):not(.a11y-t7):not(.a11y-t8):not(.a11y-t9):not(.a11y-t10):not(.a11y-t11):not(.a11y-t12) { border-top: 0; padding-top: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report h2:is(.a11y-section-title, .a11y-top-title, .a11y-legal-title, .a11y-results-title):not(.a11y-sr-only):not(.a11y-accordion-title):not(.a11y-w22-title):not(.a11y-t1):not(.a11y-t2):not(.a11y-t3):not(.a11y-t4):not(.a11y-t5):not(.a11y-t6):not(.a11y-t7):not(.a11y-t8):not(.a11y-t9):not(.a11y-t10):not(.a11y-t11):not(.a11y-t12) {
+  margin: 0 0 var(--cds-spacing-06); padding: 0 0 var(--cds-spacing-04); border-bottom: 1px solid var(--row-rule);
+  color: var(--prompt-line); font-family: "Jokker", "DejaVu Sans", sans-serif;
+  font-size: 43px; font-weight: 400; line-height: 1.05; letter-spacing: 0; text-transform: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report h2:is(.a11y-section-title, .a11y-top-title, .a11y-legal-title, .a11y-results-title):not(.a11y-sr-only):not(.a11y-accordion-title):not(.a11y-w22-title) .a11y-count-dot:not(.a11y-t1):not(.a11y-t2):not(.a11y-t3):not(.a11y-t4):not(.a11y-t5):not(.a11y-t6):not(.a11y-t7):not(.a11y-t8):not(.a11y-t9):not(.a11y-t10):not(.a11y-t11):not(.a11y-t12) { vertical-align: middle; margin-inline-start: var(--cds-spacing-03); }
+@media (max-width: 671px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report h2:is(.a11y-section-title, .a11y-top-title, .a11y-legal-title, .a11y-results-title):not(.a11y-sr-only):not(.a11y-accordion-title):not(.a11y-w22-title):not(.a11y-t1):not(.a11y-t2):not(.a11y-t3):not(.a11y-t4):not(.a11y-t5):not(.a11y-t6):not(.a11y-t7):not(.a11y-t8):not(.a11y-t9):not(.a11y-t10):not(.a11y-t11):not(.a11y-t12) { font-size: 29px; }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report .a11y-findings-head:has(> h2.a11y-section-title):not(.a11y-t1):not(.a11y-t2):not(.a11y-t3):not(.a11y-t4):not(.a11y-t5):not(.a11y-t6):not(.a11y-t7):not(.a11y-t8):not(.a11y-t9):not(.a11y-t10):not(.a11y-t11):not(.a11y-t12) { align-items: center; margin: 0 0 var(--cds-spacing-06); padding: 0 0 var(--cds-spacing-04); border-bottom: 1px solid var(--row-rule); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report .a11y-findings-head > h2.a11y-section-title:not(.a11y-t1):not(.a11y-t2):not(.a11y-t3):not(.a11y-t4):not(.a11y-t5):not(.a11y-t6):not(.a11y-t7):not(.a11y-t8):not(.a11y-t9):not(.a11y-t10):not(.a11y-t11):not(.a11y-t12):not(.a11y-t13):not(.a11y-t14):not(.a11y-t15):not(.a11y-t16) { margin: 0; padding: 0; border-bottom: 0; }
+
+/* ═══ ONE BUTTON ACROSS THE APP (user's instruction, 28 Nov 2026, "make
+   these buttons 15% bigger font and make them all the same across app,
+   actually lets do them this shape", with a rounded rectangle) ═══════════
+   Every ordinary button (the list the 18px button rule names, plus See the
+   finding and the copy buttons) is one shape: a 1px edge in the words' own
+   colour, 12px corners, no fill, words at 21px (18px plus 15%) at 1.15,
+   6px 16px inside, no shadow. A pressed or chosen button (aria-pressed,
+   aria-current, a checked choice) is solid in its words' colour with the
+   paper for its words, so the state still shows; hover is the rows' dark
+   green words and edge; disabled keeps the dashed edge. Rows, carets,
+   cards, the round send arrow and the close cross are not buttons in this
+   sense. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-blockflag-jump, .a11y-copy-btn, .a11y-findings-csv, a.a11y-learn-prompt, .a11y-login-toggle, .a11y-ra-pdf, .a11y-ra-send, .a11y-show-all, .a11y-sim-btn, .a11y-skip-link, .a11y-sr-play, .a11y-undecided-export, .a11y-chat-chip, .a11y-chats-new, .a11y-lang-toggle, .a11y-settings-opt, .a11y-stmt-copy, .a11y-sum-spec-go, .a11y-alt-copy, .a11y-tech-copy, label.a11y-seg):not(.a11y-k1):not(.a11y-k2):not(.a11y-k3):not(.a11y-k4):not(.a11y-k5):not(.a11y-k6):not(.a11y-k7):not(.a11y-k8):not(.a11y-k9):not(.a11y-k10):not(.a11y-k11):not(.a11y-k12):not(.a11y-k13):not(.a11y-k14):not(.a11y-k15):not(.a11y-k16):not(.a11y-k17):not(.a11y-k18):not(.a11y-k19):not(.a11y-k20):not(.a11y-k21):not(.a11y-k22):not(.a11y-k23):not(.a11y-k24),
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-blockflag-jump, .a11y-copy-btn, .a11y-findings-csv, a.a11y-learn-prompt, .a11y-login-toggle, .a11y-ra-pdf, .a11y-ra-send, .a11y-show-all, .a11y-sim-btn, .a11y-skip-link, .a11y-sr-play, .a11y-undecided-export, .a11y-chat-chip, .a11y-chats-new, .a11y-lang-toggle, .a11y-settings-opt, .a11y-stmt-copy, .a11y-sum-spec-go, .a11y-alt-copy, .a11y-tech-copy, label.a11y-seg):not(.a11y-k1):not(.a11y-k2):not(.a11y-k3):not(.a11y-k4):not(.a11y-k5):not(.a11y-k6):not(.a11y-k7):not(.a11y-k8):not(.a11y-k9):not(.a11y-k10):not(.a11y-k11):not(.a11y-k12):not(.a11y-k13):not(.a11y-k14):not(.a11y-k15):not(.a11y-k16):not(.a11y-k17):not(.a11y-k18):not(.a11y-k19):not(.a11y-k20):not(.a11y-k21):not(.a11y-k22):not(.a11y-k23):not(.a11y-k24):visited {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.4em;
+  min-height: 0; height: auto; margin-block: 0; padding: 6px 16px;
+  border: 1px solid currentColor; border-radius: 12px; background: none; box-shadow: none;
+  color: var(--ink); text-decoration: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 21px; font-weight: 400; line-height: 1.15; letter-spacing: 0;
+  transform: none; rotate: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-blockflag-jump, .a11y-copy-btn, .a11y-findings-csv, a.a11y-learn-prompt, .a11y-login-toggle, .a11y-ra-pdf, .a11y-ra-send, .a11y-show-all, .a11y-sim-btn, .a11y-skip-link, .a11y-sr-play, .a11y-undecided-export, .a11y-chat-chip, .a11y-chats-new, .a11y-lang-toggle, .a11y-settings-opt, .a11y-stmt-copy, .a11y-sum-spec-go, .a11y-alt-copy, .a11y-tech-copy, label.a11y-seg):not(.a11y-k1):not(.a11y-k2):not(.a11y-k3):not(.a11y-k4):not(.a11y-k5):not(.a11y-k6):not(.a11y-k7):not(.a11y-k8):not(.a11y-k9):not(.a11y-k10):not(.a11y-k11):not(.a11y-k12):not(.a11y-k13):not(.a11y-k14):not(.a11y-k15):not(.a11y-k16):not(.a11y-k17):not(.a11y-k18):not(.a11y-k19):not(.a11y-k20):not(.a11y-k21):not(.a11y-k22):not(.a11y-k23):not(.a11y-k24) :is(span, strong):not(.a11y-sr-only) { font-size: inherit; letter-spacing: inherit; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-blockflag-jump, .a11y-copy-btn, .a11y-findings-csv, a.a11y-learn-prompt, .a11y-login-toggle, .a11y-ra-pdf, .a11y-ra-send, .a11y-show-all, .a11y-sim-btn, .a11y-skip-link, .a11y-sr-play, .a11y-undecided-export, .a11y-chat-chip, .a11y-chats-new, .a11y-lang-toggle, .a11y-settings-opt, .a11y-stmt-copy, .a11y-sum-spec-go, .a11y-alt-copy, .a11y-tech-copy, label.a11y-seg):not(.a11y-k1):not(.a11y-k2):not(.a11y-k3):not(.a11y-k4):not(.a11y-k5):not(.a11y-k6):not(.a11y-k7):not(.a11y-k8):not(.a11y-k9):not(.a11y-k10):not(.a11y-k11):not(.a11y-k12):not(.a11y-k13):not(.a11y-k14):not(.a11y-k15):not(.a11y-k16):not(.a11y-k17):not(.a11y-k18):not(.a11y-k19):not(.a11y-k20):not(.a11y-k21):not(.a11y-k22):not(.a11y-k23):not(.a11y-k24):enabled:hover,
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz a:is(.a11y-btn, .a11y-blockflag-jump, .a11y-copy-btn, .a11y-findings-csv, a.a11y-learn-prompt, .a11y-login-toggle, .a11y-ra-pdf, .a11y-ra-send, .a11y-show-all, .a11y-sim-btn, .a11y-skip-link, .a11y-sr-play, .a11y-undecided-export, .a11y-chat-chip, .a11y-chats-new, .a11y-lang-toggle, .a11y-settings-opt, .a11y-stmt-copy, .a11y-sum-spec-go, .a11y-alt-copy, .a11y-tech-copy, label.a11y-seg):not(.a11y-k1):not(.a11y-k2):not(.a11y-k3):not(.a11y-k4):not(.a11y-k5):not(.a11y-k6):not(.a11y-k7):not(.a11y-k8):not(.a11y-k9):not(.a11y-k10):not(.a11y-k11):not(.a11y-k12):not(.a11y-k13):not(.a11y-k14):not(.a11y-k15):not(.a11y-k16):not(.a11y-k17):not(.a11y-k18):not(.a11y-k19):not(.a11y-k20):not(.a11y-k21):not(.a11y-k22):not(.a11y-k23):not(.a11y-k24):hover { border-color: var(--row-hover); background: none; color: var(--row-hover); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz label.a11y-seg:not(.a11y-seg-on):hover:not(.a11y-k1):not(.a11y-k2):not(.a11y-k3):not(.a11y-k4):not(.a11y-k5):not(.a11y-k6):not(.a11y-k7):not(.a11y-k8):not(.a11y-k9):not(.a11y-k10):not(.a11y-k11):not(.a11y-k12):not(.a11y-k13):not(.a11y-k14):not(.a11y-k15):not(.a11y-k16):not(.a11y-k17):not(.a11y-k18):not(.a11y-k19):not(.a11y-k20):not(.a11y-k21):not(.a11y-k22):not(.a11y-k23):not(.a11y-k24):not(.a11y-k25) { border-color: var(--row-hover); background: none; color: var(--row-hover); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-blockflag-jump, .a11y-copy-btn, .a11y-findings-csv, a.a11y-learn-prompt, .a11y-login-toggle, .a11y-ra-pdf, .a11y-ra-send, .a11y-show-all, .a11y-sim-btn, .a11y-skip-link, .a11y-sr-play, .a11y-undecided-export, .a11y-chat-chip, .a11y-chats-new, .a11y-lang-toggle, .a11y-settings-opt, .a11y-stmt-copy, .a11y-sum-spec-go, .a11y-alt-copy, .a11y-tech-copy, label.a11y-seg):not(.a11y-k1):not(.a11y-k2):not(.a11y-k3):not(.a11y-k4):not(.a11y-k5):not(.a11y-k6):not(.a11y-k7):not(.a11y-k8):not(.a11y-k9):not(.a11y-k10):not(.a11y-k11):not(.a11y-k12):not(.a11y-k13):not(.a11y-k14):not(.a11y-k15):not(.a11y-k16):not(.a11y-k17):not(.a11y-k18):not(.a11y-k19):not(.a11y-k20):not(.a11y-k21):not(.a11y-k22):not(.a11y-k23):not(.a11y-k24):is([aria-pressed="true"], [aria-current]:not([aria-current="false"]), :has(> input:checked), .a11y-seg-on) {
+  border-color: var(--ink); background: var(--ink); color: var(--paper);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-blockflag-jump, .a11y-copy-btn, .a11y-findings-csv, a.a11y-learn-prompt, .a11y-login-toggle, .a11y-ra-pdf, .a11y-ra-send, .a11y-show-all, .a11y-sim-btn, .a11y-skip-link, .a11y-sr-play, .a11y-undecided-export, .a11y-chat-chip, .a11y-chats-new, .a11y-lang-toggle, .a11y-settings-opt, .a11y-stmt-copy, .a11y-sum-spec-go, .a11y-alt-copy, .a11y-tech-copy, label.a11y-seg):not(.a11y-k1):not(.a11y-k2):not(.a11y-k3):not(.a11y-k4):not(.a11y-k5):not(.a11y-k6):not(.a11y-k7):not(.a11y-k8):not(.a11y-k9):not(.a11y-k10):not(.a11y-k11):not(.a11y-k12):not(.a11y-k13):not(.a11y-k14):not(.a11y-k15):not(.a11y-k16):not(.a11y-k17):not(.a11y-k18):not(.a11y-k19):not(.a11y-k20):not(.a11y-k21):not(.a11y-k22):not(.a11y-k23):not(.a11y-k24):disabled { border-style: dashed; background: none; color: var(--ink); }
+/* On a coloured ground the button takes that ground's words: See the
+   finding on the score's cards, the report actions' panel. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-spec, .a11y-ra-panel) :is(.a11y-btn, .a11y-blockflag-jump, .a11y-copy-btn, .a11y-findings-csv, a.a11y-learn-prompt, .a11y-login-toggle, .a11y-ra-pdf, .a11y-ra-send, .a11y-show-all, .a11y-sim-btn, .a11y-skip-link, .a11y-sr-play, .a11y-undecided-export, .a11y-chat-chip, .a11y-chats-new, .a11y-lang-toggle, .a11y-settings-opt, .a11y-stmt-copy, .a11y-sum-spec-go, .a11y-alt-copy, .a11y-tech-copy, label.a11y-seg):not(.a11y-k1):not(.a11y-k2):not(.a11y-k3):not(.a11y-k4):not(.a11y-k5):not(.a11y-k6):not(.a11y-k7):not(.a11y-k8):not(.a11y-k9):not(.a11y-k10):not(.a11y-k11):not(.a11y-k12):not(.a11y-k13):not(.a11y-k14):not(.a11y-k15):not(.a11y-k16):not(.a11y-k17):not(.a11y-k18):not(.a11y-k19):not(.a11y-k20):not(.a11y-k21):not(.a11y-k22):not(.a11y-k23):not(.a11y-k24):not(:hover) { color: inherit; }
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-btn, .a11y-blockflag-jump, .a11y-copy-btn, .a11y-findings-csv, a.a11y-learn-prompt, .a11y-login-toggle, .a11y-ra-pdf, .a11y-ra-send, .a11y-show-all, .a11y-sim-btn, .a11y-skip-link, .a11y-sr-play, .a11y-undecided-export, .a11y-chat-chip, .a11y-chats-new, .a11y-lang-toggle, .a11y-settings-opt, .a11y-stmt-copy, .a11y-sum-spec-go, .a11y-alt-copy, .a11y-tech-copy, label.a11y-seg):not(.a11y-k1):not(.a11y-k2):not(.a11y-k3):not(.a11y-k4):not(.a11y-k5):not(.a11y-k6):not(.a11y-k7):not(.a11y-k8):not(.a11y-k9):not(.a11y-k10):not(.a11y-k11):not(.a11y-k12):not(.a11y-k13):not(.a11y-k14):not(.a11y-k15):not(.a11y-k16):not(.a11y-k17):not(.a11y-k18):not(.a11y-k19):not(.a11y-k20):not(.a11y-k21):not(.a11y-k22):not(.a11y-k23):not(.a11y-k24) { border-color: ButtonText; color: ButtonText; }
+}
+
+/* ═══ THE SCAN FORM IN TWO COLUMNS WITH TOGGLES (user's instruction, 28 Nov
+   2026, "make two columns, buttons in one line just design them into
+   toggle") ═════════════════════════════════════════════════════════════
+   The address and the Language field stand side by side, half each, 16px
+   apart; the choices stand on one line under them as toggles after a
+   foundry's set filter ("like these"): each option a filled button with
+   12px corners, 6px apart, no frame round the group; the options in ink
+   with paper words, the chosen one in the grey (--prompt-line, #6f6f6f,
+   white words 4.9:1). Each group is 16px from the next. AI review is one
+   such button, grey when on. The login panel, errors and Start the scan keep the full width.
+   The markup is unchanged: the form wraps, and the Language field is moved
+   up with order. One column for the fields under 672px; the toggles wrap. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz form.a11y-url-form.a11y-tester:not(.a11y-f1):not(.a11y-f2):not(.a11y-f3):not(.a11y-f4):not(.a11y-f5):not(.a11y-f6):not(.a11y-f7):not(.a11y-f8):not(.a11y-f9):not(.a11y-f10):not(.a11y-f11):not(.a11y-f12):not(.a11y-f13):not(.a11y-f14):not(.a11y-f15):not(.a11y-f16):not(.a11y-f17):not(.a11y-f18):not(.a11y-f19):not(.a11y-f20):not(.a11y-f21):not(.a11y-f22):not(.a11y-f23):not(.a11y-f24):not(.a11y-f25):not(.a11y-f26):not(.a11y-f27):not(.a11y-f28):not(.a11y-f29):not(.a11y-f30) { display: flex; flex-flow: row wrap; align-items: flex-start; gap: var(--cds-spacing-05); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz form.a11y-url-form.a11y-tester > *:not(.a11y-f1):not(.a11y-f2):not(.a11y-f3):not(.a11y-f4):not(.a11y-f5):not(.a11y-f6):not(.a11y-f7):not(.a11y-f8):not(.a11y-f9):not(.a11y-f10):not(.a11y-f11):not(.a11y-f12):not(.a11y-f13):not(.a11y-f14):not(.a11y-f15):not(.a11y-f16):not(.a11y-f17):not(.a11y-f18):not(.a11y-f19):not(.a11y-f20):not(.a11y-f21):not(.a11y-f22):not(.a11y-f23):not(.a11y-f24):not(.a11y-f25):not(.a11y-f26):not(.a11y-f27):not(.a11y-f28):not(.a11y-f29):not(.a11y-f30) { flex: 0 0 100%; min-width: 0; order: 0; margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz form.a11y-url-form.a11y-tester > .a11y-tester-rows:not(.a11y-f1):not(.a11y-f2):not(.a11y-f3):not(.a11y-f4):not(.a11y-f5):not(.a11y-f6):not(.a11y-f7):not(.a11y-f8):not(.a11y-f9):not(.a11y-f10):not(.a11y-f11):not(.a11y-f12):not(.a11y-f13):not(.a11y-f14):not(.a11y-f15):not(.a11y-f16):not(.a11y-f17):not(.a11y-f18):not(.a11y-f19):not(.a11y-f20):not(.a11y-f21):not(.a11y-f22):not(.a11y-f23):not(.a11y-f24):not(.a11y-f25):not(.a11y-f26):not(.a11y-f27):not(.a11y-f28):not(.a11y-f29):not(.a11y-f30) { display: contents; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz form.a11y-url-form.a11y-tester > :is(.a11y-input):not(.a11y-f1):not(.a11y-f2):not(.a11y-f3):not(.a11y-f4):not(.a11y-f5):not(.a11y-f6):not(.a11y-f7):not(.a11y-f8):not(.a11y-f9):not(.a11y-f10):not(.a11y-f11):not(.a11y-f12):not(.a11y-f13):not(.a11y-f14):not(.a11y-f15):not(.a11y-f16):not(.a11y-f17):not(.a11y-f18):not(.a11y-f19):not(.a11y-f20):not(.a11y-f21):not(.a11y-f22):not(.a11y-f23):not(.a11y-f24):not(.a11y-f25):not(.a11y-f26):not(.a11y-f27):not(.a11y-f28):not(.a11y-f29):not(.a11y-f30),
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz form.a11y-url-form.a11y-tester > .a11y-tester-rows > .a11y-select2:not(.a11y-f1):not(.a11y-f2):not(.a11y-f3):not(.a11y-f4):not(.a11y-f5):not(.a11y-f6):not(.a11y-f7):not(.a11y-f8):not(.a11y-f9):not(.a11y-f10):not(.a11y-f11):not(.a11y-f12):not(.a11y-f13):not(.a11y-f14):not(.a11y-f15):not(.a11y-f16):not(.a11y-f17):not(.a11y-f18):not(.a11y-f19):not(.a11y-f20):not(.a11y-f21):not(.a11y-f22):not(.a11y-f23):not(.a11y-f24):not(.a11y-f25):not(.a11y-f26):not(.a11y-f27):not(.a11y-f28):not(.a11y-f29):not(.a11y-f30) { flex: 1 1 calc(50% - var(--cds-spacing-05) / 2); min-width: 0; order: 1; margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz form.a11y-url-form.a11y-tester > :is(div:has(> .a11y-login), .a11y-login, .a11y-error):not(.a11y-f1):not(.a11y-f2):not(.a11y-f3):not(.a11y-f4):not(.a11y-f5):not(.a11y-f6):not(.a11y-f7):not(.a11y-f8):not(.a11y-f9):not(.a11y-f10):not(.a11y-f11):not(.a11y-f12):not(.a11y-f13):not(.a11y-f14):not(.a11y-f15):not(.a11y-f16):not(.a11y-f17):not(.a11y-f18):not(.a11y-f19):not(.a11y-f20):not(.a11y-f21):not(.a11y-f22):not(.a11y-f23):not(.a11y-f24):not(.a11y-f25):not(.a11y-f26):not(.a11y-f27):not(.a11y-f28):not(.a11y-f29):not(.a11y-f30) { order: 2; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz form.a11y-url-form.a11y-tester > .a11y-tester-choices:not(.a11y-f1):not(.a11y-f2):not(.a11y-f3):not(.a11y-f4):not(.a11y-f5):not(.a11y-f6):not(.a11y-f7):not(.a11y-f8):not(.a11y-f9):not(.a11y-f10):not(.a11y-f11):not(.a11y-f12):not(.a11y-f13):not(.a11y-f14):not(.a11y-f15):not(.a11y-f16):not(.a11y-f17):not(.a11y-f18):not(.a11y-f19):not(.a11y-f20):not(.a11y-f21):not(.a11y-f22):not(.a11y-f23):not(.a11y-f24):not(.a11y-f25):not(.a11y-f26):not(.a11y-f27):not(.a11y-f28):not(.a11y-f29):not(.a11y-f30),
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz form.a11y-url-form.a11y-tester > .a11y-tester-rows > .a11y-tester-choices:not(.a11y-f1):not(.a11y-f2):not(.a11y-f3):not(.a11y-f4):not(.a11y-f5):not(.a11y-f6):not(.a11y-f7):not(.a11y-f8):not(.a11y-f9):not(.a11y-f10):not(.a11y-f11):not(.a11y-f12):not(.a11y-f13):not(.a11y-f14):not(.a11y-f15):not(.a11y-f16):not(.a11y-f17):not(.a11y-f18):not(.a11y-f19):not(.a11y-f20):not(.a11y-f21):not(.a11y-f22):not(.a11y-f23):not(.a11y-f24):not(.a11y-f25):not(.a11y-f26):not(.a11y-f27):not(.a11y-f28):not(.a11y-f29):not(.a11y-f30) {
+  flex: none; order: 3; display: inline-flex; grid-template-columns: none; gap: 6px; width: auto; margin: 0; padding: 0;
+  border: 0; border-radius: 0; background: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz form.a11y-url-form.a11y-tester > .a11y-url-submit:not(.a11y-f1):not(.a11y-f2):not(.a11y-f3):not(.a11y-f4):not(.a11y-f5):not(.a11y-f6):not(.a11y-f7):not(.a11y-f8):not(.a11y-f9):not(.a11y-f10):not(.a11y-f11):not(.a11y-f12):not(.a11y-f13):not(.a11y-f14):not(.a11y-f15):not(.a11y-f16):not(.a11y-f17):not(.a11y-f18):not(.a11y-f19):not(.a11y-f20):not(.a11y-f21):not(.a11y-f22):not(.a11y-f23):not(.a11y-f24):not(.a11y-f25):not(.a11y-f26):not(.a11y-f27):not(.a11y-f28):not(.a11y-f29):not(.a11y-f30) { order: 4; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz form.a11y-url-form.a11y-tester .a11y-tester-choices > label.a11y-seg:not(.a11y-f1):not(.a11y-f2):not(.a11y-f3):not(.a11y-f4):not(.a11y-f5):not(.a11y-f6):not(.a11y-f7):not(.a11y-f8):not(.a11y-f9):not(.a11y-f10):not(.a11y-f11):not(.a11y-f12):not(.a11y-f13):not(.a11y-f14):not(.a11y-f15):not(.a11y-f16):not(.a11y-f17):not(.a11y-f18):not(.a11y-f19):not(.a11y-f20):not(.a11y-f21):not(.a11y-f22):not(.a11y-f23):not(.a11y-f24):not(.a11y-f25):not(.a11y-f26):not(.a11y-f27):not(.a11y-f28):not(.a11y-f29):not(.a11y-f30) { border: 0; border-radius: 12px; padding: 8px 16px; margin: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz form.a11y-url-form.a11y-tester .a11y-tester-choices > label.a11y-seg.a11y-seg-on:not(.a11y-f1):not(.a11y-f2):not(.a11y-f3):not(.a11y-f4):not(.a11y-f5):not(.a11y-f6):not(.a11y-f7):not(.a11y-f8):not(.a11y-f9):not(.a11y-f10):not(.a11y-f11):not(.a11y-f12):not(.a11y-f13):not(.a11y-f14):not(.a11y-f15):not(.a11y-f16):not(.a11y-f17):not(.a11y-f18):not(.a11y-f19):not(.a11y-f20):not(.a11y-f21):not(.a11y-f22):not(.a11y-f23):not(.a11y-f24):not(.a11y-f25):not(.a11y-f26):not(.a11y-f27):not(.a11y-f28):not(.a11y-f29):not(.a11y-f30) { background: var(--prompt-line); color: #fff; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz form.a11y-url-form.a11y-tester .a11y-tester-choices > label.a11y-seg:not(.a11y-seg-on):not(.a11y-f1):not(.a11y-f2):not(.a11y-f3):not(.a11y-f4):not(.a11y-f5):not(.a11y-f6):not(.a11y-f7):not(.a11y-f8):not(.a11y-f9):not(.a11y-f10):not(.a11y-f11):not(.a11y-f12):not(.a11y-f13):not(.a11y-f14):not(.a11y-f15):not(.a11y-f16):not(.a11y-f17):not(.a11y-f18):not(.a11y-f19):not(.a11y-f20):not(.a11y-f21):not(.a11y-f22):not(.a11y-f23):not(.a11y-f24):not(.a11y-f25):not(.a11y-f26):not(.a11y-f27):not(.a11y-f28):not(.a11y-f29):not(.a11y-f30) { background: var(--ink); color: var(--paper); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz form.a11y-url-form.a11y-tester .a11y-tester-choices > label.a11y-seg:not(.a11y-seg-on):not(.a11y-f1):not(.a11y-f2):not(.a11y-f3):not(.a11y-f4):not(.a11y-f5):not(.a11y-f6):not(.a11y-f7):not(.a11y-f8):not(.a11y-f9):not(.a11y-f10):not(.a11y-f11):not(.a11y-f12):not(.a11y-f13):not(.a11y-f14):not(.a11y-f15):not(.a11y-f16):not(.a11y-f17):not(.a11y-f18):not(.a11y-f19):not(.a11y-f20):not(.a11y-f21):not(.a11y-f22):not(.a11y-f23):not(.a11y-f24):not(.a11y-f25):not(.a11y-f26):not(.a11y-f27):not(.a11y-f28):not(.a11y-f29):not(.a11y-f30):hover { background: var(--row-hover); color: #fff; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz form.a11y-url-form.a11y-tester .a11y-tester-choices > label.a11y-seg:has(input:focus-visible):not(.a11y-f1):not(.a11y-f2):not(.a11y-f3):not(.a11y-f4):not(.a11y-f5):not(.a11y-f6):not(.a11y-f7):not(.a11y-f8):not(.a11y-f9):not(.a11y-f10):not(.a11y-f11):not(.a11y-f12):not(.a11y-f13):not(.a11y-f14):not(.a11y-f15):not(.a11y-f16):not(.a11y-f17):not(.a11y-f18):not(.a11y-f19):not(.a11y-f20):not(.a11y-f21):not(.a11y-f22):not(.a11y-f23):not(.a11y-f24):not(.a11y-f25):not(.a11y-f26):not(.a11y-f27):not(.a11y-f28):not(.a11y-f29):not(.a11y-f30) { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (max-width: 671px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz form.a11y-url-form.a11y-tester > :is(.a11y-input):not(.a11y-f1):not(.a11y-f2):not(.a11y-f3):not(.a11y-f4):not(.a11y-f5):not(.a11y-f6):not(.a11y-f7):not(.a11y-f8):not(.a11y-f9):not(.a11y-f10):not(.a11y-f11):not(.a11y-f12):not(.a11y-f13):not(.a11y-f14):not(.a11y-f15):not(.a11y-f16):not(.a11y-f17):not(.a11y-f18):not(.a11y-f19):not(.a11y-f20):not(.a11y-f21):not(.a11y-f22):not(.a11y-f23):not(.a11y-f24):not(.a11y-f25):not(.a11y-f26):not(.a11y-f27):not(.a11y-f28):not(.a11y-f29):not(.a11y-f30),
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz form.a11y-url-form.a11y-tester > .a11y-tester-rows > .a11y-select2:not(.a11y-f1):not(.a11y-f2):not(.a11y-f3):not(.a11y-f4):not(.a11y-f5):not(.a11y-f6):not(.a11y-f7):not(.a11y-f8):not(.a11y-f9):not(.a11y-f10):not(.a11y-f11):not(.a11y-f12):not(.a11y-f13):not(.a11y-f14):not(.a11y-f15):not(.a11y-f16):not(.a11y-f17):not(.a11y-f18):not(.a11y-f19):not(.a11y-f20):not(.a11y-f21):not(.a11y-f22):not(.a11y-f23):not(.a11y-f24):not(.a11y-f25):not(.a11y-f26):not(.a11y-f27):not(.a11y-f28):not(.a11y-f29):not(.a11y-f30) { flex-basis: 100%; }
+}
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz form.a11y-url-form.a11y-tester .a11y-tester-choices > label.a11y-seg.a11y-seg-on:not(.a11y-f1):not(.a11y-f2):not(.a11y-f3):not(.a11y-f4):not(.a11y-f5):not(.a11y-f6):not(.a11y-f7):not(.a11y-f8):not(.a11y-f9):not(.a11y-f10):not(.a11y-f11):not(.a11y-f12):not(.a11y-f13):not(.a11y-f14):not(.a11y-f15):not(.a11y-f16):not(.a11y-f17):not(.a11y-f18):not(.a11y-f19):not(.a11y-f20):not(.a11y-f21):not(.a11y-f22):not(.a11y-f23):not(.a11y-f24):not(.a11y-f25):not(.a11y-f26):not(.a11y-f27):not(.a11y-f28):not(.a11y-f29):not(.a11y-f30) { background: Highlight; color: HighlightText; }
+}
