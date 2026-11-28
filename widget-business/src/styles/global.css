@@ -3024,6 +3024,15 @@
   align-items: baseline;
 }
 
+/* ── Shell, sections and navigation, continued ── */
+:where(.a11y-widget-biz .a11y-shell-nav-link[aria-current="true"]) {
+  font-weight: 400;
+}
+:where(.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-count) {
+  font-size: 16px;
+  letter-spacing: 0;
+}
+
 /* ── Buttons, fields and shared controls, continued ── */
 :where(.a11y-widget-biz .a11y-code-fix-label > strong) {
   font-weight: 400;
@@ -3097,15 +3106,6 @@
     display: block;
     width: 100%;
   }
-}
-
-/* ── Shell, sections and navigation, continued ── */
-:where(.a11y-widget-biz .a11y-shell-nav-link[aria-current="true"]) {
-  font-weight: 400;
-}
-:where(.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-count) {
-  font-size: 16px;
-  letter-spacing: 0;
 }
 
 /* ── Chat, conversations and Report a barrier, continued ── */
@@ -9116,15 +9116,6 @@
   z-index: 1;
 }
 
-/* ── Buttons, fields and shared controls, continued ── */
-:where(.a11y-widget-biz .a11y-sr .a11y-show-all) {
-  width: fit-content;
-  margin: var(--cds-spacing-07) 0 0;
-}
-:where(.a11y-widget-biz .a11y-note.a11y-yellow-note) {
-  margin: var(--cds-spacing-05) 0 var(--cds-spacing-07);
-}
-
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
 @media (min-width: 672px) {
   :where(.a11y-widget-biz .a11y-legal-tiles.a11y-legal-carets) {
@@ -9134,19 +9125,19 @@
 }
 
 /* ── Buttons, fields and shared controls, continued ── */
+:where(.a11y-widget-biz .a11y-sr .a11y-show-all) {
+  width: fit-content;
+  margin: var(--cds-spacing-07) 0 0;
+}
 @media (max-width: 671px) {
   :where(.a11y-widget-biz :is(.a11y-sr, .a11y-acr) .a11y-accordion-title .a11y-accordion-head > *) {
     grid-column: 2;
   }
 }
 :where(.a11y-widget-biz :is(.a11y-note.a11y-yellow-note)) {
-  display: flex;
   flex-direction: column;
   align-items: stretch;
   gap: 1lh;
-  border: 0;
-  background: var(--yellow-note);
-  color: #000;
   text-align: left;
   font-family: "Jokker", "DejaVu Sans", sans-serif;
   font-size: 22px;
@@ -9155,6 +9146,7 @@
   line-height: 1.1;
   letter-spacing: 0;
   overflow-wrap: anywhere;
+  --yellow-note: var(--hl-cap-a);
 }
 
 /* ── Designer and developer list, design notes, continued ── */
@@ -9237,11 +9229,6 @@
   text-align: left;
   font: inherit;
   letter-spacing: inherit;
-}
-@media (forced-colors: active) {
-  :where(.a11y-widget-biz :is(.a11y-note.a11y-yellow-note)) {
-    border: 1px solid CanvasText;
-  }
 }
 :where(.a11y-widget-biz .a11y-code-fix > .a11y-copy-btn) {
   box-sizing: border-box;
@@ -10390,6 +10377,12 @@
   line-height: 1.1;
   letter-spacing: 0;
 }
+:where(
+  .a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > * > :is(.a11y-fd-points, ul:not(.a11y-occurrence-list))[class],
+  .a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps > ul
+) {
+  padding-inline-start: 0;
+}
 
 /* ── Score summary, continued ── */
 :where(.a11y-widget-biz .a11y-score .a11y-sum-specimen :is(.a11y-sum-run > .a11y-sum-verdict, .a11y-sum-issues > .a11y-sum-label)) {
@@ -10446,16 +10439,22 @@
   letter-spacing: inherit;
 }
 
-/* ── Buttons, fields and shared controls, continued ── */
-:where(.a11y-widget-biz :is(.a11y-note.a11y-yellow-note)) {
-  --yellow-note: var(--hl-cap-a);
-  padding: var(--cds-spacing-06);
-}
-@media (max-width: 671px) {
-  :where(.a11y-widget-biz :is(.a11y-note.a11y-yellow-note)) {
-    padding: var(--cds-spacing-05);
+/* ── Screen reader simulation and vision, continued ── */
+@media (min-width: 672px) {
+  :where(.a11y-widget-biz .a11y-sr .a11y-sr-bar .a11y-sr-ctl > svg) {
+    display: none;
   }
 }
+:where(.a11y-widget-biz .a11y-section.a11y-sr > :is(.a11y-sr-bar, h2.a11y-section-title)) {
+  padding-inline: var(--cds-spacing-07);
+}
+@media (max-width: 671px) {
+  :where(.a11y-widget-biz .a11y-section.a11y-sr > :is(.a11y-sr-bar, h2.a11y-section-title)) {
+    padding-inline: 0;
+  }
+}
+
+/* ── Buttons, fields and shared controls, continued ── */
 :where(.a11y-widget-biz :is(.a11y-btn, .a11y-ra-send, .a11y-ra-pdf, .a11y-chats-new, .a11y-lang-toggle, .a11y-prompt-go) :is(span, strong):not(.a11y-sr-only)) {
   font-size: inherit;
   letter-spacing: inherit;
@@ -10482,6 +10481,17 @@
   }
 }
 
+/* ── Scan form and settings, continued ── */
+@media (forced-colors: active) {
+  :where(.a11y-widget-biz .a11y-settings :is(.a11y-settings-opt, .a11y-select2-field, .a11y-input-shell)) {
+    border: 1px solid CanvasText;
+  }
+}
+:where(.a11y-widget-biz .a11y-url-form > .a11y-url-submit > .a11y-url-submit-note) {
+  font-size: 18px;
+  font-style: normal;
+}
+
 /* ── Screen reader simulation and vision, continued ── */
 :where(.a11y-widget-biz .a11y-sr .a11y-sr-row > .a11y-sr-line-text) {
   grid-column: 2;
@@ -10495,40 +10505,6 @@
   grid-row: 1;
   font-size: 16px;
   color: inherit;
-}
-@media (min-width: 672px) {
-  :where(.a11y-widget-biz .a11y-sr .a11y-sr-bar .a11y-sr-ctl > svg) {
-    display: none;
-  }
-}
-
-/* ── Scan form and settings, continued ── */
-@media (forced-colors: active) {
-  :where(.a11y-widget-biz .a11y-settings :is(.a11y-settings-opt, .a11y-select2-field, .a11y-input-shell)) {
-    border: 1px solid CanvasText;
-  }
-}
-:where(.a11y-widget-biz .a11y-url-form > .a11y-url-submit > .a11y-url-submit-note) {
-  font-size: 18px;
-  font-style: normal;
-}
-
-/* ── Findings and the opened finding, continued ── */
-:where(
-  .a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > * > :is(.a11y-fd-points, ul:not(.a11y-occurrence-list))[class],
-  .a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd > .a11y-fd-col > .a11y-finding-steps > ul
-) {
-  padding-inline-start: 0;
-}
-
-/* ── Screen reader simulation and vision, continued ── */
-:where(.a11y-widget-biz .a11y-section.a11y-sr > :is(.a11y-sr-bar, h2.a11y-section-title)) {
-  padding-inline: var(--cds-spacing-07);
-}
-@media (max-width: 671px) {
-  :where(.a11y-widget-biz .a11y-section.a11y-sr > :is(.a11y-sr-bar, h2.a11y-section-title)) {
-    padding-inline: 0;
-  }
 }
 
 /* ── Chat, conversations and Report a barrier, continued ── */
@@ -10988,6 +10964,14 @@
   margin-bottom: 0;
 }
 
+/* ── Findings and the opened finding, continued ── */
+:where(
+  .a11y-widget-biz a.a11y-learn-more.a11y-learn-prompt,
+  .a11y-widget-biz a.a11y-learn-more.a11y-learn-prompt:visited
+) {
+  margin-top: var(--cds-spacing-05);
+}
+
 /* ── Buttons, fields and shared controls, continued ── */
 :where(.a11y-widget-biz .a11y-section.a11y-sr .a11y-accordion-row) {
   margin: 0;
@@ -11002,14 +10986,6 @@
 :where(.a11y-widget-biz .a11y-settings :is(.a11y-settings-row, .a11y-manual-form-actions) > .a11y-btn) {
   width: fit-content;
   margin-inline: 0 auto;
-}
-
-/* ── Findings and the opened finding, continued ── */
-:where(
-  .a11y-widget-biz a.a11y-learn-more.a11y-learn-prompt,
-  .a11y-widget-biz a.a11y-learn-more.a11y-learn-prompt:visited
-) {
-  margin-top: var(--cds-spacing-05);
 }
 
 /* ── History, statement, report actions, professional, continued ── */
@@ -13473,12 +13449,6 @@
   padding-left: 0;
 }
 
-/* ── Buttons, fields and shared controls, continued ── */
-:where(.a11y-widget-biz .a11y-findings-table tr.a11y-dt-expand-row > td) {
-  padding-left: 0;
-  padding-right: 0;
-}
-
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
 :where(.a11y-widget-biz .a11y-report h2.a11y-section-title :is(.a11y-accordion-head, .a11y-w22-head) > :is(span:first-child, .a11y-w22-head-words)) {
   font-size: inherit;
@@ -13489,6 +13459,10 @@
 }
 
 /* ── Buttons, fields and shared controls, continued ── */
+:where(.a11y-widget-biz .a11y-findings-table tr.a11y-dt-expand-row > td) {
+  padding-left: 0;
+  padding-right: 0;
+}
 @media (max-width: 671px) {
   :where(.a11y-widget-biz .a11y-report h2.a11y-section-title :is(.a11y-accordion-head, .a11y-w22-head)) {
     font-size: 36px;
@@ -13508,6 +13482,9 @@
 :where(.a11y-widget-biz :is(.a11y-tech-field, .a11y-alt-suggestion, .a11y-code-fix-col)) {
   padding: var(--cds-spacing-05);
   border-radius: calc(10px + var(--cds-spacing-05));
+}
+:where(.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd) {
+  padding: 0;
 }
 
 /* ── Scan form and settings, continued ── */
@@ -13543,4 +13520,63 @@
 }
 :where(.a11y-widget-biz .a11y-section.a11y-sr:has(h2#a11y-sr-heading:not(.a11y-accordion-title)) .a11y-sr-log > .a11y-sr-log-heads) {
   padding-inline-start: 0;
+}
+
+/* ── Buttons, fields and shared controls, continued ── */
+:where(.a11y-widget-biz .a11y-findings-table tr.a11y-dt-expand-row > td) {
+  padding-top: var(--cds-spacing-06);
+  padding-bottom: var(--cds-spacing-07);
+}
+
+/* ── Findings and the opened finding, continued ── */
+:where(.a11y-widget-biz .a11y-fd > .a11y-fd-col > * > :first-child) {
+  display: block;
+  text-box: normal;
+  line-height: 1.15;
+  padding: 0;
+  margin: 0;
+}
+
+/* ── Buttons, fields and shared controls, continued ── */
+:where(.a11y-widget-biz .a11y-yellow-note) {
+  display: block;
+  margin: var(--cds-spacing-07) 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--ink);
+  --ink: inherit;
+  --paper: inherit;
+}
+:where(.a11y-widget-biz .a11y-yellow-note > .a11y-note-body) {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+:where(.a11y-widget-biz .a11y-yellow-note .a11y-note-title) {
+  display: block;
+  margin: 0 0 var(--cds-spacing-04);
+  padding: 0 0 var(--cds-spacing-03);
+  border: 0;
+  border-bottom: 1px solid var(--ink);
+  color: var(--ink);
+  font-family: "Jokker", "DejaVu Sans", sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+:where(.a11y-widget-biz .a11y-yellow-note .a11y-note-sub) {
+  display: block;
+  margin: 0;
+  padding: 0;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+  font-family: "Jokker", "DejaVu Sans", sans-serif;
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: 0;
 }
