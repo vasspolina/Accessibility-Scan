@@ -8767,3 +8767,48 @@
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-w22-toggle .a11y-w22-call *:not([class]):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8):not(.a11y-z9):not(.a11y-z10) {
   font-size: inherit; line-height: inherit; letter-spacing: inherit;
 }
+
+/* ═══ PREVIOUS SCANS AS THE INFO BLOCK (user's instruction, 28 Nov 2026,
+   "typeset properly", after a foundry's Info block of DESCRIPTION, DETAILS
+   and CREDITS) ═════════════════════════════════════════════════════════
+   Two equal columns 16px apart: the runs on the left, Since last time and
+   Where this lives on the right. Each group opens on a small capital label
+   (the year over the runs, the two headings over theirs: 18px, +0.04em,
+   uppercase) over a 1px ink rule, and closes on a 1px ink rule 12px under
+   its last line. Inside, every row is a key and its value, 18px at 1.35,
+   set solid: the date or the fact's name in a 200px column, the score, the
+   repeat count and the note beside it (the score no longer display size).
+   The groups on the right stand 40px apart. One column under 672px. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-cols:not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--cds-spacing-08) var(--cds-spacing-05); align-items: start; margin: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-col:not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) { display: flex; flex-direction: column; gap: var(--cds-spacing-08); min-width: 0; margin: 0; padding: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-card:not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) { display: block; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist :is(.a11y-hist-runs > .a11y-hist-year, .a11y-hist-card > .a11y-hist-head):not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) {
+  display: block; position: static; grid-column: 1 / -1; width: auto; margin: 0 0 var(--cds-spacing-04); padding: 0 0 var(--cds-spacing-04);
+  border: 0; border-bottom: 1px solid var(--ink); background: none; color: var(--ink);
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.04em; text-transform: uppercase;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist :is(.a11y-hist-runs, .a11y-hist-facts):not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) {
+  display: block; margin: 0; padding: 0 0 var(--cds-spacing-04); border: 0; border-bottom: 1px solid var(--ink); list-style: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist :is(.a11y-hist-run, .a11y-hist-fact):not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) {
+  display: grid; grid-template-columns: 200px max-content max-content minmax(0, 1fr); align-items: baseline; gap: 0 var(--cds-spacing-04);
+  margin: 0; padding: 0; border: 0; list-style: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.35; letter-spacing: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-fact:not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) { grid-template-columns: 200px minmax(0, 1fr); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist :is(.a11y-hist-run, .a11y-hist-fact):not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12)::before { content: none; display: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist :is(.a11y-hist-run, .a11y-hist-fact) > :not(.a11y-sr-only):not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) {
+  position: static; top: auto; flex: none; width: auto; min-width: 0; margin: 0; padding: 0;
+  color: var(--ink); background: none; font: inherit; letter-spacing: inherit; font-style: normal; white-space: normal;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist :is(.a11y-hist-run > .a11y-hist-date, .a11y-hist-fact > .a11y-hist-fact-label):not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) { grid-column: 1; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-card > .a11y-hist-promise:not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) {
+  margin: 0 0 var(--cds-spacing-04); padding: 0; font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.35; letter-spacing: 0;
+}
+@media (max-width: 671px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-cols:not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) { grid-template-columns: minmax(0, 1fr); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist :is(.a11y-hist-run, .a11y-hist-fact):not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) { grid-template-columns: 120px max-content max-content minmax(0, 1fr); }
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-hist .a11y-hist-fact:not(.a11y-h1):not(.a11y-h2):not(.a11y-h3):not(.a11y-h4):not(.a11y-h5):not(.a11y-h6):not(.a11y-h7):not(.a11y-h8):not(.a11y-h9):not(.a11y-h10):not(.a11y-h11):not(.a11y-h12) { grid-template-columns: 120px minmax(0, 1fr); }
+}
