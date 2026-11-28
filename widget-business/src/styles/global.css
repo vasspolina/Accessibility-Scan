@@ -8639,10 +8639,14 @@
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > * > :is(strong:first-child, .a11y-fd-title, .a11y-affected-label, p:first-child):not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20)::before,
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > * > :is(strong:first-child, .a11y-fd-title, .a11y-affected-label, p:first-child):not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20)::after { content: none; display: none; }
-/* The suggested alt text and its siblings lose their cream card. */
+/* The suggested alt text is a grey filled field, as the form's fields
+   ("make this into a grey fill form", 28 Nov 2026): --form-field (#e6e6e6,
+   as the form fields), no edge, 20px corners, 16px 20px inside, its label and the
+   words black in both themes; its Copy pill is white so it shows on the grey. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-affected :is(.a11y-alt-card, .a11y-alt-suggestion):not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20) {
-  margin: var(--cds-spacing-03) 0 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; --ink: inherit; --paper: inherit; color: var(--ink);
+  margin: var(--cds-spacing-04) 0 0; padding: var(--cds-spacing-05) 20px; border: 0; border-radius: 20px; background: var(--form-field); box-shadow: none; --ink: inherit; --paper: inherit; color: var(--form-field-ink);
 }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd .a11y-affected :is(.a11y-alt-card, .a11y-alt-suggestion) :is(button, .a11y-copy-btn):not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20):not(:hover) { background: #fff; color: #000; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-col > * > :not(:first-child)[class][class][class][class][class][class][class][class][class][class][class][class] {
   margin-inline: 0; padding-inline: 0; text-align: left; font-size: 22px; line-height: 1.15; background: none;
 }
