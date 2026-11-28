@@ -463,7 +463,7 @@ export const CHROME_KEYS: string[] = [
   "Score unchanged – {then} then, {now} now",
   "Score is up – {then} then, {now} now",
   "Score is down – {then} then, {now} now",
-  "Not comparable – we scored the earlier scan by different rules. Some checks now count towards the score that did not before, so we do not compare the two.",
+  "Not comparable – some checks now count towards the score that did not before.",
   "Problems fixed – none",
   "Problems fixed – {rules}",
   "New problems – none",

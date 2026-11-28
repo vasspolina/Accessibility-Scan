@@ -228,7 +228,7 @@ export function ScanHistory({
                     { then: last.score, now: current.score }
                   )
                 : t(
-                    "Not comparable – we scored the earlier scan by different rules. Some checks now count towards the score that did not before, so we do not compare the two."
+                    "Not comparable – some checks now count towards the score that did not before."
                   )} />
             </li>
             <li className="a11y-hist-fact">

@@ -488,7 +488,7 @@ export const STRINGS_FR: Record<string, string> = {
   "Score unchanged – {then} then, {now} now": "Score inchangé – avant {then}, maintenant {now}",
   "Score is up – {then} then, {now} now": "Le score a augmenté – avant {then}, maintenant {now}",
   "Score is down – {then} then, {now} now": "Le score a baissé – avant {then}, maintenant {now}",
-  "Not comparable – we scored the earlier scan by different rules. Some checks now count towards the score that did not before, so we do not compare the two.": "Non comparable – nous avons noté l’analyse précédente selon d’autres règles. Certaines vérifications comptent désormais dans le score alors qu’elles n’y comptaient pas avant. Nous ne comparons donc pas les deux.",
+  "Not comparable – some checks now count towards the score that did not before.": "Non comparable – certaines vérifications comptent désormais dans le score alors qu’elles n’y comptaient pas avant.",
   "Problems fixed – none": "Problèmes corrigés – aucun",
   "Problems fixed – {rules}": "Problèmes corrigés – {rules}",
   "New problems – none": "Nouveaux problèmes – aucun",
