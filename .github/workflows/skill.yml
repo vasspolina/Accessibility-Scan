@@ -1,0 +1,95 @@
+# The Claude Code skill (docs/SKILL.md), installed the way a stranger gets it.
+#
+# The skill's scan.sh clones the repository, builds the command and runs it,
+# so a change to the command's options or exit codes can break the skill
+# without touching a file under plugins/. That is why this also runs when the
+# CLI changes.
+#
+# It clones THIS checkout, not GitHub's main, so a pull request tests its own
+# code: A11Y_SCAN_REPO points at the workspace and A11Y_SCAN_REF at a branch
+# made for the test (git clone --branch takes a branch, not a detached HEAD).
+name: Skill
+
+on:
+  push:
+    paths:
+      - ".claude-plugin/**"
+      - "plugins/**"
+      - "backend/src/cli.ts"
+      - "backend/src/cliFormats.ts"
+      - "backend/package.json"
+      - ".github/workflows/skill.yml"
+  pull_request:
+    paths:
+      - ".claude-plugin/**"
+      - "plugins/**"
+      - "backend/src/cli.ts"
+      - "backend/src/cliFormats.ts"
+      - "backend/package.json"
+      - ".github/workflows/skill.yml"
+
+jobs:
+  skill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SCAN: plugins/a11y-scan/skills/a11y-scan/scripts/scan.sh
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      # The manifests parse and name each other, and SKILL.md has the two
+      # front-matter fields Claude reads to decide when to use it.
+      - name: Manifests and front matter
+        run: |
+          node -e '
+            const fs = require("fs");
+            const m = JSON.parse(fs.readFileSync(".claude-plugin/marketplace.json", "utf8"));
+            for (const p of m.plugins) {
+              const dir = p.source.replace(/^\.\//, "");
+              const pj = JSON.parse(fs.readFileSync(dir + "/.claude-plugin/plugin.json", "utf8"));
+              if (pj.name !== p.name) throw new Error(`marketplace names ${p.name}, plugin.json names ${pj.name}`);
+              const skill = fs.readFileSync(dir + "/skills/a11y-scan/SKILL.md", "utf8");
+              const fm = skill.match(/^---\n([\s\S]*?)\n---/);
+              if (!fm || !/^name: a11y-scan$/m.test(fm[1]) || !/^description: .{40,}/m.test(fm[1])) throw new Error("SKILL.md front matter");
+            }
+            console.log("ok");
+          '
+
+      - name: Shell
+        run: |
+          bash -n "$SCAN"
+          shellcheck "$SCAN"
+
+      # Ubuntu runners lack some of Chromium's system libraries. scan.sh
+      # installs the browser but not those (that needs sudo), and says so;
+      # here they are installed first, with the Playwright the backend pins.
+      - name: Chromium's system libraries
+        run: npx -y playwright@"$(node -p 'require("./backend/package.json").dependencies.playwright')" install-deps chromium
+
+      - name: First run installs, then scans
+        env:
+          CLAUDE_PLUGIN_DATA: ${{ runner.temp }}/skill-data
+          A11Y_SCAN_REPO: ${{ github.workspace }}
+          A11Y_SCAN_REF: skill-under-test
+        run: |
+          git switch -c skill-under-test
+          bash "$SCAN" --setup
+          test -f "$CLAUDE_PLUGIN_DATA/.ready"
+
+          out="$(mktemp -d)"
+          bash "$SCAN" https://example.com --markdown "$out/a11y.md" --json "$out/a11y.json" --quiet
+          grep -q '## Accessibility scan' "$out/a11y.md"
+          node -e "const r=JSON.parse(require('fs').readFileSync('$out/a11y.json','utf8')); if(typeof r.score!=='number'||!Array.isArray(r.findings)) process.exit(1)"
+
+          # The exit codes the skill tells Claude about: 1 a threshold
+          # missed, 2 a scan that could not run. Neither may read as a pass.
+          set +e
+          bash "$SCAN" https://example.com --min-score 100 --quiet; one=$?
+          bash "$SCAN" file:///etc/hosts --quiet; two=$?
+          set -e
+          [ "$one" = 1 ] || { echo "expected 1, got $one"; exit 1; }
+          [ "$two" = 2 ] || { echo "expected 2, got $two"; exit 1; }
