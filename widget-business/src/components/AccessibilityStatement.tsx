@@ -253,7 +253,7 @@ function SpecCard({
   field: string;
   value: string;
   gloss?: string;
-  /* The first card carries the accent, as the reference's spec sheet does.
+  /* The first card carries the accent.
      Black on the fill, like every other filled thing here — 5.7:1. */
   lead?: boolean;
 }) {

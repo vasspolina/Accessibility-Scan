@@ -68,7 +68,7 @@ export function FindingsList({
         { key: "count", label: t("Instances"), align: "right" as const },
       ]
     : [
-        // Two columns, set as a list of questions (user's reference,
+        // Two columns, set as a list of questions (user's instruction,
         // 24 Nov 2026): the issue, and its severity as a coloured word at
         // the end of the row. WCAG, Level, Fix and Instances are the first
         // line of the opened finding (findingRow's comment). The severity

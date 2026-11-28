@@ -143,9 +143,9 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
   const filtered = onlyIssues ? entries.filter((e) => e.line.issue) : entries;
   const visible = expanded ? filtered : filtered.slice(0, 12);
 
-  // The filter and the skip link stand in Play's row (user's reference,
-  // 25 Nov 2026, "design these like these, all in one row": a black pill
-  // beside grey ones). While it reads they drop to a row of their own under
+  // The filter and the skip link stand in Play's row (user's instruction,
+  // 25 Nov 2026, "all in one row": a black pill beside grey ones). While it
+  // reads they drop to a row of their own under
   // the bar, so only the transport sticks: on a 375px phone the whole bar
   // stuck was 300px, more than a third of the screen.
   const showTools = panelOpen && (issueCount > 0 || filtered.length > 12);
@@ -297,7 +297,7 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
             </>
           ) : (
             <>
-              <Icon name="play--filled--alt" /> {t("Play the page aloud")}
+              <Icon name="play--filled--alt" /> {t("Listen to the page")}
             </>
           )}
         </button>
@@ -377,11 +377,10 @@ export function ScreenReaderPreview({ script }: { script: ScreenReaderScript }) 
           exist. */}
       <div id={panelId} hidden={!panelOpen}>
 
-      {/* The design's announcement log: a light card on the report's own
+      {/* The announcement log: a light card on the report's own
           ground, white pill rows, the silent lines tinted purple with
-          their note inline. Supersedes the black kit panel — the design
-          project's later "Screen reader panel" card is the current
-          reference. Every behaviour of the panel it replaces survives:
+          their note inline. Supersedes the black panel. Every behaviour
+          of the panel it replaces survives:
           play-from-here is still the row itself with its purpose in the
           accessible name, aria-current marks the line being read, and
           the header strip is aria-hidden because a list has no columns

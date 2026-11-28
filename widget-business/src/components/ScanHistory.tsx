@@ -61,7 +61,7 @@ function collapseRepeats(entries: { scannedAt: string; score: number; note?: str
 }
 
 /* A fact reads "Score is up – 46 then, 48 now": what changed, then the
-   figures. Set as a programme, the first part is the small italic call-out
+   figures. The first part is the small call-out
    and the rest the large line beside it; the dash stays for a screen
    reader. A line with no dash (or an unforeseen translation) is set whole. */
 function Fact({ text }: { text: string }) {
@@ -96,13 +96,13 @@ export function ScanHistory({
 }) {
   const [cleared, setCleared] = useState(false);
   // Deleting history is irreversible and was firing on one click with no
-  // way back — the system's own content rule for dialogs is "state
-  // consequences plainly", and this is exactly the destructive action it
-  // describes. The imported Dialog gates it now.
+  // way back — the content rule for dialogs is "state consequences
+  // plainly", and this is exactly the destructive action it describes.
+  // The Dialog gates it now.
   const [confirmOpen, setConfirmOpen] = useState(false);
   const anchorRef = useRef<HTMLButtonElement>(null);
 
-  // The imported Dialog is a scrim overlay, not a full modal: nothing marks
+  // The Dialog is a scrim overlay, not a full modal: nothing marks
   // the page behind it inert, so a screen reader can still reach the report
   // underneath and — the finding that caught this — axe reported the
   // background text failing contrast against the scrim it sits behind.
@@ -191,8 +191,8 @@ export function ScanHistory({
             {runsByYear.map(({ year, runs }) => (
               <Fragment key={year}>
                 <li className="a11y-hist-year">{year}</li>
-                {/* Set as a programme: the date and the note are small
-                    italic call-outs either side of the score. The dash and
+                {/* The date and the note are small call-outs either
+                    side of the score. The dash and
                     the comma that join them in a sentence are kept for a
                     screen reader and clipped for the eye. */}
                 {runs.map((e) => (

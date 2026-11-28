@@ -2,10 +2,10 @@ import type { ReactNode } from "react";
 import { t } from "../lib/strings";
 
 /**
- * The progress bar and the notification, brought across from the kit.
+ * The progress bar and the notification.
  *
- * Both carry ARIA, so both are copied behaviour-first and the markup is
- * reproduced exactly rather than tidied.
+ * Both carry ARIA, so the behaviour comes first and the markup is
+ * left as it is rather than tidied.
  *
  * ProgressBar: role="progressbar" with aria-valuenow/min/max, named by the
  * same label the reader sees. The percentage beside it is aria-hidden on
@@ -15,8 +15,8 @@ import { t } from "../lib/strings";
  * Notification: role="alert" for errors, role="status" for everything else.
  * That distinction is the whole component. An alert interrupts whatever is
  * being read; a status waits its turn. Getting it backwards either buries an
- * error or talks over somebody mid-sentence, so the kit's mapping is kept
- * exactly, including that only `error` earns the interruption.
+ * error or talks over somebody mid-sentence, so the mapping is fixed:
+ * only `error` earns the interruption.
  */
 
 export function ProgressBar({

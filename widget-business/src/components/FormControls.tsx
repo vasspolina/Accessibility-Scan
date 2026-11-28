@@ -1,7 +1,7 @@
 import type { ChangeEvent } from "react";
 
 /**
- * The radio and the select, brought across from the kit.
+ * The radio and the select.
  *
  * Both are thin wrappers over the real element, which is the whole reason
  * they are safe to move: the browser supplies the keyboard behaviour, the

@@ -10,20 +10,18 @@ import { ScoreDial } from "../components/ScoreDial";
 import { SeverityTag } from "../components/SeverityTag";
 
 /**
- * Component gallery, ported from "Accessible Scan - Component Cards.html".
+ * Component gallery.
  *
  * Dev-only: nothing imports this from the widget entry, so it adds no bytes to
  * the shipped bundle. Served at /gallery.html by the dev server.
  *
- * The demo props and the note under each card are the design file's own, kept
- * word for word. That is deliberate — if a component renders differently here
- * than it does in the design's gallery, the difference is the port's, and this
- * page is where it shows. Nothing on this page restyles a component.
+ * The demo props and the note under each card are fixed and kept word for
+ * word, so a component that renders differently from one run to the next
+ * shows here. Nothing on this page restyles a component.
  *
- * Thirty-five components are in the design system; nine are ported. The rest
- * get a "not ported yet" card rather than being left out, so the gallery is
- * also the migration's checklist. The design file does the same thing with its
- * own <Unavailable> fallback for anything missing from its bundle.
+ * Nine of thirty-five planned components are built. The rest get a "not
+ * ported yet" card rather than being left out, so the gallery is also the
+ * checklist of what is missing.
  */
 
 function Cd({
@@ -59,7 +57,7 @@ function Group({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-/** Stands in for a component the design system has and this repo has not. */
+/** Stands in for a planned component this repo does not have yet. */
 function NotPorted({ name, source }: { name: string; source: string }) {
   return (
     <div className="a11y-gallery-missing">

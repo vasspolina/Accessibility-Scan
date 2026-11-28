@@ -3,7 +3,7 @@ import { t } from "../lib/strings";
 import { LANG_NAMES, SUPPORTED_LANGS, getLang, type Lang } from "../lib/i18n";
 
 /**
- * The language switcher. One kit Select, offered before a scan and in the
+ * The language switcher. One Select, offered before a scan and in the
  * run's settings after one.
  *
  * Two things change on a switch, at two speeds, and the helper text says

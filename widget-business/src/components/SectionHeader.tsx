@@ -2,16 +2,13 @@ import { t } from "../lib/strings";
 import type { ReactNode } from "react";
 
 /**
- * The section anatomy the design kit's composed screens all agree on
- * (`ui_kits/scan-app/ReportSections.jsx` factors it as `Section`; Perceivable,
+ * The section anatomy every composed screen shares (Perceivable,
  * TrustIssues and DesignNotes follow the same shape):
  *
  *   Title <qualifier>            [status chip] [action]
  *   ───────────────────────────────────────────────────
  *
- * Rendered as markup rather than imported, because the kit's `Section` is a
- * screen-local helper rather than a published component, there is nothing in
- * `@verify/design-system` to import for it. No eyebrow above the title: it
+ * No eyebrow above the title: it
  * named the category the title already says (removed 5 Nov 2026).
  */
 export function SectionHeader({
@@ -28,7 +25,7 @@ export function SectionHeader({
   qualifier?: ReactNode;
   /** A count, set as a raised round after the title (no brackets). */
   count?: number;
-  /** A `<StatusChip>`; the kit right-aligns it with the action. */
+  /** A `<StatusChip>`, right-aligned with the action. */
   chip?: ReactNode;
   action?: ReactNode;
   id?: string;
@@ -63,10 +60,10 @@ export function SectionHeader({
 }
 
 /**
- * The kit's status chip: square (never a pill — pills are for severity tags),
+ * The status chip: square (never a pill — pills are for severity tags),
  * 24px tall, a tint behind ink of the same hue.
  *
- * `tone="critical"` is the only tone the kit uses for these, and it always
+ * `tone="critical"` is the only tone used for these, and it always
  * carries a word that says what the number means ("1 would fail today"), so
  * the colour is never the only carrier.
  */

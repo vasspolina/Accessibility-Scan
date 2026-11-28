@@ -2,19 +2,19 @@ import type { CSSProperties } from "react";
 import { Icon } from "../Icon";
 
 /**
- * RelatedChecks, ported from components/scan/RelatedChecks.jsx.
+ * RelatedChecks.
  *
  * New to this package — nothing is replaced, so nothing breaks by adding it.
- * The annotation places it at the end of a section: "closes the section with
- * two to four onward links, each with a reason."
+ * It goes at the end of a section: it closes the section with
+ * two to four onward links, each with a reason.
  *
- * Each card is one <button>, which is the source's shape and the right one:
+ * Each card is one <button>, which is the right shape:
  * the card does a single thing when activated, so it is a single control,
  * and a real button brings the role, the tab stop and the keyboard handling
  * with it.
  *
  * The hover/focus inversion lives in RelatedChecks.css rather than in state
- * here; the reason, including a bug it fixes in the source, is written there.
+ * here; the reason, including a bug it avoids, is written there.
  *
  */
 
@@ -22,7 +22,7 @@ export interface RelatedCheckItem {
   id: string;
   name: string;
   level: string;
-  /** Why this check is related. Optional in the source's API; see below. */
+  /** Why this check is related. Optional; see below. */
   why?: string;
 }
 
@@ -37,7 +37,7 @@ export function RelatedChecks({
   onOpen?: (item: RelatedCheckItem) => void;
   style?: CSSProperties;
 }) {
-  /* The annotation says two to four. Rendering nothing beats rendering a
+  /* Two to four is the rule. Rendering nothing beats rendering a
      heading over an empty grid, which is what an unguarded map would do. */
   if (items.length === 0) return null;
 
@@ -63,7 +63,7 @@ export function RelatedChecks({
             {/* `why` is what makes this a recommendation rather than a list
                 of homework — "Often fails wherever contrast does" is the
                 reason someone would open it, where a bare criterion number
-                is not. Optional in the source's API; every call site here
+                is not. Optional in the type; every call site here
                 should pass one. */}
             {it.why && <span className="a11y-related-why">{it.why}</span>}
             <span className="a11y-related-spacer" aria-hidden="true" />

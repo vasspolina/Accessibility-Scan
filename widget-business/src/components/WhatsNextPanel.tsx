@@ -4,18 +4,15 @@ import { Icon } from "./Icon";
 import { tf } from "../lib/strings";
 
 /**
- * The readiness panel, brought across from the kit.
+ * The readiness panel.
  *
  * A disclosure and nothing more: one button, aria-expanded, a list that
- * appears. No focus trap and no roving focus, which is what separates it
- * from the three components still in the kit.
+ * appears. No focus trap and no roving focus.
  *
- * One deliberate difference from the copy. The kit's button carries
- * aria-expanded but nothing saying *what* it expands; this adds
- * aria-controls pointing at the list. A screen reader can then take the
+ * The button carries aria-expanded and aria-controls pointing at the list,
+ * so it says *what* it expands. A screen reader can then take the
  * reader to the thing that just opened instead of leaving them to find it.
- * It is the one place in this stage where owning a component was worth
- * more than reproducing it exactly, and it is safe because the id is
+ * It is safe because the id is
  * generated per instance rather than assumed unique by hand.
  *
  * Quieter than the severity chips by design: nothing it reports is a

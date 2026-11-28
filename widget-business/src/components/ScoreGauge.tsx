@@ -14,8 +14,7 @@ import { useReportView } from "./ReportViewContext";
 /* The stat tiles ARE the Card component's anatomy — layer-01 fill, subtle
    hairline, 2px corner, 16px padding — so they use it rather than a div
    whose CSS restated the same inline styles. Card takes no className, so
-   the flex layout rides in `style`, which is how the kit's own screens
-   compose it. One quiet win: Card reads --layer-01, already bridged and
+   the flex layout rides in `style`. One quiet win: Card reads --layer-01, already bridged and
    scheme-aware, which retires the hardcoded #262626 dark overrides these
    tiles used to need. */
 const SEVERITY_LABEL: Record<AccessibilityFinding["severity"], string> = {
@@ -216,13 +215,12 @@ const BAND_WORD = (score: number) =>
   score >= 90 ? "90 or more" : score >= 70 ? "70 to 89" : "under 70";
 
 /* The dial's arc. r=42 in a 100-unit viewBox, so the circumference is
-   2·π·42 = 263.89 — the design's own "15.8 248.1" dash for a score of 6 is
-   that same arithmetic, and computing it keeps every OTHER score honest
-   rather than only the one the template happened to draw. */
+   2·π·42 = 263.89 — a "15.8 248.1" dash for a score of 6 is
+   that same arithmetic, and computing it keeps every score honest. */
 const DIAL_R = 42;
 const DIAL_C = 2 * Math.PI * DIAL_R;
-/* The C's stroke: the reference's is about an eighth of the letter's
-   width (82 of 690 units), so 12 in this 100-unit box, round ended. */
+/* The C's stroke: about an eighth of the letter's
+   width, so 12 in this 100-unit box, round ended. */
 const DIAL_W = 12;
 
 export function ScoreGauge({
@@ -275,14 +273,14 @@ export function ScoreGauge({
 
   /* "Do this first" — the one fix that settles the most at once.
    *
-   * From ui_kits/scan-app/checker.prompt.md: "Anti-pattern: opening on a list
-   * of 34 findings with no order of attack. Correct: the band states what one
-   * fix settles."
+   * The anti-pattern is opening on a list
+   * of 34 findings with no order of attack. Instead the band states what one
+   * fix settles.
    *
    * The claim has to be provable, because this report's own rule is that a
    * statement is unhedged only when it is true by construction. It is: a
    * group here is ONE fault with N instances — groupFindings keys on ruleId —
-   * so fixing it does resolve all N. That is a weaker claim than the design's
+   * so fixing it does resolve all N. That is a weaker claim than
    * "the shared header", which groups by component and needs selector
    * analysis in the scanner; this one needs nothing the widget does not
    * already have, and it does not overstate.
@@ -337,12 +335,11 @@ export function ScoreGauge({
         {t("Your score")}
       </h2>
 
-      {/* The score as a type specimen (user's references, 25 Nov 2026: a
-          foundry's tester and its C on the glyph's guide lines). Centred
-          throughout: the title as the specimen's small caption with Copy
+      {/* The score, centred throughout (user's instruction, 25 Nov
+          2026): the title as a small caption with Copy
           summary as the small pill under it, the C dial on three guide
           lines that run the full width, what the range means under it as
-          the specimen line, then each issue as a specimen of its own, a
+          one line, then each issue set the same way, a
           small caption (criterion, severity, places) over the title. How
           the score works and the warning follow as yellow cards. */}
       <div className="a11y-sum-grid a11y-sum-specimen">
@@ -383,8 +380,8 @@ export function ScoreGauge({
                     })
               }
             >
-              {/* The dial as a C (user's reference, 25 Nov 2026, a type
-                  foundry's C): one thick stroke with round ends and no
+              {/* The dial as a C (user's instruction, 25 Nov 2026):
+                  one thick stroke with round ends and no
                   track. The arc is the score, centred on the left, so the
                   opening on the right is what is missing. An SVG circle's
                   stroke starts at three o'clock and runs clockwise, so
@@ -402,7 +399,7 @@ export function ScoreGauge({
             </div>
           </div>
 
-          {/* What the range means, the specimen line under the number. */}
+          {/* What the range means, the line under the number. */}
           <p className="a11y-sum-verdict">{t(scoreSummary(score, seed))}</p>
         </section>
 
@@ -464,8 +461,8 @@ export function ScoreGauge({
         )}
 
         {/* How the score works and the warning are plain text under titles
-            (user's reference, 27 Nov 2026, "this can be plain text with
-            titles like this", on the yellow cards beside the "Can people
+            (user's instruction, 27 Nov 2026, "this can be plain text with
+            titles", on the yellow cards beside the "Can people
             use it?" section): no ground, no corners, no icon. Each title is
             set as a report section's title; the points are prose under it,
             one line apart. Side by side where there is room. The warning
@@ -492,7 +489,7 @@ export function ScoreGauge({
 
 /* Kept out of the render: the pill says the band in a word, and the same
    thresholds already live in BAND_WORD, so this is the one place that turns
-   them into the capitalised label the design shows. */
+   them into the capitalised label the pill shows. */
 function scoreBandLabel(score: number): string {
   return score >= 90 ? "Good" : score >= 70 ? "Needs work" : "Failing";
 }

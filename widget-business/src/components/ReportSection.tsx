@@ -25,7 +25,7 @@ export function ReportSection({
   // finding one undifferentiated region covering the whole report.
   id?: string;
 }) {
-  // The kit's TrustIssues screen reads differently from every other section:
+  // The TrustIssues screen reads differently from every other section:
   // the tint IS the alert, so the headline leads it, with no category line
   // (the description says what these are). The finding rows then sit outside the tint, under their own column labels,
   // on the card's plain surface — the warning colour marks the claim, not

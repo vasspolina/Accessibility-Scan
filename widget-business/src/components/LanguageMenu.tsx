@@ -5,9 +5,9 @@ import { Icon } from "./Icon";
 
 /**
  * The chat's language switcher, folded into one button at the right that
- * stays on screen while the conversation scrolls (user's instruction and
- * reference, 21 Nov 2026: "fold the language button on the right like this
- * and keep it on top on scroll", a 文A mark beside the word Language).
+ * stays on screen while the conversation scrolls (user's instruction,
+ * 21 Nov 2026: "fold the language button on the right ... and keep it on
+ * top on scroll"): the translate mark beside the word Language.
  *
  * A disclosure, not an ARIA menu: the button says whether it is open, and
  * the list under it is plain buttons, each saying whether it is the chosen
@@ -20,9 +20,8 @@ import { Icon } from "./Icon";
  * there the language is one setting among several, set as rows.
  *
  * Since 22 Nov 2026 it is the conversations panel's last row, at the foot
- * of the column (user's instruction and reference, "add language button to
- * the bottom menu like here", an app sidebar whose foot row reads a name, a
- * dot, the plan and a chevron). The row shows the chosen language after
+ * of the column (user's instruction, "add language button to
+ * the bottom menu"). The row shows the chosen language after
  * the word, so the button's name is what it shows; its list opens upward,
  * over the panel, since below it is the window's edge.
  */

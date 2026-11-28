@@ -3,22 +3,21 @@ import { SeverityTag } from "../SeverityTag";
 import type { AccessibilityFinding } from "../../api/scanClient";
 
 /**
- * A finding as a row, ported from components/scan/IssueRow.jsx.
+ * A finding as a row.
  *
  * New to this package — nothing is replaced, so nothing breaks by adding it.
- * The report currently renders findings as a DataTable, and the annotation
- * is clear about when each applies: "Reach for DataTable when findings need
- * sorting, columns, or per-row expansion; IssueRow is for a short editorial
- * list." The findings table needs per-row expansion, so it stays a table.
+ * The report currently renders findings as a DataTable. Reach for DataTable
+ * when findings need sorting, columns, or per-row expansion; IssueRow is for
+ * a short editorial list. The findings table needs per-row expansion, so it stays a table.
  * This is for the short lists — a top-three, a related set.
  *
- * The whole row is one <button>, which is the source's shape and the right
- * one: the row does a single thing when activated, so it is a single
+ * The whole row is one <button>, which is the right
+ * shape: the row does a single thing when activated, so it is a single
  * control. That also means it needs no role, no tabindex and no key handler
  * — a real button brings all of it.
  *
  * The hover/focus inversion lives in IssueRow.css rather than in state here;
- * the reason, including a bug it fixes in the source, is written there.
+ * the reason, including a bug it avoids, is written there.
  */
 
 type Severity = AccessibilityFinding["severity"] | "pass";

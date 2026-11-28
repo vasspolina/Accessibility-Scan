@@ -1,25 +1,25 @@
 import type { CSSProperties, ReactNode } from "react";
 
 /**
- * Input, ported from components/forms/Input.jsx.
+ * Input.
  *
- * Two variants, both from the source:
+ * Two variants:
  *   filled  a 56px pill on --surface-sunken — a contact-form shape
  *   line    a 44px field on a single rule, no box — what the Forms card and
  *           the Checker screen both use, and the default here for that reason
  *
- * ---- Two deliberate divergences, both about not losing what the app has ----
+ * ---- Two deliberate choices, both about not losing what the app has ----
  *
  * 1. `describedBy` overrides the internal help id.
- *    The source hardwires aria-describedby to `${id}-help`, which assumes the
+ *    By default aria-describedby is `${id}-help`, which assumes the
  *    field's only description is its own helper text. The URL field's is not:
  *    it points at one of four ids depending on whether the address is empty,
  *    malformed, the server errored, or the scan was blocked. That association
- *    is deliberate work, so the port takes an override rather than flattening
- *    it. Pass nothing and you get the source's behaviour.
+ *    is deliberate work, so the field takes an override rather than flattening
+ *    it. Pass nothing and you get the default.
  *
  * 2. `action` takes a node, not a glyph.
- *    The source renders whatever it is given inside a 44px black disc, which
+ *    A 44px black disc holding whatever it is given
  *    suits an arrow and nothing else. This app's action is "Check my site" —
  *    and the content rules are explicit that buttons are verbs of one to three
  *    words, which a disc cannot carry. So the slot holds a real button and the
@@ -98,8 +98,8 @@ export function Input({
         />
         {action}
       </div>
-      {/* The helper and the error are one element, not two stacked: the source
-          swaps the text rather than showing both, and a field that shows its
+      {/* The helper and the error are one element, not two stacked: the
+          text is swapped rather than both shown, and a field that shows its
           hint and its error at once has told the reader to do two things. */}
       {help && (
         <span

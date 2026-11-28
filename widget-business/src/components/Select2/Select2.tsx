@@ -1,15 +1,15 @@
 import type { CSSProperties, ReactNode } from "react";
 
 /**
- * Select, ported from components/forms/Select.jsx.
+ * Select.
  *
  * Named Select2 in the tree so it can coexist with FormControls' Select while
  * call sites migrate — the same reason Radio was named .a11y-radio2. It is
  * exported as `Select`, so the eventual swap is an import change and nothing
  * more.
  *
- * The annotation on the design's own card is worth honouring at the call site
- * rather than here: "Radio or OptionCard at four options or fewer." A select
+ * One rule is for the call site
+ * rather than here: Radio or OptionCard at four options or fewer. A select
  * holding three choices should be OptionCards instead.
  *
  */
@@ -52,8 +52,8 @@ export function Select({
         defaultValue={defaultValue}
         onChange={onChange}
         disabled={disabled}
-        /* The source renders its helper with no id and no association, so a
-           screen reader never reaches it. One line to fix. */
+        /* A helper with no id and no association is one a
+           screen reader never reaches. */
         aria-describedby={helpId}
       >
         {options.map((o) => {

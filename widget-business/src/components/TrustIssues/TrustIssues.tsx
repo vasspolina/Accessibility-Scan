@@ -3,17 +3,15 @@ import { SeverityTag } from "../SeverityTag";
 import type { Severity } from "../SeverityTag";
 
 /**
- * TrustIssues, ported from ui_kits/scan-app/TrustIssues.jsx — the dark-pattern
- * section. Tokens rewritten to v2 per .claude/rules/kit-token-map.md.
+ * TrustIssues — the dark-pattern section.
  *
  * The screen's argument is in its own words and worth keeping: these findings
  * "don't move the score. They move how much you're trusted." That is why the
  * count sits in the band as display type rather than being folded into the
  * score — it is a separate number measuring a separate thing.
  *
- * The kit renders Tag and Button through a lazy resolver. Tag is not ported, so
- * the fix-kind is a plain span here with the app's own class; Button is, but
- * the caller supplies the action so this component does not decide what
+ * The fix-kind is a plain span here with the app's own class; the Button
+ * exists, but the caller supplies the action so this component does not decide what
  * opening a finding means.
  *
  */

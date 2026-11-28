@@ -13,10 +13,9 @@ points below; keep them short. Character limits are the form's.
 
 - [x] Licence: EUPL-1.2, in `LICENSE`; `NOTICE.md` lists the files it does not cover.
 - [ ] Take the trial fonts out of anything published (Jokker, Saans, Serrif in
-      `backend/public/fonts/` and `accessible-web-design/fonts/`; PP Telegraf in
-      `design-system/`). Swap in an open (OFL) face.
-- [ ] Check whether `design-system/` and `reference/` (vendored from claude.ai/design)
-      can be published under the EUPL. If not, leave them out of the public repo.
+      `backend/public/fonts/` and `accessible-web-design/fonts/`; PP Telegraf beside them). Swap in an open (OFL) face.
+- [x] `design-system/` and `reference/` (vendored from claude.ai/design) were removed
+      from the repository on 28 Nov 2026.
 - [ ] The git history still holds those files. Publish a fresh repository without that
       history, or rewrite it, rather than flipping the current repo to public.
 - [ ] Make it public, or link a public mirror. The form asks for

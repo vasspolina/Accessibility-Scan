@@ -50,7 +50,7 @@ function recogniserClass(): (new () => Recognition) | null {
  */
 const listening = { current: false };
 
-/** `iconOnly` (the Gemini-style demo's box): the toggle is a microphone
+/** `iconOnly` (the chat-frame demo's box): the toggle is a microphone
  *  icon button named "Voice control", with that name as its tooltip. */
 export function VoiceControl({ iconOnly = false }: { iconOnly?: boolean } = {}) {
   const Rec = typeof window === "undefined" ? null : recogniserClass();

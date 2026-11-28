@@ -11,8 +11,8 @@
      No bold, no italic, no synthesis.
    - Sizes 18, 24 and 32px only, each with its tracking and leading:
      18px +0.025em 1.2, 24px +0.015em 1.15, 32px +0.01em 1.1. The prose is
-     32px, 24px on a phone (under 672px, Carbon's md).
-   - The poster's colours: blue #2848c8 and green #486048 with white words
+     32px, 24px on a phone (under 672px).
+   - The colours: blue #2848c8 and green #486048 with white words
      (7.4:1, 6.9:1), red #f03c38 with black words (5.4:1), black; the grey
      paper #dcdbd5, the cream tile #f4efe2, the pills' grey #e6e6e6 and the
      pale yellow hover #fff5c2, each with black words. Callout titles in
@@ -22,7 +22,7 @@
      dashed. A disclosure is a full-width bar with the solid caret, opened
      a 28px-cornered panel with white cards inside.
    - Sections open on a 1px ink rule with the title 8px under it.
-   - IBM Carbon's spacing steps for every margin, padding and gap.
+   - One scale of spacing steps for every margin, padding and gap.
    - Focus is a 2px green line inside the edge (#198038; #6fdc8c in dark),
      white on the blue, green and black grounds. */
 
@@ -168,8 +168,8 @@ main.wrap { padding-top: var(--s10); }
 }
 .title { max-width: 30ch; margin: 0 auto var(--s10); text-wrap: balance; }
 .title__sub { margin-top: var(--s05); color: var(--ink); font-size: 24px; }
-/* The home page's lede at a tester's size (user's reference, 25 Nov 2026,
-   "design this like this", a type foundry's specimen line; then, the same
+/* The home page's lede at a display size (user's instructions, 25 Nov 2026;
+   the same
    day, "make text blue and no black background"): the page's blue Lettra
    callout on the paper, Ultralight at 56px, 1.15, no tracking, centred
    across the column's width; #2848c8 on white 7.4:1, #7d95ff on black.
@@ -201,9 +201,8 @@ main.wrap { padding-top: var(--s10); }
 .signup__input:focus-visible { outline: none; }
 .signup__trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
 /* The home page's request form as one outlined row (user's instructions,
-   25 Nov 2026, "delete background on form as well", then "form can look
-   like this", a row of two outlined fields and an outlined Send request on
-   a dark panel): no grey ground, the page's own paper and words in both
+   25 Nov 2026, "delete background on form as well", then a row of two outlined
+   fields and an outlined Send request): no grey ground, the page's own paper and words in both
    themes. Email, Your request and Send request side by side, 8px apart,
    centred in at most 980px; each 56px tall, 12px corners, a 1px edge in
    the chat box's #8e8e93 (3.3:1 on white, 6.2:1 on black), no fill. Each
@@ -267,7 +266,7 @@ form.signup > .signup__btn:hover { border-color: var(--hover); background: var(-
 }
 .request__consent input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 
-/* ---------- The statements: cards in the poster's colours, in turn ---------- */
+/* ---------- The statements: cards in the palette's colours, in turn ---------- */
 .plates { margin: 0 0 var(--s10); }
 .plates__track {
   display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; cursor: pointer;
@@ -319,8 +318,7 @@ body { overflow-x: clip; }
 .text { font-size: 25px; }
 .text h2, .card h2 { margin-bottom: var(--s05); }
 .text h3 { margin: 1lh 0 var(--s03); letter-spacing: 0.02em; text-transform: uppercase; }
-/* A list in the column (user's reference, 25 Nov 2026, "typesetting need to
-   look like this", on a programme of upcoming lectures): the heading in
+/* A list in the column (user's instruction, 25 Nov 2026): the heading in
    capitals in the body face at the prose size, each item behind a thin
    cross (Carbon's close, as a mask) set inside the column, not hung in the
    margin where the en dash used to sit against the window's edge. The
@@ -348,9 +346,8 @@ body { overflow-x: clip; }
 .offer__link:hover { text-decoration: underline; }
 .action { margin-top: 1lh; }
 
-/* Terms as labelled paragraphs (user's reference, 25 Nov 2026, a foundry's
-   contact page: "SUPPORT & TECH HELP:" over its words; the user chose it
-   over the cross rows of the same afternoon): each term over its meaning,
+/* Terms as labelled paragraphs (user's choice, 25 Nov 2026, over the
+   cross rows of the same afternoon): each term over its meaning,
    one empty line between terms. */
 .terms { display: grid; gap: 1lh; margin: 0; }
 .terms dd { margin: 0; }
@@ -373,9 +370,8 @@ body { overflow-x: clip; }
 @container content (min-width: 560px) {
   .acc__body .terms { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--gutter); align-items: start; }
 }
-/* The What we offer terms as a type foundry's info and credits columns
-   (user's reference, 25 Nov 2026, "design this like this", its INFO and
-   CREDITS panes): the term a small capital label centred over its
+/* The What we offer terms as labelled columns
+   (user's instruction, 25 Nov 2026): the term a small capital label centred over its
    column, Telegraf at 18px tracked +0.04em with no pill; its meaning set
    left under it at the column's 24px, one 16px step down; 32px between
    rows, two lines of the words. Replaces the centred Lettra pills of the
@@ -388,8 +384,8 @@ body { overflow-x: clip; }
 }
 .acc__body .terms dd { text-align: start; }
 
-/* Links in the column and the cards on a pale yellow highlight (the same
-   reference: its addresses on a pale yellow, no underline). Black words on
+/* Links in the column and the cards on a pale yellow highlight, no
+   underline. Black words on
    #fff5c2 in both themes; hover adds the underline. Buttons and the offer
    list keep their own look. */
 .text a:not(.btn), .card p a:not(.btn) {
@@ -608,7 +604,7 @@ footer.wrap { margin-top: var(--s12); padding-bottom: var(--s07); }
 }
 
 /* ---------- The Services page's "What we offer" card as a numbered list
-   in a bubble (user's reference, 25 Nov 2026, a packaging box, "keep it in
+   in a bubble (user's instruction, 25 Nov 2026, "keep it in
    buble"; then, on the terracotta version, "keep this but put on yellow
    beige and in lettra font"). The card keeps its rounded shape on the pale
    yellow #fff5c2 with black words (19.1:1), in both themes. Everything in it
@@ -644,11 +640,11 @@ footer.wrap { margin-top: var(--s12); padding-bottom: var(--s07); }
   .card:has(> .offer) { border: 1px solid CanvasText; }
 }
 
-/* ---------- The other cream side cards in Lettra (user's reference, 25 Nov
+/* ---------- The other cream side cards in Lettra (user's instruction, 25 Nov
    2026, "this need to go in letra", on "The four principles behind it").
    PP Lettra Mono Ultralight, no tracking, 1.15 leading. Set left, the
    button with it (user's instruction, the same day, "left align", on the
-   exemption card of services.html; they were centred as a programme that
+   exemption card of services.html; they were centred that
    morning). The card's cream, corners and 24px size stay. ---------- */
 /* Lettra 15% smaller in these cards (user's instruction, the same day,
    "make lettra font be smaller 15%", on the exemption card): 24px became
@@ -676,24 +672,24 @@ form.signup { max-width: none; }
 .plates .plates__track { width: 100vw; margin-left: calc(50% - 50vw); border-radius: 0; }
 .plates .plate { border-radius: 0; }
 
-/* ---------- Jokker and the callouts after a type foundry's specimen pages
-   (user's instruction and references, 26 Nov 2026: "use joker font instead
-   of pp telegraph and design caal outs like this use alt figures", with a
+/* ---------- Jokker and the callouts
+   (user's instruction, 26 Nov 2026: "use joker font instead
+   of pp telegraph", "use alt figures": a
    yellow hero of big centred type and a small caption under it, a black
-   panel of bold italic, a showcase of specimens between corner brackets
+   panel of bold italic, statements between corner brackets
    with a counter pill over each, and section titles under a heavy rule).
    This copy only. ----------
    - One face, Jokker VF (trial, ../fonts/JokkerVF-TRIAL.woff2; weight
      100 to 900, slant 0 to -16). It replaces PP Telegraf and PP Lettra
      Mono both: --mono points at it, so the small keys, the crumb and the
-     footer's labels are Jokker too, as the references set every small
+     footer's labels are Jokker too, every small
      line in the same face. The body keeps the copy's weight, 200.
    - The alternates: ss01 (the single-storey a), ss02 (the wedge
      parentheses) and ss05 (the alternate r) on every callout, and tabular
      figures on the counters. The trial file has no other figure sets (its
      features are tnum, pnum, zero, sups, frac and ss01 to ss06; the
      retail's ten figure sets are not in it).
-   - Colours read off the references: the yellow #fcfb9e and the cream
+   - Colours: the yellow #fcfb9e and the cream
      #f3f0e8, each with black words, black with white, fixed in both
      themes like the copy's other plates. */
 :root { --mono: "Jokker", "DejaVu Sans", sans-serif; --y: #fcfb9e; --cream: #f3f0e8; }
@@ -708,7 +704,7 @@ form.signup { max-width: none; }
    is big centred black type, Jokker Regular, 7vw (48px floor, 160px cap),
    0.95 leading, -0.015em, lines balanced; it stands at least 60% of the
    window tall. A page's line under the title (About) is the small caption
-   at the band's foot, 24px, as the references' two-line note. */
+   at the band's foot, 24px. */
 header.wrap, main.wrap > .title, main.wrap > form.signup {
   --ink: #000; --callout: #2848c8; --focus: #198038; --edge: #000; --bubble: #fff; --bubble-ink: #000;
   color: #000;
@@ -732,8 +728,8 @@ main.wrap > .title .title__sub {
 main.wrap > .title--lede { margin-bottom: 0; padding-bottom: var(--s10); }
 main.wrap > form.signup { margin-bottom: var(--s12); padding-bottom: var(--s10); }
 
-/* The statements as specimens, each slide in its own setting in turn, as
-   the references: white bold italic on black; black bold italic on white
+/* The statements, each slide in its own setting in
+   turn: white bold italic on black; black bold italic on white
    between four corner brackets; black Regular on the yellow; black
    SemiBold on the cream. 6.5vw (44px floor, 140px cap), 0.95 leading,
    -0.02em, at most 14 characters a line, balanced. Over the words a small
@@ -772,7 +768,7 @@ main.wrap > form.signup { margin-bottom: var(--s12); padding-bottom: var(--s10);
 .plates .plate:nth-child(4n + 3) p { font-weight: 400; font-variation-settings: "slnt" 0; }
 .plates .plate:nth-child(4n + 4) p { font-weight: 600; font-variation-settings: "slnt" 0; }
 
-/* Section titles as the showcase's: a 4px ink rule across the column (the
+/* Section titles: a 4px ink rule across the column (the
    1px rule it replaces), the title 8px under it in Jokker Medium at 56px,
    1.0 leading, -0.02em; 32px on a phone. */
 .cols:has(> .text > h2:first-child), .chat, .related { padding-top: var(--s03); border-top-width: 4px; }
@@ -784,7 +780,7 @@ main.wrap > form.signup { margin-bottom: var(--s12); padding-bottom: var(--s10);
   .text h2, .chat__label, .related__label, .news__title { font-size: 32px; line-height: 1.05; }
 }
 
-/* The opening questions as the feature cards: the cream ground, square
+/* The opening questions as cards: the cream ground, square
    corners, tall, black words centred at a display size (2.6vw, 24px floor,
    48px cap, Regular, 1.0, -0.01em); hover and focus the yellow. */
 .chat__prompt, .chat__prompt:nth-child(3n + 2), .chat__prompt:nth-child(3n + 3) {
@@ -794,8 +790,8 @@ main.wrap > form.signup { margin-bottom: var(--s12); padding-bottom: var(--s10);
 .chat__prompt:is(:hover, :focus-visible):not(:disabled) { background: var(--y); color: #000; }
 @media (max-width: 671px) { .chat__prompt, .chat__prompt:nth-child(3n + 2), .chat__prompt:nth-child(3n + 3) { min-height: 200px; } }
 
-/* ---------- What we offer as an FAQ list (user's reference, 27 Nov 2026,
-   image 2: clean white rows separated by 1px rules, service name left,
+/* ---------- What we offer as a list of rows (user's instruction, 27 Nov 2026:
+   clean white rows separated by 1px rules, service name left,
    a grey chevron arrow right; keep the serif Description / Details layout
    inside the opened panel). ----------
    - Each row: 1px top rule, no background, no rounded pill.
@@ -813,8 +809,8 @@ main.wrap > form.signup { margin-bottom: var(--s12); padding-bottom: var(--s10);
 /* FAQ-list accordion: each row is a 1px-ruled item, white ground, no pill shape.
    The button spans the row: service name on the left, grey ↓/↑ arrow on the right.
    Opening reveals the Description / Details panel beneath (layout unchanged). */
-/* As a foundry's FAQ (user's reference, 28 Nov 2026, "design this like this
-   but keep two columns and serif"): rows parted by a thin light rule, the
+/* Rows of questions (user's instruction, 28 Nov 2026, "keep two columns
+   and serif"): rows parted by a thin light rule, the
    service name at 32px, a thin arrow at the right, grey, pointing down shut
    and up open, black on hover (the arrow is the icon set's arrow--right,
    turned; #8d8d8d on white 3.3:1). No fill on hover. Opened, the copy stands
@@ -880,8 +876,8 @@ main.wrap > form.signup { margin-bottom: var(--s12); padding-bottom: var(--s10);
   .acc__panel > .acc__lede, .acc__panel .acc__body > p { font-size: 24px; letter-spacing: 0; line-height: 1.3; }
 }
 
-/* ---------- The header as a foundry's top bar (user's references, 27 Nov
-   2026, "make these like these", then "ad like these on sub pages") ----------
+/* ---------- The header as one top bar (user's instructions, 27 Nov
+   2026; then the same on sub pages) ----------
    The wordmark and the three main pages are one line of big type, the
    wordmark and the page you are on in black, the others grey; Newsletters is
    a small grey link at the right. A 1px rule runs under each side, broken

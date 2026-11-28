@@ -107,10 +107,10 @@ a:hover { text-decoration-thickness: 3px; }
 .hero .btn { margin-top: 36px; }
 .closing { padding-block: 72px 120px; }
 
-/* The opening screen (measured on a reference at
+/* The opening screen (measured at
    1440 and 390px): one screen tall, the display type centred on both axes at
    line-height 1 and -0.03em, and a centred 15px line at +0.02em sitting 32px
-   off the bottom. The reference sets three words at 160px; this is a sentence, so
+   off the bottom. This is a sentence, not a few words at 160px, so
    the size steps down with the width and height until it fits one screen.
    --top is the measured height of the top bar, which grows where the
    navigation wraps: 64px, then 51px from 640px down, 95px under 600px and

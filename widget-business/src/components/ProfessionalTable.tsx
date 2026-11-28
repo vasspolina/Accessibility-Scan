@@ -20,10 +20,10 @@ const severityWord: Record<AccessibilityFinding["severity"], string> = {
 };
 
 /**
- * The design system's composed dashboard, for the professional audience:
- * Issues and no-issues-found criteria as tabs, the issues as the kit's
- * dense DataTable with one expandable detail row at a time. Imported
- * components, our data and vocabulary — the severity chips keep the
+ * The composed dashboard for the professional audience:
+ * Issues and no-issues-found criteria as tabs, the issues as the
+ * dense DataTable with one expandable detail row at a time. Shared
+ * components, the report's data and vocabulary — the severity chips keep the
  * report's words, and the second tab is "No issues found", not "Passes":
  * a scan evidences failures, never conformance.
  *
@@ -117,7 +117,7 @@ export function ProfessionalTable({
          they were missing arrives: why it matters, what the research
          says, what to do, and which elements.
 
-         The duplicate was also why this dropdown had none of the design's
+         The duplicate was also why this dropdown had none of the report's
          typography. It was not styled badly; it was different markup that
          no rule targeted. Deleting it is the fix, not restyling it.
 

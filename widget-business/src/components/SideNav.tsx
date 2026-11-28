@@ -7,7 +7,7 @@ export interface NavSection extends NavTarget {
 }
 
 /**
- * The shell's jump list, set apart from the rest of the report's kit — a
+ * The shell's jump list, set apart from the rest of the report's parts — a
  * deliberate one-off, per request: a tonal surface with no hairline
  * border, and the current section carried by a full fill rather than a
  * square card with a left-border accent. `.a11y-shell-nav*` in styles.css

@@ -1,11 +1,10 @@
 import type { CSSProperties, ReactNode } from "react";
 
 /**
- * Radio, ported from components/forms/Radio.jsx.
+ * Radio.
  *
  * Replaces the Radio in FormControls.tsx, whose API this one is a strict
- * superset of — so call sites keep working and gain two things the design has
- * and the app did not:
+ * superset of — so call sites keep working and gain two things:
  *
  *   description  a second line under the label
  *   meta         a value pinned to the right edge ("42 pages")
@@ -13,12 +12,12 @@ import type { CSSProperties, ReactNode } from "react";
  * That is not decoration. The scan form currently explains BOTH of its options
  * in one hint underneath them — "This page takes twenty to forty seconds; whole
  * site finds what repeats on every page" — which makes the reader match clauses
- * to options themselves. The design puts each explanation on the option it
- * belongs to, which is the Forms card's rule that the label is part of the
+ * to options themselves. Here each explanation sits on the option it
+ * belongs to: the rule that the label is part of the
  * target, applied to the description as well.
  *
  * The whole control is a <label>, so the text is inside the hit area rather
- * than beside it. That is the source's shape and the reason a 44px minimum
+ * than beside it. That is the reason a 44px minimum
  * height is enough to satisfy the target-size criterion here.
  *
  */
@@ -49,8 +48,8 @@ export function Radio({
   style?: CSSProperties;
 }) {
   /* A row carrying a description or a meta value is taller and takes a rule
-     beneath it; a bare label row does not. The source branches on exactly this
-     and it is what keeps a plain list of options from looking like a table. */
+     beneath it; a bare label row does not. That
+     is what keeps a plain list of options from looking like a table. */
   const roomy = Boolean(meta || description);
 
   return (

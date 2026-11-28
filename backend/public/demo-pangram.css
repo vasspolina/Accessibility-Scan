@@ -1,16 +1,14 @@
-/* demo-pangram.css: the foundry-look demo's one stylesheet. demo-pangram.js
+/* demo-pangram.css: this demo's one stylesheet. demo-pangram.js
    links it in the page head and inside the widget's shadow root, after
    removing the widget's own CSS. Nothing here adds content: it only sets how
    the widget's existing markup looks.
 
-   The look follows pangrampangram.com as measured on 22 Nov 2026: a #fafafa
+   The look (22 Nov 2026): a #fafafa
    page, 14px text on a 1.3 line, titles in the heavier cut, grey #ededed
    cards with 20px corners and 21px inside, pill buttons 32px tall (outlined
    in ink, filled grey or solid black), a red #ff2f00 pill for the loudest
    mark, white fields with 20px corners, small print in #666. Display sizes
-   are large and tight. The site sets Neue Montreal, which is not in this
-   repository; PP Telegraf is the same foundry's grotesque and the widget's
-   own face, so it stands in. */
+   are large and tight. The face is PP Telegraf, the widget's own. */
 
 @font-face {
   font-family: "PP Telegraf";

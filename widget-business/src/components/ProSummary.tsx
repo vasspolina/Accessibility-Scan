@@ -63,7 +63,7 @@ export function ProSummary({
   return (
     <section className="a11y-pro-panel" aria-labelledby="a11y-results-heading">
       {/* The host pill and the run controls moved to the shell's top bar,
-          which is where the design puts them and where they are reachable
+          where they are reachable
           from every section rather than only from the top of this panel. */}
       <div className="a11y-pro-titlerow">
         <h2 className="a11y-results-title" id="a11y-results-heading" data-nav-label={t("Results")}>

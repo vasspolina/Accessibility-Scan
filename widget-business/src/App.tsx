@@ -253,7 +253,7 @@ export function App({
   // The conversation, for re-runs and jumps asked for outside its thread.
   const chatApi = useRef<ChatApi | null>(null);
   // Which region the professional tabs show; the tabs live in the summary
-  // grid (the reference's layout), the region renders full-width below.
+  // grid, the region renders full-width below.
   const [proView, setProView] = useState<ProView>("issues");
   // "New scan" in the professional action row: back to the form, focus
   // the field — the master file's button, wired to the one real action.

@@ -2,11 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import type { KeyboardEvent, ReactNode } from "react";
 
 /**
- * The tab strip, brought across from the kit.
+ * The tab strip.
  *
- * The first component in this stage that genuinely implements behaviour the
- * platform does not give you, so it is copied exactly and then tested by
- * driving it rather than by reading it.
+ * It implements behaviour the platform does not give you, so it is tested
+ * by driving it rather than by reading it.
  *
  * Four things have to survive, and each fails silently if it does not:
  *

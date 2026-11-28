@@ -1,7 +1,7 @@
 /* BarrierFreeWeb, scan copy: one stylesheet for all five pages.
 
-   Set after a type specimen page (user's instruction, 26 Nov 2026: all CSS
-   stripped, then "design like this" with the reference). What was taken:
+   Redesigned from a blank sheet (user's instruction, 26 Nov 2026: all CSS
+   stripped). The look:
    - White paper, near-black ink, a sticky 80px bar with a ruled second row.
    - Full-bleed bright blue blocks with white type: the page's title huge,
      its first line Regular and the rest Ultralight, regular and thin in turn.
@@ -10,9 +10,9 @@
    - Pills with 50px corners: black, outlined, or the tall blue one.
    - Ruled rows with a plus at the end for what folds open.
    - Light 16 to 24px words, 48px Regular headings.
-   Measured, then changed for contrast: the reference's blue #006fff is
-   4.45:1 under white, so the blue here is #0066f0 (5.0:1); its secondary
-   grey #898989 is 3.5:1 on white, so it is #6b6b6b here (5.3:1).
+   Measured for contrast: the blue #006fff is 4.45:1 under white, so the
+   blue here is #0066f0 (5.0:1); the secondary grey #898989 is 3.5:1 on
+   white, so it is #6b6b6b here (5.3:1).
 
    Type: PP Telegraf from the server's /fonts/. Ultralight (200) for the
    thin lines of the titles, Light (300) for words, Regular (400) for

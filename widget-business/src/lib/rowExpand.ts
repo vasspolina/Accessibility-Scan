@@ -11,15 +11,13 @@ import type { MouseEvent } from "react";
  * worst target is not a look this product can afford.
  *
  * Deliberately a pointer convenience and nothing more. The row does not
- * become a button: the real <button aria-expanded> the kit renders stays the
+ * become a button: the real <button aria-expanded> the table renders stays the
  * one control, keeps the keyboard behaviour, and remains the only thing a
  * screen reader is offered. Adding role="button" to the row would announce
  * every row twice and put a second, competing control in the tab order.
  *
  * Applied to the container rather than each row, because the rows are
- * rendered inside the vendored DataTable, which takes no props for this —
- * and the design system is copied down from the design tool, so an edit
- * there would be overwritten by the next pull.
+ * rendered inside the DataTable, which takes no props for this.
  */
 export function expandRowOnClick(event: MouseEvent<HTMLElement>): void {
   const target = event.target as HTMLElement | null;

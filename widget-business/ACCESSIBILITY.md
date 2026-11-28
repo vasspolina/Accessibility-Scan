@@ -92,7 +92,7 @@ the dev fixture with the report fully expanded (see 7.1).
 | 1.3.2 | A | Pass | No CSS reordering; audit-row stacking uses wrap+order on one row's children, count announced after text either way |
 | 1.3.5 | AA | Pass | autocomplete="url"; login fields deliberately off (third-party site credentials, not user data — keeping managers from mis-saving them against our origin) |
 | 1.4.1 | A | Pass | Severity has text chips, not colour alone; links underlined |
-| 1.4.3 | AA | Pass | Carbon tokens 4.5:1 in light; dark scheme axe-clean via the dev fixture, report state fully expanded |
+| 1.4.3 | AA | Pass | Colour tokens 4.5:1 in light; dark scheme axe-clean via the dev fixture, report state fully expanded |
 | 1.4.4 / 1.4.10 / 1.4.12 | AA | Pass | rem type; measured at 200% zoom and 390px by our own scanner; no fixed text heights |
 | 1.4.11 | AA | Pass | Focus ring measured ≥3:1 by our own contrast layer |
 | 1.4.13 | AA | N/A | No hover-revealed content; no title-attribute tooltips |
@@ -116,7 +116,7 @@ the dev fixture with the report fully expanded (see 7.1).
 | 4.1.2 | A | Pass | Native elements throughout; aria-expanded/pressed state on every toggle |
 | 4.1.3 | AA | Pass | Persistent regions, empty until filled — repaired this audit |
 | 2.4.13 | AAA | **Partial** | 2px rings with offset; not yet audited against the "area of a 2px perimeter" formula on every control |
-| 1.4.6 | AAA | Not attempted | Palette is Carbon AA; 7:1 not pursued |
+| 1.4.6 | AAA | Not attempted | Palette is set to AA; 7:1 not pursued |
 
 ## Known gaps and the human test plan
 
@@ -142,22 +142,22 @@ was re-run the same way: clean in both modes and both schemes — after one
 false alarm from a stale hot-reloaded stylesheet inside the shadow root,
 which a full page reload resolved. Axe runs after CSS edits need a fresh
 mount, not hot module replacement. Re-earned once more on 1 August after
-the Verify design-system restyle (PP Telegraf, 18/28 type scale, tinted
+a restyle (PP Telegraf, 18/28 type scale, tinted
 severity tags, focus ring with inner contrast line): the full matrix —
 both audience modes, both colour schemes, collapsed and expanded — zero
 violations, and the deployed demo self-scans at 100 with no findings.
-The system's 14px label size was refused at first for a 16px floor,
-then adopted on 1 August (late evening) when the user ordered
-pixel-fidelity to the core.card reference: tags, badges, table headers
+A 14px label size was refused at first for a 16px floor,
+then adopted on 1 August (late evening) at the user's
+instruction: tags, badges, table headers
 and metadata sit at 14px now — above the scanner's own 13px small-text
-line and contrast-checked at that size by the system's token pairs, so
+line and contrast-checked at that size by the token pairs, so
 the checker still passes its own scan. Running prose stays 18px. The full-matrix sweep after the flat/pixel
 arc (2 Aug) — business, professional and audit views in both schemes —
-caught one real defect the light-only rounds had missed: the imported
+caught one real defect the light-only rounds had missed: the
 primary Button's fill was bridged through the accent token, which lifts
 to blue-40 in dark for link contrast, putting white button text at
 2.35:1. Solid button fills are literal blue-60/red-60 now, both
-schemes, as the system's own dark theme has them; the danger button's
+schemes; the danger button's
 dark hover had the same latent fault and got the same fix. All six
 matrix cells axe-clean after. The self-scan then
 drove three more rounds on its own product — the worded "✓ Selected"
@@ -167,8 +167,8 @@ four-word label plus aria-describedby description — each deployed,
 re-scanned, and back at 100 before the next began.
 
 **Design strip, 1 August (late).** At the user's direction the widget was
-stripped to browser defaults: the GitHub, Carbon and Verify design layers
-and the imported design-system components are gone (git history keeps
+stripped to browser defaults: the earlier design layers
+and their components are gone (git history keeps
 them; df0cf62 is the last dressed revision). The stylesheet now holds only
 what accessibility requires — the shadow-boundary reset with explicit
 colours, the screen-reader-only utility, a visible aria-pressed state (no

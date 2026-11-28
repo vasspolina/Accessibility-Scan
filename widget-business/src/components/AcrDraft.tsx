@@ -98,8 +98,7 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
             onClick={() => setOpen((v) => !v)}
           >
             {/* A solid triangle at the start of the line, pointing right
-                shut and down open (user's reference, 22 Nov 2026, a
-                question-and-answer list), in place of the chevron in a
+                shut and down open (user's instruction, 22 Nov 2026), in place of the chevron in a
                 round at the far end. Drawn, so it fills with currentColor
                 in forced colours too. */}
             <svg className="a11y-acr-caret" viewBox="0 0 12 12" aria-hidden="true" focusable="false">

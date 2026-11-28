@@ -3,11 +3,10 @@ import type { ReactNode } from "react";
 import { Icon } from "../Icon";
 
 /**
- * The results table, ported from components/display/DataTable.jsx.
+ * The results table.
  *
  * The most-used component in this package — eight callers — and the one with
- * the most behaviour worth not losing, so the port keeps this package's
- * shape and takes the source's look.
+ * the most behaviour worth not losing.
  *
  * The CSS relies on this markup: td[colspan] for the open panel,
  * button[aria-expanded] for the toggle, tr:has(button[aria-expanded]) for the
@@ -15,7 +14,7 @@ import { Icon } from "../Icon";
  *
  * What it owns that the platform does not:
  *
- *   Independent open state per row. The SOURCE closes the previous row when
+ *   Independent open state per row. An accordion closes the previous row when
  *   a second opens (`setOpen(isOpen ? null : r.id)`); this does not, because
  *   you asked for exactly that and the reason holds — these panels get read
  *   side by side, two findings compared, a fix checked against the one
@@ -28,7 +27,7 @@ import { Icon } from "../Icon";
  *
  *   The leading spacer cell in the header is a <td aria-hidden>, not a <th>.
  *   It labels nothing, and a header cell with no text announces an empty
- *   column header on every row beneath it. The source does the same.
+ *   column header on every row beneath it.
  *
  * No aria-controls, deliberately: this renders the panel row only while
  * open, and aria-controls pointing at an element that does not exist is
@@ -53,9 +52,9 @@ export interface TableRow {
 }
 
 /**
- * The filter pills, from the source's own FilterPills.
+ * The filter pills.
  *
- * aria-pressed rather than a radiogroup: the source uses it, and for a strip
+ * aria-pressed rather than a radiogroup: for a strip
  * of toggles where one is on it reads correctly as "pressed". A radiogroup
  * would be defensible too, but it would need arrow-key roving focus to be
  * correct, and half a radiogroup is worse than a row of honest buttons.

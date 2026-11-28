@@ -40,7 +40,7 @@ export function PrincipleGroup({ findings }: { findings: AccessibilityFinding[] 
         const text = info ? principleText(info) : undefined;
         return (
           <div className="a11y-principle-group" key={principle}>
-            {/* Before the heading, not after it. The kit's section head reads
+            {/* Before the heading, not after it. A section head reads
                 index -> title -> lead, and this is the index. It stays OUTSIDE
                 the h3 for the original reason — inside, "Perceivable" would
                 join the heading's accessible name and restate the category the

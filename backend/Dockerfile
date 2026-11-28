@@ -9,14 +9,11 @@
 FROM node:24-bookworm-slim AS widget
 
 WORKDIR /repo
-# The widget depends on design-system/production as a file: dependency, so
-# that directory has to be in place before npm ci links it.
-COPY design-system/production ./design-system/production
 COPY widget-business/package.json widget-business/package-lock.json ./widget-business/
 RUN cd widget-business && npm ci
 COPY widget-business ./widget-business
 RUN cd widget-business && npm run build
-# The Gemini-style demo's bundle (demo-gemini.html): the same source built
+# The chat-app frame demo's bundle (demo-gemini.html): the same source built
 # with its own stylesheet and view. Its mode keeps dist/ as it is, so the
 # product bundle above stays beside it.
 RUN cd widget-business && npx vite build --mode gemini
