@@ -1369,3 +1369,49 @@ html:has(header .toc) { scroll-padding-top: 220px; }
 .slogan .slogan__link p, .acc__panel > .acc__lede, .acc__panel .acc__body > p {
   font-variant-numeric: tabular-nums slashed-zero;
 }
+
+/* A statement's link as a label row (user's instruction, 28 Nov 2026,
+   "design these like this", on a row under a hairline with a label at
+   the left and a grey link with an arrow at the middle): the EAA
+   statement's audit link and the scanner invite's caption. 18px Jokker;
+   the label ink at weight 500 at the left edge, the link from the middle
+   column in grey (#666, 5.7:1 on white; dark #a8a8a8, 8.7:1 on black)
+   with the icon set's arrow after it, no underline, ink on hover and
+   focus. One column on a phone, the link under the label. The EAA label
+   is CSS content with alt text "" (the link's words say it); the
+   invite's link words are its own hidden words, shown. */
+:root { --link-grey: #666; }
+:root[data-theme="dark"] { --link-grey: #a8a8a8; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --link-grey: #a8a8a8; } }
+
+.cols.cols--eaa > .card > .action:nth-child(n) {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--gutter); align-items: baseline;
+  text-align: left; font-size: 18px; line-height: 1.2;
+}
+.cols.cols--eaa > .card > .action::before {
+  content: "Accessibility audit" / ""; color: var(--ink); font-weight: 500; font-variation-settings: "wght" 500, "slnt" 0;
+}
+.cols.cols--eaa .action .btn, .cols.cols--eaa .action .btn:hover { color: var(--link-grey); text-decoration: none; justify-self: start; }
+.cols.cols--eaa .action .btn::after, .bubble .bubble__msg > .sr-only::after {
+  content: ""; display: inline-block; width: 0.9em; height: 0.9em; margin-left: 0.25em; vertical-align: -0.1em; background: currentColor;
+  -webkit-mask: var(--arrow-right) center / contain no-repeat; mask: var(--arrow-right) center / contain no-repeat;
+}
+.cols.cols--eaa .action .btn:is(:hover, :focus-visible) { color: var(--ink); }
+
+.bubble .bubble__msg { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--gutter); align-items: baseline; font-size: 18px; }
+.bubble .bubble__msg::before { font-weight: 500; font-variation-settings: "wght" 500, "slnt" 0; }
+.bubble .bubble__msg::after { content: none; }
+.bubble .bubble__msg > .sr-only {
+  position: static; width: auto; height: auto; margin: 0; padding: 0; overflow: visible; clip: auto; clip-path: none; white-space: normal;
+  grid-area: 1 / 2; color: var(--link-grey);
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-variation-settings: "wght" 400, "slnt" 0;
+}
+.bubble .bubble__msg:is(:hover, :focus-visible) > .sr-only { color: var(--ink); }
+@media (max-width: 671px) {
+  .cols.cols--eaa > .card > .action:nth-child(n), .bubble .bubble__msg { grid-template-columns: minmax(0, 1fr); row-gap: var(--s02); }
+  .bubble .bubble__msg > .sr-only { grid-area: 2 / 1; }
+  .bubble .bubble__text { grid-area: 3 / 1; }
+}
+@media (forced-colors: active) {
+  .cols.cols--eaa .action .btn::after, .bubble .bubble__msg > .sr-only::after { background: LinkText; forced-color-adjust: none; }
+}
