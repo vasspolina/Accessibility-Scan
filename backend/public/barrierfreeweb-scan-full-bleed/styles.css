@@ -1042,55 +1042,53 @@ html:has(header .toc) { scroll-padding-top: 220px; }
   .cols:has(> .text > h2:first-child) > .card p { font-size: 18px; }
 }
 
-/* The EAA statement as one panel of type (user's instruction, 28 Nov
-   2026, "typeset this like this keep italicks", on a specimen of big
-   running type in two colours on an olive panel): full bleed, the title
-   in the statements' Jokker Heavy Italic, the rest running on in Jokker
-   Regular at the same size, its phrases white and black in turn, the
-   audit link a small black label at the foot, right. Olive #7d9254, fixed
-   in both themes: white words 3.4:1 (large text only), black 6.1:1, so
-   every small word on it is black. */
+/* The EAA statement as a type specimen, like the statement slides
+   (user's instruction, 28 Nov 2026, "redo this one as well"; it was an
+   olive panel of black and white type that morning): on the page's paper
+   and margin. The title is the caption, 16px Jokker Regular under a
+   hairline; the words run on at Jokker's thinnest (wght 100), 5.6vw
+   (36px floor, 104px cap; 30px on a phone, where 36px left words alone
+   on a line), 1.06, +0.01em, in green #486048 (6.9:1 on
+   white; dark #8fb08f, 8.8:1 on black), the fines sentence slanted; the
+   audit link an 18px ink line at the right under a closing hairline. */
 .cols.cols--eaa {
-  display: block; box-sizing: border-box; width: 100vw; margin-left: calc(50% - 50vw);
-  padding: var(--s09) var(--s10) var(--s08); border-top: 0;
-  background: #7d9254; color: #000; --ink: #000; --focus: #000;
-  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; font-variation-settings: "wght" 400;
-  font-size: clamp(36px, 5.6vw, 104px); line-height: 1.04; letter-spacing: -0.015em;
+  --spec: #486048;
+  display: block; margin: 0 0 var(--s10); padding: var(--s06) 0 0; border-top: 0;
+  background: none; color: var(--spec);
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 100; font-variation-settings: "wght" 100, "slnt" 0;
+  font-size: clamp(36px, 5.6vw, 104px); line-height: 1.06; letter-spacing: 0.01em; text-wrap: pretty;
 }
+:root[data-theme="dark"] .cols.cols--eaa { --spec: #8fb08f; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .cols.cols--eaa { --spec: #8fb08f; } }
 .cols.cols--eaa > :is(.text, .card) {
-  display: inline; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; color: inherit;
+  display: inline; margin: 0; padding: 0; border: 0; border-radius: 0; min-height: 0; background: none; color: inherit;
   font: inherit; letter-spacing: inherit; font-variation-settings: inherit;
+  /* The note cards set white ink; here the card is the page's own. */
+  --ink: inherit; --focus: inherit;
 }
-.cols.cols--eaa :is(h2, p, span) {
+.cols.cols--eaa :is(h2, p, span), .cols.cols--eaa > .card > p:first-child {
   display: inline; margin: 0; padding: 0; font: inherit; letter-spacing: inherit; font-variation-settings: inherit; color: inherit;
 }
+.cols.cols--eaa > .text > p > span + span { font-variation-settings: "wght" 100, "slnt" -16; }
 .content > .eaa-title {
-  display: block; margin: 0; padding: var(--s04) 0 var(--s06); border-top: 1px solid #000;
+  display: block; margin: 0; padding: var(--s03) 0 0; border-top: 1px solid var(--edge);
   color: var(--ink); font-family: "Jokker", "DejaVu Sans", sans-serif;
-  /* The menu's size and weight, slanted ("make this statement same size as
-     menu, same font weight but slannted"): Jokker Regular, clamp(32px,
-     3.4vw, 56px), 1.05, -0.01em, slnt -16. */
-  font-size: clamp(32px, 3.4vw, 56px); line-height: 1.05; font-weight: 400; font-variation-settings: "wght" 400, "slnt" -16; letter-spacing: -0.01em;
+  font-size: 16px; line-height: 1.2; font-weight: 400; font-variation-settings: "wght" 400, "slnt" 0; letter-spacing: 0;
 }
-.cols.cols--eaa > .text > p > span + span,
-.cols.cols--eaa > .card > p:first-child { color: #fff; }
-.cols.cols--eaa > .text > p > span:first-child { color: #000; }
-.cols.cols--eaa > .card > p:first-child { color: #000; }
-.cols.cols--eaa > .card > .action {
-  display: block; margin-top: var(--s07); text-align: right; font-size: 24px; line-height: 1.2; letter-spacing: 0;
+.cols.cols--eaa > .card > .action:nth-child(n) {
+  display: block; margin: var(--s09) 0 0; padding: var(--s03) 0 0; border-top: 1px solid var(--edge);
+  text-align: right; color: var(--ink);
+  font-size: 18px; line-height: 1.2; letter-spacing: 0; font-weight: 400; font-variation-settings: "wght" 400, "slnt" 0;
 }
 .cols.cols--eaa .action .btn {
-  display: inline; min-height: 0; padding: 0; border: 0; border-radius: 0; background: none; color: #000;
-  font: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em;
+  display: inline; min-height: 0; padding: 0; border: 0; border-radius: 0; background: none; color: var(--ink);
+  font: inherit; font-variation-settings: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em;
 }
-.cols.cols--eaa .action .btn:hover { background: none; color: #000; text-decoration-thickness: 2px; }
-.cols.cols--eaa .action .btn:focus-visible { outline: 2px solid #000; outline-offset: 4px; }
+.cols.cols--eaa .action .btn:hover { background: none; color: var(--ink); text-decoration-thickness: 2px; }
+.cols.cols--eaa .action .btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
 @media (max-width: 671px) {
-  .cols.cols--eaa { padding: var(--s07) var(--s05) var(--s06); font-size: 36px; line-height: 1.05; }
-  .cols.cols--eaa > .card > .action { font-size: 18px; }
-}
-@media (forced-colors: active) {
-  .cols.cols--eaa { border: 1px solid CanvasText; }
+  .cols.cols--eaa { margin-bottom: var(--s08); padding-top: var(--s05); font-size: 30px; }
+  .cols.cols--eaa > .card > .action:nth-child(n) { margin-top: var(--s07); }
 }
 
 /* Notes as violet panels (user's instruction, 28 Nov 2026, "make notes
@@ -1134,15 +1132,20 @@ html:has(header .toc) { scroll-padding-top: 220px; }
    measure; the terms a ruled index, each term and its description on one
    row between 1px rules in the edge grey (#8e8e93, both themes), 12px
    above and below, the term column 35%; the lede starts on the first
-   row's line. */
-.acc__panel > .acc__lede { padding-top: var(--s04); max-width: 26ch; font-size: 32px; line-height: 1.15; }
+   row's line. Later the same day ("typeset, make same font size as
+   title"): the lede is set as the row's title, Jokker Regular 32px at
+   1.1, -0.01em (24px on a phone), in place of the Garamond, which read a
+   size smaller at the same 32px; the paragraphs under it are Jokker at
+   the terms' 24px. */
+.acc__panel > .acc__lede, .acc__panel .acc__body > p { font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; }
+.acc__panel > .acc__lede { padding-top: var(--s04); max-width: 28ch; font-size: 32px; line-height: 1.1; letter-spacing: -0.01em; text-wrap: balance; }
 .acc__panel .acc__body > p { max-width: 40ch; }
 .acc__panel .acc__body > .terms { grid-template-columns: minmax(0, 35%) minmax(0, 1fr); column-gap: 0; row-gap: 0; }
 .acc__panel .terms :is(dt, dd) { padding-block: var(--s04); border-top: 1px solid var(--edge); }
 .acc__panel .terms dt { padding-right: var(--s06); }
 .acc__panel .terms > div:last-child > :is(dt, dd) { border-bottom: 1px solid var(--edge); }
 @media (max-width: 671px) {
-  .acc__panel > .acc__lede { font-size: 24px; padding-top: 0; }
+  .acc__panel > .acc__lede { font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; padding-top: 0; }
   .acc__panel .terms dt { padding-right: var(--s04); }
 }
 
@@ -1153,10 +1156,11 @@ html:has(header .toc) { scroll-padding-top: 220px; }
    16px caption (Statement at the left, the slide's number of four at the
    right, both drawn with alt text "" since the slide's label says it),
    then the statement set left in Jokker at its thinnest (wght 100),
-   7.4vw (40px floor, 148px cap), 1.04, +0.01em, running to the slide's
-   edge, its closing phrase slanted (the em in the markup, slnt -16). One
+   6vw (36px floor, 120px cap, 30px on a phone; 7.4vw left "entrance?" alone on a line,
+   "can go smaller so no one word on line"), 1.04, +0.01em, lines balanced so
+   none holds one word, its closing phrase slanted (the em in the markup, slnt -16). One
    colour a slide, in turn: red-orange, blue, green, ink; each 4.4:1 or
-   better on the paper in light and dark (the type is never under 40px). Slides are as tall as the
+   better on the paper in light and dark (the type is never under 30px). Slides are as tall as the
    tallest statement, not the window. */
 .plates:not(.plates--hero) .plate:nth-child(n) {
   --spec: #e03a0c;
@@ -1186,11 +1190,11 @@ html:has(header .toc) { scroll-padding-top: 220px; }
 .plates:not(.plates--hero) .plate:nth-child(n) p {
   grid-area: 2 / 1 / 3 / -1; max-width: none; margin: var(--s06) 0 0;
   font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 100; font-variation-settings: "wght" 100, "slnt" 0;
-  font-size: clamp(40px, 7.4vw, 148px); line-height: 1.04; letter-spacing: 0.01em;
-  text-align: left; text-wrap: wrap; color: inherit;
+  font-size: clamp(36px, 6vw, 120px); line-height: 1.04; letter-spacing: 0.01em;
+  text-align: left; text-wrap: balance; color: inherit;
 }
 .plates:not(.plates--hero) .plate p em { font-style: normal; font-variation-settings: "wght" 100, "slnt" -16; }
 @media (max-width: 671px) {
   .plates:not(.plates--hero) .plate:nth-child(n) { padding: 0 var(--s05) var(--s08); }
-  .plates:not(.plates--hero) .plate:nth-child(n) p { margin-top: var(--s05); }
+  .plates:not(.plates--hero) .plate:nth-child(n) p { margin-top: var(--s05); font-size: 30px; }
 }
