@@ -1433,3 +1433,15 @@ export function undecidedExplanation(ruleId: string) {
   }
   return UNDECIDED_EXPLANATIONS[ruleId];
 }
+
+/* A check's row shows one line and the rest opens with the answer (user's
+   instruction, 28 Nov 2026, "shorten these descriptions to one line and
+   fold the rest into drop down"). The line is the explanation's first
+   sentence, cut at render time so the four languages' tables stay whole:
+   the CSV export and the Learn more prompt still carry every word. Checked
+   on every entry in en, de, es and fr: no first sentence ends inside an
+   abbreviation. */
+export function splitLead(what: string): { lead: string; rest: string } {
+  const m = /^(.+?[.!?])\s+(\S.*)$/s.exec(what);
+  return m ? { lead: m[1], rest: m[2] } : { lead: what, rest: "" };
+}

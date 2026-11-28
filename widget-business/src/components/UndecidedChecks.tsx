@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { undecidedExplanation } from "../lib/wcagPlain";
+import { splitLead, undecidedExplanation } from "../lib/wcagPlain";
 import { t, tf } from "../lib/strings";
 import { getLang } from "../lib/i18n";
 import { fixKindForRule } from "../lib/testMethod";
@@ -126,6 +126,7 @@ export function UndecidedChecks({
               // The same guidance printed under every item of a kind was
               // the report's largest source of repeated sentences. Said once,
               // then pointed at.
+              const { lead, rest } = splitLead(e ? e.what : r.help);
               const isOpen = open.has(r.ruleId);
               const answerId = `a11y-undecided-answer-${i}`;
               return (
@@ -142,7 +143,7 @@ export function UndecidedChecks({
                     onClick={() => toggle(r.ruleId)}
                   >
                     <Icon name="caret--right" className="a11y-undecided-caret" />
-                    <span className="a11y-undecided-what">{e ? e.what : r.help}</span>
+                    <span className="a11y-undecided-what">{lead}</span>
                     <span className={`a11y-undecided-kind a11y-kind-${fix.key}`}>{t(fix.label)}</span>
                   </button>
                   <div className="a11y-undecided-answer" id={answerId} hidden={!isOpen}>
@@ -150,6 +151,10 @@ export function UndecidedChecks({
                       <span>{`${t("Places")}${colon} ${r.count}`}</span>
                       {most && <span>{t("Most places")}</span>}
                     </p>
+                    {/* The rest of what the checker saw: the row keeps its
+                        first sentence, one line, and the answer opens on
+                        the others. */}
+                    {rest && <p className="a11y-undecided-ask">{rest}</p>}
                     {e && (
                       <p className="a11y-undecided-ask">
                         <strong className="a11y-sr-only">{t("What to ask for:")} </strong>
