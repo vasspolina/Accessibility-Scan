@@ -14275,6 +14275,11 @@
 :where(.a11y-widget-biz :is(.a11y-report, .a11y-chat-blockbody) .a11y-findings-head > .a11y-findings-csv) {
   margin-block: calc(var(--cds-spacing-04) * -1);
 }
+@media (min-width: 672px) {
+  :where(.a11y-widget-biz :is(.a11y-report, .a11y-chat-blockbody) .a11y-findings-head > .a11y-findings-csv) {
+    translate: 0 5px;
+  }
+}
 
 /* ── Chat, conversations and Report a barrier, continued ── */
 @media (min-width: 1056px) {
