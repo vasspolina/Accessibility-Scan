@@ -1891,6 +1891,14 @@ export function ScanChat({
           <Icon name="menu" size={20} />
           {t("Conversations")}
         </button>
+        {/* The language, the panel's first row, over New chat (user's
+            instruction, 28 Nov 2026, "move language button on top"; it was
+            the last row at the column's foot from 22 Nov). Outside the
+            folding body so it stays beside the Conversations toggle on a
+            phone. The class keeps its old name. */}
+        <div className="a11y-chats-foot">
+          <LanguageMenu value={language} onChange={onLanguageChange} />
+        </div>
         <div className="a11y-chats-body" id="a11y-chats-body">
         {/* No icons (user's instruction, 23 Nov 2026, "delete icons"):
             the words alone, in a button sized to
@@ -1943,13 +1951,6 @@ export function ScanChat({
             </ul>
           </>
         )}
-        </div>
-        {/* The language, the panel's last row at the foot of the column
-            (user's instruction, 22 Nov 2026), outside the folding body so
-            it stays beside the Conversations toggle on a phone. It was a
-            button pinned at the conversation's top right from 21 Nov. */}
-        <div className="a11y-chats-foot">
-          <LanguageMenu value={language} onChange={onLanguageChange} />
         </div>
       </nav>
     <div className="a11y-chat" ref={rootRef} onFocus={keepFocusClear}>

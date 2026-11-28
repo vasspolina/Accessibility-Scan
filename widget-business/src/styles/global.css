@@ -4457,10 +4457,8 @@
   --ink: var(--tile-ink);
   --paper: var(--tile);
   position: absolute;
-  bottom: calc(100% + var(--cds-spacing-03));
   left: 0;
   right: 0;
-  z-index: 3;
   box-sizing: border-box;
   margin: 0;
   padding: var(--cds-spacing-03);
@@ -4622,8 +4620,6 @@
 }
 @media (max-width: 1055px) {
   :where(.a11y-widget-biz .a11y-lang-menu .a11y-lang-list) {
-    top: calc(100% + var(--cds-spacing-03));
-    bottom: auto;
     left: auto;
     min-width: 12em;
   }
@@ -12016,26 +12012,6 @@
   }
 }
 
-/* ── Legal standard, checklist and WCAG 2.2, continued ── */
-:where(.a11y-widget-biz .a11y-legal-cards) {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--cds-spacing-08) var(--cds-spacing-05);
-  align-items: stretch;
-}
-@media (max-width: 671px) {
-  :where(.a11y-widget-biz .a11y-legal-cards) {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-:where(.a11y-widget-biz .a11y-legal-group .a11y-conf-row) {
-  row-gap: var(--cds-spacing-03);
-  align-items: start;
-}
-:where(.a11y-widget-biz .a11y-legal-group .a11y-conf-row > .a11y-conf-id) {
-  grid-row: 1 / span 2;
-}
-
 /* ── Buttons, fields and shared controls, continued ── */
 :where(.a11y-widget-biz :is(.a11y-btn, .a11y-blockflag-jump, .a11y-copy-btn, .a11y-findings-csv, a.a11y-learn-prompt, .a11y-login-toggle, .a11y-ra-pdf, .a11y-ra-send, .a11y-show-all, .a11y-sim-btn, .a11y-skip-link, .a11y-sr-play, .a11y-undecided-export, .a11y-chat-chip, .a11y-chats-new, .a11y-lang-toggle, .a11y-settings-opt, .a11y-stmt-copy, .a11y-sum-spec-go, .a11y-alt-copy, .a11y-tech-copy, label.a11y-seg):enabled:hover) {
   border-color: var(--row-hover);
@@ -12060,6 +12036,31 @@
 }
 :where(.a11y-widget-biz .a11y-settings > .a11y-settings-row > .a11y-input:not(.a11y-w22)) {
   width: min(100%, 320px);
+}
+:where(.a11y-widget-biz .a11y-lang-menu .a11y-lang-list) {
+  top: calc(100% + var(--cds-spacing-03));
+  bottom: auto;
+  z-index: 2;
+}
+
+/* ── Legal standard, checklist and WCAG 2.2, continued ── */
+:where(.a11y-widget-biz .a11y-legal-cards) {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--cds-spacing-08) var(--cds-spacing-05);
+  align-items: stretch;
+}
+@media (max-width: 671px) {
+  :where(.a11y-widget-biz .a11y-legal-cards) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+:where(.a11y-widget-biz .a11y-legal-group .a11y-conf-row) {
+  row-gap: var(--cds-spacing-03);
+  align-items: start;
+}
+:where(.a11y-widget-biz .a11y-legal-group .a11y-conf-row > .a11y-conf-id) {
+  grid-row: 1 / span 2;
 }
 
 /* ── Screen reader simulation and vision, continued ── */
@@ -13639,7 +13640,6 @@
   margin: var(--cds-spacing-06) 0 0;
   padding: 0;
   list-style: none;
-  border-top: 1px solid var(--row-rule);
 }
 :where(.a11y-widget-biz .a11y-chats .a11y-chats-new.a11y-chats-barrier) {
   color: var(--ink);
@@ -13654,7 +13654,6 @@
   margin: 0;
   padding: var(--cds-spacing-02) 0;
   border: 0;
-  border-bottom: 1px solid var(--row-rule);
   border-radius: 0;
   background: none;
 }
@@ -13969,11 +13968,6 @@
   }
 }
 
-/* ── Chat, conversations and Report a barrier, continued ── */
-:where(.a11y-widget-biz .a11y-chats .a11y-chats-new + .a11y-chats-new) {
-  margin-top: var(--cds-spacing-03);
-}
-
 /* ── Shell, sections and navigation, continued ── */
 :where(.a11y-widget-biz .a11y-shell-nav-group > .a11y-shell-nav-group-label + ul) {
   margin-top: var(--cds-spacing-03);
@@ -13986,7 +13980,10 @@
 }
 
 /* ── Chat, conversations and Report a barrier, continued ── */
-:where(.a11y-widget-biz .a11y-chat-stepfold > summary + .a11y-chat-steps) {
+:where(
+  .a11y-widget-biz .a11y-chats .a11y-chats-new + .a11y-chats-new,
+  .a11y-widget-biz .a11y-chat-stepfold > summary + .a11y-chat-steps
+) {
   margin-top: var(--cds-spacing-03);
 }
 :where(.a11y-widget-biz .a11y-chat-text :is(p, ul, ol)) {
@@ -14234,4 +14231,15 @@
 :where(.a11y-widget-biz .a11y-principle-group .a11y-principle-title) {
   margin-bottom: var(--cds-spacing-06);
   padding-bottom: calc(0.175em + 2px);
+}
+
+/* ── Chat, conversations and Report a barrier, continued ── */
+@media (min-width: 1056px) {
+  :where(.a11y-widget-biz .a11y-chats > .a11y-chats-foot) {
+    margin-bottom: var(--cds-spacing-05);
+    padding-top: 0;
+    padding-bottom: var(--cds-spacing-04);
+    border-top: 0;
+    border-bottom: 1px solid var(--row-rule);
+  }
 }
