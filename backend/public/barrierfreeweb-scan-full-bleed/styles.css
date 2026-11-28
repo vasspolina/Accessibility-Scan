@@ -1133,19 +1133,18 @@ html:has(header .toc) { scroll-padding-top: 220px; }
    row between 1px rules in the edge grey (#8e8e93, both themes), 12px
    above and below, the term column 35%; the lede starts on the first
    row's line. Later the same day ("typeset, make same font size as
-   title"): the lede is set as the row's title, Jokker Regular 32px at
-   1.1, -0.01em (24px on a phone), in place of the Garamond, which read a
-   size smaller at the same 32px; the paragraphs under it are Jokker at
-   the terms' 24px. */
-.acc__panel > .acc__lede, .acc__panel .acc__body > p { font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 400; }
-.acc__panel > .acc__lede { padding-top: var(--s04); max-width: 28ch; font-size: 32px; line-height: 1.1; letter-spacing: -0.01em; text-wrap: balance; }
+   title", then "seriff"): the lede stays EB Garamond and is sized to read
+   as large as the row's Jokker title. Garamond's x-height is about five
+   sixths of Jokker's, so it is 38px against the title's 32px (28px
+   against 24px on a phone), at 1.1, two balanced lines. */
+.acc__panel > .acc__lede { padding-top: var(--s03); max-width: 28ch; font-size: 38px; line-height: 1.1; letter-spacing: -0.005em; text-wrap: balance; }
 .acc__panel .acc__body > p { max-width: 40ch; }
 .acc__panel .acc__body > .terms { grid-template-columns: minmax(0, 35%) minmax(0, 1fr); column-gap: 0; row-gap: 0; }
 .acc__panel .terms :is(dt, dd) { padding-block: var(--s04); border-top: 1px solid var(--edge); }
 .acc__panel .terms dt { padding-right: var(--s06); }
 .acc__panel .terms > div:last-child > :is(dt, dd) { border-bottom: 1px solid var(--edge); }
 @media (max-width: 671px) {
-  .acc__panel > .acc__lede { font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; padding-top: 0; }
+  .acc__panel > .acc__lede { font-size: 28px; line-height: 1.15; letter-spacing: 0; padding-top: 0; }
   .acc__panel .terms dt { padding-right: var(--s04); }
 }
 
