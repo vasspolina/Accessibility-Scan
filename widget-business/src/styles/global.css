@@ -12871,11 +12871,6 @@
   margin: 0;
 }
 
-/* ── Findings and the opened finding, continued ── */
-:where(.a11y-widget-biz :is(.a11y-tech-field, .a11y-alt-card, .a11y-alt-suggestion)) {
-  border-radius: 28px;
-}
-
 /* ── Buttons, fields and shared controls, continued ── */
 :where(.a11y-widget-biz form.a11y-url-form.a11y-tester :is(.a11y-input-label, .a11y-select2-label)) {
   position: static;
@@ -12957,6 +12952,11 @@
   color: var(--ink);
   --ink: inherit;
   --paper: inherit;
+}
+
+/* ── Findings and the opened finding, continued ── */
+:where(.a11y-widget-biz :is(.a11y-tech-field, .a11y-alt-card, .a11y-alt-suggestion)) {
+  border-radius: 28px;
 }
 
 /* ── Chat, conversations and Report a barrier, continued ── */
@@ -14337,4 +14337,22 @@
 }
 :where(.a11y-widget-biz .a11y-dt-expand-row .a11y-fd > .a11y-fd-col > :not(.a11y-affected) > *) {
   align-self: baseline;
+}
+:where(.a11y-widget-biz .a11y-method-badge) {
+  display: inline-block;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--word-purple);
+  font-size: 16px;
+  line-height: 1.2;
+}
+:where(.a11y-widget-biz .a11y-method-badge.a11y-method-ai) {
+  color: var(--word-ochre);
+}
+@media (forced-colors: active) {
+  :where(.a11y-widget-biz .a11y-method-badge) {
+    color: CanvasText;
+  }
 }
