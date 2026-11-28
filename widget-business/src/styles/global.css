@@ -8678,3 +8678,16 @@
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd > .a11y-fd-meta > *:not(.a11y-q1):not(.a11y-q2):not(.a11y-q3):not(.a11y-q4):not(.a11y-q5):not(.a11y-q6):not(.a11y-q7):not(.a11y-q8):not(.a11y-q9):not(.a11y-q10):not(.a11y-q11):not(.a11y-q12):not(.a11y-q13):not(.a11y-q14):not(.a11y-q15):not(.a11y-q16):not(.a11y-q17):not(.a11y-q18):not(.a11y-q19):not(.a11y-q20) { border-color: CanvasText; }
 }
+
+/* ═══ LEARN MORE WITH NO BACKGROUND (user's instruction, 28 Nov 2026, "make
+   learn more button with no background") ═══════════════════════════════
+   The pill under the technical version keeps its shape (1px ink edge,
+   round ends, 18px words, the arrow after them) on the paper, ink words;
+   hover is the rows' dark green words and edge. 16px under the row above. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz a.a11y-learn-more.a11y-learn-prompt[class][class][class][class],
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz a.a11y-learn-more.a11y-learn-prompt[class][class][class][class]:visited {
+  margin-top: var(--cds-spacing-05); border: 1px solid var(--ink); background: none; color: var(--ink);
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz a.a11y-learn-more.a11y-learn-prompt[class][class][class][class]:hover {
+  border-color: var(--row-hover); background: none; color: var(--row-hover);
+}
