@@ -1531,7 +1531,7 @@
   max-height: 100dvh;
   overflow-y: auto;
   padding: var(--cds-spacing-05) var(--cds-spacing-05) var(--cds-spacing-05) 0;
-  border-right: 1px solid var(--ink);
+  border-right: 0;
   font-size: 16px;
   letter-spacing: 0;
   line-height: 1.1;
@@ -11089,6 +11089,34 @@
   outline-offset: 2px;
 }
 
+/* ── Chat, conversations and Report a barrier, continued ── */
+:where(.a11y-widget-biz .a11y-prompts .a11y-prompt) {
+  --ink: #000;
+  --paper: var(--hl-cap-a);
+  --note: var(--hl-cap-a);
+  --note-ink: #000;
+  --focus: #0a3d1a;
+  border: 0;
+  border-radius: 20px;
+  outline: 0;
+  box-shadow: none;
+  background: var(--hl-cap-a);
+  color: #000;
+}
+@media (forced-colors: active) {
+  :where(.a11y-widget-biz .a11y-prompts .a11y-prompt) {
+    border: 1px solid CanvasText;
+  }
+}
+:where(.a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:disabled)) {
+  outline: 1px dashed #000;
+  outline-offset: -1px;
+}
+:where(.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-q:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
 @media (max-width: 671px) {
   :where(.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary)) {
@@ -11225,34 +11253,6 @@
   :where(.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:not(.a11y-dt-expand-row)) {
     transition: none;
   }
-}
-
-/* ── Chat, conversations and Report a barrier, continued ── */
-:where(.a11y-widget-biz .a11y-prompts .a11y-prompt) {
-  --ink: #000;
-  --paper: var(--hl-cap-a);
-  --note: var(--hl-cap-a);
-  --note-ink: #000;
-  --focus: #0a3d1a;
-  border: 0;
-  border-radius: 20px;
-  outline: 0;
-  box-shadow: none;
-  background: var(--hl-cap-a);
-  color: #000;
-}
-@media (forced-colors: active) {
-  :where(.a11y-widget-biz .a11y-prompts .a11y-prompt) {
-    border: 1px solid CanvasText;
-  }
-}
-:where(.a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:disabled)) {
-  outline: 1px dashed #000;
-  outline-offset: -1px;
-}
-:where(.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-q:focus-visible) {
-  outline: 2px solid var(--focus);
-  outline-offset: 2px;
 }
 
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
@@ -12532,9 +12532,6 @@
 :where(.a11y-widget-biz .a11y-chat-box > textarea:focus-visible) {
   outline: 0;
 }
-:where(.a11y-widget-biz .a11y-chats > .a11y-chats-foot) {
-  border-top: 1px solid var(--row-rule);
-}
 
 /* ── History, statement, report actions, professional, continued ── */
 :where(.a11y-widget-biz .a11y-ra-panel :is(h2, h3, p, label, .a11y-ra-head, .a11y-ra-field-label)) {
@@ -12923,6 +12920,11 @@
   border-radius: 28px;
 }
 
+/* ── Chat, conversations and Report a barrier, continued ── */
+:where(.a11y-widget-biz .a11y-chat-box) {
+  border-radius: 24px;
+}
+
 /* ── Buttons, fields and shared controls, continued ── */
 :where(.a11y-widget-biz form.a11y-url-form.a11y-tester :is(.a11y-input-label, .a11y-select2-label)) {
   position: static;
@@ -12936,82 +12938,6 @@
   line-height: 1.2;
   letter-spacing: 0;
 }
-
-/* ── Scan form and settings, continued ── */
-:where(.a11y-widget-biz .a11y-settings > .a11y-settings-row > *:not(.a11y-w22)) {
-  grid-column: 2;
-  justify-self: end;
-  min-width: 0;
-  margin: 0;
-}
-:where(.a11y-widget-biz .a11y-settings .a11y-settings-switch:not(.a11y-w22)) {
-  gap: 2px;
-  max-width: 100%;
-  margin: 0;
-  padding: 2px;
-  border: 0;
-  border-radius: 9px;
-  background: #e6e6e6;
-}
-@media (forced-colors: active) {
-  :where(.a11y-widget-biz .a11y-settings .a11y-settings-switch:not(.a11y-w22)) {
-    border: 1px solid CanvasText;
-    background: Canvas;
-  }
-}
-@media (max-width: 671px) {
-  :where(.a11y-widget-biz .a11y-settings > .a11y-settings-row > *:not(.a11y-w22)) {
-    grid-column: 1;
-    grid-row: auto;
-    justify-self: stretch;
-    text-align: left;
-  }
-}
-
-/* ── Screen reader simulation and vision, continued ── */
-:where(.a11y-widget-biz section.a11y-sr .a11y-sr-row > .a11y-sr-flag) {
-  grid-column: 3;
-  grid-row: 1;
-  align-self: center;
-  margin: 0 0 0 var(--cds-spacing-05);
-  color: var(--word-red);
-  font-size: 22px;
-}
-:where(.a11y-widget-biz section.a11y-sr .a11y-sr-log-heads > span:nth-child(2)) {
-  display: inline;
-  margin: 0;
-  padding: 0;
-  font: inherit;
-  letter-spacing: inherit;
-  text-transform: inherit;
-}
-
-/* ── Legal standard, checklist and WCAG 2.2, continued ── */
-@media (max-width: 1000px) {
-  :where(.a11y-widget-biz .a11y-legal-cards) {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-/* ── Buttons, fields and shared controls, continued ── */
-:where(.a11y-widget-biz .a11y-code-fix) {
-  display: block;
-  margin: var(--cds-spacing-05) 0 0;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: none;
-  color: var(--ink);
-  --ink: inherit;
-  --paper: inherit;
-}
-
-/* ── Chat, conversations and Report a barrier, continued ── */
-:where(.a11y-widget-biz .a11y-chat-box) {
-  border-radius: 24px;
-}
-
-/* ── Buttons, fields and shared controls, continued ── */
 :where(.a11y-widget-biz form.a11y-url-form.a11y-tester .a11y-select2 > select) {
   flex: 1 1 auto;
   min-width: 0;
@@ -13078,6 +13004,68 @@
 :where(.a11y-widget-biz form.a11y-url-form.a11y-tester :is(.a11y-input > .a11y-input-shell > input, .a11y-select2 > select):focus-visible) {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
+}
+
+/* ── Scan form and settings, continued ── */
+:where(.a11y-widget-biz .a11y-settings > .a11y-settings-row > *:not(.a11y-w22)) {
+  grid-column: 2;
+  justify-self: end;
+  min-width: 0;
+  margin: 0;
+}
+:where(.a11y-widget-biz .a11y-settings .a11y-settings-switch:not(.a11y-w22)) {
+  gap: 2px;
+  max-width: 100%;
+  margin: 0;
+  padding: 2px;
+  border: 0;
+  border-radius: 9px;
+  background: #e6e6e6;
+}
+@media (forced-colors: active) {
+  :where(.a11y-widget-biz .a11y-settings .a11y-settings-switch:not(.a11y-w22)) {
+    border: 1px solid CanvasText;
+    background: Canvas;
+  }
+}
+@media (max-width: 671px) {
+  :where(.a11y-widget-biz .a11y-settings > .a11y-settings-row > *:not(.a11y-w22)) {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: stretch;
+    text-align: left;
+  }
+}
+
+/* ── Screen reader simulation and vision, continued ── */
+:where(.a11y-widget-biz section.a11y-sr .a11y-sr-row > .a11y-sr-flag) {
+  grid-column: 3;
+  grid-row: 1;
+  align-self: center;
+  margin: 0 0 0 var(--cds-spacing-05);
+  color: var(--word-red);
+  font-size: 22px;
+}
+:where(.a11y-widget-biz section.a11y-sr .a11y-sr-log-heads > span:nth-child(2)) {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+}
+
+/* ── Buttons, fields and shared controls, continued ── */
+:where(.a11y-widget-biz .a11y-code-fix) {
+  display: block;
+  margin: var(--cds-spacing-05) 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--ink);
+  --ink: inherit;
+  --paper: inherit;
 }
 @media (forced-colors: active) {
   :where(.a11y-widget-biz form.a11y-url-form.a11y-tester :is(.a11y-input > .a11y-input-shell > input, .a11y-select2 > select)) {
@@ -13169,6 +13157,34 @@
   letter-spacing: 0;
   text-transform: none;
 }
+
+/* ── Findings and the opened finding, continued ── */
+:where(.a11y-widget-biz .a11y-principle-group .a11y-principle-title) {
+  margin: 0 0 var(--cds-spacing-03);
+  padding: 0 0 var(--cds-spacing-04);
+  border: 0;
+  border-bottom: 2px solid var(--row-rule);
+  color: var(--ink);
+  font-family: "Jokker", "DejaVu Sans", sans-serif;
+  font-size: 43px;
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: 0;
+}
+@media (max-width: 671px) {
+  :where(.a11y-widget-biz .a11y-principle-group .a11y-principle-title) {
+    font-size: 29px;
+  }
+}
+
+/* ── Legal standard, checklist and WCAG 2.2, continued ── */
+@media (max-width: 1000px) {
+  :where(.a11y-widget-biz .a11y-legal-cards) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ── Buttons, fields and shared controls, continued ── */
 @media (max-width: 671px) {
   :where(.a11y-widget-biz .a11y-settings > .a11y-settings-row > .a11y-select2 > :is(.a11y-select2-label, select):not(.a11y-w22)) {
     grid-column: 1;
@@ -13200,25 +13216,6 @@
 @media (max-width: 671px) {
   :where(.a11y-widget-biz .a11y-settings .a11y-settings-switch) {
     justify-content: flex-start;
-  }
-}
-
-/* ── Findings and the opened finding, continued ── */
-:where(.a11y-widget-biz .a11y-principle-group .a11y-principle-title) {
-  margin: 0 0 var(--cds-spacing-03);
-  padding: 0 0 var(--cds-spacing-04);
-  border: 0;
-  border-bottom: 2px solid var(--row-rule);
-  color: var(--ink);
-  font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-size: 43px;
-  font-weight: 400;
-  line-height: 1.05;
-  letter-spacing: 0;
-}
-@media (max-width: 671px) {
-  :where(.a11y-widget-biz .a11y-principle-group .a11y-principle-title) {
-    font-size: 29px;
   }
 }
 
@@ -13695,9 +13692,6 @@
 }
 :where(.a11y-widget-biz .a11y-chats .a11y-chats-open) {
   display: none;
-}
-:where(.a11y-widget-biz .a11y-chats) {
-  border-right-color: var(--row-rule);
 }
 @media (min-width: 1056px) {
   :where(.a11y-widget-biz .a11y-chat-layout > .a11y-chats) {
@@ -14261,9 +14255,8 @@
   :where(.a11y-widget-biz .a11y-chats > .a11y-chats-foot) {
     margin-bottom: var(--cds-spacing-05);
     padding-top: 0;
-    padding-bottom: var(--cds-spacing-04);
-    border-top: 0;
-    border-bottom: 1px solid var(--row-rule);
+    padding-bottom: 0;
+    border: 0;
   }
 }
 :where(.a11y-widget-biz .a11y-chat-text ol:not(.a11y-chat-plan) > li + li) {
