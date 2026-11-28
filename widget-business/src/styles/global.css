@@ -8842,3 +8842,25 @@
 @media (forced-colors: active) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-sum-spec-pill, .a11y-count-dot, .a11y-section-count, .a11y-fd-meta > *, .a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-pro-chip, .a11y-principle-count, .a11y-conf-status, .a11y-next-count, .a11y-sum-warning-badge, .a11y-method-badge, .a11y-chats-open):not(.a11y-b1):not(.a11y-b2):not(.a11y-b3):not(.a11y-b4):not(.a11y-b5):not(.a11y-b6):not(.a11y-b7):not(.a11y-b8):not(.a11y-b9):not(.a11y-b10):not(.a11y-b11):not(.a11y-b12):not(.a11y-b13):not(.a11y-b14):not(.a11y-b15):not(.a11y-b16):not(.a11y-b17):not(.a11y-b18):not(.a11y-b19):not(.a11y-b20):not(.a11y-b21):not(.a11y-b22):not(.a11y-b23):not(.a11y-b24):not(.a11y-b25):not(.a11y-b26) { border-color: CanvasText; background: Canvas; }
 }
+
+/* ═══ SECTION TITLES LARGE AND GREY (user's instruction, 28 Nov 2026, "make
+   titles of each section look like this and in grey color", a foundry's
+   header: big grey words over a light rule) ═══════════════════════════════
+   Each report section's title is 43px at 1.05, no tracking, in the menu's
+   grey (--prompt-line, #6f6f6f, 4.9:1 on white; #a8a8a8 on black), over a
+   1px light rule (--row-rule) 12px under it, 24px over what follows. The
+   section's black rule above goes. A title that is itself a disclosure row
+   (Ready for WCAG 2.2?, the screen reader simulation, the conformance
+   report) keeps its row. 29px on a phone. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report > :has(h2:is(.a11y-section-title, .a11y-top-title, .a11y-legal-title, .a11y-results-title):not(.a11y-sr-only):not(.a11y-accordion-title):not(.a11y-w22-title)):not(.a11y-t1):not(.a11y-t2):not(.a11y-t3):not(.a11y-t4):not(.a11y-t5):not(.a11y-t6):not(.a11y-t7):not(.a11y-t8):not(.a11y-t9):not(.a11y-t10):not(.a11y-t11):not(.a11y-t12) { border-top: 0; padding-top: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report h2:is(.a11y-section-title, .a11y-top-title, .a11y-legal-title, .a11y-results-title):not(.a11y-sr-only):not(.a11y-accordion-title):not(.a11y-w22-title):not(.a11y-t1):not(.a11y-t2):not(.a11y-t3):not(.a11y-t4):not(.a11y-t5):not(.a11y-t6):not(.a11y-t7):not(.a11y-t8):not(.a11y-t9):not(.a11y-t10):not(.a11y-t11):not(.a11y-t12) {
+  margin: 0 0 var(--cds-spacing-06); padding: 0 0 var(--cds-spacing-04); border-bottom: 1px solid var(--row-rule);
+  color: var(--prompt-line); font-family: "Jokker", "DejaVu Sans", sans-serif;
+  font-size: 43px; font-weight: 400; line-height: 1.05; letter-spacing: 0; text-transform: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report h2:is(.a11y-section-title, .a11y-top-title, .a11y-legal-title, .a11y-results-title):not(.a11y-sr-only):not(.a11y-accordion-title):not(.a11y-w22-title) .a11y-count-dot:not(.a11y-t1):not(.a11y-t2):not(.a11y-t3):not(.a11y-t4):not(.a11y-t5):not(.a11y-t6):not(.a11y-t7):not(.a11y-t8):not(.a11y-t9):not(.a11y-t10):not(.a11y-t11):not(.a11y-t12) { vertical-align: middle; margin-inline-start: var(--cds-spacing-03); }
+@media (max-width: 671px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report h2:is(.a11y-section-title, .a11y-top-title, .a11y-legal-title, .a11y-results-title):not(.a11y-sr-only):not(.a11y-accordion-title):not(.a11y-w22-title):not(.a11y-t1):not(.a11y-t2):not(.a11y-t3):not(.a11y-t4):not(.a11y-t5):not(.a11y-t6):not(.a11y-t7):not(.a11y-t8):not(.a11y-t9):not(.a11y-t10):not(.a11y-t11):not(.a11y-t12) { font-size: 29px; }
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report .a11y-findings-head:has(> h2.a11y-section-title):not(.a11y-t1):not(.a11y-t2):not(.a11y-t3):not(.a11y-t4):not(.a11y-t5):not(.a11y-t6):not(.a11y-t7):not(.a11y-t8):not(.a11y-t9):not(.a11y-t10):not(.a11y-t11):not(.a11y-t12) { align-items: center; margin: 0 0 var(--cds-spacing-06); padding: 0 0 var(--cds-spacing-04); border-bottom: 1px solid var(--row-rule); }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-report .a11y-findings-head > h2.a11y-section-title:not(.a11y-t1):not(.a11y-t2):not(.a11y-t3):not(.a11y-t4):not(.a11y-t5):not(.a11y-t6):not(.a11y-t7):not(.a11y-t8):not(.a11y-t9):not(.a11y-t10):not(.a11y-t11):not(.a11y-t12):not(.a11y-t13):not(.a11y-t14):not(.a11y-t15):not(.a11y-t16) { margin: 0; padding: 0; border-bottom: 0; }
