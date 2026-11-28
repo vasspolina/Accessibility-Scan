@@ -45,7 +45,7 @@
   --edge: #8e8e93;             /* the chat box's edge, 3.3:1 on white */
   --callout: #2848c8;
   --focus: #198038;
-  --r-panel: 28px; --r-card: 20px;
+  --r-panel: 6px; --r-card: 6px;
 
   --s01: 2px; --s02: 4px; --s03: 8px; --s04: 12px; --s05: 16px; --s06: 24px;
   --s07: 32px; --s08: 40px; --s09: 48px; --s10: 64px; --s11: 80px; --s12: 96px;
@@ -108,7 +108,7 @@ main:focus { outline: none; }
 .skip {
   position: absolute; top: var(--s03); left: var(--s03); z-index: 10; transform: translateY(-200%);
   display: inline-flex; align-items: center; min-height: 34px; padding: var(--s02) var(--s04);
-  border-radius: 999px; background: var(--solid); color: var(--solid-ink);
+  border-radius: 6px; background: var(--solid); color: var(--solid-ink);
   font-size: 18px; letter-spacing: 0.025em; text-decoration: none;
 }
 .skip:focus { transform: none; }
@@ -121,7 +121,7 @@ main.wrap { padding-top: var(--s10); }
 .nav a, .toc a, .plates__btn, .theme, .btn, .signup__btn, .chat__send, .request__link {
   display: inline-flex; align-items: center; justify-content: center; gap: var(--s03);
   min-height: 34px; padding: var(--s02) var(--s04);
-  border: 1px solid var(--bubble); border-radius: 999px; background: var(--bubble); color: var(--bubble-ink);
+  border: 1px solid var(--bubble); border-radius: 6px; background: var(--bubble); color: var(--bubble-ink);
   font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; text-decoration: none; cursor: pointer;
 }
 .btn, .signup__btn, .chat__send:enabled, .nav a[aria-current], .toc a[aria-current] {
@@ -185,12 +185,12 @@ main.wrap { padding-top: var(--s10); }
   --ink: #000; --focus: #198038; --solid: #000; --solid-ink: #fff;
   display: grid; gap: var(--s05);
   margin: 0 0 var(--s10); padding: var(--s09) var(--s10);
-  border-radius: var(--r-panel); background: var(--grey-paper); color: #000;
+  border-radius: 6px; background: var(--grey-paper); color: #000;
 }
 .signup { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
 .signup__field {
   display: flex; flex-direction: column; gap: var(--s03); min-width: 0;
-  padding: var(--s05) var(--s06); border-radius: var(--r-card); background: var(--field); color: #000;
+  padding: var(--s05) var(--s06); border-radius: 6px; background: var(--field); color: #000;
 }
 .signup__field:focus-within { outline: 2px solid var(--focus); outline-offset: -2px; }
 .signup__field label { font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; }
@@ -217,13 +217,13 @@ form.signup {
 }
 form.signup .signup__field {
   flex-direction: row; align-items: center; gap: var(--s04); min-height: 56px; padding: 0 var(--s05);
-  border: 1px solid var(--edge); border-radius: var(--s04); background: transparent; color: inherit;
+  border: 1px solid var(--edge); border-radius: 6px; background: transparent; color: inherit;
 }
 form.signup .signup__field label { flex: none; }
 form.signup .signup__input { flex: 1 1 auto; min-height: 0; color: inherit; font-size: 18px; letter-spacing: 0.025em; }
 form.signup > .signup__btn {
   grid-column: auto; justify-self: stretch; margin-top: 0; min-height: 56px; padding: 0 var(--s05);
-  border: 1px solid var(--edge); border-radius: var(--s04); background: transparent; color: var(--ink);
+  border: 1px solid var(--edge); border-radius: 6px; background: transparent; color: var(--ink);
   font-size: 18px; letter-spacing: 0.025em;
 }
 form.signup > .signup__btn:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
@@ -243,7 +243,7 @@ form.signup > .signup__btn:hover { border-color: var(--hover); background: var(-
 .request__title:focus { outline: none; }
 .request__row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--s03); width: 100%; }
 .request__input {
-  min-height: 56px; padding: var(--s03) var(--s06); border-radius: 999px; background: var(--field);
+  min-height: 56px; padding: var(--s03) var(--s06); border-radius: 6px; background: var(--field);
 }
 .request__input:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
 .request__link { border-color: #fff; background: #fff; color: #000; }
@@ -252,14 +252,14 @@ form.signup > .signup__btn:hover { border-color: var(--hover); background: var(-
 }
 .request__brief > div {
   display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: var(--s05);
-  padding: var(--s05) var(--s06); border-radius: var(--r-card); background: #fff;
+  padding: var(--s05) var(--s06); border-radius: 6px; background: #fff;
 }
 .request__brief dt { font-family: var(--mono); font-size: 18px; line-height: 1.2; letter-spacing: 0; padding-top: var(--s01); }
 .request__brief dd { margin: 0; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
 .request__send { display: grid; justify-items: center; gap: var(--s05); }
 .request__consent { display: inline-flex; align-items: flex-start; gap: var(--s04); max-width: 40ch; text-align: start; font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; cursor: pointer; }
 .request__consent input {
-  appearance: none; flex: none; width: 28px; height: 28px; margin: 0; border: 1px solid #000; border-radius: 50%; background: #fff; cursor: pointer;
+  appearance: none; flex: none; width: 28px; height: 28px; margin: 0; border: 1px solid #000; border-radius: 6px; background: #fff; cursor: pointer;
 }
 .request__consent input:checked {
   background: #000 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23fff' d='M13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z'/%3E%3C/svg%3E") center / 18px no-repeat;
@@ -270,14 +270,14 @@ form.signup > .signup__btn:hover { border-color: var(--hover); background: var(-
 .plates { margin: 0 0 var(--s10); }
 .plates__track {
   display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; cursor: pointer;
-  border-radius: var(--r-panel);
+  border-radius: 6px;
 }
 .plates__track::-webkit-scrollbar { display: none; }
 .plates__track:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
 .plate {
   --on: var(--on-blue);
   flex: 0 0 100%; scroll-snap-align: start; display: grid; place-items: center;
-  min-height: 360px; padding: var(--s09); border-radius: var(--r-panel);
+  min-height: 360px; padding: var(--s09); border-radius: 6px;
   background: var(--blue); color: var(--on);
 }
 .plate:nth-child(4n + 2) { background: var(--green); --on: var(--on-green); }
@@ -332,7 +332,7 @@ body { overflow-x: clip; }
 
 /* The side note: a cream card. */
 .card {
-  padding: var(--s06); border-radius: var(--r-card); background: var(--tile); color: var(--tile-ink);
+  padding: var(--s06); border-radius: 6px; background: var(--tile); color: var(--tile-ink);
   font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
 }
 .card h2 { font-size: 24px; }
@@ -358,7 +358,7 @@ body { overflow-x: clip; }
    (24px in the 29px column), 0.3em over its meaning. Replaces the capitals
    and colon of the same afternoon. */
 .terms dt {
-  display: inline-block; margin-bottom: 0.3em; padding: 0.15em 0.6em 0.1em; border: 1px solid currentColor; border-radius: 999px;
+  display: inline-block; margin-bottom: 0.3em; padding: 0.15em 0.6em 0.1em; border: 1px solid currentColor; border-radius: 6px;
   font-family: var(--mono); font-size: 0.83em; line-height: 1.2; letter-spacing: 0;
 }
 /* The What we offer panels' terms two to a row (user's instruction, 25 Nov
@@ -389,7 +389,7 @@ body { overflow-x: clip; }
    #fff5c2 in both themes; hover adds the underline. Buttons and the offer
    list keep their own look. */
 .text a:not(.btn), .card p a:not(.btn) {
-  padding: 0 0.08em; border-radius: 4px; background: var(--hover); color: var(--hover-ink);
+  padding: 0 0.08em; border-radius: 6px; background: var(--hover); color: var(--hover-ink);
   text-decoration: none; -webkit-box-decoration-break: clone; box-decoration-break: clone;
 }
 .text a:not(.btn):hover, .card p a:not(.btn):hover { text-decoration: underline; text-decoration-thickness: 1px; }
@@ -400,7 +400,7 @@ body { overflow-x: clip; }
 .toc ul { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s02); margin: 0; padding: 0; list-style: none; }
 /* A long section name runs to two lines: half the pill's height keeps one
    line round-ended and two a rounded block, not a lozenge. */
-.toc a { justify-content: flex-start; text-align: start; border-radius: 17px; }
+.toc a { justify-content: flex-start; text-align: start; border-radius: 6px; }
 @media (max-width: 1055px) {
   .toc-layout { grid-template-columns: minmax(0, 1fr); gap: var(--s07); }
   .toc { position: static; }
@@ -416,7 +416,7 @@ body { overflow-x: clip; }
 .slogan__link, .chat__prompt {
   --on: var(--on-blue);
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--s03);
-  width: 100%; min-height: 220px; padding: var(--s06); border: 0; border-radius: var(--r-panel);
+  width: 100%; min-height: 220px; padding: var(--s06); border: 0; border-radius: 6px;
   background: var(--blue); color: var(--on); text-align: center; text-decoration: none;
   font-family: var(--mono); letter-spacing: 0;
 }
@@ -432,7 +432,7 @@ body { overflow-x: clip; }
 /* ---------- The scanner invite: a message bubble on the right ---------- */
 .bubble { display: flex; justify-content: flex-end; margin: var(--s10) 0; }
 .bubble__msg {
-  max-width: min(36ch, 80%); padding: var(--s05) var(--s06); border-radius: 24px;
+  max-width: min(36ch, 80%); padding: var(--s05) var(--s06); border-radius: 6px;
   background: var(--bubble); color: var(--bubble-ink); text-decoration: none;
   font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
 }
@@ -450,13 +450,13 @@ body { overflow-x: clip; }
 .chat__who { margin-bottom: var(--s02); font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; }
 .chat__turn:nth-child(odd) { display: flex; flex-direction: column; align-items: flex-end; }
 .chat__turn:nth-child(odd) .chat__text {
-  max-width: min(36ch, 80%); padding: var(--s05) var(--s06); border-radius: 24px;
+  max-width: min(36ch, 80%); padding: var(--s05) var(--s06); border-radius: 6px;
   background: var(--bubble); color: var(--bubble-ink); font-size: 24px; line-height: 1.15; letter-spacing: 0.015em;
 }
 .chat__thinking { font-size: 24px; }
 .chat__box {
   display: grid; gap: var(--s03); padding: var(--s05) var(--s06);
-  border: 1px solid var(--edge); border-radius: 32px; background: var(--paper);
+  border: 1px solid var(--edge); border-radius: 6px; background: var(--paper);
 }
 .chat__box:focus-within { outline: 2px solid var(--focus); outline-offset: -2px; }
 .chat__box textarea {
@@ -472,7 +472,7 @@ body { overflow-x: clip; }
 .acc__head { margin: 0; }
 .acc__btn {
   display: flex; align-items: center; gap: var(--s05); width: 100%; min-height: 64px; margin: 0;
-  padding: var(--s04) var(--s07); border: 1px solid var(--bubble); border-radius: 999px;
+  padding: var(--s04) var(--s07); border: 1px solid var(--bubble); border-radius: 6px;
   background: var(--bubble); color: var(--bubble-ink); text-align: start; cursor: pointer;
   font-size: 32px; line-height: 1.1; letter-spacing: 0.01em;
 }
@@ -480,8 +480,8 @@ body { overflow-x: clip; }
    2026, "do not add dots and box inside of box for this element"): the
    bar opening into its panel shows the state; aria-expanded says it. */
 .acc__btn:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
-.acc__row:has(> .acc__head [aria-expanded="true"]) { border-radius: var(--r-panel); background: var(--bubble); color: var(--bubble-ink); }
-.acc__row:has(> .acc__head [aria-expanded="true"]) .acc__btn { border-radius: var(--r-panel); }
+.acc__row:has(> .acc__head [aria-expanded="true"]) { border-radius: 6px; background: var(--bubble); color: var(--bubble-ink); }
+.acc__row:has(> .acc__head [aria-expanded="true"]) .acc__btn { border-radius: 6px; }
 /* Three times the space between an opened service's lede and its terms
    (user's instruction, 25 Nov 2026, "add 3 times more paragraph break
    here"): 16px became 48px. The panel holds only those two. */
@@ -499,7 +499,7 @@ footer.wrap { margin-top: var(--s12); padding-bottom: var(--s07); }
    "letra", "centered"): PP Lettra Mono, no tracking, 1.15 leading, every
    line centred and the box centred in the column. */
 .notice {
-  width: fit-content; max-width: 100%; margin-inline: auto; padding: var(--s05) var(--s06); border-radius: var(--r-card);
+  width: fit-content; max-width: 100%; margin-inline: auto; padding: var(--s05) var(--s06); border-radius: 6px;
   background: var(--hover); color: var(--hover-ink); font-family: var(--mono); font-size: 24px; line-height: 1.15; letter-spacing: 0;
   text-align: center;
 }
@@ -509,14 +509,14 @@ footer.wrap { margin-top: var(--s12); padding-bottom: var(--s07); }
   --focus: #fff;
   display: flex; flex-direction: column; align-items: center; gap: var(--s06);
   margin-top: var(--s07); padding: var(--s09) var(--s10);
-  border-radius: var(--r-panel); background: var(--green); color: var(--on-green); text-align: center;
+  border-radius: 6px; background: var(--green); color: var(--on-green); text-align: center;
 }
 .news__title { font-family: var(--mono); font-size: 32px; line-height: 1.15; letter-spacing: 0; }
 .news__text { max-width: 40ch; font-size: 24px; line-height: 1.15; letter-spacing: 0.015em; }
 .news__form { display: flex; gap: var(--s03); width: min(560px, 100%); }
 .news__input {
   flex: 1 1 auto; min-width: 0; min-height: 56px; padding: 0 var(--s06);
-  border: 1px solid currentColor; border-radius: 999px; background: transparent; color: inherit;
+  border: 1px solid currentColor; border-radius: 6px; background: transparent; color: inherit;
   font-size: 24px; letter-spacing: 0.015em;
 }
 .news__input::placeholder { color: inherit; opacity: 1; }
@@ -525,7 +525,7 @@ footer.wrap { margin-top: var(--s12); padding-bottom: var(--s07); }
    arrow sat in the upper one. */
 .news__btn {
   display: inline-flex; align-items: center; justify-content: center; line-height: 0; flex: none; width: 56px; height: 56px; padding: 0;
-  border: 1px solid currentColor; border-radius: 50%; background: transparent; color: inherit; font-size: 0; cursor: pointer;
+  border: 1px solid currentColor; border-radius: 6px; background: transparent; color: inherit; font-size: 0; cursor: pointer;
 }
 .news__btn::before { width: 24px; height: 24px; }
 .news__btn:hover { border-color: var(--hover); background: var(--hover); color: var(--hover-ink); }
@@ -615,7 +615,7 @@ footer.wrap { margin-top: var(--s12); padding-bottom: var(--s07); }
    "" so a link's name stays the service. No marker triangles. ---------- */
 .card:has(> .offer) {
   --ink: #000; --focus: #198038;
-  padding: var(--s06); border-radius: var(--r-card); background: #fff5c2; color: #000;
+  padding: var(--s06); border-radius: 6px; background: #fff5c2; color: #000;
   font-family: var(--mono); letter-spacing: 0;
 }
 .card:has(> .offer) > h2 {
@@ -743,7 +743,7 @@ main.wrap > form.signup { margin-bottom: var(--s12); padding-bottom: var(--s10);
 }
 .plates .plate::before {
   content: counter(plate) "/4" / "";
-  display: inline-flex; align-items: center; min-height: 34px; padding: var(--s02) var(--s04); border-radius: var(--s03);
+  display: inline-flex; align-items: center; min-height: 34px; padding: var(--s02) var(--s04); border-radius: 6px;
   background: #000; color: #fff;
   font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.025em; font-variant-numeric: tabular-nums;
 }
@@ -1565,7 +1565,7 @@ form.signup .signup__btn:focus-visible { outline: 2px solid #000; outline-offset
    box's own line is dropped so there is one line, not two). */
 form.signup .signup__input:focus-visible { background-color: #fff; }
 .chat__box:focus-within { outline: none; }
-.chat__box textarea:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
+.chat__box textarea:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
 /* In forced colours a background change is not drawn, so the focused
    input also carries a transparent outline: unseen here, where the white
    fill and the field's black line show focus, and painted as a real line
@@ -1675,10 +1675,40 @@ p.act-statement a:hover .act-statement__text span + span { color: #000; }
   .acc__panel .terms dd { padding-left: calc(var(--gutter) / 2); }
 }
 
-/* No round corners anywhere (user's instruction, 28 Nov 2026, "dont do
-   round corners anywhere", on the Stay in touch panel with its pill field
-   and round arrow): every box, field, button, note, badge and focus line
-   on the site is square. One rule with !important, since about a hundred
-   earlier rules set a radius and each later pass added its own; a new
-   shape needs no radius of its own. */
-*, *::before, *::after { border-radius: 0 !important; }
+/* One corner for every round shape (user's instructions, 28 Nov 2026,
+   "dont do round corners anywhere", then "just make corners like these",
+   on a violet note): 6px, the notes' corner. Every border-radius in this
+   file that was not 0 is 6px (pills, round arrow buttons, panels, fields
+   and cards alike), and so are --r-panel and --r-card. Shapes that were
+   square stay square. A new shape takes 6px or none. */
+
+/* A paragraph set as a statement (user's instruction, 28 Nov 2026,
+   "typeset as statemetnt", on "Remember: When you build a house…" on the
+   Accessibility page): p.statement, like the Services statement. Jokker
+   at its thinnest (wght 100), the logo's size (clamp(32px, 3.4vw, 56px),
+   24px on a phone), 1.1, +0.01em, in the statements' green (#486048,
+   6.9:1 on white; dark #8fb08f, 8.8:1 on black; never under 24px), its
+   closing phrase slanted (the em in the markup), one line of space over
+   it. */
+.text > p.statement {
+  --spec: #486048;
+  max-width: none; margin: 1lh 0 0; color: var(--spec);
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 100; font-variation-settings: "wght" 100, "slnt" 0;
+  font-size: clamp(32px, 3.4vw, 56px); line-height: 1.1; letter-spacing: 0.01em; text-wrap: pretty;
+}
+:root[data-theme="dark"] .text > p.statement { --spec: #8fb08f; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .text > p.statement { --spec: #8fb08f; } }
+.text > p.statement em { font-style: normal; font-variation-settings: "wght" 100, "slnt" -16; }
+@media (max-width: 671px) {
+  .text > p.statement { font-size: 24px; }
+}
+
+/* Vertical steps in a titled section (user's instruction, 28 Nov 2026,
+   "add proper vertical spacing", on "What makes a website accessible?"
+   stacked, its lead-in sentence touching the first rule of the index of
+   terms): the lead-in stands 24px over the index, the step the stacked
+   title has over its words; the index's zero margin had cancelled the
+   paragraph space. Words after the index are 24px under its closing rule,
+   and the side note 32px under what is above it, as before. */
+.cols > .text > :is(p, ul) + .terms { margin-top: var(--s06); }
+.cols > .text > .terms + :is(p, ul, h3) { margin-top: var(--s06); }
