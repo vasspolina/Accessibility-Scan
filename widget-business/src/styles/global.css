@@ -13153,7 +13153,7 @@
   margin: 0 0 var(--cds-spacing-03);
   padding: 0 0 var(--cds-spacing-04);
   border: 0;
-  border-bottom: 2px solid #ffe45c;
+  border-bottom: 2px solid var(--row-rule);
   color: var(--ink);
   font-family: "Jokker", "DejaVu Sans", sans-serif;
   font-size: 43px;
@@ -14206,6 +14206,6 @@
   border-top: 1px solid var(--row-rule);
 }
 :where(.a11y-widget-biz .a11y-principle-group .a11y-principle-title) {
-  margin-bottom: var(--cds-spacing-05);
+  margin-bottom: var(--cds-spacing-06);
   padding-bottom: calc(0.175em + 2px);
 }
