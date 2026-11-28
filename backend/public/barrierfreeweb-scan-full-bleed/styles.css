@@ -1712,3 +1712,14 @@ p.act-statement a:hover .act-statement__text span + span { color: #000; }
    and the side note 32px under what is above it, as before. */
 .cols > .text > :is(p, ul) + .terms { margin-top: var(--s06); }
 .cols > .text > .terms + :is(p, ul, h3) { margin-top: var(--s06); }
+
+/* The home page's call-outs at the logo's size (user's instruction, 28
+   Nov 2026, "make call outs same font size as logo"; they were 4.5vw,
+   83px cap): the EAA statement, the scanner invite and the scanner's
+   sentence over the chat are clamp(32px, 3.4vw, 56px) at 1.1, 24px on a
+   phone, like the Services statement. Face, weight, colour and the
+   slanted phrase are unchanged. */
+.cols.cols--eaa, .bubble__text, .chat__label { font-size: clamp(32px, 3.4vw, 56px); line-height: 1.1; }
+@media (max-width: 671px) {
+  .cols.cols--eaa, .bubble__text, .chat__label { font-size: 24px; }
+}
