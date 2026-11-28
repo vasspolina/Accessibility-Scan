@@ -752,7 +752,7 @@ export function App({
         const trust =
           !isDocument && findingsByCategory.darkPattern.length > 0 ? (
             <ReportSection
-              title="What costs you trust"
+              title="Misleading design"
               description={t(
                 "Where your site nudges people instead of letting them choose."
               )}

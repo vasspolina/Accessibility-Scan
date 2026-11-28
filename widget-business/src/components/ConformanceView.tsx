@@ -248,7 +248,7 @@ export function ConformanceView({
             of prose. */}
         <div className="a11y-legal-band" aria-labelledby="a11y-legal-band-heading">
           <h3 className="a11y-legal-eyebrow" id="a11y-legal-band-heading">
-            {t("“Nothing found” is not a pass")}
+            {t("What “Nothing found” means")}
           </h3>
           <div className="a11y-legal-card">
             <p className="a11y-legal-lead">

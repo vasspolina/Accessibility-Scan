@@ -86,9 +86,9 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
           <h2
             className="a11y-section-title"
             id="a11y-audit-consistency-heading"
-            data-nav-label={t("Pages that disagree")}
+            data-nav-label={t("Differences between pages")}
           >
-            {t("Pages that disagree")}{" "}
+            {t("Differences between pages")}{" "}
             <span className="a11y-section-count a11y-count-dot">{(audit.consistency ?? []).length}</span>
           </h2>
           <p className="a11y-section-desc">
@@ -132,12 +132,12 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
 
       {audit.siteWide.length > 0 && (
         <section className="a11y-section a11y-section-concern" aria-labelledby="a11y-audit-siteWide-heading">
-          <h2 className="a11y-section-title" id="a11y-audit-siteWide-heading" data-nav-label={t("Fix once, fix everywhere")}>
-            {t("Fix once, fix everywhere")}{" "}
+          <h2 className="a11y-section-title" id="a11y-audit-siteWide-heading" data-nav-label={t("Problems on every page")}>
+            {t("Problems on every page")}{" "}
             <span className="a11y-section-count a11y-count-dot">{audit.siteWide.length}</span>
           </h2>
           <p className="a11y-section-desc">
-            {t("These show up on every page, so they live in the template rather than the content. Start here.")}
+            {t("They are in the template, not the content. Start here.")}
           </p>
           <ul className="a11y-audit-list">
             {audit.siteWide.map((issue) => {

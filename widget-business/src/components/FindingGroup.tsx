@@ -847,7 +847,7 @@ export function FindingDetails({
 
       {cluster && (
         <p className="a11y-fix-once">
-          <strong>{tf("Fix once, fixes {count}.", { count: cluster.count })}</strong>{" "}
+          <strong>{tf("One fix for all {count}.", { count: cluster.count })}</strong>{" "}
           <Sentence
             text={t(
               cluster.share < 1
