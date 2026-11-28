@@ -914,7 +914,8 @@ main.wrap > form.signup { margin-bottom: var(--s12); padding-bottom: var(--s10);
 .top .nav li:last-child { grid-column: 6; padding-bottom: 0.3em; }
 .top .nav li:last-child a { font-size: 18px; line-height: 1.2; letter-spacing: 0.025em; }
 .top .brand:hover, .top .nav a:hover, .top .toc a:hover {
-  background: none; color: #000; text-decoration: underline; text-decoration-thickness: 1px;
+  /* No underline (user's instruction, 28 Nov 2026, "do not underline"): a grey link turns black. */
+  background: none; color: #000; text-decoration: none;
 }
 .top::before, .top::after {
   content: ""; grid-row: 2; height: 1px; margin-top: var(--s02); background: #000;
