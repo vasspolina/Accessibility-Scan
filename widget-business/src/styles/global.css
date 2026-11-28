@@ -3893,6 +3893,9 @@
   flex: none;
   margin-top: 0;
   padding-top: var(--cds-spacing-04);
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
 }
 @media (max-width: 1055px) {
   :where(.a11y-widget-biz .a11y-chats > .a11y-chats-foot) {
