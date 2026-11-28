@@ -919,7 +919,7 @@ export function FindingDetails({
       {/* Developer hand-off — the rule reference, shown once. Redundant
           in professional mode, where the block above is already open. */}
       {!professional && (rep.ruleId || rep.wcagCriterion) && (
-        <details className="a11y-tech-details">
+        <details className="a11y-tech-details" open>
           <summary>{t("The technical version")}</summary>
           {/* Only when it was not already shown in the open part of the
               card above. It nearly always is now. */}
