@@ -1674,3 +1674,11 @@ p.act-statement a:hover .act-statement__text span + span { color: #000; }
   .acc__panel .acc__body > p + .terms { margin-top: var(--s04); }
   .acc__panel .terms dd { padding-left: calc(var(--gutter) / 2); }
 }
+
+/* No round corners anywhere (user's instruction, 28 Nov 2026, "dont do
+   round corners anywhere", on the Stay in touch panel with its pill field
+   and round arrow): every box, field, button, note, badge and focus line
+   on the site is square. One rule with !important, since about a hundred
+   earlier rules set a radius and each later pass added its own; a new
+   shape needs no radius of its own. */
+*, *::before, *::after { border-radius: 0 !important; }
