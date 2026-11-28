@@ -406,7 +406,7 @@ export async function scanUrl(
       // A deadline is a real answer, not a blip: retrying spends another three
       // minutes to say the same thing.
       if (err instanceof DOMException && err.name === "AbortError") {
-        throw new ScanError(t("The check stopped responding, so we gave up waiting. Please try again."));
+        throw new ScanError(t("The check stopped responding. Please try again."));
       }
       // Connection failure — the service may just be briefly restarting.
       // Retry a couple of times before giving up.
@@ -472,7 +472,7 @@ export async function auditSite(
     );
   } catch (err) {
     if (err instanceof DOMException && err.name === "AbortError") {
-      throw new ScanError(t("The audit stopped responding, so we gave up waiting. Please try again."));
+      throw new ScanError(t("The audit stopped responding. Please try again."));
     }
     throw new ScanError(t("Couldn't reach the scanner service. Please try again shortly."));
   }

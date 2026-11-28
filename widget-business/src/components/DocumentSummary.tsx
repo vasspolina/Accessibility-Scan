@@ -17,7 +17,7 @@ function verdict(report: AccessibilityReport): { line: string; tone: "bad" | "wa
   const rules = new Set(report.findings.map((f) => f.ruleId));
   if (rules.has("pdf-scanned-image")) {
     return {
-      line: t("This document is a picture of text. Screen readers get nothing from it at all."),
+      line: t("This document is a picture of text. Screen readers get nothing from it."),
       tone: "bad",
     };
   }
@@ -61,7 +61,7 @@ export function DocumentSummary({ report }: { report: AccessibilityReport }) {
       </p>
       <p className="a11y-doc-meta">
         {t(
-          "We check structure, title, language, readable text and image descriptions. Those decide whether a screen reader can read it aloud at all. A person would check more."
+          "We check structure, title, language, readable text and image descriptions. Those decide whether a screen reader can read it aloud. A person would check more."
         )}
       </p>
     </div>

@@ -312,7 +312,7 @@ async function readPdf(
         "serious",
         "2.4.2",
         "A",
-        "This document has no title set, so screen readers announce it by its filename. Someone with several documents open hears something like \"final-v3-web.pdf\" instead of what it is.",
+        "This document has no title set, so screen readers announce it by its filename. People with several documents open hear something like \"final-v3-web.pdf\" instead of what it is.",
         "Set the document title in the file's properties, and set it to display in place of the filename. In Acrobat that is File, Properties, Description, and then Initial View, Show, Document Title.",
         "https://www.w3.org/WAI/WCAG21/Techniques/pdf/PDF18"
       )

@@ -302,7 +302,7 @@ export function evaluateFormErrors(probes: FormErrorProbe[] | undefined): { find
         wcagCriterion: "3.3.1",
         wcagLevel: "A",
         selector: p.form,
-        description: `Submitted with its ${p.requiredEmpty} required field${p.requiredEmpty === 1 ? "" : "s"} empty, this form${p.formName ? ` (“${p.formName}”)` : ""} refused to send and said nothing: no message appeared, no field was marked, focus stayed put. Someone who missed a field has no way to find out which one, or that anything went wrong.`,
+        description: `Submitted with its ${p.requiredEmpty} required field${p.requiredEmpty === 1 ? "" : "s"} empty, this form${p.formName ? ` (“${p.formName}”)` : ""} refused to send and said nothing: no message appeared, no field was marked, focus stayed put. People who missed a field have no way to find out which one, or that anything went wrong.`,
         suggestedFix:
           "When a submit is refused, say so next to each field in text (‘Enter your email address’), mark the field with aria-invalid=\"true\", link the message with aria-describedby, and move focus to the first field in error or to a summary of the errors.",
         ruleId: "form-error-silent",

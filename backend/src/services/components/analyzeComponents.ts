@@ -189,7 +189,7 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
       makeFinding(
         "form-field-placeholder-label",
         worst.selector,
-        `${placeholderOnly.length === 1 ? "A form field relies" : `${placeholderOnly.length} form fields rely`} on placeholder text as ${placeholderOnly.length === 1 ? "its" : "their"} only label. For example, "${(worst.placeholder ?? "").trim().slice(0, 40)}". The placeholder disappears the moment someone starts typing, which is exactly when they need to be reminded what the field asks for.`,
+        `${placeholderOnly.length === 1 ? "A form field relies" : `${placeholderOnly.length} form fields rely`} on placeholder text as ${placeholderOnly.length === 1 ? "its" : "their"} only label. For example, "${(worst.placeholder ?? "").trim().slice(0, 40)}". The placeholder disappears as soon as typing starts, which is when people need to be reminded what the field asks for.`,
         `Give each field a visible <label> tied to it with for/id. Keep the placeholder for an example of the format if you like. As a hint it is fine, as the only label it is not.`,
         "https://www.w3.org/WAI/WCAG21/Understanding/labels-or-instructions.html",
         "accessibility",
@@ -301,7 +301,7 @@ export function evaluateComponents(dom: DomSignals): AccessibilityFinding[] {
       makeFinding(
         "component-nav-labels",
         unlabelledNavs[0].selector,
-        `The page has ${navs.length} separate navigation menus, and ${unlabelledNavs.length} of them have no label. Someone using a screen reader hears each one announced only as "navigation". They can't tell the main menu from the footer links or breadcrumbs.`,
+        `The page has ${navs.length} separate navigation menus, and ${unlabelledNavs.length} of them have no label. A screen reader user hears each one announced only as "navigation". They can't tell the main menu from the footer links or breadcrumbs.`,
         'Give each navigation an aria-label describing its purpose: aria-label="Main menu", aria-label="Footer links". They\'re then distinguishable when listed.',
         "https://www.w3.org/WAI/ARIA/apg/patterns/landmarks/examples/navigation.html",
         "accessibility"

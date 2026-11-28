@@ -233,7 +233,7 @@ export function evaluateKeyboardNav(nav: KeyboardNavResult): AccessibilityFindin
         // on — brief their developer, or check it was done. The specifics
         // follow, addressed to whoever writes the code, so the technical
         // half is clearly not homework for the reader.
-        "Rebuild it as a real button, or as a link if it takes you somewhere. That alone fixes it, with no extra code. The keyboard reaches buttons and links by default, which is the whole reason to use them.\n\nIf it genuinely has to stay as it is, your developer needs two changes. Add `tabindex=\"0\"` and `role=\"button\"`, so the keyboard can reach it and a screen reader announces it as a button. Then add a keydown handler firing on Enter and Space.\n\nThat last one is the part most often missed: a click handler alone never runs for someone using a keyboard.",
+        "Rebuild it as a real button, or as a link if it takes you somewhere. That alone fixes it, with no extra code. The keyboard reaches buttons and links by default, which is the whole reason to use them.\n\nIf it genuinely has to stay as it is, your developer needs two changes. Add `tabindex=\"0\"` and `role=\"button\"`, so the keyboard can reach it and a screen reader announces it as a button. Then add a keydown handler firing on Enter and Space.\n\nThat last one is the part most often missed: a click handler alone never runs for a keyboard user.",
         c.snippet
       )
     );

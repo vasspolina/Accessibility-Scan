@@ -70,11 +70,11 @@ export const WCAG_21_AA_CRITERIA: WcagCriterion[] = [
   { id: "1.4.1", name: "Use of Color", level: "A", coverage: "partial", aiAssisted: true, plain: "Is anything shown by colour alone?", failing: "Colour alone carries the meaning, so colour-blind visitors miss it" },
   { id: "1.4.2", name: "Audio Control", level: "A", coverage: "automated", plain: "Can sound that starts on its own be turned off?", failing: "Sound starts on its own and can't be turned off" },
   { id: "1.4.3", name: "Contrast (Minimum)", level: "AA", coverage: "automated", plain: "Is text dark enough to read against its background?", failing: "Text is too pale to read against its background" },
-  { id: "1.4.4", name: "Resize Text", level: "AA", coverage: "automated", plain: "Does text stay readable when someone makes it bigger?", failing: "Text gets cut off when someone makes it bigger" },
-  { id: "1.4.5", name: "Images of Text", level: "AA", coverage: "manual", plain: "Is text real text, rather than a picture of text?", failing: "Pictures of text blur when someone enlarges them" },
+  { id: "1.4.4", name: "Resize Text", level: "AA", coverage: "automated", plain: "Does text stay readable when people make it bigger?", failing: "Text gets cut off when people make it bigger" },
+  { id: "1.4.5", name: "Images of Text", level: "AA", coverage: "manual", plain: "Is text real text, rather than a picture of text?", failing: "Pictures of text blur when people enlarge them" },
   { id: "1.4.10", name: "Reflow", level: "AA", coverage: "automated", plain: "Does the page fit a phone screen without scrolling sideways?", failing: "The page scrolls sideways on a phone" },
   { id: "1.4.11", name: "Non-text Contrast", level: "AA", coverage: "automated", plain: "Are buttons and icons dark enough to make out?", failing: "Buttons and icons are too pale to make out" },
-  { id: "1.4.12", name: "Text Spacing", level: "AA", coverage: "automated", plain: "Does the page survive someone spacing out the text to read it?", failing: "Text overlaps and runs together when someone spaces it out to read it" },
+  { id: "1.4.12", name: "Text Spacing", level: "AA", coverage: "automated", plain: "Does the page still work when people space out the text to read it?", failing: "Text overlaps and runs together when people space it out to read it" },
   { id: "1.4.13", name: "Content on Hover or Focus", level: "AA", coverage: "manual", plain: "Can pop-ups be closed, and do they stay out of the way?", failing: "Pop-ups can't be closed, or cover what you were reading" },
 
   // ---- Operable ---------------------------------------------------------
@@ -94,7 +94,7 @@ export const WCAG_21_AA_CRITERIA: WcagCriterion[] = [
   { id: "2.4.6", name: "Headings and Labels", level: "AA", coverage: "partial", aiAssisted: true, plain: "Do headings and labels describe what's under them?", failing: "Headings and labels don't describe what's under them" },
   { id: "2.4.7", name: "Focus Visible", level: "AA", coverage: "automated", plain: "Can you see where you are while tabbing through?", failing: "You can't see where you are while tabbing through" },
   { id: "2.5.1", name: "Pointer Gestures", level: "A", coverage: "manual", plain: "Is there a simpler way to do anything needing a swipe or pinch?", failing: "A swipe or pinch is the only way to do something" },
-  { id: "2.5.2", name: "Pointer Cancellation", level: "A", coverage: "manual", plain: "Can someone who taps the wrong thing slide their finger off to undo it?", failing: "Tapping the wrong thing can't be undone by sliding your finger off it" },
+  { id: "2.5.2", name: "Pointer Cancellation", level: "A", coverage: "manual", plain: "Can people who tap the wrong thing slide their finger off to undo it?", failing: "Tapping the wrong thing can't be undone by sliding your finger off it" },
   // partial since axe-core 4.14.0 (5 Oct 2026), which made its 2.5.3 rule
   // (label-content-name-mismatch) stable and on by default. The row was
   // "manual" while that rule was experimental and its results went to the

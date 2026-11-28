@@ -119,7 +119,7 @@ export function ManualChecks({
           </span>
         </h2>
         <p className="a11y-section-desc">
-          {t("Each one is a question about your site, not this page, so an answer holds for every later scan until you change it.")}
+          {t("Each question is about your site, not this page. An answer holds for every later scan until you change it.")}
         </p>
         <p className="a11y-section-desc">
           {t("Each answer is signed and kept with its history. Answers fill in the conformance report for buyers.")}

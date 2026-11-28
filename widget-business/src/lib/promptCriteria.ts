@@ -44,7 +44,7 @@ export const CRITERIA: Record<string, PromptCriterion> = {
     fr: "Le texte est-il assez foncé pour se lire sur son fond ?",
   } },
   "1.4.4": { name: "Resize Text", level: "AA", plain: {
-    en: "Does text stay readable when someone makes it bigger?",
+    en: "Does text stay readable when people make it bigger?",
     de: "Bleibt Text lesbar, wenn jemand ihn vergrößert?",
     es: "¿Sigue el texto legible cuando alguien lo agranda?",
     fr: "Le texte reste-t-il lisible quand on l'agrandit ?",
@@ -86,18 +86,18 @@ export const CRITERIA: Record<string, PromptCriterion> = {
 export const PROMPT_CRITERION: Record<string, string> = {
   "How would a screen reader announce this button? Tell me what you can inspect and what I should test with a screen reader.": "4.1.2",
   "Which images on this page need alt text, and what should it say in context?": "1.1.1",
-  "Is this link clear if someone hears its text on its own? Suggest clearer wording if needed.": "2.4.4",
-  "Can someone understand this error message without relying on colour? Rewrite it so they know what to do next.": "1.4.1",
-  "Can someone use a website without a mouse?": "2.1.1",
-  "Can someone close a cookie banner with a keyboard?": "2.1.1",
+  "Is this link clear if people hear its text on its own? Suggest clearer wording if needed.": "2.4.4",
+  "Can people understand this error message without relying on colour? Rewrite it so they know what to do next.": "1.4.1",
+  "Can people use a website without a mouse?": "2.1.1",
+  "Can people close a cookie banner with a keyboard?": "2.1.1",
   "Is the text easy to read against its background?": "1.4.3",
-  "Can someone zoom in without losing access to content?": "1.4.4",
-  "Can someone fill in a form with a screen reader?": "3.3.2",
-  "Can someone complete checkout using only a keyboard?": "2.1.1",
+  "Can people zoom in without losing access to content?": "1.4.4",
+  "Can people fill in a form with a screen reader?": "3.3.2",
+  "Can people complete checkout using only a keyboard?": "2.1.1",
   "Do the images have useful alt text?": "1.1.1",
   "Are the videos accessible without sound?": "1.2.2",
   "Does a menu or pop-up work with a keyboard?": "2.1.1",
-  "Can someone tell which field has an error and how to fix it?": "3.3.1",
+  "Can people tell which field has an error and how to fix it?": "3.3.1",
 };
 
 export function criterionFor(prompt: string): string | undefined {

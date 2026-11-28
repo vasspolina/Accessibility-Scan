@@ -98,7 +98,7 @@ function evaluateDialogKeyboard(results: DialogKeyboardResult[]): AccessibilityF
           "serious",
           "accessibility",
           r.selector,
-          `${what} appeared, but focus did not move into it. Someone using a screen reader hears nothing about it. A keyboard user must tab through the whole page behind it to reach the thing now covering their screen.`,
+          `${what} appeared, but focus did not move into it. A screen reader user hears nothing about it. A keyboard user must tab through the whole page behind it to reach the thing now covering their screen.`,
           "When the dialog opens, move focus to it. The dialog container itself, or the first control inside it. Remember where focus was, so you can put it back when the dialog closes."
         )
       );

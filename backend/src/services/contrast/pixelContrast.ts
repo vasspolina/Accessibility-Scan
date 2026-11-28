@@ -188,7 +188,7 @@ export function evaluatePixelContrast(results: PixelContrastResult[] | undefined
       wcagLevel: "AA" as const,
       selector: r.selector,
       elementSnippet: r.html.slice(0, 300),
-      description: `This text sits on a picture or a gradient. Measured from the rendered pixels behind its letters, the contrast is between ${r.low}:1 and ${r.high}:1 across most of it, and text this size needs ${r.required}:1. Most of it is too faint for someone with low vision, or anyone reading in sunlight.`,
+      description: `This text sits on a picture or a gradient. Measured from the rendered pixels behind its letters, the contrast is between ${r.low}:1 and ${r.high}:1 across most of it, and text this size needs ${r.required}:1. Most of it is too faint for people with low vision, or anyone reading in sunlight.`,
       suggestedFix:
         "Put a solid or semi-opaque panel behind the text, darken or lighten the picture where the text sits, or move the text off the picture. Check it again at the narrowest width, where text often lands on a busier part of the image.",
       ruleId: "contrast-over-image",

@@ -71,7 +71,7 @@ export function AccountKey({
         <>
           <span className="a11y-settings-state">
             {who ? `${t("Signed in as")} ${who}. ` : `${t("Key kept.")} `}
-            {t("From now on your scans are saved, and you can answer the open questions.")}
+            {t("Your scans are now saved, and you can answer the open questions.")}
           </span>
           <Button variant="ghost" size="sm" onClick={forget}>
             {t("Forget this key")}
