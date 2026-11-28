@@ -10,23 +10,29 @@
 <link rel="stylesheet" href="styles.css">
 <style>
 main.wrap > form.signup { margin-bottom: 0; }
+/* One line, a link to the Accessibility page (user's instruction, 28 Nov
+   2026, "make this in one line and link to accessibility page"): the name
+   black, the rest #666 (5.7:1 on white), the icon set's arrow after; the
+   whole line is the link, black on hover. At 1.84vw the sentence is
+   slightly wider than the window, so the arrow and the last words wrap. */
 .act-statement {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--s03) var(--s05);
-  align-items: baseline;
   margin: 0;
   padding-block: var(--s05);
-  font-size: clamp(1.25rem, 2vw, 2.5rem);
+  font-size: clamp(21px, 1.84vw, 37px); /* 15% larger ("make this text 15% bigger", 28 Nov 2026) */
   font-weight: 500;
   line-height: 1.15;
   letter-spacing: -0.025em;
   color: #000;
   border-image: linear-gradient(white 0 0) fill 0 / 0 / 0 100vw;
 }
-.act-statement span + span { color: #666; }
-@media (max-width: 671px) {
-  .act-statement { display: block; }
+.act-statement a { color: #000; text-decoration: none; }
+.act-statement a:hover { background: none; color: #000; }
+.act-statement a span + span { color: #666; }
+.act-statement a:hover span + span { color: #000; }
+.act-statement a::after {
+  content: ""; display: inline-block; width: 0.8em; height: 0.8em; margin-left: 0.3em; vertical-align: -0.05em;
+  background: currentColor;
+  -webkit-mask: var(--arrow-right) center / contain no-repeat; mask: var(--arrow-right) center / contain no-repeat;
 }
 </style>
 <script>try{var t=localStorage.getItem("bfw-theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t}catch(e){}</script>
@@ -55,7 +61,7 @@ main.wrap > form.signup { margin-bottom: 0; }
     <button class="signup__btn" type="submit">Send request<span class="signup__arrow" aria-hidden="true"> &rarr;</span></button>
   </form>
   <section class="request" data-request aria-label="Your request" hidden></section>
-  <p class="act-statement"><span>The European Accessibility Act</span> <span>has applied to websites in the EU since 28 June 2025.</span></p>
+  <p class="act-statement"><a href="accessibility.html"><span>The European Accessibility Act</span> <span>has applied to websites in the EU since 28 June 2025.</span></a></p>
   <section class="plates" data-plates aria-roledescription="carousel" aria-label="Statements"><div class="plates__track" role="group" tabindex="0" aria-label="Statements, 4 slides. Use the arrow keys to move."><div class="plate" role="group" aria-roledescription="slide" aria-label="1 of 4"><p>If everyone can’t use the door, is it truly an entrance?</p></div><div class="plate" role="group" aria-roledescription="slide" aria-label="2 of 4"><p>The European Accessibility Act is here.</p></div><div class="plate" role="group" aria-roledescription="slide" aria-label="3 of 4"><p>Accessibility is a human right.</p></div><div class="plate" role="group" aria-roledescription="slide" aria-label="4 of 4"><p>Good design works for everyone.</p></div></div><div class="plates__bar"><button type="button" class="plates__btn" data-prev aria-label="Previous">&larr;</button><span class="plates__count" aria-hidden="true">1/4</span><button type="button" class="plates__btn" data-next aria-label="Next">&rarr;</button></div><p class="plates__status sr-only" role="status"></p></section>
   <div class="content"><section class="cols"><div class="text"><h2 id="the-european-accessibility-act-is-here">The European Accessibility Act is here.</h2><p>As of 28 June 2025, websites operating in the EU must meet EAA accessibility requirements. Non-compliance can result in fines.</p></div><div class="card"><p>Not sure if your site is compliant? We can help.</p><p class="action"><a class="btn" href="mailto:gf@barrierfreeweb.de?subject=Accessibility%20audit">Request an accessibility audit</a></p></div></section></div>
   <div class="bubble">
