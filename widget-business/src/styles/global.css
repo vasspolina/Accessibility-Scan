@@ -6755,6 +6755,25 @@
   letter-spacing: 0;
 }
 
+/* ── Designer and developer list, design notes, continued ── */
+:where(.a11y-widget-biz .a11y-undecided-answer > .a11y-undecided-ask) {
+  margin: 0 0 var(--cds-spacing-05);
+}
+
+/* ── Shell, sections and navigation, continued ── */
+:where(.a11y-widget-biz .a11y-newscan-head .a11y-newscan-title) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 /* ── Chat, conversations and Report a barrier, continued ── */
 :where(.a11y-widget-biz .a11y-chat-thread > .a11y-chat-turn.a11y-chat-block:has(+ .a11y-chat-turn)) {
   margin-bottom: var(--cds-spacing-10);
@@ -6870,25 +6889,6 @@
 }
 :where(.a11y-widget-biz .a11y-acr .a11y-section-head > .a11y-acr-make) {
   width: auto;
-}
-
-/* ── Designer and developer list, design notes, continued ── */
-:where(.a11y-widget-biz .a11y-undecided-answer > .a11y-undecided-ask) {
-  margin: 0 0 var(--cds-spacing-05);
-}
-
-/* ── Shell, sections and navigation, continued ── */
-:where(.a11y-widget-biz .a11y-newscan-head .a11y-newscan-title) {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  border: 0;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  white-space: nowrap;
 }
 
 /* ── Scan form and settings, continued ── */
@@ -10148,26 +10148,6 @@
   margin-top: calc(var(--cds-spacing-02) * -1);
 }
 
-/* ── Chat, conversations and Report a barrier, continued ── */
-:where(.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-wcag:enabled:hover) {
-  background: var(--hover);
-  color: var(--hover-ink);
-}
-:where(.a11y-widget-biz .a11y-prompts .a11y-prompt-barrier .a11y-prompt-q:enabled:is(:hover, :focus-visible) .a11y-prompt-go) {
-  background: #000;
-  color: #fff;
-}
-:where(.a11y-widget-biz .a11y-chats .a11y-chats-row > .a11y-chats-item:disabled .a11y-chats-title) {
-  text-decoration: underline dashed;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.14em;
-}
-:where(.a11y-widget-biz .a11y-chats .a11y-chats-row > .a11y-chats-item:enabled:hover .a11y-chats-title) {
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.14em;
-}
-
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
 @container a11y-qlist (max-width: 640px) {
   :where(.a11y-widget-biz :is(.a11y-conf-list .a11y-conf-row > .a11y-conf-status, .a11y-w22-list .a11y-w22-row > .a11y-w22-call, .a11y-w22-list .a11y-w22-row .a11y-next-status)) {
@@ -10201,6 +10181,26 @@
   :where(.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row) {
     row-gap: var(--cds-spacing-01);
   }
+}
+
+/* ── Chat, conversations and Report a barrier, continued ── */
+:where(.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-wcag:enabled:hover) {
+  background: var(--hover);
+  color: var(--hover-ink);
+}
+:where(.a11y-widget-biz .a11y-prompts .a11y-prompt-barrier .a11y-prompt-q:enabled:is(:hover, :focus-visible) .a11y-prompt-go) {
+  background: #000;
+  color: #fff;
+}
+:where(.a11y-widget-biz .a11y-chats .a11y-chats-row > .a11y-chats-item:disabled .a11y-chats-title) {
+  text-decoration: underline dashed;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.14em;
+}
+:where(.a11y-widget-biz .a11y-chats .a11y-chats-row > .a11y-chats-item:enabled:hover .a11y-chats-title) {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.14em;
 }
 
 /* ── Score summary, continued ── */
@@ -11761,23 +11761,6 @@
   letter-spacing: 0;
 }
 
-/* ── Chat, conversations and Report a barrier, continued ── */
-:where(.a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:enabled):is(:hover, :has(> .a11y-prompt-q:focus-visible)) .a11y-prompt-go) {
-  background: #fff;
-  color: #000;
-}
-:where(.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-grid) {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-  grid-template-columns: none;
-  overflow: visible;
-  margin: 0;
-  padding: 0;
-  scroll-snap-type: none;
-}
-
 /* ── Findings and the opened finding, continued ── */
 :where(.a11y-widget-biz .a11y-fd .a11y-affected .a11y-occurrence-list > li[class]) {
   margin: 0 0 var(--cds-spacing-05);
@@ -11811,6 +11794,23 @@
 }
 :where(.a11y-widget-biz .a11y-report h2:is(.a11y-section-title, .a11y-legal-title, .a11y-results-title):not(.a11y-sr-only):not(.a11y-accordion-title):not(.a11y-w22-title) .a11y-count-dot) {
   margin-inline-start: var(--cds-spacing-03);
+}
+
+/* ── Chat, conversations and Report a barrier, continued ── */
+:where(.a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:enabled):is(:hover, :has(> .a11y-prompt-q:focus-visible)) .a11y-prompt-go) {
+  background: #fff;
+  color: #000;
+}
+:where(.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt-grid) {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  grid-template-columns: none;
+  overflow: visible;
+  margin: 0;
+  padding: 0;
+  scroll-snap-type: none;
 }
 
 /* ── Shell, sections and navigation, continued ── */
@@ -12518,7 +12518,6 @@
 /* ── Chat, conversations and Report a barrier, continued ── */
 :where(.a11y-widget-biz .a11y-chat-box:focus-within) {
   outline: 2px solid var(--focus);
-  outline-offset: 2px;
   box-shadow: none;
 }
 :where(.a11y-widget-biz .a11y-chat-box > .a11y-chat-label) {
@@ -13089,6 +13088,11 @@
   }
 }
 
+/* ── Chat, conversations and Report a barrier, continued ── */
+:where(.a11y-widget-biz .a11y-chat-box:focus-within) {
+  outline-offset: -1px;
+}
+
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
 @media (max-width: 1000px) {
   :where(.a11y-widget-biz .a11y-legal-cards) {
@@ -13624,4 +13628,38 @@
   margin-left: 0;
   margin-inline-start: 0;
   padding-left: 0;
+}
+
+/* ── Chat, conversations and Report a barrier, continued ── */
+:where(.a11y-widget-biz .a11y-chat-box > .a11y-chat-box-row) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--cds-spacing-03) var(--cds-spacing-02);
+  grid-template-columns: none;
+}
+:where(.a11y-widget-biz .a11y-chat-box > .a11y-chat-box-row button) {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+:where(.a11y-widget-biz .a11y-chat-box > .a11y-chat-box-row > button) {
+  margin-left: auto;
+}
+:where(.a11y-widget-biz .a11y-chat-box > .a11y-chat-box-row > .a11y-chat-tabhint) {
+  order: -1;
+  flex: 1 0 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+:where(.a11y-widget-biz .a11y-chat-box > .a11y-chat-box-row > .a11y-chat-box-start) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--cds-spacing-02);
+  flex: 1 1 auto;
+  min-width: 0;
 }
