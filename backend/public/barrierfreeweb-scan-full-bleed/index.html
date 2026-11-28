@@ -13,32 +13,39 @@ main.wrap > form.signup { margin-bottom: 0; }
 /* One line, a link to the Accessibility page (user's instruction, 28 Nov
    2026, "make this in one line and link to accessibility page"): the name
    black, the rest #666 (5.7:1 on white), the icon set's arrow after; the
-   whole line is the link, black on hover. One line from 1110px up (where the size is 18px or more);
+   whole line is the link, black on hover. One line from 1150px up (where the size is 18px or more);
    narrower, it wraps at 18px. */
 .act-statement {
   margin: 0;
   padding-block: var(--s05);
   /* As large as one line allows ("keep it on one line", 28 Nov 2026, after
-     "15% bigger" wrapped): the sentence and its arrow measure about 57em,
-     so the size is the column (the window less the two 32px gutters) over
-     58em. 15% larger than 1.6vw would be wider than any window. */
-  font-size: max(18px, calc((100vw - 64px) / 58));
+     "15% bigger" wrapped): the sentence measures about 56em, so the size
+     is the column (the window less the two 32px gutters and the arrow's
+     52px with its gap) over 57em. 15% larger than 1.6vw would be wider
+     than any window. */
+  font-size: max(18px, calc((100vw - 116px) / 57));
   font-weight: 500;
   line-height: 1.15;
   letter-spacing: -0.025em;
   color: #000;
   border-image: linear-gradient(white 0 0) fill 0 / 0 / 0 100vw;
 }
-@media (min-width: 1110px) { .act-statement { white-space: nowrap; } }
-.act-statement a { color: #000; text-decoration: none; }
+@media (min-width: 1150px) { .act-statement { white-space: nowrap; } }
+.act-statement a { display: flex; align-items: center; gap: var(--s06); color: #000; text-decoration: none; }
 .act-statement a:hover { background: none; color: #000; }
-.act-statement a span + span { color: #666; }
-.act-statement a:hover span + span { color: #000; }
+.act-statement__text { flex: 1 1 auto; min-width: 0; }
+.act-statement__text span + span { color: #666; }
+.act-statement a:hover .act-statement__text span + span { color: #000; }
+/* The arrow at the right edge, drawn as What we offer's (user's
+   instruction, 28 Nov 2026, "arrow need to be aligned to right and same as
+   this one"): the icon set's arrow, 28px, grey #8d8d8d, black on hover;
+   it points right, since the line goes to another page. */
 .act-statement a::after {
-  content: ""; display: inline-block; width: 0.8em; height: 0.8em; margin-left: 0.3em; vertical-align: -0.05em;
-  background: currentColor;
+  content: ""; flex: none; width: 28px; height: 28px;
+  background: #8d8d8d;
   -webkit-mask: var(--arrow-right) center / contain no-repeat; mask: var(--arrow-right) center / contain no-repeat;
 }
+.act-statement a:hover::after { background: #000; }
 </style>
 <script>try{var t=localStorage.getItem("bfw-theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
@@ -66,7 +73,7 @@ main.wrap > form.signup { margin-bottom: 0; }
     <button class="signup__btn" type="submit">Send request<span class="signup__arrow" aria-hidden="true"> &rarr;</span></button>
   </form>
   <section class="request" data-request aria-label="Your request" hidden></section>
-  <p class="act-statement"><a href="accessibility.html"><span>The European Accessibility Act</span> <span>has applied to websites in the EU since 28 June 2025.</span></a></p>
+  <p class="act-statement"><a href="accessibility.html"><span class="act-statement__text"><span>The European Accessibility Act</span> <span>has applied to websites in the EU since 28 June 2025.</span></span></a></p>
   <section class="plates" data-plates aria-roledescription="carousel" aria-label="Statements"><div class="plates__track" role="group" tabindex="0" aria-label="Statements, 4 slides. Use the arrow keys to move."><div class="plate" role="group" aria-roledescription="slide" aria-label="1 of 4"><p>If everyone can’t use the door, is it truly an entrance?</p></div><div class="plate" role="group" aria-roledescription="slide" aria-label="2 of 4"><p>The European Accessibility Act is here.</p></div><div class="plate" role="group" aria-roledescription="slide" aria-label="3 of 4"><p>Accessibility is a human right.</p></div><div class="plate" role="group" aria-roledescription="slide" aria-label="4 of 4"><p>Good design works for everyone.</p></div></div><div class="plates__bar"><button type="button" class="plates__btn" data-prev aria-label="Previous">&larr;</button><span class="plates__count" aria-hidden="true">1/4</span><button type="button" class="plates__btn" data-next aria-label="Next">&rarr;</button></div><p class="plates__status sr-only" role="status"></p></section>
   <div class="content"><section class="cols"><div class="text"><h2 id="the-european-accessibility-act-is-here">The European Accessibility Act is here.</h2><p>As of 28 June 2025, websites operating in the EU must meet EAA accessibility requirements. Non-compliance can result in fines.</p></div><div class="card"><p>Not sure if your site is compliant? We can help.</p><p class="action"><a class="btn" href="mailto:gf@barrierfreeweb.de?subject=Accessibility%20audit">Request an accessibility audit</a></p></div></section></div>
   <div class="bubble">
