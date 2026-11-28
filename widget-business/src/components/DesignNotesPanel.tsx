@@ -7,7 +7,7 @@ import { useReportView } from "./ReportViewContext";
 import { plainForRule } from "../lib/wcagPlain";
 
 /**
- * The notes, in the design's own shape: a yellow band carrying the heading
+ * The notes: a yellow band carrying the heading
  * and the lead, then a black panel holding the note titles and one open
  * note beneath them.
  *
@@ -44,9 +44,8 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
   return (
     <section className="a11y-section a11y-dn" aria-labelledby="a11y-notes-heading">
       {/* The same anatomy as every other section: title, lead, content.
-          The kit's yellow band with its decorative repeat of the heading
-          came along in the port and outlived the direction that once
-          justified it — one heading, said once, on the report's own paper. */}
+          The yellow band with its decorative repeat of the heading is
+          gone — one heading, said once, on the report's own paper. */}
       <h2
         className="a11y-section-title"
         id="a11y-notes-heading"
@@ -70,8 +69,8 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
       {!professional && (
         <div className="a11y-dn-panel">
           {/* Carets (user's instruction, 24 Nov 2026, "make these into
-              carrets like this", after the tabs of 22 Nov and the awning
-              list): each note is a bar with the caret and its title, a
+              carrets", replacing the tabs of 22 Nov and the list in one
+              grey panel): each note is a bar with the caret and its title, a
               button that opens the note in place, under its title, inside
               the same rounded ground. Each opens and shuts on its own, so
               two notes can be read side by side; nothing opens by itself. */}
@@ -92,8 +91,7 @@ export function DesignNotesPanel({ findings }: { findings: AccessibilityFinding[
                     >
                       <span className="a11y-dn-bar-title">{noteTitle(group)}</span>
                       {/* How many places, at the card's far end (user's
-                          reference, 25 Nov 2026, a list of white cards
-                          with a figure at the end of each line). Only
+                          instruction, 25 Nov 2026). Only
                           past one, as the professional table counts; the
                           opened note does not say it again. */}
                       {group.length > 1 && (

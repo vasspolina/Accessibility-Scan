@@ -3,8 +3,8 @@ Build UI in this repo from what already exists. Do not invent UI.
 ## Read first, before writing a line
 
 1. `CLAUDE.md` — the type rules. They override anything you infer from the code.
-2. `.claude/rules/kit-token-map.md` — the kit speaks an older token vocabulary than this tree. Every `var()` gets rewritten on port; there is no alias layer.
-3. `widget-business/src/styles/global.css`, the `:root` block — every legal token value.
+2. `CLAUDE.md`, "The stylesheet" — how `global.css` is built: the later rule wins, and `node scripts/organise-css.mjs` puts a new rule in its place.
+3. `widget-business/src/styles/global.css`, the first rule (`.a11y-widget-biz`) — every legal token value.
 4. The component you are about to touch, in `widget-business/src/components/`.
 
 Quote the rules that bear on this task back to me before you start, so I know you read them rather than pattern-matched.
@@ -15,7 +15,6 @@ Quote the rules that bear on this task back to me before you start, so I know yo
 - Ported kit components: `widget-business/src/components/<Name>/` with an `index.ts` — Button, Card, Checkbox, DataTable, FactCard, FindingDetail, FixPreviews, Input, IssueRow, OptionCard, Radio, RelatedChecks, ScoreDial, Select2.
 - There is **no** top-level `src/components/index.ts`. Do not import from a barrel that does not exist.
 - One stylesheet: `widget-business/src/styles/global.css`, inlined into the shadow root by `shadowMount.ts`. Components do not import their own CSS.
-- Design sources are read-only, fetched from the claude.ai/design project via DesignSync. `.design-sync/NOTES.md`: this repo is **not** a sync source — the direction is design → code, one way.
 
 ## Hard rules
 

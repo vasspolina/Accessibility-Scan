@@ -2,16 +2,16 @@ import type { CSSProperties, ReactNode } from "react";
 import { t } from "../../lib/strings";
 
 /**
- * Switch, ported from components/forms/Switch.jsx.
+ * Switch.
  *
  * A real button with role="switch" and aria-checked, not a checkbox wearing a
- * track. The visible "On"/"Off" word beside it is the design system's rule —
- * "Switches show a visible On/Off word" — and it is aria-hidden, because
+ * track. The visible "On"/"Off" word beside it is a rule —
+ * a switch shows a visible On/Off word — and it is aria-hidden, because
  * aria-checked already says the same thing and a screen reader should not hear
  * the state twice.
  *
  * The label is a <span> with an id, referenced by aria-labelledby rather than
- * wrapping the control. That is the source's shape and it is the right one
+ * wrapping the control. That is the right shape
  * here: the label sits at the far left of a wide row with the control pushed
  * to the right, so a wrapping <label> would make the entire row a click
  * target, including the empty space between them.

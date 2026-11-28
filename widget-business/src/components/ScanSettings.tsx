@@ -26,7 +26,7 @@ import type { Lang } from "../lib/i18n";
  * seconds — or, for a site audit, several minutes — would be the kind of
  * control this report files against other people's sites.
  *
- * Set as a form panel of pills (user's reference, 25 Nov 2026): each
+ * Set as a form panel of pills (user's instruction, 25 Nov 2026): each
  * choice is a pill with a ring at its start, the ring filled on the
  * setting in force, so the three rows read alike while the words still say
  * which ones run the scan again.

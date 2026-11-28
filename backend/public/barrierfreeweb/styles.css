@@ -19,17 +19,14 @@
    drawn by the designer, so nothing is skewed by the browser */
 
 /* BarrierFreeWeb.
-   Layout after the Source Type store page: a dark crumb pill, a centred
+   Layout: a dark crumb pill, a centred
    title, 605px of text beside a 390px grey card, a "Related" row under a
-   rule. Sizes are theirs: 38/40 title, 23/26 headings, 21/27 text,
+   rule. Sizes: 38/40 title, 23/26 headings, 21/27 text,
    19/24 controls, 15/20 small print; 23/27, 16/21 and 14/19 on a phone.
-   Type as on Source Type. Their faces, Times NR Seven and Rekord, are
-   licensed; the stand-ins were tuned to the same line lengths: STIX Two
-   Text 420 at 0.076em breaks their paragraph on the same words (titles at
-   0.09em, as theirs), Saans Light at 0.1em (0.087em at 19px) matches Rekord at 15px
-   with 1px tracking. Both have true italics. No bold.
-   "What we offer" follows their Information rows (see that block). The
-   displaay colours below are kept but unused; each
+   Type: STIX Two Text 420 at 0.076em (titles at 0.09em), Saans Light at
+   0.1em (0.087em at 19px). Both have true italics. No bold.
+   "What we offer" is rows between rules (see that block). The
+   tile colours below are kept but unused; each
    with black text at 13:1 or better. */
 
 :root {
@@ -37,11 +34,11 @@
   --ink: #000000;
   --plate: #000000;
   --plate-ink: #ffffff;
-  --card: #e3e3e3;      /* Source Type's card */
+  --card: #e3e3e3;      /* the card */
   --quiet: #595959;     /* 7:1 on paper, 5.9:1 on the card */
   --pill: #414141;      /* crumb, current page and buttons: 10.4:1 with white */
   --chip: #ebebeb;
-  --info-green: #a6ddae; /* Source Type Information page */
+  --info-green: #a6ddae; /* the Accessibility page's ground */
   --brown: #6b3e16;     /* row hover: 8.1:1 on the lime band, 9.6:1 on white */
   --lime: #e4f5a4;      /* "What we offer" band, light green-yellow: black text 18:1, blue links 8:1 */
   --page: var(--paper);  /* the ground the sticky header paints */
@@ -52,7 +49,7 @@
   --band-ink: #000000;  /* the words on the sky band */
   --toc: var(--cream);  /* the section buttons on long pages */
 
-  /* displaay specimen grounds, tiles only */
+  /* tile grounds, tiles only */
   --mint: #beffbd;
   --cyan: #b8fbff;
   --sky: #a2e3ff;
@@ -67,7 +64,7 @@
   --sans-track: 0.1em;
   --ui-track: 0.087em;
 
-  --margin: 20px;       /* page margin, as displaay.net: 20px, 10px on a phone */
+  --margin: 20px;       /* page margin: 20px, 10px on a phone */
   --text-col: 50%;      /* the text runs half the page */
   --card-col: 390px;
   --gap: 40px;
@@ -235,7 +232,7 @@ body::before {
 .terms dt::after { content: " - " / ""; font-style: normal; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
 
-/* the card: Source Type's store popup */
+/* the card */
 .card {
   background: var(--card);
   border-radius: 16px;
@@ -344,7 +341,7 @@ body::before {
 .post figcaption { margin-top: 10px; color: var(--quiet); }
 .tags { font-family: var(--sans); letter-spacing: var(--sans-track); font-size: 15px; line-height: 20px; color: var(--quiet); }
 
-/* ---------- Accessibility: Source Type's Information page ----------
+/* ---------- Accessibility ----------
    Green ground (#a6ddae, black text at 14:1, blue links at 5.9:1), a 100px
    title, 38/40 section headings with a 2px rule between sections, then
    three 323px columns: 23/29 subheadings over 17.5/23 text. */
@@ -384,10 +381,10 @@ body::before {
   .info__item h3 { font-size: 17px; line-height: 21px; }
 }
 
-/* ---------- What we offer: Source Type's Information rows ----------
+/* ---------- What we offer ----------
    38/40 serif rows between 2px rules, each a button. An open row shows its
    copy under it: the description at 23/29 on the left, the points at
-   17.5/23 on the right, as in their opened sections. */
+   17.5/23 on the right. */
 
 .related {
   margin: 120px 0 0;
@@ -453,7 +450,7 @@ body::before {
   .foot { grid-template-columns: minmax(0, 1fr); }
 }
 
-/* Phone: Source Type's 390px sizes */
+/* Phone sizes */
 @media (max-width: 640px) {
   :root { --margin: 10px; }
   .wrap {
@@ -486,7 +483,7 @@ body::before {
 }
 
 /* ==========================================================================
-   Typeset after Displaay's Jokker page (user's reference, Nov 2026).
+   Typesetting (user's instruction, Nov 2026).
    One family, no tracking. A bold title under a 4px rule; uppercase labels
    over a 1px rule; prose large and tight (24/28); details small (18/23) in
    a key column and a value column, closed by a 1px rule. No boxes, no
@@ -508,7 +505,7 @@ body { font-weight: 400; letter-spacing: 0; }
   font-size: 24px; line-height: 28px; max-width: 32em; margin-top: 28px;
 }
 
-/* The plates: set as the Jokker tester, big, bold, tight, centred */
+/* The plates: big, bold, tight, centred */
 .plate p {
   font-family: var(--sans); font-weight: 600;
   font-size: clamp(40px, 7.4vw, 140px); line-height: 0.96; letter-spacing: -0.025em;
@@ -527,7 +524,7 @@ body { font-weight: 400; letter-spacing: 0; }
 .text h3 + * { margin-top: 0; }
 .text * + h2 { margin-top: 56px; }
 
-/* Term lists, set after palace-enterprise.com: no bullets; the term a bold
+/* Term lists: no bullets; the term a bold
    capital label, what it means on the line under it, upright */
 .terms { display: block; padding: 0; border: 0; font-size: inherit; line-height: inherit; }
 .terms > div + div { margin-top: 0.75em; }
@@ -578,7 +575,7 @@ em, i, cite { font-style: italic; }
 }
 
 /* ==========================================================================
-   Page title, after Displaay's typeface heroes (user's reference, Nov 2026):
+   Page title (user's instruction, Nov 2026):
    a full-width blue band, the title huge and centred in Saans Regular, the
    subtitle small and centred under it. Black on #a2e3ff measures 15.7:1.
    ========================================================================== */
@@ -603,7 +600,7 @@ em, i, cite { font-style: italic; }
   max-width: 30em; margin: 56px auto 0;
   text-wrap: balance;
 }
-/* the plates follow straight on, blue then black, as on Displaay */
+/* the plates follow straight on, blue then black */
 .title + .plates { margin-top: -72px; }
 
 @media (max-width: 640px) {
@@ -629,7 +626,7 @@ em, i, cite { font-style: italic; }
 @media (prefers-reduced-motion: reduce) { .acc__btn::after { transition: none; } }
 
 /* ==========================================================================
-   Long pages, laid out as displaay.net/help/licenses: the page's sections as
+   Long pages: the page's sections as
    a column of buttons in the left third, held in view while you read, the
    one you are reading filled; the text in the right two thirds.
    ========================================================================== */
@@ -706,8 +703,8 @@ em, i, cite { font-style: italic; }
   .chat__text, .chat__box textarea { font-size: 20px; line-height: 24px; }
 }
 
-/* Header buttons, after displaay.net's top row (user's reference, Nov 2026),
-   without the outlines: rounded rectangles of one size, 18px type, a light
+/* Header buttons (user's instruction, Nov 2026),
+   without outlines: rounded rectangles of one size, 18px type, a light
    fill; the page you are on solid black. The brand is the first of them. */
 .brand, .crumb, .nav a {
   display: inline-flex; align-items: center;
@@ -730,9 +727,9 @@ em, i, cite { font-style: italic; }
 .title--lede { font-size: clamp(40px, 6vw, 104px); line-height: 1.02; }
 @media (max-width: 640px) { .title--lede { font-size: clamp(32px, 9.5vw, 40px); } }
 
-/* The plates, set as Displaay's Serrif tester (user's reference, Nov 2026):
+/* The plates (user's instruction, Nov 2026):
    the statements in Serrif on the blue of the title band, black type.
-   Only the trial's Light cut is here; the tester shows Regular. */
+   Only the trial's Light cut is here. */
 .plate { background: var(--sky); color: var(--band-ink); }  /* 15.7:1 */
 .plate p {
   font-family: var(--sans);
@@ -748,7 +745,7 @@ em, i, cite { font-style: italic; }
   background: var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Crect width='100%25' height='100%25' rx='18' ry='18' fill='none' stroke='black' stroke-width='2' stroke-dasharray='6 2'/%3E%3C/svg%3E") no-repeat border-box;
 }
 
-/* The opening, in the green of the reference (user's screenshot, Nov 2026):
+/* The opening in green (user's instruction, Nov 2026):
    pale lime type on deep green, 11.0:1 */
 :root { --forest: #1e361f; --lime-ink: #e3f1bd; }
 .title { background: var(--forest); color: var(--lime-ink); box-shadow: 0 0 0 100vmax var(--forest); }
@@ -759,8 +756,8 @@ em, i, cite { font-style: italic; }
 /* On the published site the chat is the scanner's own widget, mounted from its server */
 .chat__widget { margin-top: 28px; min-height: 320px; }
 
-/* The opening fills the screen (user's reference, Nov 2026: Displaay's
-   typeface opening, one screen tall with a small line at its foot). The
+/* The opening fills the screen (user's instruction, Nov 2026: one screen
+   tall with a small line at its foot). The
    title band takes the height left under the header (--head, measured) and
    above the contact line; the contact line is one row on the same green:
    its label, an email field, a request field and a Send request button. Cream field, black text 18.4:1;
@@ -862,8 +859,8 @@ em, i, cite { font-style: italic; }
   .request__brief > div { grid-template-columns: minmax(0, 1fr); }
 }
 
-/* Focus, after IBM Carbon (user's instruction, Nov 2026). Carbon's focus is
-   a 2px line in its focus blue #0f62fe, drawn on the control's own edge and
+/* Focus (user's instruction, Nov 2026). Focus is
+   a 2px line in the focus blue #0f62fe, drawn on the control's own edge and
    not outside it; on a filled button a 1px line of white sits inside the
    blue, so the ring shows whatever the button's fill; on a dark ground the
    line is white. Measured: blue on white 5.0:1, on the cream field 4.4:1,
@@ -897,10 +894,10 @@ button:focus-visible, .btn:focus-visible, .nav a:focus-visible, .brand:focus-vis
    :where() so every focus rule still wins. */
 :where(.btn, .crumb) { outline: 1px solid transparent; outline-offset: -1px; }
 
-/* The chat's starter questions, set as Displaay's Download / Test / Buy
-   blocks (user's reference, Nov 2026): three round blocks in one row, the
+/* The chat's starter questions (user's instruction, Nov 2026): three
+   round blocks in one row, the
    first black with white words, the second cyan, the third mint, the
-   words centred. Displaay's wide block is the last; here it is the first,
+   words centred. The wide block is the first,
    which holds the longest question. White on black 21:1; black on #b8fbff 18.6:1
    and on #beffbd 18.2:1. They stack on a phone. Hover underlines the
    words; a disabled block (while an answer is coming) keeps its look. */
@@ -928,7 +925,7 @@ button:focus-visible, .btn:focus-visible, .nav a:focus-visible, .brand:focus-vis
 
    The page is white on black. The colour bands turn to deep versions of
    their own hue with white words, so a band is still a band: sky #2e3350
-   (white 12.3:1; a slate blue from the user's reference, 23 Nov 2026,
+   (white 12.3:1; a slate blue, 23 Nov 2026,
    replacing #0c2f42), lime band #1f2a0c (16.6:1), the green Accessibility
    page #0f2b17 (16.1:1), cards and chips #262626 (15.3:1). Links are #9db8ff
    (10.4:1 on black, 6.3:1 on the sky band, 8.0:1 or better on the others). The opening's green
@@ -1008,7 +1005,7 @@ body > header::after {
 /* No round corners on the chat's starter blocks either (user's instruction, Nov 2026). */
 .chat__prompt { border-radius: 0; }
 
-/* "What we offer", opened, set as a licence guide (user's reference, Nov
+/* "What we offer", opened (user's instruction, Nov
    2026): a rule across, then two columns. On the left the row's one-line
    promise in a red accent at 28px; on the right the points as a bulleted
    list, each term followed by what it means. Red #b3260b on the lime band
@@ -1075,8 +1072,8 @@ body > header::after {
 }
 .title :is(em, .title__sub) { font-family: var(--sans); }
 
-/* THE FOOTER AS LABELLED COLUMNS (user's reference, 22 Nov 2026, "design this
-   like this"): no rule on top; Pages at the left, Contact and the studio's
+/* THE FOOTER AS LABELLED COLUMNS (user's instruction, 22 Nov 2026):
+   no rule on top; Pages at the left, Contact and the studio's
    sentence on the right half, each a label over its lines at one size, 18px
    on 24px, the label a line above the rest. The page links are plain and
    underline on hover; the address keeps its underline, since it sits in a
@@ -1164,7 +1161,7 @@ body > header::after {
 :root[data-theme="dark"] .brand__petal-c { fill: #beffbd; }
 :root[data-theme="dark"] .brand__petal-d { fill: #f8ff58; }
 
-/* THE NOTICE AND STAY IN TOUCH BANDS (user's reference, 23 Nov 2026, "add
+/* THE NOTICE AND STAY IN TOUCH BANDS (user's instruction, 23 Nov 2026, "add
    these elements"): at the head of the footer on every page, after the
    What we offer band. The notice is one line on a grey band, #000 on
    #e6e6e6 in both themes (16.1:1). Stay in touch is the sky band (black
@@ -1391,7 +1388,7 @@ body > header { padding-block: 20px 19px; }
 @media (max-width: 640px) { .slogan__link { padding: 22px 20px 24px; } .slogan__label { font-size: 15px; line-height: 20px; } }
 
 /* THE QUESTION CARDS AS THE SERVICES CARDS (user's instruction, 23 Nov 2026,
-   "design these like this but no eyebrow"): the chat's three opening
+   "no eyebrow"): the chat's three opening
    questions take the Services cards' look without their small label. Three
    equal cards, 300px tall, 20px corners, in the plates' first three colours
    (sky, mint, pink; black words in light, deep hues with white words in
@@ -1431,9 +1428,8 @@ body > header { padding-block: 20px 19px; }
 }
 @media (forced-colors: active) { .chat .chat__prompts .chat__prompt { border: 1px solid CanvasText; } }
 
-/* THE OFFERS' TERMS AS CENTRED TITLES OVER THEIR SENTENCE (user's reference,
-   25 Nov 2026, "design this like this", a product title over its
-   description). In every opened What we offer row, each term is a title in
+/* THE OFFERS' TERMS AS CENTRED TITLES OVER THEIR SENTENCE (user's instruction,
+   25 Nov 2026). In every opened What we offer row, each term is a title in
    capitals centred over the column at 36px, set solid; what it means runs
    under it at the column's 20px, left, at 1.15, one 24px step down. Terms
    stand 48px apart, so each pair reads as one piece. On a phone the title is
@@ -1462,8 +1458,8 @@ body > header { padding-block: 20px 19px; }
   .chat .bubble + .chat__prompts { margin-top: 44px; }
 }
 
-/* THE LOGO ROW AT THE FOOT (user's reference, 23 Nov 2026, "add this kind
-   of thing in footer but use the logo from barrier free"): under the 1px
+/* THE LOGO ROW AT THE FOOT (user's instruction, 23 Nov 2026,
+   "use the logo from barrier free"): under the 1px
    rule, the logo at the left and two marks at the right, all 48px. The
    marks are the logo's four petals as one ink shape (logo.svg as a mask),
    upright and turned 45deg; they are drawn by the row's own pseudo-elements,

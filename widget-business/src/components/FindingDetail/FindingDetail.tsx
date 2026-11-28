@@ -3,14 +3,13 @@ import { t } from "../../lib/strings";
 import { Icon } from "../Icon";
 
 /**
- * FindingDetail, ported from components/scan/FindingDetail.jsx.
+ * FindingDetail.
  *
- * The prompt.md is explicit about where this belongs: "Plain-language finding
- * detail, for a DataTable row's `expand` content or a finding page." So this is
+ * Plain-language finding
+ * detail, for a DataTable row's `expand` content or a finding page. So this is
  * the row-expansion shape, not a standalone card.
  *
- * Two shapes, and which one you get is decided by the props, exactly as the
- * source decides it — pass any of eyebrow/badge/meta/actionLabel and you get
+ * Two shapes, and which one you get is decided by the props — pass any of eyebrow/badge/meta/actionLabel and you get
  * the band: a wrapping metadata header with the action pill at the right, and
  * "what to do" set as display type beneath it. Pass none of them and you get
  * the plain stack: labelled answers at title size.
@@ -26,14 +25,14 @@ export interface FindingDetailProps {
   /** Criterion number, e.g. "WCAG 3.2.5". Presence switches on the band. */
   eyebrow?: string;
   /**
-   * Severity marker. ReactNode rather than the source's string, deliberately.
+   * Severity marker. ReactNode rather than a string, deliberately.
    *
-   * The source hardcodes --accent-red-fill behind whatever string it is given,
+   * A string gets --accent-red-fill behind it whatever it says,
    * which paints a "Moderate" finding the same red as a critical one. This app
    * already has SeverityTag carrying the real ramp (critical/serious/moderate/
    * minor/pass), so the call site passes that and the severity stays truthful.
-   * A plain string still works and takes the accent pill, which is the source's
-   * behaviour for the one-severity case.
+   * A plain string still works and takes the accent pill, for
+   * the one-severity case.
    */
   badge?: ReactNode;
   /** Right-hand context, e.g. "1 place · homepage". */
@@ -111,7 +110,7 @@ export function FindingDetail({
           {(eyebrow || badge) && (
             <div className="a11y-fd-ident">
               {eyebrow && <span className="a11y-fd-eyebrow">{eyebrow}</span>}
-              {/* A bare string takes the accent pill, as in the source. A node
+              {/* A bare string takes the accent pill. A node
                   is rendered as given, which is how SeverityTag gets in. */}
               {typeof badge === "string" ? (
                 <span className="a11y-fd-badge">{badge}</span>
@@ -148,7 +147,7 @@ export function FindingDetail({
             </button>
           </div>
           <div className="a11y-fd-affected-value">{affected}</div>
-          {/* The source's copy button reports nothing at all. For a product
+          {/* A copy button that reports nothing is a fault. For a product
               whose whole argument is that it practises what it checks, a
               control that changes its own label and says nothing to a screen
               reader is not good enough. */}

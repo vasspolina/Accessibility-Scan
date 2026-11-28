@@ -47,9 +47,9 @@ export interface MountOptions {
 // the first name in every mono stack in global.css, with the system mono
 // behind it. Same free-for-personal-use licence as the Telegraf files.
 // EB Garamond (SIL OFL, latin subset from @fontsource/eb-garamond 5, the
-// licence beside the files) sets the centred callouts after the user's
-// poster reference of 25 Nov 2026: one roman and one italic, each declared
-// for every weight so the widget's 200 draws them without synthesis.
+// licence beside the files) set the centred callouts (25 Nov 2026): one
+// roman and one italic, each declared for every weight so the widget's 200
+// draws them without synthesis.
 function injectFonts(apiBase: string) {
   const id = "a11y-widget-fonts";
   if (document.getElementById(id)) return;
@@ -64,7 +64,7 @@ function injectFonts(apiBase: string) {
   font-style: normal;
   font-display: swap;
 }`;
-  // The Gemini-style demo (`vite build --mode gemini`) is set in PP Telegraf
+  // The chat-frame demo (`vite build --mode gemini`) is set in PP Telegraf
   // (user's instruction, 26 Nov 2026, "use pp telegraph font"): Regular for
   // 400 and Medium for 500 up, from the files beside Jokker. A build-time
   // constant, so the product bundle declares Jokker only.

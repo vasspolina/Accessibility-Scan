@@ -1,10 +1,10 @@
 import { t } from "../../lib/strings";
 
 /**
- * The score, ported from components/scan/ScoreDial.jsx.
+ * The score.
  *
- * Everything here is arranged around one idea, and it is the same idea both
- * the previous version and the source already had: the dial is a picture of
+ * Everything here is arranged around one idea, and it is the same idea
+ * the previous version already had: the dial is a picture of
  * a number, so it is announced once, as a sentence, and every part of the
  * drawing is hidden.
  *
@@ -18,8 +18,8 @@ import { t } from "../../lib/strings";
  * thing, and colour cannot say it alone — this report files that against
  * other sites — so the word stays as the second channel.
  *
- * The thresholds are 90 and 70, unchanged from both the previous version and
- * the source. They are duplicated in the report's own copy elsewhere, which
+ * The thresholds are 90 and 70, unchanged from the previous version.
+ * They are duplicated in the report's own copy elsewhere, which
  * is worth knowing and not worth unifying here: moving them would change
  * what the widget says, and this change is meant to move the drawing without
  * moving the meaning.
@@ -28,9 +28,9 @@ import { t } from "../../lib/strings";
 
 type Band = "good" | "needs-work" | "failing";
 
-/** The source's bands, in its own order — first match wins.
+/** The bands, in order — first match wins.
  *  `from` is where each band starts on the meter, which the fill needs: the
- *  design paints the current band solid from its own start to the score, not
+ *  meter paints the current band solid from its own start to the score, not
  *  from zero, so the track keeps showing all three bands underneath. */
 const BANDS: Array<{ min: number; band: Band; word: string; range: string }> = [
   { min: 90, band: "good", word: "Good", range: "is 90 and up." },
@@ -67,7 +67,7 @@ export function ScoreDial({
           announced once, as a sentence.
 
           The card, the "/100", the meter and the scale are back — they were
-          cut against an earlier reference that set the score as a label, a
+          cut in an earlier pass that set the score as a label, a
           number and the word alone. They had also been rendering as
           run-together text ("Accessibility scoreScored out of 100") because
           their children had no rule to separate them, which was a reason to

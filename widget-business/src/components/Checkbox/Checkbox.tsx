@@ -1,11 +1,11 @@
 import type { CSSProperties, InputHTMLAttributes, ReactNode } from "react";
 
 /**
- * Checkbox, ported from components/forms/Checkbox.jsx.
- * Annotation: "Checkbox for many, radio for one. The label is part of the target."
+ * Checkbox.
+ * Checkbox for many, radio for one. The label is part of the target.
  *
- * The source puts the <input> and a sibling <label htmlFor> side by side rather
- * than wrapping. Kept, because it is what lets the control keep its native
+ * The <input> and a sibling <label htmlFor> sit side by side rather
+ * than wrapping, because it is what lets the control keep its native
  * 24px hit area while the label keeps its own — a wrapping label would make the
  * gap between them clickable too, which is fine for a card and wrong for a row.
  *

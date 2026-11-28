@@ -1,27 +1,25 @@
 import type { CSSProperties, ReactNode } from "react";
 
 /**
- * FactCard, ported from components/display/FactCard.jsx.
+ * FactCard.
  *
- * A label, one display-size number, and an optional note. This is the first
- * component in the port that the app does not already have — nothing is
+ * A label, one display-size number, and an optional note. Nothing is
  * being replaced, so nothing breaks by adding it, and no call site changes
  * until somebody deliberately adopts it.
  *
- * A <section>, as the source has it, and as Card is. No accessible name, so
+ * A <section>, as Card is. No accessible name, so
  * it adds nothing to the landmark list and needs no label.
  *
- * `value` is deliberately not typed as a number. The source allows any node,
- * and the report has facts that are not integers — "63 of 210", "4.5:1",
- * "none". Narrowing it here would make the component less useful than the
- * one it was ported from.
+ * `value` is deliberately not typed as a number. Any node is allowed:
+ * the report has facts that are not integers — "63 of 210", "4.5:1",
+ * "none".
  *
  */
 
 /**
- * Three tones. The annotation is explicit that accent is rationed: "at most
- * one accent card per row", and "a row of six accent cards competing for
- * attention" is named as the anti-pattern. That is a composition rule, so it
+ * Three tones. Accent is rationed: at most
+ * one accent card per row; a row of six accent cards competing for
+ * attention is the anti-pattern. That is a composition rule, so it
  * cannot be enforced by a component that only ever sees itself — it belongs
  * in the rules file and in review.
  */

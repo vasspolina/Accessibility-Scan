@@ -323,7 +323,7 @@ function fieldLabel(purpose: string): string {
  */
 
 /** How wide a card of the expanded finding runs on the mosaic (user's
- *  reference, 18 Nov 2026: tiles of different widths on one grid). Measured on the words, so a one-line
+ *  instruction, 18 Nov 2026: tiles of different widths on one grid). Measured on the words, so a one-line
  *  answer is a narrow tile set large and a paragraph takes the width it
  *  needs. s spans two of six columns, m three, l four. */
 export function tileSize(text: string | null | undefined): "s" | "m" | "l" {
@@ -668,7 +668,7 @@ export function FindingDetails({
             ))}
         </p>
       )}
-      {/* Two real column boxes, the kit's own composition. The children
+      {/* Two real column boxes. The children
           used to sit flat in the grid with grid-column rules assigning
           each to a side — which row-locked them: a grid row is as tall as
           its tallest cell across BOTH columns, so a 65px hint beside a
@@ -976,11 +976,11 @@ export function FindingDetails({
 
 /* The Instances cell. The count used to be the bare string "3 ×" in a
    table cell, which put a number and a floating multiplication sign in a
-   column with nothing to hold them — the design gives them a bordered
+   column with nothing to hold them — they get a bordered
    tile instead, and the border is doing real work here: the fill is a
    hair off white (1.02:1 against the row) and would otherwise be
    invisible.
-   Number and mark are two flex children because the design's 10px gap is
+   Number and mark are two flex children because the 10px gap is
    between them, not inside a string. The mark is aria-hidden and carries
    no replacement text: the column header already says "Instances", so a
    screen reader hears "Instances, 3" and adding "3 places" here would
@@ -992,11 +992,11 @@ export function CountPill({ count }: { count: number }) {
 }
 
 // One DataTable row for a group, set as a list of questions (user's
-// reference, 24 Nov 2026, a type foundry's FAQ: a solid triangle, the
+// instruction, 24 Nov 2026: a solid triangle, the
 // question on one line, its category at the far end in its own colour, and
 // the answer opening under it in a round bubble). Two cells: the issue, and
 // the severity as a coloured word at the end of the row; the list is sorted
-// by severity, so the words run in groups like the reference's categories.
+// by severity, so the words run in groups.
 // The WCAG criterion, level, fix kind and count that had columns of their
 // own are now the first line of the opened finding (FindingDetails' meta
 // strip), set "Key: value" in a mono face. asNotes keeps its count column
@@ -1087,7 +1087,7 @@ export function FindingGroup({
        everything open on its own.
 
        asNotes marks the advisory rows so the stylesheet can give them the
-       kit's DesignNotes anatomy — flat dividers rather than cards, and the
+       DesignNotes anatomy — flat dividers rather than cards, and the
        evidence given real room, because for a remark like "text too tight"
        the screenshot IS the argument and a thumbnail too small to read it
        in proves nothing. */
@@ -1128,8 +1128,8 @@ export function FindingGroup({
         {/* A second line, folded under the title rather than trailing beside
             it on the first: severity and the title are what the row is
             about, count/method/fix/level are what to do about it, and the
-            reference keeps those two questions visually separate instead
-            of running them all together on one crowded line. */}
+            two questions stay visually separate instead
+            of running all together on one crowded line. */}
         <span className="a11y-finding-meta">
           {count > 1 && <span className="a11y-count-badge">{count}×</span>}
           {keyboardCheck && (
@@ -1419,7 +1419,7 @@ function CodeFixSuggestion({ fix }: { fix: NonNullable<AccessibilityFinding["sug
 
   return (
     <div className="a11y-code-fix">
-      {/* Set after a shop's list (user's reference, 25 Nov 2026): the
+      {/* Set as a list (user's instruction, 25 Nov 2026): the
           title, the warning under it as a red word, then each markup as a
           white card over its name, and Copy as one black pill. The name
           comes first in the markup for screen readers; CSS order puts the

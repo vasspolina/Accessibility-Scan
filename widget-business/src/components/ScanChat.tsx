@@ -132,7 +132,7 @@ export interface ChatApi {
 /** Past this, the next message starts a fresh API conversation seeded with
  *  the latest report, rather than running into the server's caps (60
  *  messages, 400k characters) mid-turn. The thread on screen is kept. */
-// The Gemini-style demo build (`vite build --mode gemini`, demo-gemini.html)
+// The chat-frame demo build (`vite build --mode gemini`, demo-gemini.html)
 // takes a placeholder in the box and tooltip words on the rail's icon
 // buttons. A build-time constant, so the product bundle is unchanged.
 const GEMINI = import.meta.env.MODE === "gemini";
@@ -673,7 +673,7 @@ export function ScanChat({
   const [picks, setPicks] = useState(() => pickOpeningPrompts());
   const [busy, setBusy] = useState(false);
   const [announcement, setAnnouncement] = useState("");
-  // The Gemini view's Copy under a finished reply: which reply was copied.
+  // The demo view's Copy under a finished reply: which reply was copied.
   const [copiedId, setCopiedId] = useState<number | null>(null);
   /** Where the reader was before the conversation took them to a block:
    *  the scroll position and what had focus. While it is set, the dock
@@ -1480,8 +1480,7 @@ export function ScanChat({
 
   if (GEMINI) {
     // The demo's own view (demo-gemini.html), built only in the gemini mode.
-    // Laid out after the user's reference of 26 Nov 2026 (a type foundry's
-    // shop page): small label pills stacked in the left margin, a row of
+    // Laid out at the user's instruction of 26 Nov 2026: small label pills stacked in the left margin, a row of
     // fixed-width tabs over a 1px rule, then two columns, each a 13px title
     // over a rule and rows between 1px rules. One face, three sizes (16, 13,
     // 11px). The chat's behaviour stays: Send only once there is text,
@@ -1564,8 +1563,8 @@ export function ScanChat({
               <Icon name="add" size={20} />
             </button>
             <VoiceControl iconOnly />
-            {/* Send as in a Gemini chat box (user's "design as chat like
-                gemini chat", 26 Nov 2026): a round arrow at the right that
+            {/* Send as in a chat box (user's instruction,
+                26 Nov 2026): a round arrow at the right that
                 appears once there is something to send; Enter still submits
                 the form without it. */}
             {canSend && (
@@ -1893,8 +1892,8 @@ export function ScanChat({
           {t("Conversations")}
         </button>
         <div className="a11y-chats-body" id="a11y-chats-body">
-        {/* No icons (user's instruction, 23 Nov 2026, "delete icons, make
-            buttons look like this"): the words alone, in a button sized to
+        {/* No icons (user's instruction, 23 Nov 2026, "delete icons"):
+            the words alone, in a button sized to
             them, New chat and Report a barrier side by side. */}
         <button type="button" className="a11y-chats-new" onClick={newChat} disabled={switchLocked}>
           {t("New chat")}
@@ -1926,8 +1925,7 @@ export function ScanChat({
                   >
                     <span className="a11y-chats-title">{c.title}</span>
                     {/* The open conversation's small pill (user's
-                        reference, 25 Nov 2026, a menu's "New" pill beside
-                        its line). aria-current already says it. */}
+                        instruction, 25 Nov 2026). aria-current already says it. */}
                     {c.id === chatId && <span className="a11y-chats-open" aria-hidden="true">{t("Open")}</span>}
                   </button>
                   <button
@@ -1972,7 +1970,7 @@ export function ScanChat({
           </div>
         </div>
       </div>
-      {/* The opening questions as cards (user's reference, 18 Nov 2026):
+      {/* The opening questions as cards (user's instruction, 18 Nov 2026):
           a tall pale card per group, the group as its name top-left with
           the question under it, and at the foot the WCAG criterion the
           question checks in a marker highlight (it replaced a big question

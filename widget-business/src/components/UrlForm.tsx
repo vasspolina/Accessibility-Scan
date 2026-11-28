@@ -2,12 +2,10 @@ import { t, tf } from "../lib/strings";
 import { LanguageSelect } from "./LanguageSelect";
 import type { Lang } from "../lib/i18n";
 import { useId, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
-// The ported Select, not FormControls' — same API, so this is an import
+// Select2's Select, not FormControls' — same API, so this is an import
 // change and nothing else. FormControls' Select still serves its other
 // callers until they move across too.
 import { Select } from "./Select2";
-// The ported Radio, not FormControls' — it carries the per-option description
-// the design puts on each choice instead of one hint under both.
 import { Input } from "./Input";
 import { Icon } from "./Icon";
 import { LoginFields } from "./LoginFields";
@@ -148,8 +146,8 @@ export function UrlForm({
     onSubmit(withProtocol, includeAiReview, mode, maxPages, auth);
   }
 
-  /* The scan form as filled rows (user's reference, 18 Nov 2026,
-     "design this like this"): the name large; a serif heading
+  /* The scan form as filled rows (user's instruction, 18 Nov 2026):
+     the name large; a serif heading
      over each group; every field a filled box with its label inside at the
      top; each choice a filled row with its radio showing; the action one
      wide block with its words set large; the note under it. The address

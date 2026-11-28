@@ -1,17 +1,17 @@
 import type { CSSProperties, ReactNode } from "react";
 
 /**
- * OptionCard, ported from components/forms/OptionCard.jsx.
+ * OptionCard.
  *
  * A radio that fills a card. The whole card is the <label>, so the target is
- * the card and not the 20px dot in its corner — the Forms card's "the label is
+ * the card and not the 20px dot in its corner — "the label is
  * part of the target", taken as far as it goes.
  *
- * The selected card inverts to black. That is the source's behaviour and it is
+ * The selected card inverts to black. That is
  * a real improvement on a dot alone: selection survives greyscale, and it reads
  * from across the room.
  *
- * Annotation: "Two or three per row, never more than four."
+ * Two or three per row, never more than four.
  *
  */
 

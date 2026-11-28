@@ -1,11 +1,11 @@
 import type { CSSProperties, ReactNode } from "react";
 
 /**
- * Textarea, ported from components/forms/Textarea.jsx.
+ * Textarea.
  *
- * The one boxed field in a system of underlined ones, and deliberately so: a
+ * The one boxed field among underlined ones, and deliberately so: a
  * multi-line answer needs its extent shown before it is typed into, which a
- * single rule cannot do. The Forms card draws it the same way.
+ * single rule cannot do.
  *
  */
 

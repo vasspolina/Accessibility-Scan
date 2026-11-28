@@ -2,10 +2,10 @@ import { useEffect, useId, useRef } from "react";
 import type { KeyboardEvent, ReactNode } from "react";
 
 /**
- * The modal, brought across from the kit. The last component that owns
- * behaviour the platform does not supply, and the hardest to verify.
+ * The modal. It owns behaviour the platform does not supply, and is the
+ * hardest component to verify.
  *
- * The trap is copied line for line, including the part that is easy to get
+ * The trap includes the part that is easy to get
  * wrong: `document.activeElement` stops at the shadow host once focus is
  * inside an open shadow root, so the check asks the node's own root what is
  * focused within it. Get that wrong and the trap silently never fires here,
@@ -19,8 +19,8 @@ import type { KeyboardEvent, ReactNode } from "react";
  * A trap that leaks puts a keyboard reader behind a modal they cannot see
  * and cannot leave, which is worse than having no modal at all.
  *
- * One deliberate difference: the title's id is generated per instance
- * rather than the kit's hardcoded "dlg-title". Two dialogs on one page
+ * The title's id is generated per instance
+ * rather than a hardcoded "dlg-title". Two dialogs on one page
  * would have collided, and aria-labelledby resolving to the wrong title is
  * a bug that only appears the day somebody adds a second modal.
  */

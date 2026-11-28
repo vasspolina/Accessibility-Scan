@@ -64,8 +64,8 @@ export function ReportActions({
         {t("Report actions")}
       </h2>
 
-      {/* One rounded panel (user's reference, 24 Nov 2026, "design this
-          like this, delete descriptions"): the title centred over the
+      {/* One rounded panel (user's instruction, 24 Nov 2026,
+          "delete descriptions"): the title centred over the
           address field, the send a black pill under it, Download in PDF a
           small pill at the foot. The notes that sat under the two controls
           are gone; the status line stays for the outcome of a send. */}
@@ -129,8 +129,7 @@ export function ReportActions({
       </div>
 
       {/* The run stats, "Do this first" and the jump to the findings all
-          moved into the scan-summary panel, which is where the design puts
-          them. Saying them twice on one screen is the duplication this
+          moved into the scan-summary panel. Saying them twice on one screen is the duplication this
           report keeps having to undo. */}
     </section>
   );

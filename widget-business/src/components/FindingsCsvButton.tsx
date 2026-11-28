@@ -9,8 +9,8 @@ import { Icon } from "./Icon";
  *
  * It sits at the head of the findings, beside their title, in both readings
  * (user's choice, 22 Nov 2026): with the rows it saves, and not in the
- * Report actions block, which sends or prints the whole report and is set to
- * the user's reference. A site audit has no button: it returns counts for
+ * Report actions block, which sends or prints the whole report and keeps
+ * its own layout. A site audit has no button: it returns counts for
  * each page and no findings to write.
  *
  * The file is built in the browser from the report already here. Nothing is

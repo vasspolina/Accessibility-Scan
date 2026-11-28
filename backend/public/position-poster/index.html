@@ -94,7 +94,7 @@ details summary{cursor:pointer;font-size:12px;color:var(--muted)}
 <div class="app">
 <header>
   <h1>Position Poster</h1>
-  <p>Type a chess game and some text. Each character becomes a piece in the final position; the squares behind it show how often each square was occupied during the game. Three looks: Classic sets the letters on a tinted board; Cut sets heavy capitals over colour bands and slices them, after the Museum für Gestaltung’s exhibition posters; Shade sets the title in ghost capitals on dark stock over a quiet chess board, blurs the game into a queen’s shadow, after a live-recording cover.</p>
+  <p>Type a chess game and some text. Each character becomes a piece in the final position; the squares behind it show how often each square was occupied during the game. Three looks: Classic sets the letters on a tinted board; Cut sets heavy capitals over colour bands and slices them; Shade sets the title in ghost capitals on dark stock over a quiet chess board, and blurs the game into a queen’s shadow.</p>
 </header>
 
 <form class="panel" id="controls" autocomplete="off">
@@ -413,8 +413,7 @@ RSVP for the address</textarea>
 
 
   // ---------- the Cut look ----------
-  // After the user's reference, a Museum für Gestaltung Zürich exhibition poster
-  // (Design Studio: Prozesse, 2017): a yellow and black corner over pink, a red
+  // A yellow and black corner over pink, a red
   // band, a blue band, and heavy white capitals sliced apart with black slivers
   // showing in the cuts. Here the slices come from the game: a square that was
   // occupied in many positions cuts its letter more.
@@ -599,7 +598,7 @@ RSVP for the address</textarea>
   }
 
   // ---------- the Shade look ----------
-  // After the user's reference (9 Nov 2026), the cover of a live recording:
+  // User's instruction, 9 Nov 2026:
   // heavy condensed capitals printed in a white that barely lifts off grey
   // stock, a dark spot blurred over the middle of the sheet so the lines of
   // type sink under it, grain over everything, and one line of small serif
@@ -609,30 +608,30 @@ RSVP for the address</textarea>
   // centre and a kingside attack pulls the shadow to one side. The last move's
   // square is the core, tinted with the accent colour when the last move is
   // marked. The title is set in lines across the full width, not one letter
-  // per piece: the first and last lines bleed a little past the edges, as the
-  // reference's do, and the lines between are set smaller and centred. The
+  // per piece: the first and last lines bleed a little past the edges,
+  // and the lines between are set smaller and centred. The
   // info items run as one serif line along the bottom, parted by middle dots.
   // Traffic is used rather than occupancy because occupancy is heaviest on
   // the pawns and rooks that never moved, at the edges of the board, and the
   // shadow would sit on the margins; traffic gathers where the game was.
   const TONES = {
-    // The user's colour reference of 10 Nov 2026 (Bart de Baets, Palace Ruin):
+    // The user's colours of 10 Nov 2026:
     // white paper, black ink, one vermilion, and grey only as black thinned
     // out, which the Black slider gives at 50.
     // The grey squares are the user's blue swatch (10 Nov 2026), about
     // #A6B0DE: board is set so that at Black 50 (a 50% white veil) the square
-    // lands on it. The queen is sand, about #C4936A, picked by eye from the
-    // user's photo of an arena floor (11 Nov 2026, "make chess figure this
-    // color"); she was vermilion before. The flipped type is clipped square by square and takes the
+    // lands on it. The queen is sand, about #C4936A
+    // (user's instruction, 11 Nov 2026);
+    // she was vermilion before. The flipped type is clipped square by square and takes the
     // other square's colour: the blue on the white squares, white on the blue
     // ones, so the letters are the board inverted. It is drawn above the veil
     // and adds no colour of its own (user's instructions, 10 Nov 2026, "don't
     // add any grey", then "don't add any black"). A difference blend over blue
     // would turn yellow.
-    // "Liquid night" (user's reference and instruction, 11 Nov 2026, "keep
+    // "Liquid night" (user's instruction, 11 Nov 2026, "keep
     // this option and make the rest"): a near-black sheet with glowing swirls,
-    // teal outside and periwinkle at the core, and the type in the
-    // reference's lavender. No board, no veil.
+    // teal outside and periwinkle at the core, and the type in
+    // lavender. No board, no veil.
     // Since 11 Nov 2026 ("change green to blue and make chess board over the
     // background, in the background colour"): the swirls glow on a slate paper
     // and the board's night squares lie over them, so the glow shows through
@@ -640,8 +639,8 @@ RSVP for the address</textarea>
     // periwinkle over the night squares and near-white over the others.
     liquid:    { ground:'#161c30', night:'#07090c', ghost:'#b8c2f2', ghostA:1, shade:'#b8c2f2', foot:'#b8c2f2', grainA:0, square:'#000000', squareA:0, line:'#000000', liquid:true, noVeil:true, board:'#07090c', boardA:0.6, flipLight:'#f1f2ff', flipDark:'#9fb1f2', footLight:'#f1f2ff', overVeil:true },
     palace:    { ground:'#F3F1EC', ghost:'#FFFFFF', ghostA:0.5,  shade:'#141414', foot:'#141414', grainA:0.3,  square:'#000000', squareA:0.09, line:'#000000', red:'#C4936A', board:'#4D61BD', flipLight:'#A6B0DE', flipDark:'#FFFFFF', footLight:'#A6B0DE', overVeil:true },
-    // The user's second colour reference of 10 Nov 2026 (a Murmuring
-    // Collection poster): pale cornflower blue, red, black and white. The
+    // The user's second set of colours of 10 Nov 2026:
+    // pale cornflower blue, red, black and white. The
     // Black slider pulls toward the blue here (veil), not toward white, so the
     // blue keeps its colour; the flipped type is drawn clipped square by square
     // (flipLight on the blue, flipDark on the dark squares) instead of with a
@@ -661,14 +660,14 @@ RSVP for the address</textarea>
     return { w: m.width/100, cap: (m.actualBoundingBoxAscent || 70)/100 };
   }
   // The info block is set in Instrument Serif, a condensed display serif with
-  // an italic, the nearest open-licensed face to the user's layout reference
-  // (user's instruction, 10 Nov 2026, "make same fonts as well"; it replaced
+  // an italic, open-licensed
+  // (user's instruction, 10 Nov 2026; it replaced
   // the EB Garamond set earlier that day). TIMES stays for the pinned size:
   // the size is measured on the first face, so it is the same px as before.
   const SERIF = "'Instrument Serif', 'Times New Roman', serif";
   const TIMES = "'Times New Roman', Times, 'Liberation Serif', serif";
 
-  const QUEEN_RED = '#E5432A';   // the vermilion of the user's colour reference (10 Nov 2026)
+  const QUEEN_RED = '#E5432A';   // the vermilion (user's colour, 10 Nov 2026)
   // The queen from the user's own SVG (11 Nov 2026, "add this chess instead of
   // current"): a five-point crown with balls, a waisted stem, a stepped base,
   // in a local box from x -300 to 300 and y -472 to 400, drawn as two blurred
@@ -704,7 +703,7 @@ RSVP for the address</textarea>
     let swirlsOut = '';
     if (t.liquid){
       // the swirls, in sheet fractions: a wave along the top, tongues at the
-      // left and right edges, a wave along the bottom, as in the reference;
+      // left and right edges, a wave along the bottom;
       // each a wide teal glow under a periwinkle core, warped by turbulence
       const P = (pts) => pts.replace(/(-?[\d.]+) (-?[\d.]+)/g, (_, x, y) => `${(+x*W).toFixed(1)} ${(+y*H).toFixed(1)}`);
       const swirls = [
@@ -741,7 +740,7 @@ RSVP for the address</textarea>
     // instruction, 10 Nov 2026): white drawn with a difference blend, so over
     // a dark square it stays white and over a light square it turns dark,
     // square by square. The footer flips the same way. On the other grounds the
-    // type stays the ghost of the reference.
+    // type stays the ghost.
     // the type changes colour square by square on the liquid night board too
     // (user's instruction, 11 Nov 2026, "keep font over chess effect"):
     // near-white over the slate squares, periwinkle over the night ones
@@ -774,11 +773,11 @@ RSVP for the address</textarea>
     const raw = s.title.trim().toUpperCase();
     const lines = (raw.indexOf('/') !== -1 ? raw.split('/') : raw.split(/\s+/)).map(x => x.trim()).filter(Boolean);
     const capRatio = measure('H', s.font, s.weight).cap;
-    const bleed = 1.04 * s.titleScale;                // 100 on the slider: the edge letters are just cut, as in the reference
+    const bleed = 1.04 * s.titleScale;                // 100 on the slider: the edge letters are just cut
     const maxSize = 0.2*H;                            // a two-character line is not a quarter of the sheet
     // 10% of the sheet lower and 20% larger than first set (user's
     // instruction, 10 Nov 2026), so the first line runs a little past the
-    // edges, as the reference's does.
+    // edges.
     // Then moved 15% of the sheet up (user's instruction, 11 Nov 2026), but no
     // higher than 1.5% below the top edge, so the overshoot of round capitals
     // (C, S) above the cap height is not cut.
@@ -805,7 +804,7 @@ RSVP for the address</textarea>
     });
     // On the liquid night stock each text block sits in a soft pool of the
     // night colour, so lavender words stay readable where a bright swirl runs
-    // behind them, as the reference keeps its words over darkness.
+    // behind them.
     if (t.liquid && !defs.some(d => d.indexOf('id="shLHalo"') !== -1))
       defs.push(`<filter id="shLHalo" x="-20%" y="-40%" width="140%" height="180%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="${(0.012*W).toFixed(1)}" result="d"/><feGaussianBlur in="d" stdDeviation="${(0.03*W).toFixed(1)}" result="b"/><feFlood flood-color="${esc(t.night || t.ground)}" flood-opacity="0.6"/><feComposite in2="b" operator="in" result="pool"/><feMerge><feMergeNode in="pool"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`);
     // The pools were taken out the same day (user's instruction, "blend both
@@ -822,8 +821,8 @@ RSVP for the address</textarea>
     // strong board. The queen stands clear of its top line.
     let infoTop = H, infoLeft = W;
     const infoBoxes = [];   // each info line's box, for keeping the queen clear of it
-    // The info block copies the layout of the user's reference (10 Nov 2026,
-    // "just copy that layout and put it in the right corner"): set flush right
+    // The info block's layout (user's instruction, 10 Nov 2026,
+    // "put it in the right corner"): set flush right
     // in the bottom right corner, in this order and at these sizes, as
     // multiples of the footer size:
     //   the date group first: the date underlined (1.1), a small italic "at"
@@ -908,7 +907,7 @@ RSVP for the address</textarea>
         const fAttrs = `x="${(W - m).toFixed(1)}" y="${y.toFixed(1)}" text-anchor="end" font-family="${esc(SERIF)}" font-size="${(size*fit).toFixed(1)}"`;
         out = (flip ? flipText(fAttrs, body, t.footLight, `Info_line_${i+1}`) : L(`Info_line_${i+1}`, `<text ${fAttrs} fill="${esc(t.foot)}">${body}</text>`)) + out;
         infoTop = y - big*0.78;
-        // set tight, as the reference is: the next baseline up clears this
+        // set tight: the next baseline up clears this
         // line's capitals and the line above's descenders, with a hair between
         const above = i > 0 ? Math.max(...lines[i-1].map(r => r.k)) * size * fitOf(lines[i-1]) : 0;
         y -= big*0.70 + above*0.30 + Math.max(big, above)*0.04;
@@ -916,7 +915,7 @@ RSVP for the address</textarea>
       textTo.push(pool(L('Info', out)));
     }
 
-    // the shadow. One soft spot, as in the reference, placed and sized by the
+    // the shadow. One soft spot, placed and sized by the
     // game: its centre is the traffic-weighted centre of the board's squares
     // and its radius grows with how widely the traffic spread (one standard
     // deviation, in squares). Inside it, the traffic itself is blurred in at
@@ -925,7 +924,7 @@ RSVP for the address</textarea>
     const traffic = a.traffic || {};
     const keys = Object.keys(traffic);
     const maxT = Math.max(1, ...keys.map(k => traffic[k]));
-    const spread = 0.5 + 1.25*s.density;              // the slider: 40 is the reference
+    const spread = 0.5 + 1.25*s.density;              // the slider: 40 gives a spread of 1
     const at = sq => ({ cx: FILES.indexOf(sq[0])*cell + cell/2, cy: y0 + (8 - +sq[1])*cell + cell/2 });
     let tw = 0, mx = 0, my = 0;
     keys.forEach(sq => { const c = at(sq), w = traffic[sq]; tw += w; mx += w*c.cx; my += w*c.cy; });
@@ -934,7 +933,7 @@ RSVP for the address</textarea>
     keys.forEach(sq => { const c = at(sq), w = traffic[sq]; vx += w*(c.cx-centre.cx)**2; vy += w*(c.cy-centre.cy)**2; });
     const sx = tw ? Math.sqrt(vx/tw)/cell : 2, sy = tw ? Math.sqrt(vy/tw)/cell : 2;   // in squares; about 2 for a whole game
     let rx = cell*(1.0 + 1.2*sx)*spread, ry = cell*(1.0 + 1.2*sy)*spread;
-    ry = Math.max(rx*0.85, Math.min(rx*1.3, ry));     // a little taller than wide at most, like the reference
+    ry = Math.max(rx*0.85, Math.min(rx*1.3, ry));     // a little taller than wide at most
     // The red queen is drawn over the Black and Contrast veils, so her colour
     // keeps its strength; the shadow queen (the default, user's instruction,
     // 10 Nov 2026, "keep like this shadow for figure") sinks into the board
@@ -948,13 +947,13 @@ RSVP for the address</textarea>
       // first queen (user's instruction, 10 Nov 2026): the core blurred to
       // about 2% of her height, so the edge goes and the crown, the collar
       // and the base still read, and a wider blur of the same shape as the
-      // halo that fades her into the stock, as the reference's spot fades.
+      // halo that fades her into the stock.
       // Core 75% and halo 45% opaque (from 96% and 60%; user's instruction,
       // 10 Nov 2026, "a bit less dense"), so the board shows through her. Her height follows the
       // game's spread as the round spot's radius does, capped at 78% of the
       // sheet; her width keeps the photo's proportion.
       // her base stands a little above the info, so the details stay readable;
-      // her crown may run up into the title, as the reference's spot does
+      // her crown may run up into the title
       // She sits in the free space at the bottom left, below the title and to
       // the left of the info block, so she crosses no text (user's
       // instruction, 11 Nov 2026, "put chess figure to the left and down so it
@@ -1000,7 +999,7 @@ RSVP for the address</textarea>
       // luminance: #cfe6ff to #e3e3e3, #4a8ff0 to #8f8f8f, the haze #4a2c48
       // to #363636.
       // On the liquid night stock the patterned queen would sink into the dark,
-      // so she is drawn as the reference's butterflies are: pale lavender, light
+      // so she is drawn pale lavender, light
       // at the centre, with a teal glow round her.
       const qc = t.liquid && s.queenCol === 'liquid' ? 'glow' : s.queenCol;
       const lit = qc === 'file' || qc === 'grey' || qc === 'liquid' || qc === 'glow';
@@ -1013,8 +1012,7 @@ RSVP for the address</textarea>
       const haze = lit
         ? `<g${ed ? ' id="Queen_haze"' : ''} filter="url(#shQHaze)" fill="${pal.haze}" transform="scale(1.09 1.05)">${shape}</g>`
         : `<g${ed ? ' id="Queen_haze"' : ''} filter="url(#shQHaze)" fill="${fill}" opacity="0.45" transform="scale(1.09 1.05)">${shape}</g>`;
-      // The liquid pattern of the user's reference (11 Nov 2026, "add this
-      // effect to chess", then "just use this pattern, no butterflies"): the
+      // The liquid pattern (user's instruction, 11 Nov 2026, "no butterflies"): the
       // figure filled with near-black and soft bands of periwinkle edged in
       // teal, warped by turbulence so they flow, clipped to her outline and
       // softened with her own blur. In her local units, so it scales with her.

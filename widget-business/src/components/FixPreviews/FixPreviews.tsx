@@ -2,8 +2,7 @@ import type { ReactNode } from "react";
 import { Icon } from "../Icon";
 
 /**
- * FixPreviews, ported from ui_kits/scan-app/FixPreviews.jsx. Tokens rewritten
- * per .claude/rules/kit-token-map.md.
+ * FixPreviews.
  *
  * ---- The before/after samples are illustrations, not content --------------
  *
@@ -11,8 +10,8 @@ import { Icon } from "../Icon";
  * contrast card, letterspaced capitals, a 26px target, alt="". That is the
  * point — the card shows you the failure next to the fix.
  *
- * The kit renders them as ordinary text, which has two consequences it does
- * not address. A screen reader reads "Aa Aa", "BEYOND BEYOND", "click here
+ * Rendered as ordinary text, they would have two consequences. A screen
+ * reader reads "Aa Aa", "BEYOND BEYOND", "click here
  * read the 2026 report" — the comparison is entirely visual, so aloud it is
  * just doubled noise. And an audit of this page reports real contrast failures
  * on text that is failing on purpose, which in THIS product is worse than
@@ -20,7 +19,7 @@ import { Icon } from "../Icon";
  *
  * So the samples are aria-hidden and each card carries a `summary` that says
  * in words what the picture shows. Same information, once, in a form that
- * works either way. The design's own VisionSimulator annotation makes the same
+ * works either way. The VisionSimulator makes the same
  * distinction — it demonstrates a failure to a stakeholder; the pass/fail
  * decision comes from measured contrast, not from the demonstration.
  *

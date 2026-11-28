@@ -1,20 +1,19 @@
-/* demo-material.css: the Material demo's one stylesheet. demo-material.js
+/* demo-material.css: this demo's one stylesheet. demo-material.js
    links it in the page head and inside the widget's shadow root, after
    removing the widget's own CSS. Nothing here adds content: it sets how the
-   widget's existing markup looks, in Google's Material Design 3.
+   widget's existing markup looks.
 
-   Why tokens and not Material Web's components: the widget renders its own
-   React markup inside a shadow root, so <md-filled-button> and the rest
-   cannot be swapped in without rebuilding the widget. Instead the M3 system
-   is applied to that markup: the baseline colour scheme (light and dark),
-   the type scale, the shape scale, elevation and state layers, under M3's
-   own token names (--md-sys-*). Roboto is served from ./fonts (SIL OFL),
-   because the service sends default-src 'self' and Google Fonts would be
+   Why tokens and not ready-made web components: the widget renders its own
+   React markup inside a shadow root, so custom button elements and the rest
+   cannot be swapped in without rebuilding the widget. Instead one token
+   system is applied to that markup: a colour scheme (light and dark),
+   a type scale, a shape scale, elevation and state layers, under the
+   token names --md-sys-*. Roboto is served from ./fonts (SIL OFL),
+   because the service sends default-src 'self' and a font host would be
    refused.
 
-   One departure from M3: nothing is set below 14px. The type scale's
-   label-medium, label-small and body-small (12, 11, 12px) are lifted to
-   14px, the floor this product holds every page to. */
+   Nothing is set below 14px. The type scale's label-medium, label-small
+   and body-small are 14px, the floor this product holds every page to. */
 
 @font-face {
   font-family: "Roboto";
@@ -29,7 +28,7 @@
   font-display: swap;
 }
 
-/* ── M3 tokens: the baseline scheme ───────────────────────────────────── */
+/* ── Tokens: the baseline scheme ───────────────────────────────────── */
 :root,
 :host,
 .a11y-widget-biz {
@@ -180,7 +179,7 @@ main > h1 {
   .a11y-widget-biz .a11y-undecided-table .a11y-undecided-folded { display: grid; }
 }
 
-/* Dialog: M3 basic dialog. */
+/* Dialog: a basic dialog. */
 .a11y-widget-biz .a11y-dialog-scrim {
   position: fixed; inset: 0; z-index: 50;
   display: grid; place-items: center;
@@ -198,7 +197,7 @@ main > h1 {
   box-shadow: var(--md-sys-elevation-3);
 }
 
-/* ── Type: the M3 type scale ──────────────────────────────────────────── */
+/* ── Type: the type scale ──────────────────────────────────────────── */
 .a11y-widget-biz {
   font-family: var(--md-ref-typeface-plain);
   /* body-large */
@@ -241,7 +240,7 @@ main > h1 {
 .a11y-widget-biz figure { margin: 0 0 12px; }
 .a11y-widget-biz figcaption { font-size: 14px; line-height: 20px; letter-spacing: 0.25px; color: var(--md-sys-color-on-surface-variant); }
 
-/* Focus: the M3 focus ring, 3px secondary, outside the control. */
+/* Focus: a 3px ring in secondary, outside the control. */
 .a11y-widget-biz :focus { outline: none; }
 .a11y-widget-biz :focus-visible {
   outline: 3px solid var(--md-sys-color-secondary);
@@ -456,7 +455,7 @@ main > h1 {
 }
 .a11y-widget-biz .a11y-chat-suggest { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 
-/* ── Text fields: M3 outlined ─────────────────────────────────────────── */
+/* ── Text fields: outlined ─────────────────────────────────────────── */
 .a11y-widget-biz :is(input[type="text"], input[type="url"], input[type="email"], input[type="password"], input[type="search"], input:not([type]), select, textarea) {
   width: 100%;
   max-width: 100%;
@@ -494,7 +493,7 @@ main > h1 {
 .a11y-widget-biz label { display: inline-block; margin-bottom: 4px; }
 .a11y-widget-biz fieldset { margin: 0 0 16px; padding: 0; border: 0; min-width: 0; }
 
-/* Radio and checkbox: the native controls in primary, at M3's 20px. */
+/* Radio and checkbox: the native controls in primary, at 20px. */
 .a11y-widget-biz :is(input[type="radio"], input[type="checkbox"]) {
   accent-color: var(--md-sys-color-primary);
   width: 20px; height: 20px;
@@ -502,7 +501,7 @@ main > h1 {
   flex: none;
 }
 
-/* Switch: M3 switch, 52 x 32. */
+/* Switch: 52 x 32. */
 .a11y-widget-biz .a11y-switch { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
 .a11y-widget-biz .a11y-switch-label { font-size: 16px; line-height: 24px; color: var(--md-sys-color-on-surface); }
 .a11y-widget-biz .a11y-switch-controls { display: inline-flex; align-items: center; gap: 12px; font-size: 14px; color: var(--md-sys-color-on-surface-variant); }
@@ -649,7 +648,7 @@ main > h1 {
 .a11y-widget-biz .a11y-shell-nav-meta,
 .a11y-widget-biz .a11y-chats-foot { padding: 16px; }
 
-/* The language menu: an M3 menu. */
+/* The language menu: a menu. */
 .a11y-widget-biz .a11y-lang-list {
   list-style: none;
   margin: 4px 0 0;
@@ -703,7 +702,7 @@ main > h1 {
   color: var(--md-sys-color-on-primary-container);
 }
 
-/* The opening questions: M3 filled cards. */
+/* The opening questions: filled cards. */
 .a11y-widget-biz .a11y-prompts { margin-top: auto; padding-block: 24px 12px; }
 .a11y-widget-biz .a11y-prompt-grid {
   display: grid;
@@ -822,7 +821,7 @@ main > h1 {
 .a11y-widget-biz .a11y-shell-content { min-width: 0; }
 .a11y-widget-biz .a11y-shell-with-nav .a11y-shell-content > * { max-width: 1040px; margin-inline: auto; padding-inline: 24px; }
 .a11y-widget-biz .a11y-report { padding-block: 24px 64px; }
-/* Each section an M3 outlined card. */
+/* Each section an outlined card. */
 .a11y-widget-biz .a11y-report > .a11y-section,
 .a11y-widget-biz .a11y-report > section {
   margin: 0 0 24px;
@@ -859,7 +858,7 @@ main > h1 {
 .a11y-widget-biz .a11y-dt-toggle:hover { background: color-mix(in srgb, var(--md-sys-color-on-surface) var(--md-sys-state-hover), transparent); }
 .a11y-widget-biz .a11y-dt-toggle-cell { width: 48px; }
 
-/* Lists: M3 list items with dividers. */
+/* Lists: list items with dividers. */
 .a11y-widget-biz :is(.a11y-sum-rows, .a11y-top-list, .a11y-next-list, .a11y-undecided-table, .a11y-sr-list, .a11y-conf-list, .a11y-dn-list, .a11y-occurrence-list, .a11y-legal-questions, .a11y-hist-runs) {
   list-style: none;
   margin: 0 0 16px;
@@ -933,7 +932,7 @@ main > h1 {
   line-height: 20px;
 }
 
-/* Severity and status: M3 assist chips on the colour roles. Each carries
+/* Severity and status: assist chips on the colour roles. Each carries
    its word; the role says how urgent. */
 .a11y-widget-biz :is(.a11y-sev, .a11y-legal-mark, .a11y-status-chip, .a11y-level-badge, .a11y-method-badge) {
   display: inline-flex;
@@ -1037,7 +1036,7 @@ main > h1 {
 .a11y-widget-biz .a11y-ra-send > .a11y-ra-send-word[data-off] { visibility: hidden; }
 .a11y-widget-biz .a11y-url-submit { width: 100%; min-height: 56px; font-size: 16px; border-radius: var(--md-sys-shape-corner-large); }
 
-/* Errors and notices: M3 banners on the colour roles. */
+/* Errors and notices: banners on the colour roles. */
 .a11y-widget-biz .a11y-error,
 .a11y-widget-biz .a11y-url-error {
   padding: 12px 16px;
@@ -1128,7 +1127,7 @@ main > h1 {
 .a11y-widget-biz .a11y-shell-nav-link { min-height: 48px; color: var(--md-sys-color-on-surface); }
 
 /* A button with no style of its own starts bare (the browser's grey bevel
-   is not Material); the classes above and below dress each kind. */
+   has no place here); the classes above and below dress each kind. */
 .a11y-widget-biz button {
   padding: 0;
   border: 0;

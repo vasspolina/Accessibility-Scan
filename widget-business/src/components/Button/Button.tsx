@@ -1,12 +1,11 @@
 import type { ReactNode } from "react";
 
 /**
- * The button, ported from components/actions/Button.jsx.
+ * The button.
  *
  * Behavioural in the sense that matters least: it owns no focus management
  * and no ARIA of its own — it is a real <button>, which is where all of that
- * comes from for free. That is why it is the safe one to start on, and why
- * the port is nearly literal.
+ * comes from for free.
  *
  * Two properties are carried over from the version this replaces, and both
  * are load-bearing rather than stylistic.
@@ -22,24 +21,22 @@ import type { ReactNode } from "react";
  * trap this report flags on other sites.
  *
  * No inline styles and no values of any kind: everything visual is in
- * Button.css against Foundations v2 tokens. The source styles inline so it
- * can render without a stylesheet; this package has one, and a class is what
+ * Button.css against the tree's tokens. A class is what
  * lets the responsive and print rules reach the control.
  *
  */
 
 /**
- * Six variants, matching the source exactly.
+ * Six variants.
  *
- * "accent" is a genuine duplicate: in the source it and "primary" resolve to
- * the same fill and the same label colour, character for character. It is
- * kept because removing a name from a ported API is a decision for the
- * design system, not for the port — but nothing in this app should reach for
+ * "accent" is a genuine duplicate: it and "primary" resolve to
+ * the same fill and the same label colour, character for character. The
+ * name is kept, but nothing in this app should reach for
  * it, and the CSS styles the two together so they cannot drift apart.
  *
  * "black" sits beside "primary" rather than replacing it: primary is the
  * ember submit action, black is the page's ink used as a fill, which is what
- * the system's own Dialog confirms with.
+ * the Dialog confirms with.
  */
 export type ButtonVariant =
   | "primary"
@@ -61,7 +58,7 @@ export function Button({
 }: {
   variant?: ButtonVariant;
   size?: ButtonSize;
-  /** "reset" is not in the source's type union; see the parity note. */
+  /** "reset" is allowed beside "button" and "submit". */
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
   onClick?: () => void;

@@ -14,7 +14,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // `vite build --mode gemini` (and `vite --mode gemini` for the harness) swaps
 // the stylesheet for styles/gemini.css and writes widget-business-gemini.js,
 // for backend/public/demo-gemini.html (user's instruction, 26 Nov 2026: copy
-// the demo, strip all CSS, design it like the Gemini app). The product bundle
+// the demo, strip all CSS, design it as a chat app). The product bundle
 // and global.css are untouched by it.
 const geminiStyles = path.resolve(__dirname, "src/styles/gemini.css");
 function geminiTheme(): Plugin {
@@ -49,7 +49,7 @@ export default defineConfig(({ mode }) => ({
       formats: ["iife"],
       fileName: () => (mode === "gemini" ? "widget-business-gemini.js" : "widget-business.js"),
     },
-    // The Gemini build runs after the product build in the Docker image and
+    // The demo build runs after the product build in the Docker image and
     // must not wipe dist/widget-business.js on its way.
     emptyOutDir: mode !== "gemini",
     rollupOptions: {

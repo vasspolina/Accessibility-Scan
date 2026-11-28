@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 /**
- * Two checks the design system's own _adherence.oxlintrc.json made the case
- * for, aimed at the failure this repo actually keeps having.
+ * Two checks aimed at the failure this repo actually keeps having.
  *
  * Eight styling passes this session each found the same shape: a rule on the
  * container and none on its contents. And four selectors shipped or nearly
@@ -32,7 +31,7 @@ function walk(dir, out = []) {
 
 const css = readFileSync(CSS, "utf8");
 
-/* Class names the stylesheet targets. Only a11y-* — the design system's own
+/* Class names the stylesheet targets. Only a11y-* — any
    as-* names are documentation in comments, not selectors here. */
 const styled = new Set(
   [...css.matchAll(/\.(a11y-[a-z0-9-]+)/g)].map((m) => m[1])
