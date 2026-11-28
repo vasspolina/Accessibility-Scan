@@ -1814,3 +1814,23 @@ main.wrap > .title {
 @media (forced-colors: active) {
   .cols.cols--statement > .card a::after { background: LinkText; forced-color-adjust: none; }
 }
+
+/* No double line over an index beside a title (user's instruction, 28
+   Nov 2026, "double line", on "Our approach": the section's black rule,
+   and 12px under it the first row's grey rule). Side by side, an index
+   that directly follows the title gives up its first row's rule and top
+   padding: the section's rule is its top line, and the first term's
+   capitals stand on the title's line. Stacked, the title is between the
+   two rules and the row keeps its own. */
+@container content (min-width: 900.02px) {
+  .cols:has(> .text > h2:first-child) > .text > h2 + .terms > div:first-child > :is(dt, dd) {
+    border-top: 0; padding-top: 0; text-box: trim-start cap alphabetic;
+  }
+}
+
+/* A section's index of terms in the serif (user's instruction, 28 Nov
+   2026, "this can be in serriff", on Focused / User-centered /
+   Future-proof): Serrif Light for the terms and their descriptions, at
+   the size and leading they had. The opened offers' indexes are
+   unchanged. */
+.cols > .text > .terms { font-family: "Serrif", "EB Garamond", Georgia, serif; font-weight: 300; }
