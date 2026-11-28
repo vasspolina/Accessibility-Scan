@@ -1,0 +1,192 @@
+/* BarrierFreeWeb as a ruled sheet.
+   The sheet (26 Nov 2026): ground rgb(16,16,16), white words,
+   one text size, +0.02em tracking, 2px-cornered white tags 28px tall stacked
+   at the left, the current one red-orange rgb(255,50,0), 1px white rules under
+   headers and 1px rgb(119,119,119) hairlines between 30px rows, 8px between
+   columns, the main column starting 168px in (262px here, for the longer tags).
+   Changed for contrast: grey words (#777, 4.2:1) are #a3a3a3
+   here (7.6:1); the current tag takes black words on the red (5.7:1), not
+   white (3.7:1); red words on the ground measure 5.2:1. The tags are 16px, not 14; the content 22px. */
+
+@font-face {
+  font-family: "PP Telegraf";
+  src: url("fonts/PPTelegraf-Ultralight.otf") format("opentype");
+  /* The one face, Ultralight (user's instruction, 26 Nov 2026, "use
+     telegraph thin"; the family has no cut named Thin). Declared for every
+     weight so nothing is drawn heavier. */
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+:root {
+  --ground: #101010;
+  --ink: #fff;
+  --quiet: #a3a3a3;
+  --hair: #777;
+  --red: #ff3200;
+  --row: 34px;
+  --gap: 8px;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html { background: var(--ground); }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font: 200 16px/1.35 "PP Telegraf", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  letter-spacing: 0.02em;
+  font-kerning: normal;
+  font-synthesis: none;
+  -webkit-text-size-adjust: 100%;
+}
+
+h1, h2, h3, p, ul { margin: 0; padding: 0; font: inherit; }
+ul { list-style: none; }
+
+a { color: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+/* ---- the tags ------------------------------------------------------------ */
+.tags {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  width: 236px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-height: calc(100vh - 20px);
+  overflow-y: auto;
+}
+.tags ul { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+
+.tag {
+  display: inline-block;
+  min-height: 28px;
+  padding: 4px 7px 3px;
+  border-radius: 2px;
+  background: var(--ink);
+  color: #000;
+  text-decoration: none;
+  line-height: 21px;
+  white-space: nowrap;
+}
+.tag:hover { background: var(--red); }
+.tag[aria-current="page"] { background: var(--red); color: #000; }
+
+/* ---- the sheets ---------------------------------------------------------- */
+/* The content is 40% larger than the tags (user's instruction, 26 Nov 2026,
+   "enlarge content 40%"): 16px to 22px, rows and spaces with it. */
+main {
+  padding: 12px 24px 40px 262px;
+  font-size: 22px;
+  line-height: 1.32;
+  --row: 48px;
+}
+
+.sheets {
+  display: grid;
+  /* One column (user's instruction, 26 Nov 2026, "do not do two columns"). */
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 90px;
+  align-items: start;
+}
+.sheet.wide { grid-column: 1 / -1; }
+
+.head {
+  min-height: var(--row);
+  padding: 3px 0 13px;
+  border-bottom: 1px solid var(--ink);
+}
+.head.blank { border-bottom-color: var(--ink); }
+.head.quiet { color: var(--quiet); }
+
+.row {
+  display: block;
+  min-height: var(--row);
+  padding: 11px 0 13px;
+  border-bottom: 1px solid var(--hair);
+  overflow-wrap: break-word;
+}
+
+/* A term and its definition: the definition under the term, one row. */
+.kv .term, .kv .def { display: block; }
+.kv .def { margin-top: 2px; }
+.kv .def { color: var(--quiet); }
+.kv .def a { color: var(--ink); }
+
+/* The separator stays in the text for copying, out of sight. */
+.sep {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* What we offer: the name, and Learn more as a tag at the far end. */
+.more {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--gap);
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+.more .tag { flex: none; min-height: 39px; padding: 5px 10px 4px; line-height: 30px; }
+
+/* An action: red words at the far right of its row. */
+.action { text-align: right; }
+.action a {
+  color: var(--red);
+  text-decoration: none;
+}
+.action a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+a.inline {
+  color: var(--red);
+  text-underline-offset: 3px;
+}
+
+/* The bar under a page: a white rule, the action, then a line under it. */
+.bar {
+  margin-top: 90px;
+  border-top: 1px solid var(--ink);
+}
+.bar .row { border-bottom-color: var(--ink); }
+.bar .line { color: var(--ink); }
+
+.divider {
+  margin: 134px 0 34px;
+  color: var(--quiet);
+}
+
+/* ---- narrow -------------------------------------------------------------- */
+@media (max-width: 760px) {
+  .tags {
+    position: static;
+    width: auto;
+    max-height: none;
+    padding: 10px 16px 0;
+    gap: 5px;
+  }
+  .tags ul { flex-direction: row; flex-wrap: wrap; }
+  main { padding: 40px 16px 32px; font-size: 20px; }
+  .sheets { row-gap: 64px; }
+  .bar { margin-top: 64px; }
+  .divider { margin-top: 64px; }
+}
+
+@media (forced-colors: active) {
+  .tag { border: 1px solid CanvasText; }
+  .tag[aria-current="page"] { border-width: 3px; }
+}
