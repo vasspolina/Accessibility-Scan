@@ -160,6 +160,7 @@
   --row-rule: #d0d0d0;
   --row-arrow-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M24.59 16.59 17 24.17V4h-2v20.17l-7.59-7.58L6 18l10 10 10-10-1.41-1.41z'/%3E%3C/svg%3E");
   --prompt-line: #6f6f6f;
+  --row-hover-ground: #fffbe0;
 }
 :where(.a11y-widget-biz img) {
   max-width: 100%;
@@ -281,6 +282,7 @@
   --row-arrow: #a8a8a8;
   --row-rule: #3a3a3c;
   --prompt-line: #a8a8a8;
+  --row-hover-ground: #2b2810;
 }
 :where(.a11y-widget-biz :focus-visible) {
   outline: 2px solid var(--focus);
@@ -317,6 +319,7 @@
     --row-arrow: #a8a8a8;
     --row-rule: #3a3a3c;
     --prompt-line: #a8a8a8;
+    --row-hover-ground: #2b2810;
   }
 }
 :where(.a11y-widget-biz button:enabled) {
@@ -1030,6 +1033,64 @@
 }
 
 
+/* ═══ Scan form and settings ════════════════════════════════════════════════ */
+
+:where(
+  .a11y-widget-biz .a11y-settings-label,
+  .a11y-widget-biz .a11y-settings-state
+) {
+  margin-inline-end: var(--cds-spacing-03);
+}
+:where(.a11y-widget-biz .a11y-settings) {
+  justify-items: stretch;
+}
+:where(.a11y-widget-biz .a11y-settings-row) {
+  display: grid;
+  grid-template-columns: 9em minmax(0, 1fr);
+  column-gap: var(--cds-spacing-06);
+  row-gap: var(--cds-spacing-04);
+  align-items: baseline;
+  margin: 0;
+}
+:where(.a11y-widget-biz .a11y-input-shell > .a11y-login-toggle) {
+  flex: none;
+  white-space: nowrap;
+  align-self: center;
+}
+@media (max-width: 671px) {
+  :where(.a11y-widget-biz .a11y-input-shell > .a11y-login-toggle) {
+    flex: 0 1 auto;
+    min-width: 0;
+    white-space: normal;
+  }
+}
+:where(.a11y-widget-biz .a11y-tester .a11y-input-shell > .a11y-login-toggle) {
+  flex: none;
+}
+:where(.a11y-widget-biz .a11y-url-form) {
+  --form-brand: var(--hl-cap-b);
+  --callout-blue: #2848c8;
+  --callout-red: #b81c1c;
+}
+:where(.a11y-widget-biz .a11y-triage-form) {
+  --form-brand: var(--hl-cap-a);
+}
+:where(.a11y-widget-biz .a11y-url-form .a11y-login-legend + *) {
+  clear: both;
+}
+:where(.a11y-widget-biz .a11y-scan-itinerary > .a11y-scan-step)::marker {
+  content: none;
+}
+@media (prefers-color-scheme: dark) {
+  :where(.a11y-widget-biz:not([data-theme="light"]) .a11y-settings :is(.a11y-settings-switch, .a11y-select2, .a11y-input)) {
+    --focus: #6fdc8c;
+  }
+}
+:where(.a11y-widget-biz[data-theme="dark"] .a11y-settings :is(.a11y-settings-switch, .a11y-select2, .a11y-input)) {
+  --focus: #6fdc8c;
+}
+
+
 /* ═══ Buttons, fields and shared controls ═══════════════════════════════════ */
 
 :where(.a11y-widget-biz .a11y-dialog-scrim) {
@@ -1177,69 +1238,6 @@
 }
 
 
-/* ═══ Scan form and settings ════════════════════════════════════════════════ */
-
-:where(
-  .a11y-widget-biz .a11y-settings-label,
-  .a11y-widget-biz .a11y-settings-state
-) {
-  margin-inline-end: var(--cds-spacing-03);
-}
-:where(.a11y-widget-biz .a11y-settings) {
-  justify-items: stretch;
-}
-:where(.a11y-widget-biz .a11y-settings-row) {
-  display: grid;
-  grid-template-columns: 9em minmax(0, 1fr);
-  column-gap: var(--cds-spacing-06);
-  row-gap: var(--cds-spacing-04);
-  align-items: baseline;
-  margin: 0;
-}
-:where(.a11y-widget-biz .a11y-input-shell > .a11y-login-toggle) {
-  flex: none;
-  white-space: nowrap;
-  align-self: center;
-}
-@media (max-width: 671px) {
-  :where(.a11y-widget-biz .a11y-input-shell > .a11y-login-toggle) {
-    flex: 0 1 auto;
-    min-width: 0;
-    white-space: normal;
-  }
-}
-:where(.a11y-widget-biz .a11y-tester .a11y-input-shell > .a11y-login-toggle) {
-  flex: none;
-}
-:where(.a11y-widget-biz .a11y-url-form) {
-  --form-brand: var(--hl-cap-b);
-  --callout-blue: #2848c8;
-  --callout-red: #b81c1c;
-}
-:where(.a11y-widget-biz .a11y-triage-form) {
-  --form-brand: var(--hl-cap-a);
-}
-:where(.a11y-widget-biz .a11y-url-form .a11y-login-legend + *) {
-  clear: both;
-}
-:where(.a11y-widget-biz .a11y-scan-itinerary > .a11y-scan-step)::marker {
-  content: none;
-}
-@media (prefers-color-scheme: dark) {
-  :where(.a11y-widget-biz:not([data-theme="light"]) .a11y-settings :is(.a11y-settings-switch, .a11y-select2, .a11y-input)) {
-    --focus: #6fdc8c;
-  }
-}
-:where(.a11y-widget-biz[data-theme="dark"] .a11y-settings :is(.a11y-settings-switch, .a11y-select2, .a11y-input)) {
-  --focus: #6fdc8c;
-}
-:where(.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form) :is(input, textarea))::placeholder {
-  color: var(--form-field-ink);
-  opacity: 1;
-  font-weight: 400;
-}
-
-
 /* ═══ Screen reader simulation and vision ═══════════════════════════════════ */
 
 :where(
@@ -1380,25 +1378,6 @@
   content: none;
 }
 
-/* ── History, statement, report actions, professional, continued ── */
-:where(.a11y-widget-biz :is(.a11y-stmt-toggle, .a11y-accordion-head, .a11y-w22-head, .a11y-undecided-q):focus-visible) {
-  outline: 2px solid var(--focus);
-  outline-offset: 4px;
-}
-:where(.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-fields > .a11y-stmt-field > input:focus-visible) {
-  outline: none;
-}
-:where(.a11y-widget-biz .a11y-report-actions .a11y-ra-field > input.a11y-ra-email-input)::placeholder {
-  color: var(--tile-ink);
-  opacity: 1;
-  font-weight: 400;
-}
-:where(.a11y-widget-biz .a11y-url-form .a11y-login .a11y-stmt-field > input)::placeholder {
-  color: var(--form-field-ink);
-  opacity: 1;
-  font-weight: 400;
-}
-
 /* ── Buttons, fields and shared controls, continued ── */
 :where(.a11y-widget-biz :is(button, .a11y-btn)) {
   font: inherit;
@@ -1435,10 +1414,6 @@
   box-sizing: border-box;
   min-width: 0;
   justify-items: stretch;
-}
-:where(.a11y-widget-biz .a11y-tester .a11y-input-shell > input:not([type="radio"]):focus-visible) {
-  outline: none;
-  box-shadow: none;
 }
 
 /* ── Chat, conversations and Report a barrier, continued ── */
@@ -1613,21 +1588,6 @@
   flex: none;
   align-self: flex-start;
   margin: calc((1lh - 0.68em) / 2) calc(var(--caret-col) - 0.42em) 0 0;
-}
-:where(.a11y-widget-biz .a11y-chat-dock .a11y-chat-composer .a11y-chat-box textarea:focus-visible) {
-  outline: none;
-  box-shadow: none;
-}
-:where(.a11y-widget-biz .a11y-barrier .a11y-chat-text h3:focus:not(:focus-visible)) {
-  outline: none;
-}
-:where(.a11y-widget-biz .a11y-chat-attached-remove[type="button"]:focus-visible) {
-  outline: 2px solid var(--focus);
-  outline-offset: 2px;
-}
-:where(.a11y-widget-biz .a11y-chat-box > textarea)::placeholder {
-  color: #6f6f6f;
-  opacity: 1;
 }
 
 /* ── Tokens and base, continued ── */
@@ -1846,6 +1806,41 @@
   display: none;
 }
 
+/* ── History, statement, report actions, professional, continued ── */
+:where(.a11y-widget-biz :is(.a11y-stmt-toggle, .a11y-accordion-head, .a11y-w22-head, .a11y-undecided-q):focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
+}
+:where(.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-fields > .a11y-stmt-field > input:focus-visible) {
+  outline: none;
+}
+:where(.a11y-widget-biz .a11y-stmt-step-head) {
+  margin: 0;
+  font-size: inherit;
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: inherit;
+}
+:where(.a11y-widget-biz .a11y-stmt-card) {
+  --ink: var(--tile-ink);
+  --paper: var(--tile);
+  position: relative;
+  box-sizing: border-box;
+  padding: var(--cds-spacing-06) var(--cds-spacing-07) var(--cds-spacing-07);
+  border-radius: 14px;
+  background: var(--tile);
+  color: var(--tile-ink);
+}
+@media (max-width: 671px) {
+  :where(.a11y-widget-biz .a11y-stmt-card) {
+    padding: var(--cds-spacing-05) var(--cds-spacing-05) var(--cds-spacing-06);
+  }
+}
+:where(.a11y-widget-biz .a11y-pro-count) {
+  font-size: 16px;
+  letter-spacing: 0;
+}
+
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
 :where(
   .a11y-widget-biz .a11y-conf-body,
@@ -1887,85 +1882,12 @@
   align-self: flex-start;
 }
 
-/* ── History, statement, report actions, professional, continued ── */
-:where(.a11y-widget-biz .a11y-stmt-step-head) {
-  margin: 0;
-  font-size: inherit;
-  font-weight: 400;
-  line-height: 1.1;
-  letter-spacing: inherit;
-}
-:where(.a11y-widget-biz .a11y-stmt-card) {
-  --ink: var(--tile-ink);
-  --paper: var(--tile);
-  position: relative;
-  box-sizing: border-box;
-  padding: var(--cds-spacing-06) var(--cds-spacing-07) var(--cds-spacing-07);
-  border-radius: 14px;
-  background: var(--tile);
-  color: var(--tile-ink);
-}
-@media (max-width: 671px) {
-  :where(.a11y-widget-biz .a11y-stmt-card) {
-    padding: var(--cds-spacing-05) var(--cds-spacing-05) var(--cds-spacing-06);
-  }
-}
-:where(.a11y-widget-biz .a11y-pro-count) {
-  font-size: 16px;
-  letter-spacing: 0;
-}
-:where(
-  .a11y-widget-biz .a11y-hist-card > .a11y-hist-facts > li,
-  .a11y-widget-biz .a11y-hist .a11y-hist-runs > li[class]
-)::before {
-  content: none;
-}
-
-/* ── Buttons, fields and shared controls, continued ── */
-:where(.a11y-widget-biz .a11y-accordion-chevron) {
-  flex: none;
-  width: 0.6em;
-  height: 0.6em;
-  margin-inline-start: auto;
-}
-:where(.a11y-widget-biz .a11y-select2-help) {
-  font-size: 16px;
-  letter-spacing: 0;
-}
-:where(.a11y-widget-biz .a11y-status-chip-critical) {
-  background: var(--hl-orange);
-}
-:where(.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:has(.a11y-dt-toggle:focus-visible)) {
-  outline: 2px solid var(--focus);
-  outline-offset: 2px;
-}
-:where(.a11y-widget-biz .a11y-datatable > tbody > tr:has(> td > .a11y-dt-toggle:focus-visible)) {
-  outline: 2px solid var(--focus);
-  outline-offset: 0;
-}
-@container a11y-ftable (max-width: 640px) {
-  :where(.a11y-widget-biz .a11y-datatable > tbody > tr:has(> td > .a11y-dt-toggle:focus-visible)) {
-    outline-offset: 5px;
-  }
-}
-@media (forced-colors: active) {
-  :where(.a11y-widget-biz .a11y-datatable > tbody > tr:has(> td > .a11y-dt-toggle:focus-visible)) {
-    outline-color: Highlight;
-  }
-}
-:where(.a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2 .a11y-select2-field:focus-visible) {
-  outline: none;
-  box-shadow: none;
-}
-:where(
-  .a11y-widget-biz :is(.a11y-input > .a11y-input-shell > input, .a11y-select2 > select, .a11y-ra-field > input, .a11y-stmt-field > input, .a11y-stmt-field > select, .a11y-stmt-field > textarea),
-  .a11y-widget-biz form.a11y-url-form.a11y-tester .a11y-input > .a11y-input-shell > input
-)::placeholder {
-  color: #6f6f6f;
-  opacity: 1;
-}
-
 /* ── Scan form and settings, continued ── */
+:where(.a11y-widget-biz :is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form) :is(input, textarea))::placeholder {
+  color: var(--form-field-ink);
+  opacity: 1;
+  font-weight: 400;
+}
 :where(.a11y-widget-biz .a11y-url-submit-note) {
   font-size: 16px;
   letter-spacing: 0;
@@ -1979,6 +1901,45 @@
     white-space: normal;
   }
 }
+
+/* ── History, statement, report actions, professional, continued ── */
+:where(.a11y-widget-biz .a11y-report-actions .a11y-ra-field > input.a11y-ra-email-input)::placeholder {
+  color: var(--tile-ink);
+  opacity: 1;
+  font-weight: 400;
+}
+:where(.a11y-widget-biz .a11y-url-form .a11y-login .a11y-stmt-field > input)::placeholder {
+  color: var(--form-field-ink);
+  opacity: 1;
+  font-weight: 400;
+}
+:where(
+  .a11y-widget-biz .a11y-hist-card > .a11y-hist-facts > li,
+  .a11y-widget-biz .a11y-hist .a11y-hist-runs > li[class]
+)::before {
+  content: none;
+}
+
+/* ── Buttons, fields and shared controls, continued ── */
+:where(.a11y-widget-biz .a11y-tester .a11y-input-shell > input:not([type="radio"]):focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+:where(.a11y-widget-biz .a11y-accordion-chevron) {
+  flex: none;
+  width: 0.6em;
+  height: 0.6em;
+  margin-inline-start: auto;
+}
+:where(.a11y-widget-biz .a11y-select2-help) {
+  font-size: 16px;
+  letter-spacing: 0;
+}
+:where(.a11y-widget-biz .a11y-status-chip-critical) {
+  background: var(--hl-orange);
+}
+
+/* ── Scan form and settings, continued ── */
 :where(.a11y-widget-biz .a11y-settings-row > *) {
   grid-column: 2;
   justify-self: start;
@@ -2296,6 +2257,21 @@
 }
 
 /* ── Chat, conversations and Report a barrier, continued ── */
+:where(.a11y-widget-biz .a11y-chat-dock .a11y-chat-composer .a11y-chat-box textarea:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+:where(.a11y-widget-biz .a11y-barrier .a11y-chat-text h3:focus:not(:focus-visible)) {
+  outline: none;
+}
+:where(.a11y-widget-biz .a11y-chat-attached-remove[type="button"]:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+:where(.a11y-widget-biz .a11y-chat-box > textarea)::placeholder {
+  color: #6f6f6f;
+  opacity: 1;
+}
 :where(.a11y-widget-biz .a11y-chat-alt) {
   margin: var(--cds-spacing-07) 0 0;
 }
@@ -2462,6 +2438,42 @@
   rotate: 180deg;
 }
 
+/* ── Buttons, fields and shared controls, continued ── */
+:where(.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:has(.a11y-dt-toggle:focus-visible)) {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+:where(.a11y-widget-biz .a11y-datatable > tbody > tr:has(> td > .a11y-dt-toggle:focus-visible)) {
+  outline: 2px solid var(--focus);
+  outline-offset: 0;
+}
+@container a11y-ftable (max-width: 640px) {
+  :where(.a11y-widget-biz .a11y-datatable > tbody > tr:has(> td > .a11y-dt-toggle:focus-visible)) {
+    outline-offset: 5px;
+  }
+}
+@media (forced-colors: active) {
+  :where(.a11y-widget-biz .a11y-datatable > tbody > tr:has(> td > .a11y-dt-toggle:focus-visible)) {
+    outline-color: Highlight;
+  }
+}
+:where(.a11y-widget-biz .a11y-tester .a11y-tester-rows > .a11y-select2 .a11y-select2-field:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+:where(
+  .a11y-widget-biz :is(.a11y-input > .a11y-input-shell > input, .a11y-select2 > select, .a11y-ra-field > input, .a11y-stmt-field > input, .a11y-stmt-field > select, .a11y-stmt-field > textarea),
+  .a11y-widget-biz form.a11y-url-form.a11y-tester .a11y-input > .a11y-input-shell > input
+)::placeholder {
+  color: #6f6f6f;
+  opacity: 1;
+}
+:where(.a11y-widget-biz .a11y-note) {
+  display: grid;
+  align-items: baseline;
+  margin: 0 0 var(--cds-spacing-07);
+}
+
 /* ── History, statement, report actions, professional, continued ── */
 :where(.a11y-widget-biz .a11y-stmt-text) {
   white-space: normal;
@@ -2493,6 +2505,39 @@
   max-width: 360px;
 }
 
+/* ── Chat, conversations and Report a barrier, continued ── */
+:where(.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-q)::before {
+  content: none;
+  display: none;
+}
+:where(.a11y-widget-biz .a11y-chat-stepfold > summary)::before {
+  width: 1em;
+  height: 1em;
+  background: var(--row-arrow);
+  -webkit-mask: var(--row-arrow-mask) center / contain no-repeat;
+  mask: var(--row-arrow-mask) center / contain no-repeat;
+  rotate: none;
+  transform: none;
+}
+:where(.a11y-widget-biz .a11y-chat-stepfold[open] > summary)::before {
+  rotate: 180deg;
+}
+:where(.a11y-widget-biz .a11y-chat-send-icon) {
+  display: none;
+}
+:where(.a11y-widget-biz .a11y-chat-layout) {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: var(--cds-spacing-07);
+  align-items: start;
+}
+@media (max-width: 1055px) {
+  :where(.a11y-widget-biz .a11y-chat-layout) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+}
+
 /* ── Designer and developer list, design notes, continued ── */
 :where(.a11y-widget-biz .a11y-undecided-cell) {
   display: grid;
@@ -2511,85 +2556,6 @@
   letter-spacing: 0;
 }
 
-/* ── Chat, conversations and Report a barrier, continued ── */
-:where(.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-q)::before {
-  content: none;
-  display: none;
-}
-:where(.a11y-widget-biz .a11y-chat-stepfold > summary)::before {
-  width: 1em;
-  height: 1em;
-  background: var(--row-arrow);
-  -webkit-mask: var(--row-arrow-mask) center / contain no-repeat;
-  mask: var(--row-arrow-mask) center / contain no-repeat;
-  rotate: none;
-  transform: none;
-}
-:where(.a11y-widget-biz .a11y-chat-stepfold[open] > summary)::before {
-  rotate: 180deg;
-}
-
-/* ── Findings and the opened finding, continued ── */
-:where(.a11y-widget-biz .a11y-tech-details[open] > summary)::before {
-  rotate: 180deg;
-}
-:where(.a11y-widget-biz .a11y-tech-details > .a11y-tech-elements > li)::before {
-  content: none;
-  display: none;
-}
-
-/* ── History, statement, report actions, professional, continued ── */
-:where(.a11y-widget-biz .a11y-hist :is(.a11y-hist-run, .a11y-hist-fact))::before {
-  content: none;
-  display: none;
-}
-
-/* ── Findings and the opened finding, continued ── */
-:where(
-  .a11y-widget-biz .a11y-fd > .a11y-fd-meta > *,
-  .a11y-widget-biz .a11y-fd > .a11y-fd-col > * > :is(strong:first-child, .a11y-fd-title, .a11y-affected-label, p:first-child)
-)::before {
-  content: none;
-  display: none;
-}
-
-/* ── Score summary, continued ── */
-:where(.a11y-widget-biz :is(.a11y-sum-spec-pill, .a11y-count-dot, .a11y-section-count, .a11y-fd-meta > *, .a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-conf-status, .a11y-next-count, .a11y-method-badge, .a11y-chats-open))::before {
-  content: none;
-  display: none;
-}
-
-/* ── Screen reader simulation and vision, continued ── */
-:where(
-  .a11y-widget-biz section.a11y-sr .a11y-sr-filter,
-  .a11y-widget-biz section.a11y-sr .a11y-sr-list > li
-)::before {
-  content: none;
-  display: none;
-}
-
-/* ── Findings and the opened finding, continued ── */
-:where(.a11y-widget-biz .a11y-fd > .a11y-fd-col :is(.a11y-fd-points, ul:not(.a11y-occurrence-list):not(.a11y-tech-elements)) > li)::before {
-  content: none;
-  display: none;
-}
-:where(.a11y-widget-biz .a11y-undecided-answer > .a11y-fd-meta > span)::before {
-  content: none;
-}
-
-/* ── History, statement, report actions, professional, continued ── */
-:where(.a11y-widget-biz .a11y-audit-list > .a11y-audit-row)::before {
-  content: none;
-  display: none;
-}
-
-/* ── Buttons, fields and shared controls, continued ── */
-:where(.a11y-widget-biz .a11y-note) {
-  display: grid;
-  align-items: baseline;
-  margin: 0 0 var(--cds-spacing-07);
-}
-
 /* ── Designer and developer list, design notes, continued ── */
 :where(.a11y-widget-biz .a11y-dn-detail-title) {
   margin-top: var(--cds-spacing-05);
@@ -2603,6 +2569,13 @@
 }
 
 /* ── Findings and the opened finding, continued ── */
+:where(.a11y-widget-biz .a11y-tech-details[open] > summary)::before {
+  rotate: 180deg;
+}
+:where(.a11y-widget-biz .a11y-tech-details > .a11y-tech-elements > li)::before {
+  content: none;
+  display: none;
+}
 :where(.a11y-widget-biz .a11y-occurrence-list) {
   list-style: none;
   padding: 0;
@@ -2664,50 +2637,32 @@
   }
 }
 
-/* ── Chat, conversations and Report a barrier, continued ── */
-:where(.a11y-widget-biz .a11y-chat-send-icon) {
+/* ── History, statement, report actions, professional, continued ── */
+:where(.a11y-widget-biz .a11y-hist :is(.a11y-hist-run, .a11y-hist-fact))::before {
+  content: none;
   display: none;
 }
-:where(.a11y-widget-biz .a11y-chat-layout) {
+:where(.a11y-widget-biz .a11y-pro-eyebrow) {
+  font-size: 16px;
+  letter-spacing: 0;
+  font-weight: 400;
+  margin: 0 0 var(--cds-spacing-03);
+}
+:where(.a11y-widget-biz .a11y-pro-rows) {
   display: grid;
-  grid-template-columns: 300px minmax(0, 1fr);
-  gap: var(--cds-spacing-07);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+  gap: var(--cds-spacing-08) var(--cds-grid-gutter-narrow);
   align-items: start;
-}
-@media (max-width: 1055px) {
-  :where(.a11y-widget-biz .a11y-chat-layout) {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0;
-  }
-}
-@media (min-width: 672px) {
-  :where(.a11y-widget-biz .a11y-chat-layout) {
-    padding-inline: var(--cds-spacing-06);
-    padding-top: calc(var(--cds-spacing-10) + var(--cds-spacing-03));
-    box-sizing: border-box;
-  }
-}
-@media (min-width: 672px) and (max-width: 1055px) {
-  :where(.a11y-widget-biz .a11y-chat-layout) {
-    padding-inline: var(--cds-spacing-06);
-  }
-}
-@media (min-width: 1056px) {
-  :where(.a11y-widget-biz .a11y-chat-layout) {
-    grid-template-columns: 324px minmax(0, 1fr);
-    gap: var(--cds-spacing-08);
-    padding-top: 0;
-    padding-inline-start: var(--cds-spacing-02);
-  }
-}
-:where(.a11y-widget-biz .a11y-chat-text ol) {
+  margin: 0 0 var(--cds-spacing-07);
+  padding: 0;
   list-style: none;
-  padding-inline-start: var(--cds-spacing-08);
+  row-gap: var(--cds-spacing-10);
 }
-:where(.a11y-widget-biz .a11y-chat-text ul > li)::before {
-  content: "\2013" / "";
-  position: absolute;
-  inset-inline-start: 0;
+:where(.a11y-widget-biz .a11y-stmt-actions) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0 0 var(--cds-spacing-07);
 }
 
 /* ── Buttons, fields and shared controls, continued ── */
@@ -2744,6 +2699,34 @@
 :where(.a11y-widget-biz .a11y-code-fix > .a11y-code-fix-label) {
   border: 0;
 }
+
+/* ── Chat, conversations and Report a barrier, continued ── */
+@media (min-width: 672px) {
+  :where(.a11y-widget-biz .a11y-chat-layout) {
+    padding-inline: var(--cds-spacing-06);
+    padding-top: calc(var(--cds-spacing-10) + var(--cds-spacing-03));
+    box-sizing: border-box;
+  }
+}
+@media (min-width: 672px) and (max-width: 1055px) {
+  :where(.a11y-widget-biz .a11y-chat-layout) {
+    padding-inline: var(--cds-spacing-06);
+  }
+}
+@media (min-width: 1056px) {
+  :where(.a11y-widget-biz .a11y-chat-layout) {
+    grid-template-columns: 324px minmax(0, 1fr);
+    gap: var(--cds-spacing-08);
+    padding-top: 0;
+    padding-inline-start: var(--cds-spacing-02);
+  }
+}
+:where(.a11y-widget-biz .a11y-chat-text ol) {
+  list-style: none;
+  padding-inline-start: var(--cds-spacing-08);
+}
+
+/* ── Buttons, fields and shared controls, continued ── */
 :where(.a11y-widget-biz .a11y-datatable-schedule :is(th, td)) {
   box-sizing: border-box;
   min-width: 0;
@@ -2771,30 +2754,6 @@
   box-sizing: border-box;
 }
 
-/* ── History, statement, report actions, professional, continued ── */
-:where(.a11y-widget-biz .a11y-pro-eyebrow) {
-  font-size: 16px;
-  letter-spacing: 0;
-  font-weight: 400;
-  margin: 0 0 var(--cds-spacing-03);
-}
-:where(.a11y-widget-biz .a11y-pro-rows) {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
-  gap: var(--cds-spacing-08) var(--cds-grid-gutter-narrow);
-  align-items: start;
-  margin: 0 0 var(--cds-spacing-07);
-  padding: 0;
-  list-style: none;
-  row-gap: var(--cds-spacing-10);
-}
-:where(.a11y-widget-biz .a11y-stmt-actions) {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  margin: 0 0 var(--cds-spacing-07);
-}
-
 /* ── Score summary, continued ── */
 :where(.a11y-widget-biz .a11y-spec-grid) {
   display: grid;
@@ -2805,6 +2764,39 @@
   padding: 0;
   list-style: none;
   row-gap: var(--cds-spacing-10);
+}
+
+/* ── Findings and the opened finding, continued ── */
+:where(
+  .a11y-widget-biz .a11y-fd > .a11y-fd-meta > *,
+  .a11y-widget-biz .a11y-fd > .a11y-fd-col > * > :is(strong:first-child, .a11y-fd-title, .a11y-affected-label, p:first-child)
+)::before {
+  content: none;
+  display: none;
+}
+
+/* ── Score summary, continued ── */
+:where(.a11y-widget-biz :is(.a11y-sum-spec-pill, .a11y-count-dot, .a11y-section-count, .a11y-fd-meta > *, .a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-conf-status, .a11y-next-count, .a11y-method-badge, .a11y-chats-open))::before {
+  content: none;
+  display: none;
+}
+
+/* ── Screen reader simulation and vision, continued ── */
+:where(
+  .a11y-widget-biz section.a11y-sr .a11y-sr-filter,
+  .a11y-widget-biz section.a11y-sr .a11y-sr-list > li
+)::before {
+  content: none;
+  display: none;
+}
+
+/* ── Findings and the opened finding, continued ── */
+:where(.a11y-widget-biz .a11y-fd > .a11y-fd-col :is(.a11y-fd-points, ul:not(.a11y-occurrence-list):not(.a11y-tech-elements)) > li)::before {
+  content: none;
+  display: none;
+}
+:where(.a11y-widget-biz .a11y-undecided-answer > .a11y-fd-meta > span)::before {
+  content: none;
 }
 
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
@@ -2825,6 +2817,19 @@
 /* ── Score summary, continued ── */
 :where(.a11y-widget-biz .a11y-sum-grid > * + *) {
   margin-top: var(--cds-spacing-10);
+}
+
+/* ── History, statement, report actions, professional, continued ── */
+:where(.a11y-widget-biz .a11y-audit-list > .a11y-audit-row)::before {
+  content: none;
+  display: none;
+}
+
+/* ── Chat, conversations and Report a barrier, continued ── */
+:where(.a11y-widget-biz .a11y-chat-text ul > li)::before {
+  content: "\2013" / "";
+  position: absolute;
+  inset-inline-start: 0;
 }
 
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
@@ -3249,7 +3254,6 @@
   font: inherit;
   font-weight: 400;
   cursor: pointer;
-  transition: box-shadow 0.15s;
 }
 :where(.a11y-widget-biz .a11y-w22 .a11y-next-toggle > .a11y-next-standard) {
   display: contents;
@@ -5453,6 +5457,12 @@
   min-width: 0;
 }
 
+/* ── Screen reader simulation and vision, continued ── */
+:where(.a11y-widget-biz .a11y-sr-row:enabled:hover) {
+  background: none;
+  color: var(--ink);
+}
+
 /* ── Buttons, fields and shared controls, continued ── */
 :where(.a11y-widget-biz .a11y-accordion-head[aria-expanded="true"] .a11y-accordion-chevron) {
   transform: rotate(180deg);
@@ -5464,12 +5474,6 @@
 /* ── Designer and developer list, design notes, continued ── */
 :where(.a11y-widget-biz .a11y-undecided-q[aria-expanded="true"] > .a11y-undecided-caret) {
   transform: rotate(90deg);
-}
-
-/* ── Screen reader simulation and vision, continued ── */
-:where(.a11y-widget-biz .a11y-sr-row:enabled:hover) {
-  background: none;
-  color: var(--ink);
 }
 
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
@@ -11054,6 +11058,12 @@
   color: var(--ink);
   box-shadow: none;
   text-align: left;
+  transition: background-color 0.15s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary)) {
+    transition: none;
+  }
 }
 :where(.a11y-widget-biz :is(.a11y-legal-caret, .a11y-legal-row)) {
   --ink: inherit;
@@ -11245,6 +11255,14 @@
 :where(.a11y-widget-biz form.a11y-url-form.a11y-tester .a11y-tester-choices > label.a11y-seg:has(input:focus-visible)) {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
+}
+:where(.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:not(.a11y-dt-expand-row)) {
+  transition: background-color 0.15s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:not(.a11y-dt-expand-row)) {
+    transition: none;
+  }
 }
 
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
@@ -12365,6 +12383,46 @@
   background: none;
 }
 
+/* ── Screen reader simulation and vision, continued ── */
+:where(.a11y-widget-biz section.a11y-sr .a11y-sr-bar) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--cds-spacing-03);
+  margin: var(--cds-spacing-06) 0;
+  padding: 0;
+  background: none;
+  border: 0;
+}
+:where(.a11y-widget-biz section.a11y-sr .a11y-sr-log) {
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+}
+:where(.a11y-widget-biz section.a11y-sr .a11y-sr-list) {
+  display: block;
+  grid-template-columns: none;
+  margin: 0;
+  padding: 0;
+  gap: 0;
+  list-style: none;
+}
+:where(.a11y-widget-biz section.a11y-sr .a11y-sr-note) {
+  margin: var(--cds-spacing-04) 0 0;
+}
+:where(.a11y-widget-biz section.a11y-sr .a11y-sr-log-heads > span) {
+  display: none;
+}
+:where(.a11y-widget-biz section.a11y-sr .a11y-sr-list > li) {
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  list-style: none;
+}
+
 /* ── Buttons, fields and shared controls, continued ── */
 :where(.a11y-widget-biz .a11y-input > .a11y-input-shell) {
   display: flex;
@@ -12441,46 +12499,6 @@
   grid-template-columns: none;
   margin: 0;
   padding: 0;
-}
-
-/* ── Screen reader simulation and vision, continued ── */
-:where(.a11y-widget-biz section.a11y-sr .a11y-sr-bar) {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--cds-spacing-03);
-  margin: var(--cds-spacing-06) 0;
-  padding: 0;
-  background: none;
-  border: 0;
-}
-:where(.a11y-widget-biz section.a11y-sr .a11y-sr-log) {
-  margin: 0;
-  padding: 0;
-  background: none;
-  border: 0;
-  border-radius: 0;
-}
-:where(.a11y-widget-biz section.a11y-sr .a11y-sr-list) {
-  display: block;
-  grid-template-columns: none;
-  margin: 0;
-  padding: 0;
-  gap: 0;
-  list-style: none;
-}
-:where(.a11y-widget-biz section.a11y-sr .a11y-sr-note) {
-  margin: var(--cds-spacing-04) 0 0;
-}
-:where(.a11y-widget-biz section.a11y-sr .a11y-sr-log-heads > span) {
-  display: none;
-}
-:where(.a11y-widget-biz section.a11y-sr .a11y-sr-list > li) {
-  margin: 0;
-  padding: 0;
-  background: none;
-  border: 0;
-  list-style: none;
 }
 
 /* ── History, statement, report actions, professional, continued ── */
@@ -13827,6 +13845,14 @@
   color: var(--prompt-line);
   font-style: normal;
   font-size: 18px;
+}
+:where(.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary):hover) {
+  background-color: var(--row-hover-ground);
+}
+
+/* ── Buttons, fields and shared controls, continued ── */
+:where(.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:not(.a11y-dt-expand-row):hover) {
+  background-color: var(--row-hover-ground);
 }
 
 /* ── Score summary, continued ── */
