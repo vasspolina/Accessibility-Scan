@@ -8091,27 +8091,6 @@
   line-height: 1.1;
 }
 
-/* ── Legal standard, checklist and WCAG 2.2, continued ── */
-:where(.a11y-widget-biz :is(.a11y-conf-list > .a11y-conf-row > .a11y-conf-id, .a11y-w22-row .a11y-w22-id, .a11y-w22-row .a11y-w22-level)) {
-  font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 1.1;
-  letter-spacing: 0;
-  font-variant-numeric: normal;
-}
-:where(.a11y-widget-biz :is(.a11y-w22-row .a11y-w22-id, .a11y-w22-row .a11y-w22-level, .a11y-conf-list > .a11y-conf-row > .a11y-conf-id)) {
-  white-space: nowrap;
-}
-@container a11y-qlist (max-width: 640px) {
-  :where(.a11y-widget-biz :is(.a11y-conf-row > .a11y-conf-status, .a11y-w22-row > .a11y-w22-call)) {
-    min-width: 0;
-    white-space: normal;
-    overflow-wrap: break-word;
-    text-align: end;
-  }
-}
-
 /* ── Findings and the opened finding, continued ── */
 :where(.a11y-widget-biz .a11y-fd .a11y-occurrence-list > .a11y-occurrence > :last-child > :last-child) {
   margin-bottom: 0;
@@ -8124,37 +8103,6 @@
   line-height: 1.1;
   letter-spacing: 0;
   text-align: start;
-}
-:where(.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-conf-status, .a11y-status-chip, .a11y-next-count)) {
-  display: inline;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: none;
-  box-shadow: none;
-  rotate: none;
-  transform: none;
-  color: var(--ink);
-  letter-spacing: 0;
-  vertical-align: baseline;
-}
-:where(.a11y-widget-biz :is(.a11y-sev-critical, .a11y-status-chip-critical, .a11y-rule-chip, .a11y-level-badge, .a11y-next-count)) {
-  color: var(--word-red);
-}
-:where(.a11y-widget-biz :is(.a11y-sev-serious, .a11y-conf-status)) {
-  color: var(--word-blue);
-}
-:where(.a11y-widget-biz .a11y-sev-moderate) {
-  color: var(--word-green);
-}
-:where(.a11y-widget-biz :is(.a11y-sev-minor)) {
-  color: var(--word-ochre);
-}
-@media (forced-colors: active) {
-  :where(.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-conf-status, .a11y-status-chip, .a11y-next-count)) {
-    color: CanvasText;
-  }
 }
 
 /* ── Designer and developer list, design notes, continued ── */
@@ -8354,6 +8302,25 @@
 }
 
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
+:where(.a11y-widget-biz :is(.a11y-conf-list > .a11y-conf-row > .a11y-conf-id, .a11y-w22-row .a11y-w22-id, .a11y-w22-row .a11y-w22-level)) {
+  font-family: "Jokker", "DejaVu Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: 0;
+  font-variant-numeric: normal;
+}
+:where(.a11y-widget-biz :is(.a11y-w22-row .a11y-w22-id, .a11y-w22-row .a11y-w22-level, .a11y-conf-list > .a11y-conf-row > .a11y-conf-id)) {
+  white-space: nowrap;
+}
+@container a11y-qlist (max-width: 640px) {
+  :where(.a11y-widget-biz :is(.a11y-conf-row > .a11y-conf-status, .a11y-w22-row > .a11y-w22-call)) {
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: break-word;
+    text-align: end;
+  }
+}
 :where(.a11y-widget-biz :is(.a11y-manual-form, .a11y-triage-form) > .a11y-manual-form-actions) {
   display: flex;
   flex-direction: column;
@@ -8362,6 +8329,41 @@
   width: 100%;
   margin: 0;
 }
+
+/* ── Findings and the opened finding, continued ── */
+:where(.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-conf-status, .a11y-status-chip, .a11y-next-count)) {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  rotate: none;
+  transform: none;
+  color: var(--ink);
+  letter-spacing: 0;
+  vertical-align: baseline;
+}
+:where(.a11y-widget-biz :is(.a11y-sev-critical, .a11y-status-chip-critical, .a11y-rule-chip, .a11y-level-badge, .a11y-next-count)) {
+  color: var(--word-red);
+}
+:where(.a11y-widget-biz :is(.a11y-sev-serious, .a11y-conf-status)) {
+  color: var(--word-blue);
+}
+:where(.a11y-widget-biz .a11y-sev-moderate) {
+  color: var(--word-green);
+}
+:where(.a11y-widget-biz :is(.a11y-sev-minor)) {
+  color: var(--word-ochre);
+}
+@media (forced-colors: active) {
+  :where(.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-conf-status, .a11y-status-chip, .a11y-next-count)) {
+    color: CanvasText;
+  }
+}
+
+/* ── Legal standard, checklist and WCAG 2.2, continued ── */
 :where(.a11y-widget-biz .a11y-conf-row > .a11y-conf-id > .a11y-conf-name) {
   display: block;
   margin-top: var(--cds-spacing-02);
@@ -10146,6 +10148,26 @@
   margin-top: calc(var(--cds-spacing-02) * -1);
 }
 
+/* ── Chat, conversations and Report a barrier, continued ── */
+:where(.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-wcag:enabled:hover) {
+  background: var(--hover);
+  color: var(--hover-ink);
+}
+:where(.a11y-widget-biz .a11y-prompts .a11y-prompt-barrier .a11y-prompt-q:enabled:is(:hover, :focus-visible) .a11y-prompt-go) {
+  background: #000;
+  color: #fff;
+}
+:where(.a11y-widget-biz .a11y-chats .a11y-chats-row > .a11y-chats-item:disabled .a11y-chats-title) {
+  text-decoration: underline dashed;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.14em;
+}
+:where(.a11y-widget-biz .a11y-chats .a11y-chats-row > .a11y-chats-item:enabled:hover .a11y-chats-title) {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.14em;
+}
+
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
 @container a11y-qlist (max-width: 640px) {
   :where(.a11y-widget-biz :is(.a11y-conf-list .a11y-conf-row > .a11y-conf-status, .a11y-w22-list .a11y-w22-row > .a11y-w22-call, .a11y-w22-list .a11y-w22-row .a11y-next-status)) {
@@ -10179,26 +10201,6 @@
   :where(.a11y-widget-biz .a11y-legal-carets > .a11y-legal-caret > .a11y-legal-row) {
     row-gap: var(--cds-spacing-01);
   }
-}
-
-/* ── Chat, conversations and Report a barrier, continued ── */
-:where(.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-wcag:enabled:hover) {
-  background: var(--hover);
-  color: var(--hover-ink);
-}
-:where(.a11y-widget-biz .a11y-prompts .a11y-prompt-barrier .a11y-prompt-q:enabled:is(:hover, :focus-visible) .a11y-prompt-go) {
-  background: #000;
-  color: #fff;
-}
-:where(.a11y-widget-biz .a11y-chats .a11y-chats-row > .a11y-chats-item:disabled .a11y-chats-title) {
-  text-decoration: underline dashed;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.14em;
-}
-:where(.a11y-widget-biz .a11y-chats .a11y-chats-row > .a11y-chats-item:enabled:hover .a11y-chats-title) {
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.14em;
 }
 
 /* ── Score summary, continued ── */
@@ -10931,6 +10933,11 @@
   margin-top: var(--cds-spacing-05);
 }
 
+/* ── Screen reader simulation and vision, continued ── */
+:where(.a11y-widget-biz .a11y-sr .a11y-sr-bar .a11y-sr-status:not(:empty)) {
+  margin-top: var(--cds-spacing-03);
+}
+
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
 :where(.a11y-widget-biz .a11y-legal-carets > :is(.a11y-legal-caret-clean, .a11y-legal-caret-not-measured) *) {
   color: var(--row-ink);
@@ -10942,9 +10949,6 @@
 }
 
 /* ── Screen reader simulation and vision, continued ── */
-:where(.a11y-widget-biz .a11y-sr .a11y-sr-bar .a11y-sr-status:not(:empty)) {
-  margin-top: var(--cds-spacing-03);
-}
 :where(.a11y-widget-biz .a11y-sr .a11y-sr-row:is(button):enabled:hover) {
   background: var(--hover);
   color: var(--hover-ink);
@@ -13365,18 +13369,6 @@
   padding-inline-start: 0;
 }
 
-/* ── Legal standard, checklist and WCAG 2.2, continued ── */
-:where(.a11y-widget-biz .a11y-report h2.a11y-section-title :is(.a11y-accordion-head, .a11y-w22-head) > :is(span:first-child, .a11y-w22-head-words)) {
-  font-size: inherit;
-  color: inherit;
-}
-:where(.a11y-widget-biz .a11y-stmt > .a11y-conf-caveat) {
-  margin-top: var(--cds-spacing-05);
-}
-:where(.a11y-widget-biz .a11y-w22 > .a11y-section-title + .a11y-next) {
-  margin-top: var(--cds-spacing-03);
-}
-
 /* ── Findings and the opened finding, continued ── */
 :where(.a11y-widget-biz .a11y-fd > .a11y-fd-col > *) {
   display: grid;
@@ -13414,6 +13406,18 @@
 }
 :where(.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd) {
   padding: 0;
+}
+
+/* ── Legal standard, checklist and WCAG 2.2, continued ── */
+:where(.a11y-widget-biz .a11y-report h2.a11y-section-title :is(.a11y-accordion-head, .a11y-w22-head) > :is(span:first-child, .a11y-w22-head-words)) {
+  font-size: inherit;
+  color: inherit;
+}
+:where(.a11y-widget-biz .a11y-stmt > .a11y-conf-caveat) {
+  margin-top: var(--cds-spacing-05);
+}
+:where(.a11y-widget-biz .a11y-w22 > .a11y-section-title + .a11y-next) {
+  margin-top: var(--cds-spacing-03);
 }
 
 /* ── Buttons, fields and shared controls, continued ── */
@@ -13457,14 +13461,6 @@
 }
 :where(.a11y-widget-biz .a11y-fd > .a11y-fd-meta) {
   margin-bottom: var(--cds-spacing-05);
-}
-
-/* ── Legal standard, checklist and WCAG 2.2, continued ── */
-:where(.a11y-widget-biz .a11y-acr .a11y-section-head > .a11y-acr-make) {
-  margin-left: 0;
-  margin-inline-start: 0;
-  justify-self: start;
-  grid-column: 1 / -1;
 }
 
 /* ── Buttons, fields and shared controls, continued ── */
@@ -13530,6 +13526,16 @@
 :where(.a11y-widget-biz .a11y-fd > .a11y-fd-col:last-of-type > *:last-child) {
   border-bottom: 1px solid var(--row-rule);
 }
+
+/* ── Legal standard, checklist and WCAG 2.2, continued ── */
+:where(.a11y-widget-biz .a11y-acr .a11y-section-head > .a11y-acr-make) {
+  margin-left: 0;
+  margin-inline-start: 0;
+  justify-self: start;
+  grid-column: 1 / -1;
+}
+
+/* ── Findings and the opened finding, continued ── */
 :where(.a11y-widget-biz .a11y-fd > .a11y-fd-col :is(.a11y-fd-points, ul:not(.a11y-occurrence-list):not(.a11y-tech-elements))) {
   display: flex;
   flex-direction: column;
@@ -13608,4 +13614,14 @@
   margin: 0;
   padding: 0;
   border-bottom: 0;
+}
+
+/* ── Legal standard, checklist and WCAG 2.2, continued ── */
+:where(
+  .a11y-widget-biz .a11y-w22 > .a11y-next,
+  .a11y-widget-biz .a11y-w22 > .a11y-w22-panel
+) {
+  margin-left: 0;
+  margin-inline-start: 0;
+  padding-left: 0;
 }
