@@ -2387,6 +2387,9 @@
   width: 1em;
   margin-inline-start: -1em;
 }
+:where(.a11y-widget-biz .a11y-undecided-answer > .a11y-fd-meta > span)::after {
+  content: none;
+}
 
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
 :where(.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row-failed) {
@@ -2563,6 +2566,9 @@
 :where(.a11y-widget-biz .a11y-fd > .a11y-fd-col :is(.a11y-fd-points, ul:not(.a11y-occurrence-list):not(.a11y-tech-elements)) > li)::before {
   content: none;
   display: none;
+}
+:where(.a11y-widget-biz .a11y-undecided-answer > .a11y-fd-meta > span)::before {
+  content: none;
 }
 
 /* ── Buttons, fields and shared controls, continued ── */
@@ -6639,9 +6645,6 @@
   display: block;
   margin-top: var(--cds-spacing-02);
 }
-:where(.a11y-widget-biz .a11y-undecided-answer > .a11y-fd-meta) {
-  margin-bottom: var(--cds-spacing-06);
-}
 
 /* ── Screen reader simulation and vision, continued ── */
 :where(.a11y-widget-biz .a11y-sr-bar :is(.a11y-sr-play, .a11y-sr-ctl, .a11y-sr-filter, .a11y-skip-link)) {
@@ -8102,6 +8105,27 @@
   line-height: 1.1;
 }
 
+/* ── Legal standard, checklist and WCAG 2.2, continued ── */
+:where(.a11y-widget-biz :is(.a11y-conf-list > .a11y-conf-row > .a11y-conf-id, .a11y-w22-row .a11y-w22-id, .a11y-w22-row .a11y-w22-level)) {
+  font-family: "Jokker", "DejaVu Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: 0;
+  font-variant-numeric: normal;
+}
+:where(.a11y-widget-biz :is(.a11y-w22-row .a11y-w22-id, .a11y-w22-row .a11y-w22-level, .a11y-conf-list > .a11y-conf-row > .a11y-conf-id)) {
+  white-space: nowrap;
+}
+@container a11y-qlist (max-width: 640px) {
+  :where(.a11y-widget-biz :is(.a11y-conf-row > .a11y-conf-status, .a11y-w22-row > .a11y-w22-call)) {
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: break-word;
+    text-align: end;
+  }
+}
+
 /* ── Findings and the opened finding, continued ── */
 :where(.a11y-widget-biz .a11y-fd .a11y-occurrence-list > .a11y-occurrence > :last-child > :last-child) {
   margin-bottom: 0;
@@ -8114,6 +8138,37 @@
   line-height: 1.1;
   letter-spacing: 0;
   text-align: start;
+}
+:where(.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-conf-status, .a11y-status-chip, .a11y-next-count)) {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  rotate: none;
+  transform: none;
+  color: var(--ink);
+  letter-spacing: 0;
+  vertical-align: baseline;
+}
+:where(.a11y-widget-biz :is(.a11y-sev-critical, .a11y-status-chip-critical, .a11y-rule-chip, .a11y-level-badge, .a11y-next-count)) {
+  color: var(--word-red);
+}
+:where(.a11y-widget-biz :is(.a11y-sev-serious, .a11y-conf-status)) {
+  color: var(--word-blue);
+}
+:where(.a11y-widget-biz .a11y-sev-moderate) {
+  color: var(--word-green);
+}
+:where(.a11y-widget-biz :is(.a11y-sev-minor)) {
+  color: var(--word-ochre);
+}
+@media (forced-colors: active) {
+  :where(.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-conf-status, .a11y-status-chip, .a11y-next-count)) {
+    color: CanvasText;
+  }
 }
 
 /* ── Designer and developer list, design notes, continued ── */
@@ -8313,25 +8368,6 @@
 }
 
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
-:where(.a11y-widget-biz :is(.a11y-conf-list > .a11y-conf-row > .a11y-conf-id, .a11y-w22-row .a11y-w22-id, .a11y-w22-row .a11y-w22-level)) {
-  font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 1.1;
-  letter-spacing: 0;
-  font-variant-numeric: normal;
-}
-:where(.a11y-widget-biz :is(.a11y-w22-row .a11y-w22-id, .a11y-w22-row .a11y-w22-level, .a11y-conf-list > .a11y-conf-row > .a11y-conf-id)) {
-  white-space: nowrap;
-}
-@container a11y-qlist (max-width: 640px) {
-  :where(.a11y-widget-biz :is(.a11y-conf-row > .a11y-conf-status, .a11y-w22-row > .a11y-w22-call)) {
-    min-width: 0;
-    white-space: normal;
-    overflow-wrap: break-word;
-    text-align: end;
-  }
-}
 :where(.a11y-widget-biz :is(.a11y-manual-form, .a11y-triage-form) > .a11y-manual-form-actions) {
   display: flex;
   flex-direction: column;
@@ -8340,41 +8376,6 @@
   width: 100%;
   margin: 0;
 }
-
-/* ── Findings and the opened finding, continued ── */
-:where(.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-conf-status, .a11y-status-chip, .a11y-next-count)) {
-  display: inline;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: none;
-  box-shadow: none;
-  rotate: none;
-  transform: none;
-  color: var(--ink);
-  letter-spacing: 0;
-  vertical-align: baseline;
-}
-:where(.a11y-widget-biz :is(.a11y-sev-critical, .a11y-status-chip-critical, .a11y-rule-chip, .a11y-level-badge, .a11y-next-count)) {
-  color: var(--word-red);
-}
-:where(.a11y-widget-biz :is(.a11y-sev-serious, .a11y-conf-status)) {
-  color: var(--word-blue);
-}
-:where(.a11y-widget-biz .a11y-sev-moderate) {
-  color: var(--word-green);
-}
-:where(.a11y-widget-biz :is(.a11y-sev-minor)) {
-  color: var(--word-ochre);
-}
-@media (forced-colors: active) {
-  :where(.a11y-widget-biz :is(.a11y-sev, .a11y-rule-chip, .a11y-level-badge, .a11y-conf-status, .a11y-status-chip, .a11y-next-count)) {
-    color: CanvasText;
-  }
-}
-
-/* ── Legal standard, checklist and WCAG 2.2, continued ── */
 :where(.a11y-widget-biz .a11y-conf-row > .a11y-conf-id > .a11y-conf-name) {
   display: block;
   margin-top: var(--cds-spacing-02);
@@ -9706,6 +9707,58 @@
   padding-inline: 0;
 }
 
+/* ── Scan form and settings, continued ── */
+:where(.a11y-widget-biz .a11y-url-form > div:not([class]):has(> .a11y-login)) {
+  display: contents;
+}
+:where(.a11y-widget-biz :is(.a11y-url-form > .a11y-tester-name, .a11y-url-form .a11y-login-legend, .a11y-url-form > .a11y-url-submit > .a11y-url-submit-note, .a11y-scan-itinerary, .a11y-report-actions .a11y-ra-head)) {
+  font-family: "Jokker", "DejaVu Sans", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-synthesis: none;
+  font-variant-numeric: lining-nums;
+  font-kerning: normal;
+  font-feature-settings: "kern", "liga", "ss01", "ss04", "ss05", "tnum", "zero";
+  text-transform: none;
+  text-align: left;
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+:where(.a11y-widget-biz :is(.a11y-url-form > .a11y-tester-name, .a11y-url-form .a11y-login-legend, .a11y-report-actions .a11y-ra-head)) {
+  font-size: inherit;
+  letter-spacing: inherit;
+}
+@media (max-width: 640px) {
+  :where(.a11y-widget-biz :is(.a11y-url-form > .a11y-tester-name, .a11y-url-form .a11y-login-legend, .a11y-report-actions .a11y-ra-head)) {
+    font-size: inherit;
+    letter-spacing: inherit;
+  }
+}
+:where(.a11y-widget-biz .a11y-scan-itinerary > .a11y-scan-step > .a11y-scan-step-num) {
+  font-family: inherit;
+  font-style: normal;
+  font-variant-numeric: lining-nums;
+  color: var(--callout-red);
+}
+@media (forced-colors: active) {
+  :where(.a11y-widget-biz .a11y-scan-itinerary > .a11y-scan-step > .a11y-scan-step-num) {
+    color: CanvasText;
+  }
+}
+:where(.a11y-widget-biz .a11y-settings .a11y-settings-opt > .a11y-settings-words) {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+@media (max-width: 671px) {
+  :where(.a11y-widget-biz .a11y-settings .a11y-settings-opt > .a11y-settings-words) {
+    flex: 1 1 calc(100% - 40px);
+  }
+}
+:where(.a11y-widget-biz .a11y-settings button.a11y-settings-opt:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
 /* ── Findings and the opened finding, continued ── */
 :where(.a11y-widget-biz .a11y-fd .a11y-tech-details > summary) {
   --ink: #000;
@@ -9788,71 +9841,6 @@
   :where(.a11y-widget-biz .a11y-dn-caret-head > .a11y-dn-bar:hover > .a11y-dn-bar-title) {
     text-decoration-thickness: 1px;
     text-underline-offset: 0.14em;
-  }
-}
-
-/* ── Scan form and settings, continued ── */
-:where(.a11y-widget-biz .a11y-url-form > div:not([class]):has(> .a11y-login)) {
-  display: contents;
-}
-:where(.a11y-widget-biz :is(.a11y-url-form > .a11y-tester-name, .a11y-url-form .a11y-login-legend, .a11y-url-form > .a11y-url-submit > .a11y-url-submit-note, .a11y-scan-itinerary, .a11y-report-actions .a11y-ra-head)) {
-  font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-  font-synthesis: none;
-  font-variant-numeric: lining-nums;
-  font-kerning: normal;
-  font-feature-settings: "kern", "liga", "ss01", "ss04", "ss05", "tnum", "zero";
-  text-transform: none;
-  text-align: left;
-  line-height: 1.1;
-  letter-spacing: 0;
-}
-:where(.a11y-widget-biz :is(.a11y-url-form > .a11y-tester-name, .a11y-url-form .a11y-login-legend, .a11y-report-actions .a11y-ra-head)) {
-  font-size: inherit;
-  letter-spacing: inherit;
-}
-@media (max-width: 640px) {
-  :where(.a11y-widget-biz :is(.a11y-url-form > .a11y-tester-name, .a11y-url-form .a11y-login-legend, .a11y-report-actions .a11y-ra-head)) {
-    font-size: inherit;
-    letter-spacing: inherit;
-  }
-}
-:where(.a11y-widget-biz .a11y-scan-itinerary > .a11y-scan-step > .a11y-scan-step-num) {
-  font-family: inherit;
-  font-style: normal;
-  font-variant-numeric: lining-nums;
-  color: var(--callout-red);
-}
-@media (forced-colors: active) {
-  :where(.a11y-widget-biz .a11y-scan-itinerary > .a11y-scan-step > .a11y-scan-step-num) {
-    color: CanvasText;
-  }
-}
-:where(.a11y-widget-biz .a11y-settings .a11y-settings-opt > .a11y-settings-words) {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-@media (max-width: 671px) {
-  :where(.a11y-widget-biz .a11y-settings .a11y-settings-opt > .a11y-settings-words) {
-    flex: 1 1 calc(100% - 40px);
-  }
-}
-:where(.a11y-widget-biz .a11y-settings button.a11y-settings-opt:focus-visible) {
-  outline: 2px solid var(--focus);
-  outline-offset: -2px;
-}
-:where(.a11y-widget-biz .a11y-settings .a11y-settings-opt) {
-  box-sizing: border-box;
-  width: 100%;
-  min-width: 0;
-  margin: 0;
-  text-align: start;
-}
-@media (max-width: 671px) {
-  :where(.a11y-widget-biz .a11y-settings .a11y-settings-opt) {
-    flex-wrap: wrap;
-    padding-inline: var(--cds-spacing-04) var(--cds-spacing-05);
   }
 }
 
@@ -10236,6 +10224,24 @@
   color: var(--hl-blue-ink);
 }
 
+/* ── Scan form and settings, continued ── */
+:where(.a11y-widget-biz .a11y-settings .a11y-settings-opt) {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  text-align: start;
+}
+@media (max-width: 671px) {
+  :where(.a11y-widget-biz .a11y-settings .a11y-settings-opt) {
+    flex-wrap: wrap;
+    padding-inline: var(--cds-spacing-04) var(--cds-spacing-05);
+  }
+}
+:where(.a11y-widget-biz :is(:is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form) :is(.a11y-input, .a11y-select2, .a11y-textarea), .a11y-url-form .a11y-login .a11y-stmt-field, :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form .a11y-stmt-fields > .a11y-stmt-field)[class]) {
+  --focus: #198038;
+}
+
 /* ── History, statement, report actions, professional, continued ── */
 @media (hover: hover) {
   :where(.a11y-widget-biz .a11y-stmt .a11y-stmt-step-head > .a11y-stmt-toggle:hover > .a11y-stmt-toggle-words) {
@@ -10424,16 +10430,6 @@
   }
 }
 
-/* ── Scan form and settings, continued ── */
-:where(.a11y-widget-biz :is(:is(.a11y-url-form, .a11y-manual-form, .a11y-triage-form) :is(.a11y-input, .a11y-select2, .a11y-textarea), .a11y-url-form .a11y-login .a11y-stmt-field, :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form .a11y-stmt-fields > .a11y-stmt-field)[class]) {
-  --focus: #198038;
-}
-@media (forced-colors: active) {
-  :where(.a11y-widget-biz .a11y-settings :is(.a11y-settings-opt, .a11y-select2-field, .a11y-input-shell)) {
-    border: 1px solid CanvasText;
-  }
-}
-
 /* ── Buttons, fields and shared controls, continued ── */
 :where(.a11y-widget-biz :is(.a11y-btn, .a11y-ra-send, .a11y-ra-pdf, .a11y-chats-new, .a11y-lang-toggle, .a11y-prompt-go) :is(span, strong):not(.a11y-sr-only)) {
   font-size: inherit;
@@ -10459,6 +10455,17 @@
     line-height: 1.1;
     letter-spacing: inherit;
   }
+}
+
+/* ── Scan form and settings, continued ── */
+@media (forced-colors: active) {
+  :where(.a11y-widget-biz .a11y-settings :is(.a11y-settings-opt, .a11y-select2-field, .a11y-input-shell)) {
+    border: 1px solid CanvasText;
+  }
+}
+:where(.a11y-widget-biz .a11y-url-form > .a11y-url-submit > .a11y-url-submit-note) {
+  font-size: 18px;
+  font-style: normal;
 }
 
 /* ── Screen reader simulation and vision, continued ── */
@@ -10833,10 +10840,6 @@
 }
 
 /* ── Scan form and settings, continued ── */
-:where(.a11y-widget-biz .a11y-url-form > .a11y-url-submit > .a11y-url-submit-note) {
-  font-size: 18px;
-  font-style: normal;
-}
 :where(.a11y-widget-biz .a11y-settings > .a11y-settings-row > .a11y-settings-label) {
   display: block;
   justify-self: stretch;
@@ -13554,4 +13557,15 @@
   padding: 0;
   list-style: none;
   line-height: 1.25;
+}
+:where(.a11y-widget-biz .a11y-undecided-answer > .a11y-fd-meta) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--cds-spacing-03);
+  margin: 0 0 var(--cds-spacing-05);
+  padding: 0;
+}
+:where(.a11y-widget-biz .a11y-undecided-answer > .a11y-fd-meta > span) {
+  margin: 0;
 }
