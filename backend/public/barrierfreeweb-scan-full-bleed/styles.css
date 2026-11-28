@@ -1623,3 +1623,13 @@ p.act-statement a:hover .act-statement__text span + span { color: #000; }
 @media (max-width: 671px) {
   .card:not(:has(> .offer)) { color: #fff; }
 }
+
+/* A titled section's title and its words on one top line (user's
+   instruction, 28 Nov 2026, "allign properly", on "Mobile-first design"
+   at 49px beside 24px words: they shared a baseline, so the words began
+   half a title's height down). Both are trimmed to their capitals, so the
+   tops of the capitals stand on one line 12px under the rule; a list of
+   terms beside a title starts with its rule on that line. */
+.cols:has(> .text > h2:first-child) { align-items: start; }
+.cols:has(> .text > h2:first-child) > .text > h2,
+.cols:has(> .text > h2:first-child) > .text > h2 + p { text-box: trim-start cap alphabetic; }
