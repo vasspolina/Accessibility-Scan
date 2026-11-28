@@ -61,17 +61,18 @@ update_checkout() {
   [ -d "$CHECKOUT/.git" ] || { install_checkout; return; }
   say "updating the scanner"
   rm -f "$READY"
-  git -C "$CHECKOUT" fetch --depth 1 origin "$REF" >&2 && git -C "$CHECKOUT" reset --hard FETCH_HEAD >&2 || fail "update failed"
+  git -C "$CHECKOUT" fetch --depth 1 origin "$REF" >&2 || fail "could not fetch $REF"
+  git -C "$CHECKOUT" reset --hard FETCH_HEAD >&2 || fail "could not move the checkout to $REF"
   install_checkout
 }
 
 resolve() {
   if [ -n "${A11Y_SCAN_BIN:-}" ]; then
-    RUN=("$A11Y_SCAN_BIN"); [[ "$A11Y_SCAN_BIN" == *.js ]] && RUN=(node "$A11Y_SCAN_BIN")
+    if [[ "$A11Y_SCAN_BIN" == *.js ]]; then RUN=(node "$A11Y_SCAN_BIN"); else RUN=("$A11Y_SCAN_BIN"); fi
   elif command -v a11y-scan >/dev/null 2>&1; then
     RUN=(a11y-scan)
   else
-    [ -f "$CLI" ] && [ -f "$READY" ] || install_checkout
+    if [ ! -f "$CLI" ] || [ ! -f "$READY" ]; then install_checkout; fi
     need_node
     export PLAYWRIGHT_BROWSERS_PATH="$BROWSERS"
     RUN=(node "$CLI")
