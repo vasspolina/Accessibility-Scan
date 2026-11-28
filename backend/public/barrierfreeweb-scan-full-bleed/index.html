@@ -13,18 +13,23 @@ main.wrap > form.signup { margin-bottom: 0; }
 /* One line, a link to the Accessibility page (user's instruction, 28 Nov
    2026, "make this in one line and link to accessibility page"): the name
    black, the rest #666 (5.7:1 on white), the icon set's arrow after; the
-   whole line is the link, black on hover. At 1.84vw the sentence is
-   slightly wider than the window, so the arrow and the last words wrap. */
+   whole line is the link, black on hover. One line from 1110px up (where the size is 18px or more);
+   narrower, it wraps at 18px. */
 .act-statement {
   margin: 0;
   padding-block: var(--s05);
-  font-size: clamp(21px, 1.84vw, 37px); /* 15% larger ("make this text 15% bigger", 28 Nov 2026) */
+  /* As large as one line allows ("keep it on one line", 28 Nov 2026, after
+     "15% bigger" wrapped): the sentence and its arrow measure about 57em,
+     so the size is the column (the window less the two 32px gutters) over
+     58em. 15% larger than 1.6vw would be wider than any window. */
+  font-size: max(18px, calc((100vw - 64px) / 58));
   font-weight: 500;
   line-height: 1.15;
   letter-spacing: -0.025em;
   color: #000;
   border-image: linear-gradient(white 0 0) fill 0 / 0 / 0 100vw;
 }
+@media (min-width: 1110px) { .act-statement { white-space: nowrap; } }
 .act-statement a { color: #000; text-decoration: none; }
 .act-statement a:hover { background: none; color: #000; }
 .act-statement a span + span { color: #666; }
