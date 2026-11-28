@@ -388,6 +388,50 @@
 }
 
 
+/* ═══ Score summary ═════════════════════════════════════════════════════════ */
+
+:where(
+  .a11y-widget-biz .a11y-dial-band,
+  .a11y-widget-biz .a11y-dial-label,
+  .a11y-widget-biz .a11y-dial-number,
+  .a11y-widget-biz .a11y-dial-of,
+  .a11y-widget-biz .a11y-dial-sub,
+  .a11y-widget-biz .a11y-issue-row-meta,
+  .a11y-widget-biz .a11y-issue-row-title,
+  .a11y-widget-biz .a11y-sum-dial-num
+) {
+  margin-inline-end: var(--cds-spacing-03);
+}
+:where(.a11y-widget-biz .a11y-sum-dial circle) {
+  stroke: var(--ink);
+}
+@media (forced-colors: active) {
+  :where(.a11y-widget-biz .a11y-sum-dial circle) {
+    stroke: CanvasText;
+  }
+}
+:where(.a11y-widget-biz .a11y-sum-grid) {
+  container: a11y-sum / inline-size;
+}
+:where(.a11y-widget-biz .a11y-sum-spec-title)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+}
+:where(.a11y-widget-biz .a11y-sum-run > .a11y-sum-dial-card) {
+  grid-column: 1;
+  min-width: 0;
+}
+:where(.a11y-widget-biz .a11y-sum-spec-title:focus-visible) {
+  outline: none;
+}
+:where(.a11y-widget-biz .a11y-sum-spec-title:focus-visible)::after {
+  outline: 2px solid var(--focus);
+  outline-offset: -6px;
+}
+
+
 /* ═══ History, statement, report actions, professional ══════════════════════ */
 
 :where(
@@ -462,50 +506,6 @@
 :where(.a11y-widget-biz .a11y-hist .a11y-hist-facts > li > .a11y-hist-fact-label) {
   position: relative;
   top: -3px;
-}
-
-
-/* ═══ Score summary ═════════════════════════════════════════════════════════ */
-
-:where(
-  .a11y-widget-biz .a11y-dial-band,
-  .a11y-widget-biz .a11y-dial-label,
-  .a11y-widget-biz .a11y-dial-number,
-  .a11y-widget-biz .a11y-dial-of,
-  .a11y-widget-biz .a11y-dial-sub,
-  .a11y-widget-biz .a11y-issue-row-meta,
-  .a11y-widget-biz .a11y-issue-row-title,
-  .a11y-widget-biz .a11y-sum-dial-num
-) {
-  margin-inline-end: var(--cds-spacing-03);
-}
-:where(.a11y-widget-biz .a11y-sum-dial circle) {
-  stroke: var(--ink);
-}
-@media (forced-colors: active) {
-  :where(.a11y-widget-biz .a11y-sum-dial circle) {
-    stroke: CanvasText;
-  }
-}
-:where(.a11y-widget-biz .a11y-sum-grid) {
-  container: a11y-sum / inline-size;
-}
-:where(.a11y-widget-biz .a11y-sum-spec-title)::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 20px;
-}
-:where(.a11y-widget-biz .a11y-sum-run > .a11y-sum-dial-card) {
-  grid-column: 1;
-  min-width: 0;
-}
-:where(.a11y-widget-biz .a11y-sum-spec-title:focus-visible) {
-  outline: none;
-}
-:where(.a11y-widget-biz .a11y-sum-spec-title:focus-visible)::after {
-  outline: 2px solid var(--focus);
-  outline-offset: -6px;
 }
 
 
@@ -4041,9 +4041,6 @@
 :where(.a11y-widget-biz .a11y-occurrence .a11y-shot) {
   margin-top: var(--cds-spacing-05);
 }
-:where(.a11y-widget-biz .a11y-principle-group + .a11y-principle-group) {
-  margin-top: var(--cds-spacing-10);
-}
 
 /* ── Chat, conversations and Report a barrier, continued ── */
 :where(.a11y-widget-biz .a11y-prompts .a11y-prompt) {
@@ -6035,9 +6032,6 @@
   padding: 0;
   list-style: none;
 }
-:where(.a11y-widget-biz .a11y-legal-cards) {
-  margin: var(--cds-spacing-07) 0 0;
-}
 :where(.a11y-widget-biz .a11y-conf-row > .a11y-conf-status) {
   z-index: 1;
   max-width: min(80%, 22em);
@@ -7112,30 +7106,6 @@
   margin: 0;
 }
 
-/* ── Legal standard, checklist and WCAG 2.2, continued ── */
-:where(.a11y-widget-biz .a11y-w22-row > .a11y-w22-toggle) {
-  display: flex;
-  align-items: baseline;
-  gap: 0;
-  cursor: pointer;
-  font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-weight: 400;
-}
-@media (max-width: 671px) {
-  :where(.a11y-widget-biz .a11y-w22-row > .a11y-w22-toggle) {
-    flex-wrap: wrap;
-  }
-}
-:where(.a11y-widget-biz .a11y-w22-panel > .a11y-w22-list + *) {
-  margin-top: var(--cds-spacing-10);
-}
-:where(.a11y-widget-biz .a11y-w22 > :is(.a11y-next, .a11y-w22-panel)) {
-  margin-inline-start: var(--caret-col);
-}
-:where(.a11y-widget-biz .a11y-legal-q) {
-  align-items: start;
-}
-
 /* ── History, statement, report actions, professional, continued ── */
 :where(.a11y-widget-biz .a11y-stmt .a11y-stmt-toggle) {
   display: flex;
@@ -7161,7 +7131,6 @@
   align-items: flex-start;
   gap: var(--cds-spacing-07);
   width: 100%;
-  margin: var(--cds-spacing-10) 0 0;
   text-align: left;
 }
 @media (max-width: 671px) {
@@ -7174,6 +7143,36 @@
     border: 1px solid CanvasText;
   }
 }
+:where(.a11y-widget-biz .a11y-stmt .a11y-stmt-step-head > .a11y-stmt-toggle) {
+  align-items: center;
+  gap: var(--cds-spacing-05);
+}
+
+/* ── Legal standard, checklist and WCAG 2.2, continued ── */
+:where(.a11y-widget-biz .a11y-w22-row > .a11y-w22-toggle) {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  cursor: pointer;
+  font-family: "Jokker", "DejaVu Sans", sans-serif;
+  font-weight: 400;
+}
+@media (max-width: 671px) {
+  :where(.a11y-widget-biz .a11y-w22-row > .a11y-w22-toggle) {
+    flex-wrap: wrap;
+  }
+}
+:where(.a11y-widget-biz .a11y-w22-panel > .a11y-w22-list + *) {
+  margin-top: var(--cds-spacing-10);
+}
+:where(.a11y-widget-biz .a11y-w22 > :is(.a11y-next, .a11y-w22-panel)) {
+  margin-inline-start: var(--caret-col);
+}
+:where(.a11y-widget-biz .a11y-legal-q) {
+  align-items: start;
+}
+
+/* ── History, statement, report actions, professional, continued ── */
 :where(.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form > *) {
   box-sizing: border-box;
   max-width: 100%;
@@ -7181,10 +7180,6 @@
 }
 :where(.a11y-widget-biz .a11y-stmt > .a11y-stmt-form + *) {
   margin-top: var(--cds-spacing-10);
-}
-:where(.a11y-widget-biz .a11y-stmt .a11y-stmt-step-head > .a11y-stmt-toggle) {
-  align-items: center;
-  gap: var(--cds-spacing-05);
 }
 
 /* ── Score summary, continued ── */
@@ -7415,9 +7410,6 @@
 }
 
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
-:where(.a11y-widget-biz .a11y-legal-cards + .a11y-legal-grid) {
-  margin-top: var(--cds-spacing-10);
-}
 :where(.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-standard, .a11y-legal-eyebrow)) {
   display: block;
   margin: 0 0 var(--cds-spacing-06);
@@ -9563,6 +9555,17 @@
   outline: 2px solid #fff;
 }
 
+/* ── Designer and developer list, design notes, continued ── */
+:where(.a11y-widget-biz .a11y-dn-panel .a11y-dn-caret > .a11y-dn-detail) {
+  --paper: inherit;
+  --tile: var(--fd-card-light);
+  --bubble-pill: var(--fd-card-light);
+  margin-inline-start: 0;
+}
+:where(.a11y-widget-biz .a11y-dn-panel > .a11y-dn-carets > .a11y-dn-caret[data-open]) {
+  padding-inline: 0;
+}
+
 /* ── History, statement, report actions, professional, continued ── */
 :where(.a11y-widget-biz .a11y-url-form .a11y-login .a11y-stmt-field > input) {
   box-sizing: border-box;
@@ -9656,17 +9659,6 @@
 :where(.a11y-widget-biz .a11y-stmt .a11y-stmt-form > :is(.a11y-stmt-step:has(> .a11y-stmt-copy), .a11y-stmt-card)) {
   align-self: stretch;
   width: auto;
-}
-
-/* ── Designer and developer list, design notes, continued ── */
-:where(.a11y-widget-biz .a11y-dn-panel .a11y-dn-caret > .a11y-dn-detail) {
-  --paper: inherit;
-  --tile: var(--fd-card-light);
-  --bubble-pill: var(--fd-card-light);
-  margin-inline-start: 0;
-}
-:where(.a11y-widget-biz .a11y-dn-panel > .a11y-dn-carets > .a11y-dn-caret[data-open]) {
-  padding-inline: 0;
 }
 
 /* ── Scan form and settings, continued ── */
@@ -11096,6 +11088,34 @@
   outline-offset: 2px;
 }
 
+/* ── Chat, conversations and Report a barrier, continued ── */
+:where(.a11y-widget-biz .a11y-prompts .a11y-prompt) {
+  --ink: #000;
+  --paper: var(--hl-cap-a);
+  --note: var(--hl-cap-a);
+  --note-ink: #000;
+  --focus: #0a3d1a;
+  border: 0;
+  border-radius: 20px;
+  outline: 0;
+  box-shadow: none;
+  background: var(--hl-cap-a);
+  color: #000;
+}
+@media (forced-colors: active) {
+  :where(.a11y-widget-biz .a11y-prompts .a11y-prompt) {
+    border: 1px solid CanvasText;
+  }
+}
+:where(.a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:disabled)) {
+  outline: 1px dashed #000;
+  outline-offset: -1px;
+}
+:where(.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-q:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
 @media (max-width: 671px) {
   :where(.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary)) {
@@ -11226,34 +11246,6 @@
   }
 }
 :where(.a11y-widget-biz form.a11y-url-form.a11y-tester .a11y-tester-choices > label.a11y-seg:has(input:focus-visible)) {
-  outline: 2px solid var(--focus);
-  outline-offset: 2px;
-}
-
-/* ── Chat, conversations and Report a barrier, continued ── */
-:where(.a11y-widget-biz .a11y-prompts .a11y-prompt) {
-  --ink: #000;
-  --paper: var(--hl-cap-a);
-  --note: var(--hl-cap-a);
-  --note-ink: #000;
-  --focus: #0a3d1a;
-  border: 0;
-  border-radius: 20px;
-  outline: 0;
-  box-shadow: none;
-  background: var(--hl-cap-a);
-  color: #000;
-}
-@media (forced-colors: active) {
-  :where(.a11y-widget-biz .a11y-prompts .a11y-prompt) {
-    border: 1px solid CanvasText;
-  }
-}
-:where(.a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:disabled)) {
-  outline: 1px dashed #000;
-  outline-offset: -1px;
-}
-:where(.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-q:focus-visible) {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
@@ -13705,6 +13697,16 @@
   line-height: 1.25;
 }
 
+/* ── Tokens and base, continued ── */
+:where(.a11y-widget-biz .a11y-print-row) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--cds-spacing-03) var(--cds-spacing-05);
+  margin: 0 0 var(--cds-spacing-07);
+  padding: 0;
+}
+
 /* ── Shell, sections and navigation, continued ── */
 :where(.a11y-widget-biz .a11y-chat-blockbody .a11y-section-desc) {
   margin: 0 0 var(--cds-spacing-06);
@@ -13800,16 +13802,6 @@
     gap: var(--cds-spacing-03);
     align-items: baseline;
   }
-}
-
-/* ── Tokens and base, continued ── */
-:where(.a11y-widget-biz .a11y-print-row) {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--cds-spacing-03) var(--cds-spacing-05);
-  margin: 0 0 var(--cds-spacing-07);
-  padding: 0;
 }
 
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
@@ -13999,6 +13991,11 @@
   margin-bottom: 0;
 }
 
+/* ── Buttons, fields and shared controls, continued ── */
+:where(.a11y-widget-biz .a11y-findings-table .a11y-datatable) {
+  margin-bottom: 0;
+}
+
 /* ── Score summary, continued ── */
 :where(.a11y-widget-biz .a11y-first-fix .a11y-first-fix-label) {
   margin: 0 0 var(--cds-spacing-04);
@@ -14015,12 +14012,15 @@
 }
 
 /* ── Findings and the opened finding, continued ── */
-:where(.a11y-widget-biz .a11y-findings-head:has(+ .a11y-principle-groups)) {
-  margin-bottom: var(--cds-spacing-10);
-}
 :where(.a11y-widget-biz :is(.a11y-dt-expand-row, .a11y-dn-detail) .a11y-fd :is(:is(.a11y-method-hint, .a11y-finding-measured, .a11y-finding-impact, .a11y-finding-research, .a11y-finding-todo) > strong:first-child, .a11y-finding-steps > p:first-child, .a11y-affected-label, .a11y-affected-label > strong)) {
   font-size: 18px;
   line-height: 1.35;
+}
+:where(.a11y-widget-biz .a11y-findings-head:has(+ .a11y-principle-groups)) {
+  margin-bottom: var(--cds-spacing-06);
+}
+:where(.a11y-widget-biz .a11y-principle-group + .a11y-principle-group) {
+  margin-top: var(--cds-spacing-09);
 }
 
 /* ── Shell, sections and navigation, continued ── */
@@ -14031,6 +14031,9 @@
   color: var(--prompt-line);
   margin-top: 0;
   margin-bottom: var(--cds-spacing-06);
+}
+:where(.a11y-widget-biz :is(.a11y-section-concern, .a11y-dn) .a11y-section-desc) {
+  margin-bottom: var(--cds-spacing-04);
 }
 
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
@@ -14109,10 +14112,21 @@
     grid-template-rows: none;
   }
 }
+:where(.a11y-widget-biz .a11y-legal-cards) {
+  margin: var(--cds-spacing-06) 0 0;
+}
+:where(.a11y-widget-biz .a11y-legal-cards + .a11y-legal-grid) {
+  margin-top: var(--cds-spacing-09);
+}
 
 /* ── Screen reader simulation and vision, continued ── */
 :where(.a11y-widget-biz .a11y-print-row > .a11y-sr-status) {
   color: var(--prompt-line);
   font-size: 18px;
   line-height: 1.35;
+}
+
+/* ── History, statement, report actions, professional, continued ── */
+:where(.a11y-widget-biz :is(.a11y-stmt, .a11y-acr) .a11y-stmt-form) {
+  margin: var(--cds-spacing-06) 0 0;
 }
