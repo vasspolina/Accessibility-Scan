@@ -8995,3 +8995,30 @@
    inline link inside the paragraph, where it does nothing. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd-learn:not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8):not(.a11y-z9):not(.a11y-z10):not(.a11y-z11):not(.a11y-z12):not(.a11y-z13):not(.a11y-z14):not(.a11y-z15):not(.a11y-z16) { margin: var(--cds-spacing-06) 0 0; padding: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-fd-learn > a.a11y-learn-prompt:not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8):not(.a11y-z9):not(.a11y-z10):not(.a11y-z11):not(.a11y-z12):not(.a11y-z13):not(.a11y-z14):not(.a11y-z15):not(.a11y-z16) { margin-top: 0; }
+
+/* ═══ THE LEGAL STANDARD'S HEAD AS THE INFO BLOCK (user's instruction,
+   28 Nov 2026, "design this like this", the three cream cards beside
+   Previous scans) ═══════════════════════════════════════════════════════
+   No cream cards: three columns 16px apart, each opening on a small capital
+   label (WCAG 2.1 AA, 'Nothing found' is not a pass, Questions no software
+   can answer: 18px, +0.04em, uppercase) over a 1px ink rule, its words at
+   18px/1.35 under it, and a 1px ink rule 12px under its last line, as
+   Previous scans. One column under 672px. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards:not(.a11y-l1):not(.a11y-l2):not(.a11y-l3):not(.a11y-l4):not(.a11y-l5):not(.a11y-l6):not(.a11y-l7):not(.a11y-l8):not(.a11y-l9):not(.a11y-l10):not(.a11y-l11):not(.a11y-l12):not(.a11y-l13):not(.a11y-l14):not(.a11y-l15):not(.a11y-l16):not(.a11y-l17):not(.a11y-l18):not(.a11y-l19):not(.a11y-l20):not(.a11y-l21):not(.a11y-l22):not(.a11y-l23):not(.a11y-l24):not(.a11y-l25):not(.a11y-l26):not(.a11y-l27):not(.a11y-l28):not(.a11y-l29):not(.a11y-l30) { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--cds-spacing-08) var(--cds-spacing-05); align-items: stretch; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards > :is(.a11y-legal-std, .a11y-legal-band, .a11y-legal-panel):not(.a11y-l1):not(.a11y-l2):not(.a11y-l3):not(.a11y-l4):not(.a11y-l5):not(.a11y-l6):not(.a11y-l7):not(.a11y-l8):not(.a11y-l9):not(.a11y-l10):not(.a11y-l11):not(.a11y-l12):not(.a11y-l13):not(.a11y-l14):not(.a11y-l15):not(.a11y-l16):not(.a11y-l17):not(.a11y-l18):not(.a11y-l19):not(.a11y-l20):not(.a11y-l21):not(.a11y-l22):not(.a11y-l23):not(.a11y-l24):not(.a11y-l25):not(.a11y-l26):not(.a11y-l27):not(.a11y-l28):not(.a11y-l29):not(.a11y-l30) {
+  min-height: 0; height: auto; margin: 0; padding: 0 0 var(--cds-spacing-04); border: 0; border-bottom: 1px solid var(--ink); border-radius: 0;
+  background: none; color: var(--ink); box-shadow: none; --ink: inherit; --paper: inherit;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards > * > :is(.a11y-legal-standard, .a11y-legal-eyebrow):not(.a11y-l1):not(.a11y-l2):not(.a11y-l3):not(.a11y-l4):not(.a11y-l5):not(.a11y-l6):not(.a11y-l7):not(.a11y-l8):not(.a11y-l9):not(.a11y-l10):not(.a11y-l11):not(.a11y-l12):not(.a11y-l13):not(.a11y-l14):not(.a11y-l15):not(.a11y-l16):not(.a11y-l17):not(.a11y-l18):not(.a11y-l19):not(.a11y-l20):not(.a11y-l21):not(.a11y-l22):not(.a11y-l23):not(.a11y-l24):not(.a11y-l25):not(.a11y-l26):not(.a11y-l27):not(.a11y-l28):not(.a11y-l29):not(.a11y-l30) {
+  display: block; margin: 0 0 var(--cds-spacing-04); padding: 0 0 var(--cds-spacing-04); border: 0; border-bottom: 1px solid var(--ink);
+  background: none; color: var(--ink);
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.04em; text-transform: uppercase;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards > * > .a11y-legal-card:not(.a11y-l1):not(.a11y-l2):not(.a11y-l3):not(.a11y-l4):not(.a11y-l5):not(.a11y-l6):not(.a11y-l7):not(.a11y-l8):not(.a11y-l9):not(.a11y-l10):not(.a11y-l11):not(.a11y-l12):not(.a11y-l13):not(.a11y-l14):not(.a11y-l15):not(.a11y-l16):not(.a11y-l17):not(.a11y-l18):not(.a11y-l19):not(.a11y-l20):not(.a11y-l21):not(.a11y-l22):not(.a11y-l23):not(.a11y-l24):not(.a11y-l25):not(.a11y-l26):not(.a11y-l27):not(.a11y-l28):not(.a11y-l29):not(.a11y-l30) { margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards :is(.a11y-legal-intro, .a11y-legal-lead, .a11y-legal-questions, .a11y-legal-questions *):not(.a11y-l1):not(.a11y-l2):not(.a11y-l3):not(.a11y-l4):not(.a11y-l5):not(.a11y-l6):not(.a11y-l7):not(.a11y-l8):not(.a11y-l9):not(.a11y-l10):not(.a11y-l11):not(.a11y-l12):not(.a11y-l13):not(.a11y-l14):not(.a11y-l15):not(.a11y-l16):not(.a11y-l17):not(.a11y-l18):not(.a11y-l19):not(.a11y-l20):not(.a11y-l21):not(.a11y-l22):not(.a11y-l23):not(.a11y-l24):not(.a11y-l25):not(.a11y-l26):not(.a11y-l27):not(.a11y-l28):not(.a11y-l29):not(.a11y-l30) {
+  margin-block: 0; color: var(--ink); background: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.35; letter-spacing: 0;
+}
+@media (max-width: 671px) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards:not(.a11y-l1):not(.a11y-l2):not(.a11y-l3):not(.a11y-l4):not(.a11y-l5):not(.a11y-l6):not(.a11y-l7):not(.a11y-l8):not(.a11y-l9):not(.a11y-l10):not(.a11y-l11):not(.a11y-l12):not(.a11y-l13):not(.a11y-l14):not(.a11y-l15):not(.a11y-l16):not(.a11y-l17):not(.a11y-l18):not(.a11y-l19):not(.a11y-l20):not(.a11y-l21):not(.a11y-l22):not(.a11y-l23):not(.a11y-l24):not(.a11y-l25):not(.a11y-l26):not(.a11y-l27):not(.a11y-l28):not(.a11y-l29):not(.a11y-l30) { grid-template-columns: minmax(0, 1fr); }
+}
