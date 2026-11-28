@@ -8416,8 +8416,8 @@
    the arrow takes the ::before at the far end. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8) > svg { display: none; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-legal-row, .a11y-undecided-q, .a11y-dn-bar, .a11y-accordion-head, .a11y-stmt-toggle, .a11y-w22-head, .a11y-w22-toggle, .a11y-finding-header, .a11y-tech-details > summary):not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6):not(.a11y-z7):not(.a11y-z8)::before {
-  content: ""; position: absolute; inset: var(--cds-spacing-04) 0 auto auto; display: block;
-  width: 32px; height: 32px; margin: 0; padding: 0; border: 0; border-radius: 0;
+  content: ""; position: absolute; inset: 0 0 0 auto; margin: auto 0; display: block;
+  width: 32px; height: 32px; padding: 0; border: 0; border-radius: 0;
   background: var(--row-arrow); -webkit-mask: var(--row-arrow-mask) center / contain no-repeat; mask: var(--row-arrow-mask) center / contain no-repeat;
   transform: none; rotate: none; translate: none; transition: rotate 0.15s;
 }
@@ -8508,7 +8508,7 @@
    the fixed table takes its column widths from the header row. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule > thead .a11y-dt-spacer:not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6) { width: 0; padding: 0; border: 0; }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:not(.a11y-dt-expand-row) > td:last-child:not(.a11y-z1):not(.a11y-z2):not(.a11y-z3):not(.a11y-z4):not(.a11y-z5):not(.a11y-z6)::after {
-  content: ""; position: absolute; top: var(--cds-spacing-04); right: 0; width: 32px; height: 32px;
+  content: ""; position: absolute; top: 0; bottom: 0; right: 0; margin: auto 0; width: 32px; height: 32px;
   background: var(--row-arrow); -webkit-mask: var(--row-arrow-mask) center / contain no-repeat; mask: var(--row-arrow-mask) center / contain no-repeat;
   transition: rotate 0.15s;
 }
@@ -9021,4 +9021,42 @@
 }
 @media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-legal-cards:not(.a11y-l1):not(.a11y-l2):not(.a11y-l3):not(.a11y-l4):not(.a11y-l5):not(.a11y-l6):not(.a11y-l7):not(.a11y-l8):not(.a11y-l9):not(.a11y-l10):not(.a11y-l11):not(.a11y-l12):not(.a11y-l13):not(.a11y-l14):not(.a11y-l15):not(.a11y-l16):not(.a11y-l17):not(.a11y-l18):not(.a11y-l19):not(.a11y-l20):not(.a11y-l21):not(.a11y-l22):not(.a11y-l23):not(.a11y-l24):not(.a11y-l25):not(.a11y-l26):not(.a11y-l27):not(.a11y-l28):not(.a11y-l29):not(.a11y-l30) { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ═══ EVERY FORM'S FIELDS AFTER THE FOUNDRY'S SELECT (user's instruction,
+   28 Nov 2026, "design all forms now", after the scan form) ═══════════════
+   The same field everywhere: the email under Email me this report, the
+   statement's and the sign-in panel's fields, the account key and every
+   select. No filled or outlined box round the pair; the label above at
+   18px in its ground's words, 8px over the field; the field white with a
+   1px black edge, 10px corners, 9px 12px inside, black words at 21px in
+   both themes; a select draws the icon set's caret--sort. The chat box is
+   the conversation's line, not a form, and keeps its look. */
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-input, .a11y-select2, .a11y-ra-field, .a11y-stmt-field):not(.a11y-m1):not(.a11y-m2):not(.a11y-m3):not(.a11y-m4):not(.a11y-m5):not(.a11y-m6):not(.a11y-m7):not(.a11y-m8):not(.a11y-m9):not(.a11y-m10):not(.a11y-m11):not(.a11y-m12):not(.a11y-m13):not(.a11y-m14):not(.a11y-m15):not(.a11y-m16):not(.a11y-m17):not(.a11y-m18):not(.a11y-m19):not(.a11y-m20):not(.a11y-m21):not(.a11y-m22):not(.a11y-m23):not(.a11y-m24):not(.a11y-m25):not(.a11y-m26):not(.a11y-m27):not(.a11y-m28):not(.a11y-m29):not(.a11y-m30) {
+  display: flex; flex-direction: column; align-items: stretch; gap: var(--cds-spacing-03);
+  margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; color: inherit;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0; text-transform: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-input-label, .a11y-select2-label, .a11y-ra-field-label):not(.a11y-m1):not(.a11y-m2):not(.a11y-m3):not(.a11y-m4):not(.a11y-m5):not(.a11y-m6):not(.a11y-m7):not(.a11y-m8):not(.a11y-m9):not(.a11y-m10):not(.a11y-m11):not(.a11y-m12):not(.a11y-m13):not(.a11y-m14):not(.a11y-m15):not(.a11y-m16):not(.a11y-m17):not(.a11y-m18):not(.a11y-m19):not(.a11y-m20):not(.a11y-m21):not(.a11y-m22):not(.a11y-m23):not(.a11y-m24):not(.a11y-m25):not(.a11y-m26):not(.a11y-m27):not(.a11y-m28):not(.a11y-m29):not(.a11y-m30) {
+  position: static; margin: 0; padding: 0; color: inherit; background: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0; text-transform: none;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-input > .a11y-input-shell:not(.a11y-m1):not(.a11y-m2):not(.a11y-m3):not(.a11y-m4):not(.a11y-m5):not(.a11y-m6):not(.a11y-m7):not(.a11y-m8):not(.a11y-m9):not(.a11y-m10):not(.a11y-m11):not(.a11y-m12):not(.a11y-m13):not(.a11y-m14):not(.a11y-m15):not(.a11y-m16):not(.a11y-m17):not(.a11y-m18):not(.a11y-m19):not(.a11y-m20):not(.a11y-m21):not(.a11y-m22):not(.a11y-m23):not(.a11y-m24):not(.a11y-m25):not(.a11y-m26):not(.a11y-m27):not(.a11y-m28):not(.a11y-m29):not(.a11y-m30) {
+  display: flex; flex-flow: row nowrap; align-items: stretch; gap: var(--cds-spacing-03); margin: 0; padding: 0;
+  border: 0; border-radius: 0; background: none; box-shadow: none; outline: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-input > .a11y-input-shell > input, .a11y-select2 > select, .a11y-ra-field > input, .a11y-stmt-field > input, .a11y-stmt-field > select, .a11y-stmt-field > textarea):not(.a11y-m1):not(.a11y-m2):not(.a11y-m3):not(.a11y-m4):not(.a11y-m5):not(.a11y-m6):not(.a11y-m7):not(.a11y-m8):not(.a11y-m9):not(.a11y-m10):not(.a11y-m11):not(.a11y-m12):not(.a11y-m13):not(.a11y-m14):not(.a11y-m15):not(.a11y-m16):not(.a11y-m17):not(.a11y-m18):not(.a11y-m19):not(.a11y-m20):not(.a11y-m21):not(.a11y-m22):not(.a11y-m23):not(.a11y-m24):not(.a11y-m25):not(.a11y-m26):not(.a11y-m27):not(.a11y-m28):not(.a11y-m29):not(.a11y-m30) {
+  flex: 1 1 auto; min-width: 0; width: 100%; height: auto; min-height: 0; margin: 0; padding: 9px 12px;
+  border: 1px solid #000; border-radius: 10px; background-color: #fff; color: #000; box-shadow: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif; font-size: 21px; font-weight: 400; line-height: 1.15; letter-spacing: 0;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-select2 > select, .a11y-stmt-field > select):not(.a11y-m1):not(.a11y-m2):not(.a11y-m3):not(.a11y-m4):not(.a11y-m5):not(.a11y-m6):not(.a11y-m7):not(.a11y-m8):not(.a11y-m9):not(.a11y-m10):not(.a11y-m11):not(.a11y-m12):not(.a11y-m13):not(.a11y-m14):not(.a11y-m15):not(.a11y-m16):not(.a11y-m17):not(.a11y-m18):not(.a11y-m19):not(.a11y-m20):not(.a11y-m21):not(.a11y-m22):not(.a11y-m23):not(.a11y-m24):not(.a11y-m25):not(.a11y-m26):not(.a11y-m27):not(.a11y-m28):not(.a11y-m29):not(.a11y-m30) {
+  appearance: none; -webkit-appearance: none; padding-right: 40px; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M24 24 16 32 8 24z'/%3E%3Cpath d='M8 8 16 0 24 8z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; background-size: 12px 12px;
+}
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-input > .a11y-input-shell > input, .a11y-select2 > select, .a11y-ra-field > input, .a11y-stmt-field > input, .a11y-stmt-field > select, .a11y-stmt-field > textarea):not(.a11y-m1):not(.a11y-m2):not(.a11y-m3):not(.a11y-m4):not(.a11y-m5):not(.a11y-m6):not(.a11y-m7):not(.a11y-m8):not(.a11y-m9):not(.a11y-m10):not(.a11y-m11):not(.a11y-m12):not(.a11y-m13):not(.a11y-m14):not(.a11y-m15):not(.a11y-m16):not(.a11y-m17):not(.a11y-m18):not(.a11y-m19):not(.a11y-m20):not(.a11y-m21):not(.a11y-m22):not(.a11y-m23):not(.a11y-m24):not(.a11y-m25):not(.a11y-m26):not(.a11y-m27):not(.a11y-m28):not(.a11y-m29):not(.a11y-m30)::placeholder { color: #6f6f6f; opacity: 1; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-input > .a11y-input-shell > input, .a11y-select2 > select, .a11y-ra-field > input, .a11y-stmt-field > input, .a11y-stmt-field > select, .a11y-stmt-field > textarea):not(.a11y-m1):not(.a11y-m2):not(.a11y-m3):not(.a11y-m4):not(.a11y-m5):not(.a11y-m6):not(.a11y-m7):not(.a11y-m8):not(.a11y-m9):not(.a11y-m10):not(.a11y-m11):not(.a11y-m12):not(.a11y-m13):not(.a11y-m14):not(.a11y-m15):not(.a11y-m16):not(.a11y-m17):not(.a11y-m18):not(.a11y-m19):not(.a11y-m20):not(.a11y-m21):not(.a11y-m22):not(.a11y-m23):not(.a11y-m24):not(.a11y-m25):not(.a11y-m26):not(.a11y-m27):not(.a11y-m28):not(.a11y-m29):not(.a11y-m30):focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-input > .a11y-input-shell, .a11y-ra-field, .a11y-stmt-field):not(.a11y-m1):not(.a11y-m2):not(.a11y-m3):not(.a11y-m4):not(.a11y-m5):not(.a11y-m6):not(.a11y-m7):not(.a11y-m8):not(.a11y-m9):not(.a11y-m10):not(.a11y-m11):not(.a11y-m12):not(.a11y-m13):not(.a11y-m14):not(.a11y-m15):not(.a11y-m16):not(.a11y-m17):not(.a11y-m18):not(.a11y-m19):not(.a11y-m20):not(.a11y-m21):not(.a11y-m22):not(.a11y-m23):not(.a11y-m24):not(.a11y-m25):not(.a11y-m26):not(.a11y-m27):not(.a11y-m28):not(.a11y-m29):not(.a11y-m30):focus-within { outline: 0; box-shadow: none; }
+@media (forced-colors: active) {
+  .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz :is(.a11y-input > .a11y-input-shell > input, .a11y-select2 > select, .a11y-ra-field > input, .a11y-stmt-field > input, .a11y-stmt-field > select, .a11y-stmt-field > textarea):not(.a11y-m1):not(.a11y-m2):not(.a11y-m3):not(.a11y-m4):not(.a11y-m5):not(.a11y-m6):not(.a11y-m7):not(.a11y-m8):not(.a11y-m9):not(.a11y-m10):not(.a11y-m11):not(.a11y-m12):not(.a11y-m13):not(.a11y-m14):not(.a11y-m15):not(.a11y-m16):not(.a11y-m17):not(.a11y-m18):not(.a11y-m19):not(.a11y-m20):not(.a11y-m21):not(.a11y-m22):not(.a11y-m23):not(.a11y-m24):not(.a11y-m25):not(.a11y-m26):not(.a11y-m27):not(.a11y-m28):not(.a11y-m29):not(.a11y-m30) { border-color: CanvasText; background-color: Field; color: FieldText; }
 }
