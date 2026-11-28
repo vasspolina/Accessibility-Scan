@@ -1834,3 +1834,13 @@ main.wrap > .title {
    the size and leading they had. The opened offers' indexes are
    unchanged. */
 .cols > .text > .terms { font-family: "Serrif", "EB Garamond", Georgia, serif; font-weight: 300; }
+
+/* A titled section's words in the serif (user's instruction, 28 Nov
+   2026, "serriff", on "Retrofitting older websites…"): Serrif Light for
+   the paragraphs, lists and small headings beside a section's title, at
+   the size and leading they had; with the index of terms, all of a
+   section's reading text is now the serif. The title, a paragraph set as
+   a statement and the side note keep Jokker. */
+.cols:has(> .text > h2:first-child) > .text > :is(p, ul, ol, h3):not(.statement) {
+  font-family: "Serrif", "EB Garamond", Georgia, serif; font-weight: 300;
+}
