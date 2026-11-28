@@ -8345,9 +8345,13 @@
    Info block of DESCRIPTION and DETAILS) ═══════════════════════════════════
    Two equal columns, 16px apart: each title a small capital label (18px,
    +0.04em, uppercase) over a 1px ink rule, 12px between the words and the
-   rule and 16px under it; the words at the 22px prose size, 1.25, one empty
-   line between paragraphs. A lone How the score works keeps its half. One
-   column under 672px, 40px between the two. */
+   rule and 16px under it; the words at the 22px prose size, 1.25. Paragraph
+   breaks are indents, not empty lines (Hochuli, Detail in typography, p.47;
+   "lets do indents based on jost hochuy study instead of paragraph breaks",
+   28 Nov 2026): a paragraph that follows a paragraph has no space above it
+   and its first line set in 1em; the first under the label stays flush. A
+   lone How the score works keeps its half. One column under 672px, 40px
+   between the two. */
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-plains {
   grid-column: 1 / -1; min-width: 0;
   display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--cds-spacing-08) var(--cds-spacing-05);
@@ -8362,10 +8366,10 @@
   font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: 0.04em; text-transform: uppercase;
 }
 .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-plain > .a11y-sum-plain-text {
-  margin: 0 0 1lh; padding: 0; max-width: none; font-family: "Jokker", "DejaVu Sans", sans-serif;
+  margin: 0; padding: 0; max-width: none; text-indent: 0; font-family: "Jokker", "DejaVu Sans", sans-serif;
   font-size: 22px; font-weight: 400; line-height: 1.25; letter-spacing: 0; overflow-wrap: break-word;
 }
-.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-plain > .a11y-sum-plain-text:last-child { margin-bottom: 0; }
+.a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-plain > .a11y-sum-plain-text + .a11y-sum-plain-text { text-indent: 1em; }
 @media (max-width: 671px) {
   .a11y-widget-biz.a11y-widget-biz.a11y-widget-biz .a11y-sum-grid > .a11y-sum-plains { grid-template-columns: minmax(0, 1fr); }
 }
