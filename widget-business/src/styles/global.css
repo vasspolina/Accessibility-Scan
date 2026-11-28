@@ -13843,7 +13843,7 @@
   padding-inline-end: 48px;
 }
 :where(.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:not(.a11y-dt-expand-row):hover) {
-  background-color: transparent;
+  background-color: var(--row-hover-ground);
 }
 
 /* ── Shell, sections and navigation, continued ── */
