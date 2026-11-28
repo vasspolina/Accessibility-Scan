@@ -14,6 +14,12 @@
  *      later rule already says, fails here. The fix is to run
  *      `node scripts/organise-css.mjs` and commit the result.
  *
+ *   3. No rule adds an underline on hover.
+ *      The user's rule (28 Nov 2026, "do not underline anything on hover"):
+ *      hover is a colour or a fill, never a line. Each component used to
+ *      carry its own hover rule, so the underline came back one component
+ *      at a time; this check is what stops that.
+ *
  * Run: npm run lint:css
  */
 import fs from "node:fs";
@@ -44,6 +50,14 @@ for (const [name, counts] of used) {
 /* ── 2. organised form ──────────────────────────────────────────────── */
 const check = spawnSync(process.execPath, [path.join(root, "scripts/organise-css.mjs"), "--check"], { encoding: "utf8" });
 if (check.status !== 0) problems.push((check.stderr || check.stdout || "organise-css --check failed").trim());
+
+/* ── 3. no underline on hover ───────────────────────────────────────── */
+for (const m of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+  const sel = m[1].trim().replace(/\s+/g, " ");
+  if (/:hover/.test(sel) && /text-decoration(-line)?\s*:\s*[^;]*underline/.test(m[2])) {
+    problems.push(`underline on hover: ${sel.slice(0, 140)}`);
+  }
+}
 
 console.log(`checked ${(css.match(/\{/g) || []).length} blocks, ${defined.size} custom properties`);
 if (problems.length) {

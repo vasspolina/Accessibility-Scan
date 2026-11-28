@@ -1751,13 +1751,6 @@
 :where(.a11y-widget-biz .a11y-finding-sev-minor) {
   color: var(--sev-minor);
 }
-@media (hover: hover) {
-  :where(.a11y-widget-biz :is(.a11y-fd .a11y-tech-details > summary, .a11y-chat-stepfold > summary)[class]:hover) {
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.14em;
-  }
-}
 :where(
   .a11y-widget-biz .a11y-fd > .a11y-fd-meta > *,
   .a11y-widget-biz .a11y-fd > .a11y-fd-col > * > :is(strong:first-child, .a11y-fd-title, .a11y-affected-label, p:first-child)
@@ -6558,13 +6551,6 @@
   letter-spacing: 0;
 }
 
-/* ── Findings and the opened finding, continued ── */
-:where(.a11y-widget-biz .a11y-datatable-schedule > tbody > tr:hover .a11y-finding-title) {
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.14em;
-}
-
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
 :where(.a11y-widget-biz .a11y-w22-detail > p + p) {
   margin-top: var(--cds-spacing-04);
@@ -10060,11 +10046,6 @@
   text-decoration-thickness: 1px;
   text-underline-offset: 0.14em;
 }
-:where(.a11y-widget-biz .a11y-chats .a11y-chats-row > .a11y-chats-item:enabled:hover .a11y-chats-title) {
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.14em;
-}
 
 /* ── Shell, sections and navigation, continued ── */
 :where(.a11y-widget-biz .a11y-section.a11y-sr) {
@@ -11629,12 +11610,6 @@
   font-weight: 400;
   letter-spacing: 0;
   vertical-align: baseline;
-}
-:where(.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-wcag:enabled:is(:hover, :focus-visible)) {
-  color: var(--ink);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.15em;
 }
 
 /* ── History, statement, report actions, professional, continued ── */
@@ -13739,6 +13714,9 @@
 }
 :where(.a11y-widget-biz .a11y-chat-text :is(p, ul, ol)) {
   line-height: 1.25;
+}
+:where(.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-wcag:enabled:is(:hover, :focus-visible)) {
+  color: var(--row-hover);
 }
 
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
