@@ -1307,7 +1307,8 @@ html:has(header .toc) { scroll-padding-top: 220px; }
 .cols.cols--statement > .text > p {
   margin: 0; max-width: none; color: inherit;
   font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 100; font-variation-settings: "wght" 100, "slnt" 0;
-  font-size: clamp(29px, 4.5vw, 83px); line-height: 1.06; letter-spacing: 0.01em; text-wrap: pretty;
+  /* The logo's size ("runs too. big make it same size as logo size"; it was 4.5vw, 83px cap). */
+  font-size: clamp(32px, 3.4vw, 56px); line-height: 1.1; letter-spacing: 0.01em; text-wrap: pretty;
 }
 .cols.cols--statement > .text > p + p { margin-top: 0.5lh; }
 .cols.cols--statement em { font-style: normal; font-variation-settings: "wght" 100, "slnt" -16; }
@@ -1429,4 +1430,13 @@ html:has(header .toc) { scroll-padding-top: 220px; }
 }
 @media (forced-colors: active) {
   .cols.cols--eaa .action .btn::after, .bubble .bubble__msg > .sr-only::after { background: LinkText; forced-color-adjust: none; }
+}
+
+/* A titled section's title at the logo's size, in grey (user's
+   instruction, 28 Nov 2026, "same with this and make it grey", on "Why
+   not just fix your current site?" at 56px black): clamp(32px, 3.4vw,
+   56px), the logo's and the menu's size, in the link rows' grey (#666,
+   5.7:1 on white; dark #a8a8a8). The weight is unchanged. */
+.cols:has(> .text > h2:first-child) > .text > h2 {
+  font-size: clamp(32px, 3.4vw, 56px); line-height: 1; color: var(--link-grey);
 }
