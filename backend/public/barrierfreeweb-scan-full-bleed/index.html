@@ -13,12 +13,12 @@ main.wrap > form.signup { margin-bottom: 0; }
 /* One line, a link to the Accessibility page (user's instruction, 28 Nov
    2026, "make this in one line and link to accessibility page"): the name
    black, the rest #666 (5.7:1 on white), the icon set's arrow after; the
-   whole line is the link, black on hover. 1.6vw keeps it on one line from
-   1056px up; narrower it wraps. */
+   whole line is the link, black on hover. At 1.84vw the sentence is
+   slightly wider than the window, so the arrow and the last words wrap. */
 .act-statement {
   margin: 0;
   padding-block: var(--s05);
-  font-size: clamp(18px, 1.6vw, 32px);
+  font-size: clamp(21px, 1.84vw, 37px); /* 15% larger ("make this text 15% bigger", 28 Nov 2026) */
   font-weight: 500;
   line-height: 1.15;
   letter-spacing: -0.025em;
@@ -34,7 +34,6 @@ main.wrap > form.signup { margin-bottom: 0; }
   background: currentColor;
   -webkit-mask: var(--arrow-right) center / contain no-repeat; mask: var(--arrow-right) center / contain no-repeat;
 }
-@media (min-width: 1056px) { .act-statement { white-space: nowrap; } }
 </style>
 <script>try{var t=localStorage.getItem("bfw-theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
