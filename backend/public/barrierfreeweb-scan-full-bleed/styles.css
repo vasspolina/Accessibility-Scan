@@ -1633,3 +1633,44 @@ p.act-statement a:hover .act-statement__text span + span { color: #000; }
 .cols:has(> .text > h2:first-child) { align-items: start; }
 .cols:has(> .text > h2:first-child) > .text > h2,
 .cols:has(> .text > h2:first-child) > .text > h2 + p { text-box: trim-start cap alphabetic; }
+
+/* An opened offer's lede at the logo's size (user's instruction, 28 Nov
+   2026, "make this same size as logo font"; it was 6vw, 112px cap):
+   clamp(32px, 3.4vw, 56px) at every width, 1.08; its face, its place
+   across both columns and its filled lines are unchanged. */
+.acc__panel > .acc__lede { font-size: clamp(32px, 3.4vw, 56px); line-height: 1.08; letter-spacing: -0.01em; }
+@media (max-width: 671px) {
+  .acc__panel > .acc__lede { font-size: 32px; line-height: 1.08; }
+}
+
+/* No hole under a section's first paragraph ("whats this gap?", on "Short
+   answer: Probably yes." standing 200px over the next paragraph): the
+   title shared the grid's first row with the first paragraph only, so a
+   title of two or three lines made that row as tall as itself and pushed
+   the rest down. The title now spans every row of its section, and the
+   words run on beside it at their own spacing. */
+@container content (min-width: 900.02px) {
+  .cols:has(> .text > h2:first-child) > .text > h2 { grid-row: 1 / span 30; }
+}
+/* Stacked (under 900px of content), the title stands 24px over its words;
+   trimming both to their capitals had left them almost touching. */
+@container content (max-width: 900px) {
+  .cols:has(> .text > h2:first-child) > .text > h2 { margin-bottom: var(--s06); }
+}
+
+/* An opened offer's terms across the full width (user's instruction, 28
+   Nov 2026, "now make bottom part full bleed", on the ruled index in the
+   right half under a full-width lede): the index spans both columns, its
+   rules run edge to edge, the term at the left edge and its description
+   from the middle of the page, where the label rows' links start. Any
+   paragraphs of the offer stay over it. One narrow column on a phone, as
+   before. */
+@media (min-width: 672px) {
+  .acc__panel .acc__body > .terms {
+    grid-column: 1 / -1; grid-row: auto; margin-top: var(--s07);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .acc__panel > .acc__lede + .acc__body > .terms:first-child { margin-top: 0; }
+  .acc__panel .acc__body > p + .terms { margin-top: var(--s04); }
+  .acc__panel .terms dd { padding-left: calc(var(--gutter) / 2); }
+}
