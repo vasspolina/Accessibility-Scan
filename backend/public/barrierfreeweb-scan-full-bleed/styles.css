@@ -1540,6 +1540,25 @@ html:has(header .toc) { scroll-padding-top: 220px; }
   .acc__panel > .acc__lede { margin-bottom: var(--s06); padding-top: 0; font-size: 36px; line-height: 1.05; letter-spacing: -0.01em; }
   .acc__panel .acc__body > .terms { grid-row: auto; }
 }
+/* Faults the accessibility scan found (28 Nov 2026, the scanner run on all
+   five pages in light, dark and at phone width).
+   1. The yellow band and the white EAA line were painted only by a border
+      image, so the header, the title, the request form and that line had
+      no background colour of their own. A contrast checker read their
+      black and grey words against the dark theme's black page and failed
+      them (the pixels were yellow and passed). Each now also carries the
+      band's colour as its own background; the look is unchanged.
+   2. WCAG 2.4.7: the request form's fields showed focus only as a 2px
+      green line on their wrapper, on yellow. A focused field is now white
+      with a 2px black line inside its edge.
+   3. WCAG 1.4.11: the statements' arrows and the theme button were a grey
+      fill with an edge in the same grey (1.3:1 on white). The edge is the
+      edge grey (#8e8e93, 3.3:1 on white, 6.2:1 on black). */
+header.wrap, main.wrap > .title, main.wrap > form.signup, main.wrap > .plates--hero { background-color: var(--y); }
+.act-statement { background-color: #fff; }
+form.signup .signup__field:focus-within { background: #fff; outline: 2px solid #000; outline-offset: -2px; }
+form.signup .signup__btn:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+.plates__btn:enabled, .theme { border-color: var(--edge); }
 /* 2, continued. The focus line now sits on the control that holds focus,
    not only on the box round it: the request form's inputs turn white
    themselves, and the chat's text area carries the 2px focus line (the
@@ -1560,4 +1579,47 @@ form.signup .signup__input:focus-visible { outline: 2px solid transparent; outli
    and the title is never under 24px). */
 .cols:has(> .text > h2:first-child) > .text > h2 {
   font-family: "Jokker", "DejaVu Sans", sans-serif; font-weight: 100; font-variation-settings: "wght" 100, "slnt" 0; letter-spacing: 0.01em;
+}
+
+/* Text contrast at WCAG AAA (user's instruction, 28 Nov 2026, "make sure
+   all contrast works AAA"): 7:1 for text under 24px, 4.5:1 from 24px up,
+   measured on every visible text of the five pages in light and dark.
+   What was under it, and what it is now:
+   - the header's grey links #5e5e5e on the yellow band, 6.0:1: #525252,
+     7.2:1 (8.0:1 on white);
+   - the breadcrumb's current page, blue #2848c8 on the band, 6.8:1:
+     #1f3aa8, 8.7:1;
+   - the link rows' grey #666 at 18 to 23px, 5.7:1: #575757, 7.2:1;
+   - the first statement's red-orange #e03a0c, 4.4:1 at any size: #d4360a,
+     4.9:1, and a statement is never under 24px (one line starts at 768px
+     of window, where 3.3vw is 25px; it wraps below that);
+   - white on the green #486048 at 18px, 6.9:1: the green is #425a42, 7.6:1;
+   - black on the red #f03c38 at 18px, 5.4:1: the red is #ff6b66, 7.6:1;
+   - the violet notes #5a2df0, white 6.8:1 and lavender 4.9:1 at 18px: the
+     violet is #5226e6 (white 7.6:1, and 7.6:1 as the button's words on
+     white); lavender only at 24px (5.4:1), every smaller line white;
+   - dark mode's solid buttons, white on #636366, 6.0:1: #48484a, 9.1:1. */
+:root { --green: #425a42; --red: #ff6b66; --link-grey: #575757; }
+:root[data-theme="dark"] { --solid: #48484a; --link-grey: #a8a8a8; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --solid: #48484a; --link-grey: #a8a8a8; } }
+header.wrap, main.wrap > .title, main.wrap > form.signup, main.wrap > .plates--hero { --callout: #1f3aa8; }
+.top .nav a, .top .toc a { color: #525252; }
+.top .nav a[aria-current], .top .toc a[aria-current], .top .nav a:hover, .top .toc a:hover { color: #000; }
+p.act-statement .act-statement__text span + span { color: #575757; }
+p.act-statement a:hover .act-statement__text span + span { color: #000; }
+.plates:not(.plates--hero) .plate:nth-child(4n + 1), .cols.cols--statement { --spec: #d4360a; }
+:root[data-theme="dark"] :is(.plates:not(.plates--hero) .plate:nth-child(4n + 1), .cols.cols--statement) { --spec: #ff6b45; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) :is(.plates:not(.plates--hero) .plate:nth-child(4n + 1), .cols.cols--statement) { --spec: #ff6b45; }
+}
+@media (min-width: 672px) and (max-width: 767px) {
+  .plates:not(.plates--hero) .plate:nth-child(n) p { font-size: clamp(36px, 6vw, 120px); white-space: normal; text-wrap: balance; }
+  .plates:not(.plates--hero) .plate p em { display: block; }
+}
+.card:not(:has(> .offer)), .notice { background: #5226e6; }
+.card:not(:has(> .offer)) > :last-child:not(:first-child) { color: #fff; }
+.card:not(:has(> .offer)) .btn, .card:not(:has(> .offer)):not(.cols--eaa > .card) .btn { color: #5226e6; }
+.card:not(:has(> .offer)):not(.cols--eaa > .card) .btn:is(:hover, :focus-visible) { color: #000; }
+@media (max-width: 671px) {
+  .card:not(:has(> .offer)) { color: #fff; }
 }
