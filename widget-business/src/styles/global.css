@@ -2810,12 +2810,6 @@
   margin-top: var(--cds-spacing-10);
 }
 
-/* ── Chat, conversations and Report a barrier, continued ── */
-:where(.a11y-widget-biz .a11y-chat-text ul) {
-  list-style: "\2013\00A0";
-  padding-inline-start: var(--cds-spacing-09);
-}
-
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
 :where(.a11y-widget-biz .a11y-legal-panel + *) {
   margin-top: var(--cds-spacing-10);
@@ -2860,6 +2854,10 @@
 }
 
 /* ── Chat, conversations and Report a barrier, continued ── */
+:where(.a11y-widget-biz .a11y-chat-text ul) {
+  list-style: "\2013\00A0";
+  padding-inline-start: var(--cds-spacing-09);
+}
 :where(.a11y-widget-biz .a11y-chat-alt) {
   margin-bottom: var(--cds-spacing-10);
 }
@@ -3111,6 +3109,15 @@
   }
 }
 
+/* ── Shell, sections and navigation, continued ── */
+:where(.a11y-widget-biz .a11y-shell-nav-link[aria-current="true"]) {
+  font-weight: 400;
+}
+:where(.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-count) {
+  font-size: 16px;
+  letter-spacing: 0;
+}
+
 /* ── Chat, conversations and Report a barrier, continued ── */
 :where(.a11y-widget-biz .a11y-chat-tabhint > kbd) {
   flex: none;
@@ -3152,20 +3159,6 @@
   :where(.a11y-widget-biz .a11y-chats:not([data-open]) .a11y-chats-body) {
     display: none;
   }
-}
-
-/* ── Shell, sections and navigation, continued ── */
-:where(.a11y-widget-biz .a11y-shell-nav-link[aria-current="true"]) {
-  font-weight: 400;
-}
-:where(.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-count) {
-  font-size: 16px;
-  letter-spacing: 0;
-}
-:where(.a11y-widget-biz .a11y-shell-nav ul) {
-  list-style: none;
-  padding: 0;
-  margin: 0;
 }
 
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
@@ -3414,9 +3407,6 @@
     color: #78a9ff;
   }
 }
-:where(.a11y-widget-biz .a11y-finding-steps ul) {
-  margin: 0 0 var(--cds-spacing-07);
-}
 
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
 :where(.a11y-widget-biz .a11y-legal-tiles > .a11y-legal-row) {
@@ -3516,6 +3506,36 @@
   background: #fff;
 }
 
+/* ── Scan form and settings, continued ── */
+:where(.a11y-widget-biz .a11y-settings-row > .a11y-settings-state) {
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 1.1;
+}
+:where(.a11y-widget-biz .a11y-tester > .a11y-tester-rows) {
+  display: grid;
+}
+:where(.a11y-widget-biz .a11y-tester > .a11y-url-submit > .a11y-url-submit-note) {
+  font-size: 16px;
+  letter-spacing: 0;
+}
+
+/* ── Shell, sections and navigation, continued ── */
+:where(.a11y-widget-biz .a11y-shell-nav ul) {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* ── Screen reader simulation and vision, continued ── */
+:where(.a11y-widget-biz .a11y-sim-frame > .a11y-sim-img) {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 55svh;
+}
+
 /* ── Chat, conversations and Report a barrier, continued ── */
 :where(.a11y-widget-biz .a11y-chat-text > p:has(+ p)) {
   margin-bottom: var(--cds-spacing-06);
@@ -3523,6 +3543,18 @@
 :where(.a11y-widget-biz .a11y-chat-box > .a11y-chat-label) {
   display: block;
 }
+
+/* ── Scan form and settings, continued ── */
+:where(.a11y-widget-biz .a11y-blocked .a11y-blocked-action) {
+  margin: var(--cds-spacing-07) 0 0;
+}
+
+/* ── Findings and the opened finding, continued ── */
+:where(.a11y-widget-biz .a11y-finding-steps ul) {
+  margin: 0 0 var(--cds-spacing-07);
+}
+
+/* ── Chat, conversations and Report a barrier, continued ── */
 :where(.a11y-widget-biz .a11y-chat-text .a11y-chat-confirm) {
   margin: var(--cds-spacing-05) 0 0;
 }
@@ -3608,27 +3640,6 @@
   max-width: none;
 }
 
-/* ── Scan form and settings, continued ── */
-:where(.a11y-widget-biz .a11y-settings-row > .a11y-settings-state) {
-  font-size: 16px;
-  letter-spacing: 0;
-  line-height: 1.1;
-}
-:where(.a11y-widget-biz .a11y-tester > .a11y-tester-rows) {
-  display: grid;
-}
-:where(.a11y-widget-biz .a11y-tester > .a11y-url-submit > .a11y-url-submit-note) {
-  font-size: 16px;
-  letter-spacing: 0;
-}
-:where(.a11y-widget-biz .a11y-blocked .a11y-blocked-action) {
-  margin: var(--cds-spacing-07) 0 0;
-}
-:where(.a11y-widget-biz .a11y-url-error:not(:empty)) {
-  font-size: 16px;
-  letter-spacing: 0;
-}
-
 /* ── History, statement, report actions, professional, continued ── */
 :where(.a11y-widget-biz .a11y-stmt .a11y-stmt-step + *) {
   margin-top: var(--cds-spacing-06);
@@ -3669,6 +3680,10 @@
 }
 
 /* ── Scan form and settings, continued ── */
+:where(.a11y-widget-biz .a11y-url-error:not(:empty)) {
+  font-size: 16px;
+  letter-spacing: 0;
+}
 :where(.a11y-widget-biz .a11y-settings ~ .a11y-settings-row) {
   margin-top: var(--cds-spacing-08);
 }
@@ -3885,24 +3900,6 @@
   }
 }
 
-/* ── Screen reader simulation and vision, continued ── */
-:where(.a11y-widget-biz .a11y-sim-frame > .a11y-sim-img) {
-  display: block;
-  width: auto;
-  height: auto;
-  max-width: 100%;
-  max-height: 55svh;
-}
-:where(.a11y-widget-biz .a11y-sim-frame + .a11y-sim-note) {
-  margin-top: var(--cds-spacing-07);
-}
-
-/* ── Designer and developer list, design notes, continued ── */
-:where(.a11y-widget-biz .a11y-undecided-cell > *) {
-  grid-column: 2;
-  margin: 0;
-}
-
 /* ── Findings and the opened finding, continued ── */
 :where(.a11y-widget-biz .a11y-fd > :not(.a11y-fd-col)) {
   grid-column: 1 / -1;
@@ -3917,6 +3914,27 @@
     margin-bottom: 0;
   }
 }
+
+/* ── Screen reader simulation and vision, continued ── */
+:where(.a11y-widget-biz .a11y-sim-frame + .a11y-sim-note) {
+  margin-top: var(--cds-spacing-07);
+}
+
+/* ── Designer and developer list, design notes, continued ── */
+:where(.a11y-widget-biz .a11y-undecided-cell > *) {
+  grid-column: 2;
+  margin: 0;
+}
+
+/* ── Tokens and base, continued ── */
+:where(.a11y-widget-biz :is(.a11y-mode, .a11y-tablist)) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--cds-spacing-02);
+}
+
+/* ── Findings and the opened finding, continued ── */
 :where(.a11y-widget-biz .a11y-fd .a11y-finding-level-fold) {
   margin: 0;
   padding-inline-start: 288px;
@@ -4003,14 +4021,6 @@
   :where(.a11y-widget-biz .a11y-print-cards .a11y-finding-header:has(> .a11y-shot) > :is(.a11y-shot, .a11y-sev, .a11y-finding-desc, .a11y-finding-meta)) {
     grid-area: auto;
   }
-}
-
-/* ── Tokens and base, continued ── */
-:where(.a11y-widget-biz :is(.a11y-mode, .a11y-tablist)) {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--cds-spacing-02);
 }
 
 /* ── History, statement, report actions, professional, continued ── */
@@ -5299,31 +5309,6 @@
   }
 }
 
-/* ── Chat, conversations and Report a barrier, continued ── */
-:where(.a11y-widget-biz .a11y-barrier .a11y-barrier-doc li + li) {
-  margin-top: var(--cds-spacing-03);
-}
-:where(.a11y-widget-biz .a11y-chat-thread > .a11y-chat-turn:has(+ .a11y-chat-cont)) {
-  margin-bottom: var(--cds-spacing-07);
-}
-:where(.a11y-widget-biz .a11y-chat-you .a11y-chat-text > :last-child) {
-  margin-bottom: 0;
-}
-@media (max-width: 671px) {
-  :where(.a11y-widget-biz .a11y-chat .a11y-chat-you .a11y-chat-text) {
-    padding: var(--cds-spacing-03) var(--cds-spacing-05) var(--cds-spacing-04);
-    border-radius: 22px;
-  }
-}
-:where(.a11y-widget-biz .a11y-chat-copy .a11y-chat-copy-btn) {
-  min-height: 32px;
-  padding: 0 var(--cds-spacing-05);
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 1.1;
-  letter-spacing: 0;
-}
-
 /* ── History, statement, report actions, professional, continued ── */
 :where(
   .a11y-widget-biz .a11y-pro-rows > .a11y-pro-row a,
@@ -5333,9 +5318,6 @@
 }
 :where(.a11y-widget-biz .a11y-stmt-card .a11y-stmt-text > p:has(+ p)) {
   margin-bottom: var(--cds-spacing-06);
-}
-:where(.a11y-widget-biz .a11y-stmt-card .a11y-stmt-text > :last-child) {
-  margin-bottom: 0;
 }
 :where(.a11y-widget-biz .a11y-report-actions .a11y-ra-note:empty) {
   position: absolute;
@@ -5379,9 +5361,6 @@
   background: none;
   color: var(--ink);
 }
-:where(.a11y-widget-biz .a11y-acr .a11y-section-head > :not(.a11y-accordion-row)) {
-  margin-inline-start: var(--acr-indent);
-}
 :where(.a11y-widget-biz .a11y-shell-nav .a11y-shell-nav-link[aria-current="true"]) {
   background: var(--tile);
   color: var(--tile-ink);
@@ -5395,25 +5374,6 @@
 :where(.a11y-widget-biz .a11y-fd-tech-toggle[aria-expanded="true"] .a11y-fd-tech-caret) {
   display: inline-block;
   transform: rotate(90deg);
-}
-:where(.a11y-widget-biz .a11y-fd .a11y-occurrence-list > .a11y-occurrence) {
-  box-sizing: border-box;
-  min-width: 0;
-  max-width: none;
-  margin: 0;
-  padding: var(--cds-spacing-06);
-  --ink: var(--tile-ink);
-  --paper: var(--tile);
-  border: 0;
-  border-radius: 20px;
-  background: var(--tile);
-  color: var(--tile-ink);
-}
-@media print {
-  :where(.a11y-widget-biz .a11y-fd .a11y-occurrence-list > .a11y-occurrence) {
-    padding: 0;
-    background: none;
-  }
 }
 :where(.a11y-widget-biz .a11y-finding-sev-word) {
   display: inline-block;
@@ -5449,12 +5409,66 @@
   }
 }
 
+/* ── Chat, conversations and Report a barrier, continued ── */
+:where(.a11y-widget-biz .a11y-barrier .a11y-barrier-doc li + li) {
+  margin-top: var(--cds-spacing-03);
+}
+:where(.a11y-widget-biz .a11y-chat-thread > .a11y-chat-turn:has(+ .a11y-chat-cont)) {
+  margin-bottom: var(--cds-spacing-07);
+}
+:where(.a11y-widget-biz .a11y-chat-you .a11y-chat-text > :last-child) {
+  margin-bottom: 0;
+}
+@media (max-width: 671px) {
+  :where(.a11y-widget-biz .a11y-chat .a11y-chat-you .a11y-chat-text) {
+    padding: var(--cds-spacing-03) var(--cds-spacing-05) var(--cds-spacing-04);
+    border-radius: 22px;
+  }
+}
+:where(.a11y-widget-biz .a11y-chat-copy .a11y-chat-copy-btn) {
+  min-height: 32px;
+  padding: 0 var(--cds-spacing-05);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+
 /* ── History, statement, report actions, professional, continued ── */
+:where(.a11y-widget-biz .a11y-stmt-card .a11y-stmt-text > :last-child) {
+  margin-bottom: 0;
+}
 :where(
   .a11y-widget-biz .a11y-stmt .a11y-stmt-card .a11y-stmt-text > li,
   .a11y-widget-biz .a11y-stmt .a11y-stmt-card .a11y-stmt-text > :is(ul, ol) > li
 ) {
   break-inside: avoid;
+}
+
+/* ── Shell, sections and navigation, continued ── */
+:where(.a11y-widget-biz .a11y-acr .a11y-section-head > :not(.a11y-accordion-row)) {
+  margin-inline-start: var(--acr-indent);
+}
+
+/* ── Findings and the opened finding, continued ── */
+:where(.a11y-widget-biz .a11y-fd .a11y-occurrence-list > .a11y-occurrence) {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: none;
+  margin: 0;
+  padding: var(--cds-spacing-06);
+  --ink: var(--tile-ink);
+  --paper: var(--tile);
+  border: 0;
+  border-radius: 20px;
+  background: var(--tile);
+  color: var(--tile-ink);
+}
+@media print {
+  :where(.a11y-widget-biz .a11y-fd .a11y-occurrence-list > .a11y-occurrence) {
+    padding: 0;
+    background: none;
+  }
 }
 
 /* ── Scan form and settings, continued ── */
@@ -7264,6 +7278,48 @@
   }
 }
 
+/* ── Scan form and settings, continued ── */
+:where(.a11y-widget-biz .a11y-scan-itinerary) {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+:where(.a11y-widget-biz .a11y-settings) {
+  --ink: var(--hl-blue-ink);
+  --paper: var(--hl-blue);
+  --focus: #0a3d1a;
+  container: a11y-settings-panel / inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--cds-spacing-07);
+  box-sizing: border-box;
+  min-width: 0;
+  padding: var(--cds-spacing-08) var(--cds-spacing-08) var(--cds-spacing-09);
+  border: 0;
+  border-radius: var(--r-panel);
+  background: var(--hl-blue);
+  color: var(--hl-blue-ink);
+}
+@media (max-width: 671px) {
+  :where(.a11y-widget-biz .a11y-settings) {
+    gap: var(--cds-spacing-06);
+    padding: var(--cds-spacing-06) var(--cds-spacing-05) var(--cds-spacing-07);
+  }
+}
+@media (forced-colors: active) {
+  :where(.a11y-widget-biz .a11y-settings) {
+    border: 1px solid CanvasText;
+  }
+}
+@media print {
+  :where(.a11y-widget-biz .a11y-settings) {
+    padding: 0;
+    border-radius: 0;
+    background: none;
+  }
+}
+
 /* ── Chat, conversations and Report a barrier, continued ── */
 :where(.a11y-widget-biz .a11y-chats .a11y-chats-head) {
   margin-bottom: var(--cds-spacing-03);
@@ -7312,6 +7368,11 @@
 }
 :where(.a11y-widget-biz .a11y-chat-stepfold > summary > .a11y-chat-fold) {
   display: none;
+}
+@media (max-width: 671px) {
+  :where(.a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-chat-text ol:not(.a11y-chat-plan)) {
+    padding-inline-start: var(--cds-spacing-07);
+  }
 }
 
 /* ── Tokens and base, continued ── */
@@ -7375,48 +7436,6 @@
   max-width: 100%;
   white-space: normal;
   overflow-wrap: anywhere;
-}
-
-/* ── Scan form and settings, continued ── */
-:where(.a11y-widget-biz .a11y-scan-itinerary) {
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-:where(.a11y-widget-biz .a11y-settings) {
-  --ink: var(--hl-blue-ink);
-  --paper: var(--hl-blue);
-  --focus: #0a3d1a;
-  container: a11y-settings-panel / inline-size;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--cds-spacing-07);
-  box-sizing: border-box;
-  min-width: 0;
-  padding: var(--cds-spacing-08) var(--cds-spacing-08) var(--cds-spacing-09);
-  border: 0;
-  border-radius: var(--r-panel);
-  background: var(--hl-blue);
-  color: var(--hl-blue-ink);
-}
-@media (max-width: 671px) {
-  :where(.a11y-widget-biz .a11y-settings) {
-    gap: var(--cds-spacing-06);
-    padding: var(--cds-spacing-06) var(--cds-spacing-05) var(--cds-spacing-07);
-  }
-}
-@media (forced-colors: active) {
-  :where(.a11y-widget-biz .a11y-settings) {
-    border: 1px solid CanvasText;
-  }
-}
-@media print {
-  :where(.a11y-widget-biz .a11y-settings) {
-    padding: 0;
-    border-radius: 0;
-    background: none;
-  }
 }
 
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
@@ -7535,31 +7554,6 @@
   color: #000;
 }
 
-/* ── Chat, conversations and Report a barrier, continued ── */
-@media (max-width: 671px) {
-  :where(.a11y-widget-biz .a11y-chat .a11y-chat-thread .a11y-chat-text ol:not(.a11y-chat-plan)) {
-    padding-inline-start: var(--cds-spacing-07);
-  }
-}
-:where(.a11y-widget-biz .a11y-chat-stepfold > summary) {
-  align-items: baseline;
-  gap: 0;
-  min-height: 0;
-  padding: 0;
-  border-radius: 0;
-  background: none;
-}
-:where(.a11y-widget-biz .a11y-chats .a11y-chats-row :is(.a11y-chats-item, .a11y-chats-delete):enabled:hover) {
-  --ink: var(--tile-ink);
-  --paper: var(--tile);
-  background: var(--tile);
-  color: var(--tile-ink);
-}
-:where(.a11y-widget-biz .a11y-prompts .a11y-prompt-barrier .a11y-prompt-go) {
-  background: #000;
-  color: #fff;
-}
-
 /* ── Findings and the opened finding, continued ── */
 :where(.a11y-widget-biz .a11y-fd > .a11y-fd-col:first-child > * > strong:first-child) {
   flex: none;
@@ -7584,6 +7578,26 @@
 :where(.a11y-widget-biz .a11y-dn > .a11y-dn-panel) {
   margin: 0;
   --caret-col: inherit;
+}
+
+/* ── Chat, conversations and Report a barrier, continued ── */
+:where(.a11y-widget-biz .a11y-chat-stepfold > summary) {
+  align-items: baseline;
+  gap: 0;
+  min-height: 0;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+}
+:where(.a11y-widget-biz .a11y-chats .a11y-chats-row :is(.a11y-chats-item, .a11y-chats-delete):enabled:hover) {
+  --ink: var(--tile-ink);
+  --paper: var(--tile);
+  background: var(--tile);
+  color: var(--tile-ink);
+}
+:where(.a11y-widget-biz .a11y-prompts .a11y-prompt-barrier .a11y-prompt-go) {
+  background: #000;
+  color: #fff;
 }
 
 /* ── History, statement, report actions, professional, continued ── */
@@ -10572,33 +10586,6 @@
   margin-inline-start: 0;
 }
 
-/* ── Chat, conversations and Report a barrier, continued ── */
-:where(.a11y-widget-biz .a11y-chats .a11y-chats-row > .a11y-chats-item) {
-  font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-weight: 400;
-  font-synthesis: none;
-  letter-spacing: 0;
-  font-size: 18px;
-}
-:where(.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q > :is(.a11y-prompt-label, .a11y-prompt-ask)) {
-  align-self: stretch;
-  margin: 0;
-  text-align: left;
-  font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-style: normal;
-  font-weight: 400;
-  font-synthesis: none;
-  letter-spacing: 0;
-}
-:where(.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q > .a11y-prompt-label) {
-  font-size: 18px;
-  line-height: 1.1;
-}
-:where(.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q > .a11y-prompt-ask) {
-  font-size: 22px;
-  line-height: 1.1;
-}
-
 /* ── Buttons, fields and shared controls, continued ── */
 :where(.a11y-widget-biz :is(.a11y-yellow-note > .a11y-note-body > .a11y-note-title)) {
   font-size: 18px;
@@ -10825,6 +10812,33 @@
   font-size: 16px;
   line-height: 1.1;
   letter-spacing: 0;
+}
+
+/* ── Chat, conversations and Report a barrier, continued ── */
+:where(.a11y-widget-biz .a11y-chats .a11y-chats-row > .a11y-chats-item) {
+  font-family: "Jokker", "DejaVu Sans", sans-serif;
+  font-weight: 400;
+  font-synthesis: none;
+  letter-spacing: 0;
+  font-size: 18px;
+}
+:where(.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q > :is(.a11y-prompt-label, .a11y-prompt-ask)) {
+  align-self: stretch;
+  margin: 0;
+  text-align: left;
+  font-family: "Jokker", "DejaVu Sans", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-synthesis: none;
+  letter-spacing: 0;
+}
+:where(.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q > .a11y-prompt-label) {
+  font-size: 18px;
+  line-height: 1.1;
+}
+:where(.a11y-widget-biz .a11y-prompts .a11y-prompt .a11y-prompt-q > .a11y-prompt-ask) {
+  font-size: 22px;
+  line-height: 1.1;
 }
 
 /* ── Scan form and settings, continued ── */
@@ -11130,34 +11144,6 @@
   grid-row: 1;
 }
 
-/* ── Chat, conversations and Report a barrier, continued ── */
-:where(.a11y-widget-biz .a11y-prompts .a11y-prompt) {
-  --ink: #000;
-  --paper: var(--hl-cap-a);
-  --note: var(--hl-cap-a);
-  --note-ink: #000;
-  --focus: #0a3d1a;
-  border: 0;
-  border-radius: 20px;
-  outline: 0;
-  box-shadow: none;
-  background: var(--hl-cap-a);
-  color: #000;
-}
-@media (forced-colors: active) {
-  :where(.a11y-widget-biz .a11y-prompts .a11y-prompt) {
-    border: 1px solid CanvasText;
-  }
-}
-:where(.a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:disabled)) {
-  outline: 1px dashed #000;
-  outline-offset: -1px;
-}
-:where(.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-q:focus-visible) {
-  outline: 2px solid var(--focus);
-  outline-offset: 2px;
-}
-
 /* ── Screen reader simulation and vision, continued ── */
 :where(.a11y-widget-biz :is(section.a11y-sr, section.a11y-acr):has(.a11y-accordion-head[aria-expanded="false"])) {
   padding: 0;
@@ -11265,6 +11251,34 @@
 /* ── Designer and developer list, design notes, continued ── */
 :where(.a11y-widget-biz .a11y-undecided-q > .a11y-undecided-kind) {
   margin-inline-start: var(--cds-spacing-05);
+}
+
+/* ── Chat, conversations and Report a barrier, continued ── */
+:where(.a11y-widget-biz .a11y-prompts .a11y-prompt) {
+  --ink: #000;
+  --paper: var(--hl-cap-a);
+  --note: var(--hl-cap-a);
+  --note-ink: #000;
+  --focus: #0a3d1a;
+  border: 0;
+  border-radius: 20px;
+  outline: 0;
+  box-shadow: none;
+  background: var(--hl-cap-a);
+  color: #000;
+}
+@media (forced-colors: active) {
+  :where(.a11y-widget-biz .a11y-prompts .a11y-prompt) {
+    border: 1px solid CanvasText;
+  }
+}
+:where(.a11y-widget-biz .a11y-prompts .a11y-prompt:has(> .a11y-prompt-q:disabled)) {
+  outline: 1px dashed #000;
+  outline-offset: -1px;
+}
+:where(.a11y-widget-biz .a11y-chat .a11y-prompts .a11y-prompt > .a11y-prompt-q:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }
 
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
@@ -12196,22 +12210,6 @@
   column-gap: var(--cds-spacing-03);
 }
 
-/* ── Chat, conversations and Report a barrier, continued ── */
-:where(.a11y-widget-biz .a11y-chat-box > textarea) {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: #000;
-  outline: 0;
-  box-shadow: none;
-  font-family: "Jokker", "DejaVu Sans", sans-serif;
-  font-size: 21px;
-  font-weight: 400;
-  line-height: 1.15;
-  letter-spacing: 0;
-}
-
 /* ── Screen reader simulation and vision, continued ── */
 :where(.a11y-widget-biz section.a11y-sr) {
   padding: 0;
@@ -12226,6 +12224,22 @@
   flex: none;
   width: 1em;
   height: 1em;
+}
+
+/* ── Chat, conversations and Report a barrier, continued ── */
+:where(.a11y-widget-biz .a11y-chat-box > textarea) {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #000;
+  outline: 0;
+  box-shadow: none;
+  font-family: "Jokker", "DejaVu Sans", sans-serif;
+  font-size: 21px;
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: 0;
 }
 
 /* ── Buttons, fields and shared controls, continued ── */
@@ -12515,6 +12529,46 @@
   padding: 0;
 }
 
+/* ── Screen reader simulation and vision, continued ── */
+:where(.a11y-widget-biz section.a11y-sr .a11y-sr-bar) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--cds-spacing-03);
+  margin: var(--cds-spacing-06) 0;
+  padding: 0;
+  background: none;
+  border: 0;
+}
+:where(.a11y-widget-biz section.a11y-sr .a11y-sr-log) {
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+}
+:where(.a11y-widget-biz section.a11y-sr .a11y-sr-list) {
+  display: block;
+  grid-template-columns: none;
+  margin: 0;
+  padding: 0;
+  gap: 0;
+  list-style: none;
+}
+:where(.a11y-widget-biz section.a11y-sr .a11y-sr-note) {
+  margin: var(--cds-spacing-04) 0 0;
+}
+:where(.a11y-widget-biz section.a11y-sr .a11y-sr-log-heads > span) {
+  display: none;
+}
+:where(.a11y-widget-biz section.a11y-sr .a11y-sr-list > li) {
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  list-style: none;
+}
+
 /* ── Chat, conversations and Report a barrier, continued ── */
 :where(.a11y-widget-biz .a11y-chat-box:focus-within) {
   outline: 2px solid var(--focus);
@@ -12551,16 +12605,6 @@
 }
 
 /* ── Screen reader simulation and vision, continued ── */
-:where(.a11y-widget-biz section.a11y-sr .a11y-sr-bar) {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--cds-spacing-03);
-  margin: var(--cds-spacing-06) 0;
-  padding: 0;
-  background: none;
-  border: 0;
-}
 :where(.a11y-widget-biz section.a11y-sr .a11y-sr-filter) {
   position: relative;
   display: inline-flex;
@@ -12587,13 +12631,6 @@
     color: ButtonText;
   }
 }
-:where(.a11y-widget-biz section.a11y-sr .a11y-sr-log) {
-  margin: 0;
-  padding: 0;
-  background: none;
-  border: 0;
-  border-radius: 0;
-}
 :where(.a11y-widget-biz section.a11y-sr .a11y-sr-log-heads) {
   display: block;
   margin: 0 0 var(--cds-spacing-02);
@@ -12609,14 +12646,6 @@
   line-height: 1.2;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-}
-:where(.a11y-widget-biz section.a11y-sr .a11y-sr-list) {
-  display: block;
-  grid-template-columns: none;
-  margin: 0;
-  padding: 0;
-  gap: 0;
-  list-style: none;
 }
 :where(.a11y-widget-biz section.a11y-sr .a11y-sr-row) {
   display: grid;
@@ -12646,19 +12675,6 @@
     grid-template-columns: 36px minmax(0, 1fr) auto;
     font-size: 22px;
   }
-}
-:where(.a11y-widget-biz section.a11y-sr .a11y-sr-note) {
-  margin: var(--cds-spacing-04) 0 0;
-}
-:where(.a11y-widget-biz section.a11y-sr .a11y-sr-log-heads > span) {
-  display: none;
-}
-:where(.a11y-widget-biz section.a11y-sr .a11y-sr-list > li) {
-  margin: 0;
-  padding: 0;
-  background: none;
-  border: 0;
-  list-style: none;
 }
 :where(.a11y-widget-biz section.a11y-sr:has(.a11y-accordion-head[aria-expanded="true"])) {
   padding: 0;
@@ -13088,11 +13104,6 @@
   }
 }
 
-/* ── Chat, conversations and Report a barrier, continued ── */
-:where(.a11y-widget-biz .a11y-chat-box:focus-within) {
-  outline-offset: -1px;
-}
-
 /* ── Legal standard, checklist and WCAG 2.2, continued ── */
 @media (max-width: 1000px) {
   :where(.a11y-widget-biz .a11y-legal-cards) {
@@ -13139,6 +13150,9 @@
 }
 
 /* ── Chat, conversations and Report a barrier, continued ── */
+:where(.a11y-widget-biz .a11y-chat-box:focus-within) {
+  outline-offset: -1px;
+}
 :where(.a11y-widget-biz .a11y-chat-dock) {
   background: linear-gradient(to bottom, transparent 40px, var(--paper) 40px);
 }
@@ -13660,6 +13674,41 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--cds-spacing-02);
-  flex: 1 1 auto;
+  flex: 1 1 0%;
   min-width: 0;
+}
+:where(.a11y-widget-biz .a11y-chat-blockbody > .a11y-chat-stale) {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 0 var(--cds-spacing-05);
+  align-items: baseline;
+  margin: 0;
+  padding: var(--cds-spacing-04) 0;
+  border: 0;
+  border-bottom: 1px solid var(--row-rule);
+  text-indent: 0;
+  color: var(--ink);
+  font-size: 22px;
+  line-height: 1.25;
+  letter-spacing: 0;
+}
+@media (max-width: 671px) {
+  :where(.a11y-widget-biz .a11y-chat-blockbody > .a11y-chat-stale) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+:where(.a11y-widget-biz .a11y-chat-stale > .a11y-chat-stale-note) {
+  color: var(--prompt-line);
+  font-size: 18px;
+  line-height: 1.35;
+}
+:where(.a11y-widget-biz .a11y-chat-turn.a11y-chat-block:has(.a11y-chat-stale)) {
+  margin: 0;
+  padding: 0;
+}
+:where(
+  .a11y-widget-biz .a11y-chat-turn:not(.a11y-chat-block) + .a11y-chat-turn.a11y-chat-block:has(.a11y-chat-stale),
+  .a11y-widget-biz .a11y-chat-turn.a11y-chat-block:not(:has(.a11y-chat-stale)) + .a11y-chat-turn.a11y-chat-block:has(.a11y-chat-stale)
+) {
+  margin-top: var(--cds-spacing-06);
 }
