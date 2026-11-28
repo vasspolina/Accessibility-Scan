@@ -148,8 +148,8 @@ export function AcrDraft({ report }: { report: AccessibilityReport }) {
             <ul className="a11y-plain-points">
               <li>{t("The template allows four answers: Supports, Partially Supports, Does Not Support, Not Applicable.")}</li>
               <li>{t("A scan can find failures. It can never establish conformance.")}</li>
-              <li>{t("Put “Supports” in every row and the document looks finished while claiming something nobody checked.")}</li>
-              <li>{t("In a procurement report, that is the version with legal consequences.")}</li>
+              <li>{t("If every row says “Supports”, the document claims conformance that nobody checked.")}</li>
+              <li>{t("In a procurement report, that claim has legal consequences.")}</li>
             </ul>
           </div>
 

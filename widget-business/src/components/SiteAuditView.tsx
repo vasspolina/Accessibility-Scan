@@ -67,7 +67,7 @@ export function SiteAuditView({ audit }: { audit: SiteAudit }) {
           <div className="a11y-conf-tile a11y-conf-tile-fail">
             <span className="a11y-conf-num">{audit.siteWide.length}</span>
             <span className="a11y-conf-cap">
-              {t("Site-wide issues")}<em>{t("one fix each, everywhere")}</em>
+              {t("Site-wide issues")}<em>{t("one fix each covers every page")}</em>
             </span>
           </div>
           {worst && (

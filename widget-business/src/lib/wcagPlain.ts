@@ -136,7 +136,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "timing-meta-refresh": {
     plain: "The page reloads on a timer",
     impact:
-      "Anyone still reading, or part way through the form, is thrown back to the start with no warning. Reading slowly is not a fault, and this punishes it.",
+      "Anyone still reading, or part way through the form, is thrown back to the start with no warning. It is worst for people who read slowly.",
   },
   "aria-allowed-role": {
     plain: "A role the element can't have",
@@ -169,7 +169,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     found: (n) =>
       `${n} ${n === 1 ? "element is labelled as a piece" : "elements are labelled as pieces"} of a larger control: a tab, a menu item, an option, a row. ${n === 1 ? "It does not sit" : "None sits"} inside the control ${n === 1 ? "it belongs" : "they belong"} to.`,
     impact:
-      "A tab outside its tab strip is not a tab to anything. Screen readers can't say which one of how many it is. The arrow keys people use to move through these controls have nothing to move through.",
+      "A tab outside its tab strip belongs to no group. Screen readers can't say which one of how many it is. The arrow keys people use to move through these controls have nothing to move through.",
   },
   "landmark-unique": {
     plain: "Two page areas share one name",
@@ -229,12 +229,12 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "color-contrast": {
     research:
-      "Low-contrast text is the most common failure in WebAIM's yearly check of a million homepages. Far more people see less sharply than a design team's monitors assume.",
+      "Low-contrast text is the most common failure in WebAIM's yearly check of a million homepages. Many people see less sharply than the design team that chose the colours.",
     plain: "Text too faint to read",
     found: (n) =>
       `${n} ${n === 1 ? "piece" : "pieces"} of text on this page ${n === 1 ? "sits" : "sit"} too close in colour to the background behind ${n === 1 ? "it" : "them"}.`,
     impact:
-      "Hard to read in bright light, on a cheap screen, in a dim room, or with imperfect eyesight. The message doesn't land.",
+      "Hard to read in bright light, on a cheap screen, in a dim room, or with imperfect eyesight. People can't read what it says.",
   },
   "image-alt": {
     research:
@@ -263,7 +263,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "Empty links are among the most common failures in WebAIM's annual survey of a million homepages.",
     plain: "Links have no readable text",
     found: (n) =>
-      `${n} ${n === 1 ? "link has" : "links have"} no readable text inside. No words and no label, so nothing to announce. ${n === 1 ? "Usually this is an icon or an image used as a link." : "Usually these are icons or images used as links."} The picture carries the meaning and the code carries none of it.`,
+      `${n} ${n === 1 ? "link has" : "links have"} no readable text inside. No words and no label, so nothing to announce. ${n === 1 ? "Usually this is an icon or an image used as a link." : "Usually these are icons or images used as links."} The picture shows the destination, and the code does not say it.`,
     impact:
       "Screen reader users often pull up a list of every link and pick from it. A link with no text appears there as the single word \"link\". Several of them turn the list into \"link, link, link\".",
   },
@@ -286,7 +286,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
       "Unlabelled buttons sit near the top of WebAIM's annual survey of a million homepages, year after year. Usually they are icon-only controls that were obvious to whoever designed them.",
     plain: "Buttons have no label",
     found: (n) =>
-      `${n} ${n === 1 ? "button has" : "buttons have"} no label of any kind: no words inside and no name in the code. Nearly always an icon button, where the symbol carries the meaning and the code carries none of it.`,
+      `${n} ${n === 1 ? "button has" : "buttons have"} no label of any kind: no words inside and no name in the code. Nearly always an icon button: the symbol shows what it does, and the code does not say it.`,
     impact: "Screen reader users can't tell what it does before pressing it. A common reason people give up.",
   },
   label: {
@@ -312,7 +312,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   },
   "html-has-lang": {
     research:
-      "A missing document language is one of the few failures WebAIM finds on a majority of the web. It stays common because the failure is silent. The page looks right, and only someone hearing it in the wrong voice meets the fault.",
+      "A missing document language is one of the few failures WebAIM finds on a majority of the web. It stays common because the page looks right. Only someone who hears it read in the wrong voice notices.",
     plain: "The page declares no language",
     found: () => `The page does not declare what language it is written in.`,
     impact: "People hear the content in the wrong accent, which is hard to follow.",
@@ -326,7 +326,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     plain: "Headings skip levels",
     found: (n) =>
       `The heading levels jump instead of stepping. In ${n} ${n === 1 ? "place" : "places"} a level is skipped. An h2 followed straight by an h4, or similar.`,
-    impact: "Most screen reader users navigate by headings. They lose the thread.",
+    impact: "Most screen reader users navigate by headings. With levels out of order, they can't tell how the page is organised.",
   },
   "page-has-heading-one": {
     plain: "No main heading",
@@ -337,7 +337,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "empty-heading": {
     plain: "An empty heading",
     found: (n) =>
-      `${n} ${n === 1 ? "heading is" : "headings are"} empty: the tag is there, the words are not.`,
+      `${n} ${n === 1 ? "heading is" : "headings are"} empty: the heading tag has no words in it.`,
     impact: "People navigating by headings land on an entry that says nothing.",
   },
   "link-in-text-block": {
@@ -406,20 +406,20 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     found: (n) =>
       `${n} ${n === 1 ? "control contains another control" : "controls each contain another control"}. What looks like one thing to click is two wrapped around each other.`,
     impact:
-      "Screen readers announce the outer one and hide what is inside it, so the inner control is unreachable. Which of the two a click or a keypress activates is anyone's guess.",
+      "Screen readers announce the outer one and hide what is inside it, so the inner control is unreachable. A click or a keypress can activate either of the two.",
   },
   "presentation-role-conflict": {
     plain: "A working control marked as decoration",
     found: (n) =>
       `${n} ${n === 1 ? "element is" : "elements are"} marked to be ignored while still being reachable and usable.`,
     impact:
-      "The code says to ignore it and the element says to use it. Screen readers resolve that inconsistently, so some people never find it.",
+      "The code marks it as decoration, but it works as a control. Screen readers resolve that inconsistently, so some people never find it.",
   },
   region: {
     plain: "Page areas unnamed in the code",
     found: (n) =>
       `${n} ${n === 1 ? "block of content has" : "blocks of content have"} no header, nav, main or footer around ${n === 1 ? "it" : "them"}.`,
-    impact: "Screen reader users can't skip ahead. They hear everything, every time.",
+    impact: "Screen reader users can't skip ahead. They have to listen to the whole page on every visit.",
   },
   "landmark-one-main": {
     plain: "Nothing marks the main content",
@@ -431,7 +431,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     plain: "Tab order jumps around",
     found: (n) =>
       `${n} ${n === 1 ? "element uses" : "elements use"} a positive tabindex. It forces ${n === 1 ? "the element" : "them"} to the front of the tab order, wherever ${n === 1 ? "it sits" : "they sit"} on the page.`,
-    impact: "People who can't use a mouse get thrown around the page.",
+    impact: "People who can't use a mouse are moved around the page out of order.",
   },
   "scrollable-region-focusable": {
     plain: "Scrollable area unreachable by keyboard",
@@ -456,12 +456,12 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "keyboard-no-visible-focus": {
     plain: "You can't see which item has keyboard focus",
     impact:
-      "Plenty of people never touch a mouse. Without a visible highlight they're navigating blind, and they give up.",
+      "Plenty of people never touch a mouse. Without a visible highlight they can't tell where they are, and they give up.",
   },
   "readability-dense-prose": {
     plain: "The writing needs university-level reading",
     impact:
-      "The change with the widest reach in this report. It helps people with cognitive disabilities and anyone reading in a second language. GOV.UK writes for a reading age of about nine, and it is not a simple site.",
+      "This change helps more visitors than any other in this report. It helps people with cognitive disabilities and anyone reading in a second language. GOV.UK writes for a reading age of about nine.",
   },
   "typo-leading-for-measure": {
     plain: "Lines set too close together",
@@ -472,7 +472,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     // than the number already sitting in the finding, so whatWeFound()
     // falls through to it instead.
     impact:
-      "The eye does not glide along a line, it jumps. The hardest jump is back to the start of the next one. The longer the line, the easier it is to land on the wrong one.",
+      "The eye moves along a line in jumps. The hardest jump is back to the start of the next one. The longer the line, the easier it is to land on the wrong one.",
   },
   "reading-order-mismatch": {
     plain: "Tab order differs from the order on screen",
@@ -485,12 +485,12 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "forced-colors-focus-lost": {
     plain: "Focus marker vanishes in High Contrast",
     impact:
-      "High Contrast mode strips away the shadows and colours most focus highlights are drawn with. The people who most need to see where they are see nothing. The page looks perfect until that mode is on.",
+      "High Contrast mode strips away the shadows and colours most focus highlights are drawn with. People who rely on that mode can't see where the keyboard is. The fault shows only with the mode on.",
   },
   "forced-colors-icon-lost": {
     plain: "Icon button vanishes in High Contrast",
     impact:
-      "The icon is drawn as a background image, and that mode removes background images. The button still works, but renders as an empty box. Nothing left to say it is a button.",
+      "The icon is drawn as a background image, and that mode removes background images. The button still works, but renders as an empty box. Nothing on screen shows it is a button.",
   },
   "keyboard-faint-focus": {
     // "The outline" assumed the reader already knew which outline was meant.
@@ -498,7 +498,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
     // paragraph below is where it gets explained.
     plain: "Keyboard marker too faint to see",
     impact:
-      "Tab moves an invisible cursor, and the outline is the only thing showing where it has reached. Too faint, and a keyboard user can't tell what they are about to activate. It slips through testing because there genuinely is an outline there.",
+      "Tab moves an invisible cursor, and the outline is the only thing showing where it has reached. Too faint, and a keyboard user can't tell what they are about to activate. Testing often misses it, because an outline does exist.",
   },
   // A short title of its own (user's screenshot, 26 Nov 2026): without one
   // the backend's whole description stood as the title, and the opened
@@ -512,7 +512,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "keyboard-focus-trap": {
     plain: "Keyboard focus gets stuck",
     impact:
-      "A keyboard user who reaches this point can't go further. One of the worst failures a site can have.",
+      "A keyboard user who reaches this point can't go further. Everything after this point is out of their reach.",
   },
 
   // Component design suggestions (forms, menus) — from the ARIA Authoring
@@ -523,7 +523,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "sr-filename-alt": {
     plain: "Image descriptions are filenames",
     impact:
-      "A screen reader reads the filename aloud, digits and punctuation included. The visitor hears noise where the image's meaning should be.",
+      "A screen reader reads the filename aloud, digits and punctuation included. The visitor hears the filename and learns nothing about the image.",
   },
   "sr-vague-link-name": {
     plain: "Links named \"click here\"",
@@ -538,7 +538,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "sr-vague-button-name": {
     plain: "Button names that say nothing",
     impact:
-      "A sighted visitor sees the × in the corner and knows. A listener hears \"times, button\" with no corner to lean on.",
+      "A sighted visitor sees the × in the corner and knows what it does. A listener hears only \"times, button\".",
   },
   "form-field-placeholder-label": {
     plain: "Fields labelled only by placeholders",
@@ -548,12 +548,12 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "component-form-autocomplete": {
     plain: "Form fields block autofill",
     impact:
-      "Everyone retypes their name, email, address and phone number by hand. Slow for all, a real barrier for some.",
+      "Everyone retypes their name, email, address and phone number by hand. That is slow for everyone, and some people can't do it at all.",
   },
   "component-input-type": {
     plain: "Email fields typed as plain text",
     impact:
-      "On phones, visitors get the generic keyboard instead of one with \"@\" or a number pad. More taps, more mistakes.",
+      "On phones, visitors get the generic keyboard instead of one with \"@\" or a number pad. They need more taps and make more mistakes.",
   },
   "component-required-cue": {
     plain: "Required fields not visibly marked",
@@ -585,23 +585,23 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "mobile-target-spacing": {
     plain: "Tap targets sit too close",
     found: (n) =>
-      `${n} pair${n === 1 ? "" : "s"} of controls sit less than 8px apart at phone width. Each is big enough on its own; together they leave no room to miss.`,
+      `${n} pair${n === 1 ? "" : "s"} of controls sit less than 8px apart at phone width. Each is big enough on its own, but there is too little space between them.`,
     impact:
-      "A thumb is not a cursor. A finger that aims for one control and lands on its neighbour taps or buys the wrong thing. People with tremors or larger fingers meet it first.",
+      "A thumb is less precise than a mouse pointer. A finger that aims for one control and lands on its neighbour taps or buys the wrong thing. People with tremors or larger fingers meet it first.",
   },
   "consent-blocks-reader": {
     plain: "The cookie banner blocks screen readers",
     found: () =>
       `The consent layer marks the whole page behind it as hidden for screen readers. Keyboard focus never lands in the layer itself.`,
     impact:
-      "A screen reader user hears silence where the page should be. They can't read the page, and they can't find the banner to clear it.",
+      "A screen reader user hears nothing of the page. They can't read the page, and they can't find the banner to clear it.",
   },
   "mobile-sticky-coverage": {
     plain: "Pinned bars crowd the phone screen",
     found: () =>
       `Pinned headers, banners or toolbars hold more than a third of the screen at phone width.`,
     impact:
-      "Every pinned pixel is one the visitor can't read the page through. Anything the keyboard focuses can end up hidden behind the bars. WCAG 2.2 already makes exactly that a requirement; the law just does not point at it yet.",
+      "The pinned bars cover part of the page the visitor is reading. Anything the keyboard focuses can end up hidden behind the bars. WCAG 2.2 already makes exactly that a requirement; the law just does not point at it yet.",
   },
   "mobile-horizontal-scroll": {
     plain: "The page scrolls sideways on phones",
@@ -611,7 +611,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "mobile-tap-target": {
     plain: "Tap targets too small",
     impact:
-      "Taps that miss, and frustration. Worst for bigger fingers or shaky hands. It costs sales.",
+      "People miss the control and have to tap again. It is hardest with bigger fingers or shaky hands. It costs sales.",
   },
 
   // Text resizing — WCAG 1.4.4 / 1.4.12, measured by actually applying the
@@ -652,7 +652,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "dark-confirmshaming": {
     plain: "\"No thanks\" worded to shame",
     impact:
-      "\"No thanks, I don't want to save money\" is memorable for the wrong reasons. It reads as manipulation.",
+      "\"No thanks, I don't want to save money\" reads as manipulation.",
   },
   "dark-fake-scarcity": {
     plain: "Low-stock claims used as pressure",
@@ -662,7 +662,7 @@ export const PLAIN_RULE_EXPLANATIONS: Record<string, PlainRule> = {
   "dark-fake-urgency": {
     plain: "Deadlines used as pressure",
     impact:
-      "Countdowns that reset on reload are a deceptive practice. Once noticed, nothing else the site claims is believed.",
+      "Countdowns that reset on reload are a deceptive practice. A visitor who notices stops trusting the site's other claims.",
   },
 
   // Modal / pop-up dialogs — ARIA dialog pattern.
@@ -1128,8 +1128,8 @@ export const PLAIN_RULE_FIXES: Record<string, string | string[]> = {
   "typo-thin-weight": "Set body text in a regular weight.",
 
   "aria-allowed-role": [
-    "Use an element that genuinely is the thing it claims to be.",
-    "A button for a button, a navigation block for navigation.",
+    "Use the element built for the job.",
+    "Use a button element for a button and a navigation element for navigation.",
   ],
   "aria-allowed-attr": "Remove the settings that do not belong on this kind of element, or change it to one they fit.",
   "aria-required-children": [
@@ -1323,7 +1323,7 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
     ask: "Look beside each player for a written version of everything said. If there is none, ask whoever made the recording for one and put it on the page.",
   },
   "media-embedded-player": {
-    what: "A video playing in another company's player, such as YouTube or Vimeo. The video lives on their site, so the checker cannot look inside it.",
+    what: "A video playing in another company's player, such as YouTube or Vimeo. The video is on their site, so the checker cannot look inside it.",
     ask: "Play each one and turn captions on with the CC button. If there is no button or the captions are wrong, fix them in the account the video is hosted on.",
   },
   // Three rows about the documents a page links to. The scan counts them
@@ -1360,7 +1360,7 @@ export const UNDECIDED_EXPLANATIONS: Record<string, { what: string; ask: string 
     ask: "Ask your developer to mark the banner as a dialog named, for example, ‘Cookie settings’. Keyboard focus should move into it when it opens.",
   },
   "consent-trap-unnamed": {
-    what: "Pressing Tab stays inside the cookie banner, but the banner never says what it is. A screen reader user is held in something with no name.",
+    what: "Pressing Tab stays inside the cookie banner, but the banner never says what it is. A screen reader user is kept inside it and is not told what it is.",
     ask: "Ask your developer to mark the banner as a dialog and name it, such as ‘Cookie settings’.",
   },
   "interaction-motion-actuation": {

@@ -23,7 +23,7 @@ describe("waitingMessage", () => {
   // twenty seconds, moma.org around forty, the Guardian has taken eighty.
   it("stops promising a quick answer once the scan is plainly not quick", () => {
     expect(waitingMessage("page", false, 5)).toContain("Most pages");
-    expect(waitingMessage("page", false, 30)).toContain("Still at it");
+    expect(waitingMessage("page", false, 30)).toContain("Still running");
     expect(waitingMessage("page", false, 70)).toContain("large images");
   });
 

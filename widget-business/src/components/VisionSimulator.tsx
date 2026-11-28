@@ -93,7 +93,7 @@ const CONDITIONS: Condition[] = [
     id: "cataracts",
     label: "Cataracts",
     prevalence: "common over 60",
-    note: "Clouded vision and faded contrast. Text with low contrast is the first thing to go.",
+    note: "Clouded vision and faded contrast. Low-contrast text becomes unreadable first.",
     alt: "Top of {url} simulated as seen with cataracts",
     cssFilter: "blur(1.6px) contrast(0.68) brightness(1.12)",
   },

@@ -77,7 +77,7 @@ export function pictureNoteText(finding: AccessibilityFinding): string | undefin
   const note = t(PICTURE_NOTES[reason]);
   if (finding.pictureFrame) {
     return `${note} ${tf(
-      "This element lives inside the consent frame from {host}, so the selector in the technical details is a path within that frame rather than within your own page.",
+      "This element is inside the consent frame from {host}, so the selector in the technical details is a path within that frame rather than within your own page.",
       { host: finding.pictureFrame }
     )}`;
   }

@@ -250,7 +250,7 @@ export function ScanHistory({
               pill, the promise as a sentence, and the control that undoes
               it inside the same card, under the words that promise it. */}
           <div className="a11y-hist-card">
-          <h3 className="a11y-hist-head">{t("Where this lives")}</h3>
+          <h3 className="a11y-hist-head">{t("Where this is kept")}</h3>
           <p className="a11y-hist-promise">{t("Kept in this browser only, never sent anywhere.")}</p>
           {/* The design writes "Delete this history at any time" as a line
               of prose. It is the one genuinely destructive action here, so

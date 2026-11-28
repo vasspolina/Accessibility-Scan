@@ -648,7 +648,7 @@ class Talk {
           // when it is off, or the scan could not read the page.
           const reason = res.body.reason ?? "";
           if (reason === "timeout" && !retried) return this.requestDraft(revise, true);
-          return this.noDraft(why[reason] ?? t("The language model slipped."), reason === "timeout" || reason === "failed", revise);
+          return this.noDraft(why[reason] ?? t("The language model made an error."), reason === "timeout" || reason === "failed", revise);
         }
         this.draft = res.body.draft;
         this.model = res.body.model ?? null;

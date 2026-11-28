@@ -182,7 +182,7 @@ async function attachEvidence(
         finding.pictureFrame = frameForSelector[finding.selector];
         finding.pictureNote =
           finding.pictureNote.replace(" The technical details for this finding identify the exact element.", "") +
-          ` This element lives inside the consent frame from ${frameForSelector[finding.selector]}, so the selector in the technical details is a path within that frame rather than within your own page.`;
+          ` This element is inside the consent frame from ${frameForSelector[finding.selector]}, so the selector in the technical details is a path within that frame rather than within your own page.`;
       }
     }
   }

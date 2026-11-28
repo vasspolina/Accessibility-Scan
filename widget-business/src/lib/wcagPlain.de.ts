@@ -26,7 +26,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "timing-meta-refresh": {
     found: (n) => (n === 1 ? "Die Seite lädt nach einer festen Wartezeit von selbst neu oder springt zu einer anderen Seite. Anhalten lässt sich das nicht." : "{n} Anweisungen im Code laden die Seite nach einer festen Wartezeit neu oder leiten weiter. Keine lässt sich anhalten.".replace("{n}", String(n))),
     plain: "Die Seite lädt automatisch neu",
-    impact: "Wer noch liest oder mitten im Formular steckt, landet ohne Warnung wieder am Anfang. Langsam zu lesen ist kein Fehler, und das hier bestraft es.",
+    impact: "Wer noch liest oder mitten im Formular steckt, landet ohne Warnung wieder am Anfang. Am härtesten trifft es Menschen, die langsam lesen.",
   },
   "aria-allowed-role": {
     plain: "Eine Rolle, die das Element nicht haben kann",
@@ -56,7 +56,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     plain: "Listeneintrag außerhalb seiner Liste",
     found: (n) =>
       `${n} ${n === 1 ? "Element ist als Teil eines größeren Bedienelements ausgezeichnet: ein Reiter, ein Menüpunkt, eine Listenoption. Es steht nicht in dem Bedienelement, zu dem es gehört." : "Elemente sind als Teile eines größeren Bedienelements ausgezeichnet: Reiter, Menüpunkte, Listenoptionen. Keines steht in dem Bedienelement, zu dem es gehört."}`,
-    impact: "Ein Reiter außerhalb seiner Reiterleiste ist kein Reiter. Screenreader können nicht sagen, der wievielte von wie vielen er ist. Und die Pfeiltasten, mit denen man durch solche Elemente geht, haben nichts, wodurch sie gehen könnten.",
+    impact: "Ein Reiter außerhalb seiner Reiterleiste gehört zu keiner Gruppe. Screenreader können nicht sagen, der wievielte von wie vielen er ist. Und die Pfeiltasten, mit denen man durch solche Elemente geht, haben nichts, wodurch sie gehen könnten.",
   },
   "landmark-unique": {
     plain: "Zwei Seitenbereiche heißen gleich",
@@ -113,11 +113,11 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     impact: "Wer einen Screenreader nutzt, hört dasselbe zweimal und verliert Zeit ohne Gewinn.",
   },
   "color-contrast": {
-    research: "Zu blasser Text ist der häufigste Fehler in der jährlichen WebAIM-Untersuchung von einer Million Startseiten. Weit mehr Menschen sehen schlechter, als die Monitore eines Design-Teams vermuten lassen.",
+    research: "Zu blasser Text ist der häufigste Fehler in der jährlichen WebAIM-Untersuchung von einer Million Startseiten. Viele Menschen sehen weniger scharf als das Design-Team, das die Farben gewählt hat.",
     plain: "Text zu blass zum Lesen",
     found: (n) =>
       `${n} ${n === 1 ? "Textstelle auf dieser Seite liegt" : "Textstellen auf dieser Seite liegen"} farblich zu nah am Hintergrund dahinter.`,
-    impact: "Schwer zu lesen bei hellem Licht, auf einem billigen Bildschirm oder mit nicht perfekten Augen. Ihre Botschaft kommt nicht an.",
+    impact: "Schwer zu lesen bei hellem Licht, auf einem billigen Bildschirm oder mit nicht perfekten Augen. Man kann nicht lesen, was dort steht.",
   },
   "image-alt": {
     research: "Bilder ohne Beschreibung gehören zu den häufigsten Fehlern in der jährlichen WebAIM-Untersuchung von einer Million Startseiten. Sie sind auch am leichtesten zu beheben.",
@@ -142,7 +142,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     research: "Leere Links gehören zu den häufigsten Fehlern in der jährlichen WebAIM-Untersuchung von einer Million Startseiten.",
     plain: "Links ohne lesbaren Text",
     found: (n) =>
-      `${n} ${n === 1 ? "Link enthält" : "Links enthalten"} keinen lesbaren Text. Keine Wörter, keine Beschriftung, nichts zum Ansagen. ${n === 1 ? "Meist ist es ein Symbol, ein Pfeil oder ein Bild, das als Link dient." : "Meist sind es Symbole, Pfeile oder Bilder, die als Links dienen."} Das Bild trägt die Bedeutung, der Code trägt nichts davon.`,
+      `${n} ${n === 1 ? "Link enthält" : "Links enthalten"} keinen lesbaren Text. Keine Wörter, keine Beschriftung, nichts zum Ansagen. ${n === 1 ? "Meist ist es ein Symbol, ein Pfeil oder ein Bild, das als Link dient." : "Meist sind es Symbole, Pfeile oder Bilder, die als Links dienen."} Das Bild zeigt das Ziel, im Code steht es nicht.`,
     impact: "Wer einen Screenreader nutzt, lässt sich oft eine Liste aller Links geben und wählt daraus. Ein Link ohne Text steht dort nur als das Wort „Link“. Mehrere davon machen aus der Liste „Link, Link, Link“.",
   },
   "link-text-vague": {
@@ -160,7 +160,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     research: "Schaltflächen ohne Beschriftung stehen Jahr für Jahr weit oben in der jährlichen WebAIM-Untersuchung von einer Million Startseiten. Meist sind es reine Symbol-Schaltflächen, die für das Designteam selbsterklärend waren.",
     plain: "Schaltflächen ohne Beschriftung",
     found: (n) =>
-      `${n} ${n === 1 ? "Schaltfläche hat" : "Schaltflächen haben"} gar keine Beschriftung: keine Wörter darin und keinen Namen im Code. Fast immer sind es Symbol-Schaltflächen, bei denen das Zeichen die Bedeutung trägt und der Code nichts davon.`,
+      `${n} ${n === 1 ? "Schaltfläche hat" : "Schaltflächen haben"} gar keine Beschriftung: keine Wörter darin und keinen Namen im Code. Fast immer sind es Symbol-Schaltflächen: Das Zeichen zeigt, was sie tun, im Code steht es nicht.`,
     impact: "Wer einen Screenreader nutzt, weiß vor dem Klick nicht, was passiert. Ein häufiger Grund, aufzugeben.",
   },
   label: {
@@ -183,7 +183,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     impact: "Tabs, Lesezeichen und Suchergebnisse zeigen nichts Brauchbares.",
   },
   "html-has-lang": {
-    research: "Eine fehlende Sprachangabe ist einer der wenigen Fehler, die WebAIM auf der Mehrheit des Web findet. Er bleibt häufig, weil er lautlos ist: Die Seite sieht richtig aus, und nur wer sie in der falschen Stimme hört, merkt etwas.",
+    research: "Eine fehlende Sprachangabe ist einer der wenigen Fehler, die WebAIM auf der Mehrheit des Web findet. Er bleibt häufig, weil die Seite richtig aussieht. Nur wer sie in der falschen Stimme hört, merkt etwas.",
     plain: "Die Seite nennt keine Sprache",
     found: () => `Die Seite gibt nicht an, in welcher Sprache sie geschrieben ist.`,
     impact: "Ihre Inhalte werden mit dem falschen Akzent vorgelesen, und das ist schwer zu verstehen.",
@@ -197,7 +197,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     plain: "Überschriften überspringen Ebenen",
     found: (n) =>
       `Die Überschriftenebenen springen, statt Stufe für Stufe zu gehen. An ${n} ${n === 1 ? "Stelle" : "Stellen"} fehlt eine Ebene. Auf ein h2 folgt direkt ein h4, oder Ähnliches.`,
-    impact: "Die meisten Menschen mit Screenreader navigieren über Überschriften. Sie verlieren den Faden.",
+    impact: "Die meisten Menschen mit Screenreader navigieren über Überschriften. Bei übersprungenen Ebenen erkennen sie den Aufbau der Seite nicht.",
   },
   "page-has-heading-one": {
     plain: "Keine Hauptüberschrift",
@@ -208,7 +208,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "empty-heading": {
     plain: "Eine leere Überschrift",
     found: (n) =>
-      `${n} ${n === 1 ? "Überschrift ist" : "Überschriften sind"} leer: Das Tag ist da, die Wörter fehlen.`,
+      `${n} ${n === 1 ? "Überschrift ist" : "Überschriften sind"} leer: Das Überschriften-Tag enthält keine Wörter.`,
     impact: "Wer über Überschriften navigiert, landet auf einem Eintrag, der nichts sagt.",
   },
   "link-in-text-block": {
@@ -274,19 +274,19 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     plain: "Ein Bedienelement in einem anderen",
     found: (n) =>
       `${n} ${n === 1 ? "Bedienelement enthält ein weiteres Bedienelement." : "Bedienelemente enthalten jeweils ein weiteres Bedienelement."} Was wie eine Sache zum Klicken aussieht, sind zwei ineinander.`,
-    impact: "Screenreader sagen das äußere an und verbergen das innere, das damit unerreichbar wird. Welches von beiden ein Klick oder ein Tastendruck auslöst, weiß niemand.",
+    impact: "Screenreader sagen das äußere an und verbergen das innere, das damit unerreichbar wird. Ein Klick oder ein Tastendruck kann jedes der beiden auslösen.",
   },
   "presentation-role-conflict": {
     plain: "Ein echtes Bedienelement gilt als Schmuck",
     found: (n) =>
       `${n} ${n === 1 ? "Element ist als zu ignorieren gekennzeichnet und bleibt trotzdem erreichbar und bedienbar." : "Elemente sind als zu ignorieren gekennzeichnet und bleiben trotzdem erreichbar und bedienbar."}`,
-    impact: "Der Code sagt: ignorieren. Das Element sagt: benutzen. Screenreader lösen das unterschiedlich auf, und manche finden es deshalb nie.",
+    impact: "Der Code kennzeichnet es als Schmuck, es funktioniert aber als Bedienelement. Screenreader lösen das unterschiedlich auf, und manche finden es deshalb nie.",
   },
   region: {
     plain: "Seitenbereiche ohne Namen im Code",
     found: (n) =>
       `${n} ${n === 1 ? "Inhaltsblock hat" : "Inhaltsblöcke haben"} weder Kopf noch Navigation, Hauptinhalt oder Fuß um sich herum.`,
-    impact: "Wer einen Screenreader nutzt, kann nichts überspringen. Man hört jedes Mal alles.",
+    impact: "Wer einen Screenreader nutzt, kann nichts überspringen. Man muss sich bei jedem Besuch die ganze Seite anhören.",
   },
   "landmark-one-main": {
     plain: "Nichts kennzeichnet den Hauptinhalt",
@@ -298,7 +298,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
     plain: "Die Tab-Reihenfolge springt",
     found: (n) =>
       `${n} ${n === 1 ? "Element benutzt" : "Elemente benutzen"} einen positiven tabindex. Das zwingt ${n === 1 ? "es" : "sie"} an den Anfang der Tab-Reihenfolge, egal wo auf der Seite ${n === 1 ? "es steht" : "sie stehen"}.`,
-    impact: "Wer keine Maus benutzen kann, wird auf der Seite hin und her geworfen.",
+    impact: "Wer keine Maus benutzen kann, springt in falscher Reihenfolge über die Seite.",
   },
   "scrollable-region-focusable": {
     plain: "Scrollbereich für die Tastatur unerreichbar",
@@ -316,17 +316,17 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "keyboard-no-visible-focus": {
     found: (n) => (n === 1 ? "Mindestens ein Bedienelement dieser Seite verändert sich sichtbar nicht, wenn die Tab-Taste darauf landet. Weder Rahmen noch Hervorhebung zeigen, wo man steht." : "{n} Bedienelemente verändern sich sichtbar nicht, wenn die Tab-Taste auf ihnen landet. Weder Rahmen noch Hervorhebung zeigen, wo man steht.".replace("{n}", String(n))),
     plain: "Nichts zeigt, wo die Tastatur steht",
-    impact: "Viele Menschen fassen nie eine Maus an. Ohne sichtbare Markierung navigieren sie blind, und sie geben auf.",
+    impact: "Viele Menschen fassen nie eine Maus an. Ohne sichtbare Markierung wissen sie nicht, wo sie sind, und sie geben auf.",
   },
   "readability-dense-prose": {
     found: (n) => (n === 1 ? "Der Fließtext dieser Seite verlangt etwa Hochschulniveau. Gemessen wird an der Länge der Sätze und Wörter." : "{n} Textabschnitte verlangen etwa Hochschulniveau. Gemessen wird an der Länge der Sätze und Wörter.".replace("{n}", String(n))),
     plain: "Der Text verlangt Lesen auf Hochschulniveau",
-    impact: "Die Änderung mit der größten Wirkung in diesem Bericht. Sie hilft Menschen mit kognitiven Einschränkungen und allen, die in einer zweiten Sprache lesen. GOV.UK schreibt für ein Lesealter von etwa neun Jahren, und das ist keine einfache Website.",
+    impact: "Diese Änderung hilft mehr Menschen als jede andere in diesem Bericht. Sie hilft Menschen mit kognitiven Einschränkungen und allen, die in einer zweiten Sprache lesen. GOV.UK schreibt für ein Lesealter von etwa neun Jahren.",
   },
   "typo-leading-for-measure": {
     found: (n) => (n === 1 ? "Fließtext auf dieser Seite hat zu wenig Zeilenabstand für seine Zeilenlänge und Schriftgröße." : "{n} Textblöcke haben zu wenig Zeilenabstand für ihre Zeilenlänge und Schriftgröße.".replace("{n}", String(n))),
     plain: "Zeilen stehen zu eng übereinander",
-    impact: "Das Auge gleitet nicht über eine Zeile, es springt. Der schwerste Sprung geht zurück an den Anfang der nächsten. Je länger die Zeile, desto leichter landet man in der falschen.",
+    impact: "Das Auge bewegt sich in Sprüngen über eine Zeile. Der schwerste Sprung geht zurück an den Anfang der nächsten. Je länger die Zeile, desto leichter landet man in der falschen.",
   },
   "reading-order-mismatch": {
     found: (n) => (n === 1 ? "In einer Reihe nebeneinanderliegender Bedienelemente folgt die Tab-Taste nicht der Reihenfolge auf dem Bildschirm. Die Gestaltung stellt sie um, der Code nicht." : "In {n} Reihen nebeneinanderliegender Bedienelemente folgt die Tab-Taste nicht der Reihenfolge auf dem Bildschirm. Die Gestaltung stellt sie um, der Code nicht.".replace("{n}", String(n))),
@@ -337,7 +337,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "forced-colors-focus-lost": {
     found: (n) => (n === 1 ? "Bei mindestens einem Bedienelement besteht die Fokusmarkierung nur aus einem Schatten oder einem Farbwechsel. Im Modus für hohen Kontrast unter Windows verschwindet sie deshalb." : "Bei {n} Bedienelementen besteht die Fokusmarkierung nur aus einem Schatten oder einem Farbwechsel. Im Modus für hohen Kontrast unter Windows verschwindet sie deshalb.".replace("{n}", String(n))),
     plain: "Fokusmarkierung verschwindet im hohen Kontrast",
-    impact: "Der Modus für hohen Kontrast entfernt die Schatten und Farben, mit denen die meisten Fokusmarkierungen gezeichnet sind. Wer am dringendsten sehen muss, wo er steht, sieht nichts. Auf einer Seite, die bis dahin perfekt aussieht.",
+    impact: "Der Modus für hohen Kontrast entfernt die Schatten und Farben, mit denen die meisten Fokusmarkierungen gezeichnet sind. Wer auf diesen Modus angewiesen ist, sieht nicht, wo die Tastatur steht. Der Fehler zeigt sich nur, wenn der Modus an ist.",
   },
   "forced-colors-icon-lost": {
     found: (n) => (n === 1 ? "Ein Bedienelement ohne Text besteht nur aus einem Hintergrundbild. Im Modus für hohen Kontrast unter Windows verschwindet das Bild, und ein leerer Kasten bleibt." : "{n} Bedienelemente ohne Text bestehen nur aus einem Hintergrundbild. Im Modus für hohen Kontrast unter Windows verschwindet das Bild, und leere Kästen bleiben.".replace("{n}", String(n))),
@@ -347,7 +347,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "keyboard-faint-focus": {
     found: (n) => (n === 1 ? "Bei mindestens einem Bedienelement ist der Rahmen, der den Tastaturfokus zeigt, zu blass. Sein Kontrast zum Hintergrund liegt unter 3:1, dem Mindestwert für eine sichtbare Markierung." : "Bei {n} Bedienelementen ist der Rahmen, der den Tastaturfokus zeigt, zu blass. Sein Kontrast zum Hintergrund liegt unter 3:1, dem Mindestwert für eine sichtbare Markierung.".replace("{n}", String(n))),
     plain: "Tastaturmarkierung zu blass zum Sehen",
-    impact: "Die Tab-Taste bewegt einen unsichtbaren Zeiger, und nur der Rahmen zeigt, wo er angekommen ist. Ist er zu blass, weiß man an der Tastatur nicht, was man gleich auslöst. Beim Testen rutscht das durch, weil ja wirklich ein Rahmen da ist.",
+    impact: "Die Tab-Taste bewegt einen unsichtbaren Zeiger, und nur der Rahmen zeigt, wo er angekommen ist. Ist er zu blass, weiß man an der Tastatur nicht, was man gleich auslöst. Beim Testen wird das oft übersehen, weil ein Rahmen vorhanden ist.",
   },
   "keyboard-focus-order": {
     plain: "Tab-Reihenfolge springt zurück",
@@ -357,7 +357,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "keyboard-focus-trap": {
     found: (n) => (n === 1 ? "An einer Stelle bleibt der Fokus beim Drücken der Tab-Taste hängen. Er bleibt auf einem Element oder pendelt zwischen zweien und erreicht den Rest der Seite nicht." : "An {n} Stellen bleibt der Fokus beim Drücken der Tab-Taste hängen. Er bleibt auf einem Element oder pendelt zwischen zweien und erreicht den Rest der Seite nicht.".replace("{n}", String(n))),
     plain: "Der Tastaturfokus bleibt hängen",
-    impact: "Wer mit der Tastatur bis hierher kommt, kommt nicht weiter. Einer der schlimmsten Fehler, die eine Website haben kann.",
+    impact: "Wer mit der Tastatur bis hierher kommt, kommt nicht weiter. Alles, was danach kommt, ist für sie unerreichbar.",
   },
 
   // Die Namensprüfungen für Screenreader. Jede ist eine gebündelte Karte,
@@ -365,7 +365,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "sr-filename-alt": {
     found: (n) => (n === 1 ? "Mindestens ein Bild trägt seinen Dateinamen als Beschreibung." : "{n} Bilder tragen ihren Dateinamen als Beschreibung.".replace("{n}", String(n))),
     plain: "Bildbeschreibungen sind Dateinamen",
-    impact: "Ein Screenreader liest den Dateinamen vor, samt Ziffern und Satzzeichen. Wo die Bedeutung des Bildes sein sollte, hört man nur Rauschen.",
+    impact: "Ein Screenreader liest den Dateinamen vor, samt Ziffern und Satzzeichen. Man hört den Dateinamen und erfährt nichts über das Bild.",
   },
   "sr-vague-link-name": {
     found: (n) => (n === 1 ? "Mindestens ein Link wird nur mit einem Zeichen wie „→“ oder einer bloßen Webadresse angesagt. Kein Wort sagt, wohin er führt." : "{n} Links werden nur mit einem Zeichen wie „→“ oder einer bloßen Webadresse angesagt. Kein Wort sagt, wohin sie führen.".replace("{n}", String(n))),
@@ -380,7 +380,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "sr-vague-button-name": {
     found: (n) => (n === 1 ? "Mindestens eine Schaltfläche trägt nur einen allgemeinen Namen wie „More“ oder „Go“. Was sie tut, sagt dieser Name nicht." : "{n} Schaltflächen tragen nur allgemeine Namen wie „More“ oder „Go“. Was sie tun, sagen diese Namen nicht.".replace("{n}", String(n))),
     plain: "Schaltflächennamen, die nichts sagen",
-    impact: "Wer sehen kann, sieht das × in der Ecke und weiß Bescheid. Wer zuhört, hört „mal, Schaltfläche“ und hat keine Ecke als Anhaltspunkt.",
+    impact: "Wer sehen kann, sieht das × in der Ecke und weiß, was es tut. Wer zuhört, hört nur „mal, Schaltfläche“.",
   },
   "form-field-placeholder-label": {
     found: (n) => (n === 1 ? "Mindestens ein Formularfeld ist nur mit seinem Platzhaltertext beschriftet. Weder daneben noch im Code steht eine andere Beschriftung." : "{n} Formularfelder sind nur mit ihrem Platzhaltertext beschriftet. Weder daneben noch im Code steht eine andere Beschriftung.".replace("{n}", String(n))),
@@ -390,12 +390,12 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "component-form-autocomplete": {
     found: (n) => (n === 1 ? "Mindestens ein Feld für persönliche Angaben wie Name oder E-Mail sagt dem Browser nicht, was es erfasst. Browser und Passwortmanager müssen raten." : "{n} Felder für persönliche Angaben wie Name oder E-Mail sagen dem Browser nicht, was sie erfassen. Browser und Passwortmanager müssen raten.".replace("{n}", String(n))),
     plain: "Formularfelder blockieren das Ausfüllen",
-    impact: "Alle tippen Name, E-Mail und Adresse wieder von Hand. Langsam für alle, für manche eine echte Hürde.",
+    impact: "Alle tippen Name, E-Mail und Adresse wieder von Hand. Das ist für alle langsam, und manche schaffen es gar nicht.",
   },
   "component-input-type": {
     found: (n) => (n === 1 ? "Mindestens ein Feld, das nach E-Mail oder Telefonnummer fragt, ist im Code nicht als E-Mail- oder Telefonfeld angelegt." : "{n} Felder, die nach E-Mail oder Telefonnummer fragen, sind im Code nicht als E-Mail- oder Telefonfelder angelegt.".replace("{n}", String(n))),
     plain: "E-Mail-Felder als einfacher Text angelegt",
-    impact: "Auf dem Handy erscheint die gewöhnliche Tastatur statt einer mit „@“ oder einem Ziffernblock. Mehr Tipper, mehr Fehler.",
+    impact: "Auf dem Handy erscheint die gewöhnliche Tastatur statt einer mit „@“ oder einem Ziffernblock. Man tippt öfter und macht mehr Fehler.",
   },
   "component-required-cue": {
     found: (n) => (n === 1 ? "Mindestens ein Pflichtfeld ist nur im Code als Pflicht markiert. In seiner Beschriftung steht weder „Pflichtfeld“ noch ein Sternchen." : "{n} Pflichtfelder sind nur im Code als Pflicht markiert. In ihren Beschriftungen steht weder „Pflichtfeld“ noch ein Sternchen.".replace("{n}", String(n))),
@@ -426,20 +426,20 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "mobile-target-spacing": {
     plain: "Tippziele liegen zu dicht beieinander",
     found: (n) =>
-      `${n} ${n === 1 ? "Paar von Bedienelementen liegt" : "Paare von Bedienelementen liegen"} in Handybreite weniger als 8 px auseinander. Einzeln ist jedes groß genug; zusammen lassen sie keinen Platz zum Danebentippen.`,
-    impact: "Ein Daumen ist kein Mauszeiger. Ein Finger, der ein Element anpeilt und beim Nachbarn landet, tippt oder kauft das Falsche. Menschen mit Zittern oder größeren Fingern trifft es zuerst.",
+      `${n} ${n === 1 ? "Paar von Bedienelementen liegt" : "Paare von Bedienelementen liegen"} in Handybreite weniger als 8 px auseinander. Einzeln ist jedes groß genug, aber zwischen ihnen ist zu wenig Platz.`,
+    impact: "Ein Daumen ist weniger genau als ein Mauszeiger. Ein Finger, der ein Element anpeilt und beim Nachbarn landet, tippt oder kauft das Falsche. Menschen mit Zittern oder größeren Fingern trifft es zuerst.",
   },
   "consent-blocks-reader": {
     plain: "Das Cookie-Banner blockiert Screenreader",
     found: () =>
       `Die Zustimmungsebene markiert die ganze Seite dahinter als für Screenreader versteckt, und der Tastaturfokus landet nie in der Ebene selbst.`,
-    impact: "Wer einen Screenreader nutzt, hört Stille, wo die Seite sein sollte. Man kann die Seite nicht lesen und findet das Banner nicht, um es wegzuräumen.",
+    impact: "Wer einen Screenreader nutzt, hört nichts von der Seite. Man kann die Seite nicht lesen und findet das Banner nicht, um es wegzuräumen.",
   },
   "mobile-sticky-coverage": {
     plain: "Fixierte Leisten füllen den Handybildschirm",
     found: () =>
       `Fixierte Kopfzeilen, Banner oder Werkzeugleisten belegen in Handybreite mehr als ein Drittel des Bildschirms.`,
-    impact: "Jedes fixierte Pixel ist eines, durch das niemand die Seite lesen kann. Was die Tastatur fokussiert, kann hinter den Leisten verschwinden. WCAG 2.2 macht genau das schon zur Pflicht; das Gesetz verweist nur noch nicht darauf.",
+    impact: "Die fixierten Leisten verdecken einen Teil der Seite, die man gerade liest. Was die Tastatur fokussiert, kann hinter den Leisten verschwinden. WCAG 2.2 macht genau das schon zur Pflicht; das Gesetz verweist nur noch nicht darauf.",
   },
   "mobile-horizontal-scroll": {
     found: (n) => (n === 1 ? "In Handybreite ragt ein Element über den Bildschirmrand hinaus, und die ganze Seite scrollt seitwärts." : "In Handybreite ragen {n} Elemente über den Bildschirmrand hinaus, und die ganze Seite scrollt seitwärts.".replace("{n}", String(n))),
@@ -486,7 +486,7 @@ export const PLAIN_DE: Record<string, PlainRule> = {
   "dark-confirmshaming": {
     found: (n) => (n === 1 ? "Ein Knopf zum Ablehnen ist in der Ich-Form formuliert und klingt wie ein Eingeständnis." : "{n} Knöpfe zum Ablehnen sind in der Ich-Form formuliert und klingen wie ein Eingeständnis.".replace("{n}", String(n))),
     plain: "„Nein danke“ ist beschämend formuliert",
-    impact: "„Nein danke, ich möchte kein Geld sparen“ bleibt aus den falschen Gründen im Kopf. Es liest sich als Manipulation.",
+    impact: "„Nein danke, ich möchte kein Geld sparen“ liest sich als Manipulation.",
   },
   "dark-fake-scarcity": {
     found: (n) => (n === 1 ? "Eine Angabe auf dieser Seite meldet knappen Bestand oder große Nachfrage. Wer sie liest, kann nicht prüfen, ob sie stimmt." : "{n} Angaben auf dieser Seite melden knappen Bestand oder große Nachfrage. Wer sie liest, kann nicht prüfen, ob sie stimmen.".replace("{n}", String(n))),
@@ -858,8 +858,8 @@ export const FIXES_DE: Record<string, string | string[]> = {
   "typo-thin-weight": "Setzen Sie den Fließtext in einem normalen Schriftschnitt.",
 
   "aria-allowed-role": [
-    "Nehmen Sie ein Element, das wirklich das ist, was es zu sein behauptet.",
-    "Einen Knopf für einen Knopf, einen Navigationsblock für die Navigation.",
+    "Nehmen Sie das Element, das für die Aufgabe gebaut ist.",
+    "Nehmen Sie ein Button-Element für einen Knopf und ein Navigations-Element für die Navigation.",
   ],
   "aria-allowed-attr": "Entfernen Sie die Angaben, die zu dieser Art von Element nicht gehören. Oder wechseln Sie zu einem, zu dem sie passen.",
   "aria-required-children": [
@@ -1036,7 +1036,7 @@ export const UNDECIDED_DE: Record<string, { what: string; ask: string }> = {
     ask: "Bitten Sie Ihre Entwicklung, das Banner als Dialog mit einem Namen wie „Cookie-Einstellungen“ zu kennzeichnen. Beim Öffnen gehört der Tastaturfokus hinein.",
   },
   "consent-trap-unnamed": {
-    what: "Die Tabulatortaste bleibt im Cookie-Banner, aber das Banner sagt nie, was es ist. Wer einen Screenreader nutzt, steckt in etwas ohne Namen fest.",
+    what: "Die Tabulatortaste bleibt im Cookie-Banner, aber das Banner sagt nie, was es ist. Wer einen Screenreader nutzt, wird darin festgehalten und erfährt nicht, was es ist.",
     ask: "Bitten Sie Ihre Entwicklung, das Banner als Dialog zu kennzeichnen und ihm einen Namen zu geben, etwa „Cookie-Einstellungen“.",
   },
   "interaction-motion-actuation": {

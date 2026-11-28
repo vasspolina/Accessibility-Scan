@@ -28,7 +28,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "La page se recharge toute seule, ou passe à une autre page, après un délai fixe. Rien ne propose de l’arrêter." : "{n} instructions du code rechargent la page, ou passent à une autre, après un délai fixe. Aucune ne peut être arrêtée.".replace("{n}", String(n))),
     plain: "La page se recharge après un délai fixe",
     impact:
-      "Qui est encore en train de lire, ou au milieu du formulaire, est renvoyé au début sans prévenir. Lire lentement n’est pas un défaut, et ceci le punit.",
+      "Qui est encore en train de lire, ou au milieu du formulaire, est renvoyé au début sans prévenir. C’est pire encore pour les personnes qui lisent lentement.",
   },
   "aria-allowed-role": {
     plain: "Un rôle que l’élément ne peut pas avoir",
@@ -61,7 +61,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     found: (n) =>
       `${n} ${n === 1 ? "élément est désigné comme un morceau" : "éléments sont désignés comme des morceaux"} d’un contrôle plus grand : un onglet, une entrée de menu, une option, une ligne. ${n === 1 ? "Il ne se trouve pas" : "Aucun ne se trouve"} dans le contrôle auquel il appartient.`,
     impact:
-      "Un onglet hors de sa barre d’onglets n’est l’onglet de rien. Les lecteurs d’écran ne peuvent pas dire lequel il est sur combien. Les flèches du clavier qui servent à parcourir ces contrôles n’ont plus rien à parcourir.",
+      "Un onglet hors de sa barre d’onglets n’appartient à aucun groupe. Les lecteurs d’écran ne peuvent pas dire lequel il est sur combien. Les flèches du clavier qui servent à parcourir ces contrôles n’ont plus rien à parcourir.",
   },
   "landmark-unique": {
     plain: "Deux zones de page portent le même nom",
@@ -122,12 +122,12 @@ export const PLAIN_FR: Record<string, PlainRule> = {
   },
   "color-contrast": {
     research:
-      "Le texte trop peu contrasté est le défaut le plus fréquent du relevé annuel de WebAIM sur un million de pages d’accueil. Bien plus de gens voient moins net que ne le supposent les écrans d’une équipe de design.",
+      "Le texte trop peu contrasté est le défaut le plus fréquent du relevé annuel de WebAIM sur un million de pages d’accueil. Beaucoup de gens voient moins net que l’équipe de design qui a choisi les couleurs.",
     plain: "Texte trop pâle pour être lu",
     found: (n) =>
       `${n} ${n === 1 ? "passage de texte sur cette page est trop proche" : "passages de texte sur cette page sont trop proches"} en couleur du fond qui se trouve derrière ${n === 1 ? "lui" : "eux"}.`,
     impact:
-      "Difficile à lire en plein soleil, sur un écran bon marché, dans une pièce sombre ou avec une vue imparfaite. Le message ne passe pas.",
+      "Difficile à lire en plein soleil, sur un écran bon marché, dans une pièce sombre ou avec une vue imparfaite. Les gens ne peuvent pas lire ce qui est écrit.",
   },
   "image-alt": {
     research:
@@ -156,7 +156,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
       "Les liens vides comptent parmi les défauts les plus fréquents du relevé annuel de WebAIM sur un million de pages d’accueil.",
     plain: "Des liens sans texte lisible",
     found: (n) =>
-      `${n} ${n === 1 ? "lien n’a" : "liens n’ont"} aucun texte lisible à l’intérieur : ni mots, ni libellé, rien à annoncer. ${n === 1 ? "C’est le plus souvent une icône, une flèche ou une image servant de lien." : "Ce sont le plus souvent des icônes, des flèches ou des images servant de liens."} L’image porte le sens et le code n’en porte rien.`,
+      `${n} ${n === 1 ? "lien n’a" : "liens n’ont"} aucun texte lisible à l’intérieur : ni mots, ni libellé, rien à annoncer. ${n === 1 ? "C’est le plus souvent une icône, une flèche ou une image servant de lien." : "Ce sont le plus souvent des icônes, des flèches ou des images servant de liens."} L’image montre la destination, mais le code ne la dit pas.`,
     impact:
       "Les utilisateurs de lecteurs d’écran affichent souvent la liste de tous les liens et y choisissent. Un lien sans texte y apparaît comme le seul mot « lien ». Plusieurs d’entre eux transforment la liste en « lien, lien, lien ».",
   },
@@ -177,7 +177,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
       "Les boutons sans libellé sont tout en haut du relevé annuel de WebAIM sur un million de pages d’accueil, année après année. Ce sont en général des contrôles réduits à une icône, évidente pour qui les a dessinés.",
     plain: "Les boutons n’ont pas de libellé",
     found: (n) =>
-      `${n} ${n === 1 ? "bouton n’a" : "boutons n’ont"} aucun libellé : pas de mots à l’intérieur et pas de nom dans le code. Presque toujours un bouton-icône, où le symbole porte le sens et le code n’en porte rien.`,
+      `${n} ${n === 1 ? "bouton n’a" : "boutons n’ont"} aucun libellé : pas de mots à l’intérieur et pas de nom dans le code. Presque toujours un bouton-icône, dont le symbole montre ce qu’il fait sans que le code le dise.`,
     impact: "Les utilisateurs de lecteurs d’écran ne savent pas ce qu’il fait avant d’appuyer dessus. Une raison fréquente d’abandon.",
   },
   label: {
@@ -203,7 +203,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
   },
   "html-has-lang": {
     research:
-      "La langue du document absente est l’un des rares défauts que WebAIM trouve sur la majorité du web. Il reste fréquent parce qu’il est silencieux : la page a l’air correcte, et seul quelqu’un qui l’entend dans la mauvaise voix rencontre le problème.",
+      "La langue du document absente est l’un des rares défauts que WebAIM trouve sur la majorité du web. Il reste fréquent parce que la page a l’air correcte. Seul quelqu’un qui l’entend dans la mauvaise voix remarque le problème.",
     plain: "La page ne déclare aucune langue",
     found: () => `La page ne déclare pas dans quelle langue elle est écrite.`,
     impact: "Les gens entendent votre contenu avec le mauvais accent, ce qui est difficile à suivre.",
@@ -217,7 +217,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     plain: "Les titres sautent des niveaux",
     found: (n) =>
       `Les niveaux de titre sautent au lieu d’avancer d’un cran. À ${n} ${n === 1 ? "endroit" : "endroits"}, un niveau est sauté : un h2 suivi directement d’un h4, ou l’équivalent.`,
-    impact: "La plupart des utilisateurs de lecteurs d’écran naviguent par les titres. Ils perdent le fil.",
+    impact: "La plupart des utilisateurs de lecteurs d’écran naviguent par les titres. Avec des niveaux sautés, ils ne voient pas comment la page est organisée.",
   },
   "page-has-heading-one": {
     plain: "Pas de titre principal",
@@ -227,7 +227,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
   "empty-heading": {
     plain: "Un titre vide",
     found: (n) =>
-      `${n} ${n === 1 ? "titre est vide" : "titres sont vides"} : la balise est là, les mots non.`,
+      `${n} ${n === 1 ? "titre est vide" : "titres sont vides"} : la balise de titre ne contient aucun mot.`,
     impact: "Les gens qui naviguent par les titres tombent sur une entrée qui ne dit rien.",
   },
   "link-in-text-block": {
@@ -298,20 +298,20 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     found: (n) =>
       `${n} ${n === 1 ? "contrôle en contient un autre" : "contrôles en contiennent chacun un autre"}. Ce qui ressemble à une seule chose à cliquer en fait deux, l’une enroulée autour de l’autre.`,
     impact:
-      "Les lecteurs d’écran annoncent celui du dehors et cachent ce qu’il y a dedans, donc le contrôle intérieur est hors d’atteinte. Lequel des deux un clic ou une touche active, personne ne le sait.",
+      "Les lecteurs d’écran annoncent celui du dehors et cachent ce qu’il y a dedans, donc le contrôle intérieur est hors d’atteinte. Un clic ou une touche peut activer l’un ou l’autre.",
   },
   "presentation-role-conflict": {
     plain: "Un contrôle actif marqué comme décoration",
     found: (n) =>
       `${n} ${n === 1 ? "élément est marqué" : "éléments sont marqués"} comme à ignorer tout en restant ${n === 1 ? "atteignable et utilisable" : "atteignables et utilisables"}.`,
     impact:
-      "Le code dit de l’ignorer et l’élément dit de s’en servir. Les lecteurs d’écran tranchent chacun à leur façon, donc certaines personnes ne le trouvent jamais.",
+      "Le code le présente comme une décoration, mais il fonctionne comme un contrôle. Les lecteurs d’écran tranchent chacun à leur façon, donc certaines personnes ne le trouvent jamais.",
   },
   region: {
     plain: "Des zones de page sans nom dans le code",
     found: (n) =>
       `${n} ${n === 1 ? "bloc de contenu n’a" : "blocs de contenu n’ont"} ni en-tête, ni navigation, ni contenu principal, ni pied de page autour ${n === 1 ? "de lui" : "d’eux"}.`,
-    impact: "Les utilisateurs de lecteurs d’écran ne peuvent pas passer devant. Ils entendent tout, à chaque fois.",
+    impact: "Les utilisateurs de lecteurs d’écran ne peuvent pas passer devant. Ils doivent écouter toute la page à chaque visite.",
   },
   "landmark-one-main": {
     plain: "Rien ne marque le contenu principal",
@@ -323,7 +323,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     plain: "L’ordre de tabulation part dans tous les sens",
     found: (n) =>
       `${n} ${n === 1 ? "élément utilise" : "éléments utilisent"} un tabindex positif. Cela ${n === 1 ? "le force" : "les force"} en tête de l’ordre de tabulation, où qu'${n === 1 ? "il se trouve" : "ils se trouvent"} sur la page.`,
-    impact: "Les gens qui ne peuvent pas se servir d’une souris sont ballottés d’un bout à l’autre de la page.",
+    impact: "Les gens qui ne peuvent pas se servir d’une souris parcourent la page dans le désordre.",
   },
   "scrollable-region-focusable": {
     plain: "Zone défilante hors d’atteinte au clavier",
@@ -344,19 +344,19 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "Quand la touche Tab atteint au moins un contrôle, ni contour ni surbrillance n’apparaît pour montrer où l’on est." : "Quand la touche Tab atteint {n} contrôles, ni contour ni surbrillance n’apparaît pour montrer où l’on est.".replace("{n}", String(n))),
     plain: "Rien ne montre où est le clavier",
     impact:
-      "Beaucoup de gens ne touchent jamais une souris. Sans repère visible, ils naviguent à l’aveugle, et ils abandonnent.",
+      "Beaucoup de gens ne touchent jamais une souris. Sans repère visible, ils ne savent pas où ils sont, et ils abandonnent.",
   },
   "readability-dense-prose": {
     found: (n) => (n === 1 ? "Le texte de cette page demande à peu près un niveau universitaire. La mesure porte sur la longueur des phrases et des mots." : "{n} textes de cette page demandent à peu près un niveau universitaire. La mesure porte sur la longueur des phrases et des mots.".replace("{n}", String(n))),
     plain: "L’écriture demande un niveau universitaire",
     impact:
-      "C’est le changement qui touche le plus de monde dans ce rapport. Il aide les personnes ayant des troubles cognitifs et toutes celles qui lisent dans une deuxième langue. GOV.UK écrit pour un âge de lecture d’environ neuf ans, et ce n’est pas un site simple.",
+      "C’est le changement qui touche le plus de monde dans ce rapport. Il aide les personnes ayant des troubles cognitifs et toutes celles qui lisent dans une deuxième langue. GOV.UK écrit pour un âge de lecture d’environ neuf ans.",
   },
   "typo-leading-for-measure": {
     found: (n) => (n === 1 ? "Sur cette page, du texte courant a trop peu d’interligne pour sa taille et la longueur de ses lignes." : "{n} blocs de texte ont trop peu d’interligne pour la longueur de leurs lignes et leur taille de caractères.".replace("{n}", String(n))),
     plain: "Lignes trop serrées les unes sur les autres",
     impact:
-      "L’œil ne glisse pas le long d’une ligne, il saute. Le saut le plus difficile est le retour au début de la suivante. Plus la ligne est longue, plus il est facile de tomber sur la mauvaise.",
+      "L’œil avance par sauts le long d’une ligne. Le saut le plus difficile est le retour au début de la suivante. Plus la ligne est longue, plus il est facile de tomber sur la mauvaise.",
   },
   "reading-order-mismatch": {
     found: (n) => (n === 1 ? "Dans une rangée de contrôles côte à côte, la touche Tab ne suit pas l’ordre de l’écran. La mise en page les réordonne, le code non." : "Dans {n} rangées de contrôles côte à côte, la touche Tab ne suit pas l’ordre de l’écran. La mise en page les réordonne, le code non.".replace("{n}", String(n))),
@@ -369,7 +369,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "Sur au moins un contrôle, le repère de focus n’est qu’une ombre ou un changement de couleur. Il disparaît donc en mode contraste élevé de Windows." : "Sur {n} contrôles, le repère de focus n’est qu’une ombre ou un changement de couleur. Il disparaît donc en mode contraste élevé de Windows.".replace("{n}", String(n))),
     plain: "Le repère de focus disparaît en contraste élevé",
     impact:
-      "Le mode contraste élevé retire les ombres et les couleurs avec lesquelles la plupart des repères de focus sont dessinés. Les gens qui ont le plus besoin de voir où ils sont ne voient rien, sur une page qui paraît parfaite tant que ce mode est éteint.",
+      "Le mode contraste élevé retire les ombres et les couleurs avec lesquelles la plupart des repères de focus sont dessinés. Les gens qui dépendent de ce mode ne voient pas où se trouve le clavier. Le défaut n’apparaît que lorsque ce mode est activé.",
   },
   "forced-colors-icon-lost": {
     found: (n) => (n === 1 ? "Un contrôle sans texte n’est qu’une image de fond. En mode contraste élevé de Windows, l’image disparaît et il reste une case vide." : "{n} contrôles sans texte ne sont qu’une image de fond. En mode contraste élevé de Windows, l’image disparaît et il reste des cases vides.".replace("{n}", String(n))),
@@ -381,7 +381,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "Sur au moins un contrôle, le contour qui marque le focus clavier est trop pâle. Son contraste avec le fond reste sous 3:1, le minimum fixé par les WCAG." : "Sur {n} contrôles, le contour qui marque le focus clavier est trop pâle. Son contraste avec le fond reste sous 3:1, le minimum fixé par les WCAG.".replace("{n}", String(n))),
     plain: "Repère clavier trop pâle pour être vu",
     impact:
-      "Tab déplace un curseur invisible, et le contour est la seule chose qui montre où il est arrivé. S’il est trop pâle, la personne au clavier ne sait pas ce qu’elle s’apprête à activer. Cela passe les tests parce qu’il y a bel et bien un contour.",
+      "Tab déplace un curseur invisible, et le contour est la seule chose qui montre où il est arrivé. S’il est trop pâle, la personne au clavier ne sait pas ce qu’elle s’apprête à activer. Les tests le manquent souvent, parce qu’un contour existe bien.",
   },
   "keyboard-focus-order": {
     plain: "L’ordre de tabulation revient en arrière",
@@ -392,7 +392,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "À un endroit, le focus reste bloqué quand on appuie sur Tab. Il reste sur un élément ou fait l’aller-retour entre deux, sans atteindre le reste de la page." : "À {n} endroits, le focus reste bloqué quand on appuie sur Tab. Il reste sur un élément ou fait l’aller-retour entre deux, sans atteindre le reste de la page.".replace("{n}", String(n))),
     plain: "Le focus clavier reste bloqué",
     impact:
-      "Une personne au clavier qui arrive ici ne peut pas aller plus loin. L’un des pires défauts qu’un site puisse avoir.",
+      "Une personne au clavier qui arrive ici ne peut pas aller plus loin. Tout ce qui vient après est hors de sa portée.",
   },
 
   // Les vérifications des noms pour lecteurs d'écran. Chacune est une carte
@@ -402,7 +402,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "Au moins une image a pour description son nom de fichier." : "{n} images ont leur nom de fichier pour description.".replace("{n}", String(n))),
     plain: "Des images décrites par leur nom de fichier",
     impact:
-      "Un lecteur d’écran lit le nom de fichier à voix haute, chiffres et ponctuation compris. Le visiteur entend du bruit là où devrait se trouver le sens de l’image.",
+      "Un lecteur d’écran lit le nom de fichier à voix haute, chiffres et ponctuation compris. Le visiteur entend le nom de fichier et n’apprend rien sur l’image.",
   },
   "sr-vague-link-name": {
     found: (n) => (n === 1 ? "Au moins un lien n’est annoncé que par un symbole comme « → » ou par une adresse web brute. Aucun mot ne dit où il mène." : "{n} liens ne sont annoncés que par un symbole comme « → » ou par une adresse web brute. Aucun mot ne dit où ils mènent.".replace("{n}", String(n))),
@@ -420,7 +420,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "Au moins un bouton ne porte qu’un nom générique comme « More » ou « Go ». Ce nom ne dit pas ce que fait le bouton." : "{n} boutons ne portent que des noms génériques comme « More » ou « Go ». Ces noms ne disent pas ce que font les boutons.".replace("{n}", String(n))),
     plain: "Des noms de bouton qui ne disent rien",
     impact:
-      "Qui voit l’écran repère le × dans le coin et comprend. La personne qui écoute entend « fois, bouton », sans coin sur lequel s’appuyer.",
+      "Qui voit l’écran repère le × dans le coin et comprend ce qu’il fait. La personne qui écoute entend seulement « fois, bouton ».",
   },
   "form-field-placeholder-label": {
     found: (n) => (n === 1 ? "Au moins un champ de formulaire n’a pour libellé que son texte d’exemple. Il n’y a aucun autre libellé, ni à côté ni dans le code." : "{n} champs de formulaire n’ont pour libellé que leur texte d’exemple. Il n’y a aucun autre libellé, ni à côté ni dans le code.".replace("{n}", String(n))),
@@ -432,13 +432,13 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "Au moins un champ de données personnelles, comme le nom ou l’adresse e-mail, ne déclare pas ce qu’il demande. Navigateurs et gestionnaires de mots de passe doivent deviner." : "{n} champs de données personnelles, comme le nom ou l’adresse e-mail, n’indiquent pas au navigateur ce qu’ils demandent. Navigateurs et gestionnaires de mots de passe doivent deviner.".replace("{n}", String(n))),
     plain: "Les champs bloquent le remplissage automatique",
     impact:
-      "Tout le monde retape son nom, son adresse e-mail, son adresse postale et son numéro de téléphone à la main. Lent pour tous, un vrai obstacle pour certains.",
+      "Tout le monde retape son nom, son adresse e-mail, son adresse postale et son numéro de téléphone à la main. C’est lent pour tout le monde, et certains n’y arrivent pas du tout.",
   },
   "component-input-type": {
     found: (n) => (n === 1 ? "Au moins un champ d’e-mail ou de téléphone n’est pas défini comme tel dans le code." : "{n} champs d’e-mail ou de téléphone ne sont pas définis comme tels dans le code.".replace("{n}", String(n))),
     plain: "Champs e-mail définis comme texte simple",
     impact:
-      "Sur téléphone, on a le clavier générique au lieu de celui avec le « @ » ou le pavé numérique. Plus de frappes, plus d’erreurs.",
+      "Sur téléphone, on a le clavier générique au lieu de celui avec le « @ » ou le pavé numérique. Il faut plus de frappes, et on fait plus d’erreurs.",
   },
   "component-required-cue": {
     found: (n) => (n === 1 ? "Au moins un champ obligatoire n’est signalé comme tel que dans le code. Son libellé ne dit pas « obligatoire » et ne porte pas d’astérisque." : "{n} champs obligatoires ne sont signalés comme tels que dans le code. Leurs libellés ne disent pas « obligatoire » et ne portent pas d’astérisque.".replace("{n}", String(n))),
@@ -473,23 +473,23 @@ export const PLAIN_FR: Record<string, PlainRule> = {
   "mobile-target-spacing": {
     plain: "Les cibles tactiles sont trop proches",
     found: (n) =>
-      `${n} ${n === 1 ? "paire de contrôles se trouve" : "paires de contrôles se trouvent"} à moins de 8 px l’une de l’autre en largeur de téléphone. Chacun est assez grand tout seul ; ensemble, ils ne laissent aucune marge d’erreur.`,
+      `${n} ${n === 1 ? "paire de contrôles se trouve" : "paires de contrôles se trouvent"} à moins de 8 px l’une de l’autre en largeur de téléphone. Chacun est assez grand tout seul, mais il y a trop peu d’espace entre eux.`,
     impact:
-      "Un pouce n’est pas un curseur. Un doigt qui vise un contrôle et tombe sur son voisin appuie ou achète la mauvaise chose. Les personnes qui tremblent ou qui ont de gros doigts le rencontrent en premier.",
+      "Un pouce est moins précis qu’un pointeur de souris. Un doigt qui vise un contrôle et tombe sur son voisin appuie ou achète la mauvaise chose. Les personnes qui tremblent ou qui ont de gros doigts le rencontrent en premier.",
   },
   "consent-blocks-reader": {
     plain: "La bannière cookies bloque les lecteurs d’écran",
     found: () =>
       `La couche de consentement marque toute la page derrière elle comme masquée pour les lecteurs d’écran, et le focus clavier n’atteint jamais la couche elle-même.`,
     impact:
-      "Un utilisateur de lecteur d’écran entend le silence là où la page devrait être. Il ne peut pas lire la page, et il ne peut pas trouver la bannière pour l’écarter.",
+      "Un utilisateur de lecteur d’écran n’entend rien de la page. Il ne peut pas lire la page, et il ne peut pas trouver la bannière pour l’écarter.",
   },
   "mobile-sticky-coverage": {
     plain: "Les barres fixes envahissent l’écran du téléphone",
     found: () =>
       `Les en-têtes, bannières ou barres d’outils fixes occupent plus d’un tiers de l’écran en largeur de téléphone.`,
     impact:
-      "Chaque pixel fixe est un pixel à travers lequel on ne peut pas lire la page. Tout ce que le clavier atteint peut finir caché derrière les barres. Les WCAG 2.2 en font déjà une exigence ; la loi n’y renvoie simplement pas encore.",
+      "Les barres fixes couvrent une partie de la page que l’on est en train de lire. Tout ce que le clavier atteint peut finir caché derrière les barres. Les WCAG 2.2 en font déjà une exigence ; la loi n’y renvoie simplement pas encore.",
   },
   "mobile-horizontal-scroll": {
     found: (n) => (n === 1 ? "En largeur de téléphone, un élément dépasse du bord de l’écran et toute la page défile de côté." : "En largeur de téléphone, {n} éléments dépassent du bord de l’écran et toute la page défile de côté.".replace("{n}", String(n))),
@@ -501,7 +501,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "En largeur de téléphone, une cible tactile mesure moins de 24 px de large ou de haut. Une autre se trouve juste à côté. Un appui qui rate de peu tombe facilement sur la voisine." : "En largeur de téléphone, {n} cibles tactiles mesurent moins de 24 px de large ou de haut. Chacune en a une autre juste à côté. Un appui qui rate de peu tombe facilement sur la voisine.".replace("{n}", String(n))),
     plain: "Cibles tactiles trop petites",
     impact:
-      "Des appuis qui ratent, et de l’agacement. Pire avec de gros doigts ou des mains qui tremblent. Cela vous coûte des ventes.",
+      "On rate le contrôle et il faut appuyer de nouveau. C’est pire avec de gros doigts ou des mains qui tremblent. Cela vous coûte des ventes.",
   },
 
   "text-spacing-clipped": {
@@ -545,7 +545,7 @@ export const PLAIN_FR: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "Un bouton de refus est formulé à la première personne et sonne comme un aveu." : "{n} boutons de refus sont formulés à la première personne et sonnent comme un aveu.".replace("{n}", String(n))),
     plain: "Un « non merci » qui culpabilise",
     impact:
-      "« Non merci, je ne veux pas économiser » marque les esprits pour de mauvaises raisons. Cela se lit comme de la manipulation.",
+      "« Non merci, je ne veux pas économiser » se lit comme de la manipulation.",
   },
   "dark-fake-scarcity": {
     found: (n) => (n === 1 ? "Une mention sur cette page annonce un stock limité ou une forte demande. Qui la lit ne peut pas vérifier si elle est vraie." : "{n} mentions sur cette page annoncent un stock limité ou une forte demande. Qui les lit ne peut pas vérifier si elles sont vraies.".replace("{n}", String(n))),
@@ -949,8 +949,8 @@ export const FIXES_FR: Record<string, string | string[]> = {
   "typo-thin-weight": "Composez le texte courant dans une graisse normale.",
 
   "aria-allowed-role": [
-    "Utilisez un élément qui est vraiment ce qu’il prétend être.",
-    "Un bouton pour un bouton, un bloc de navigation pour la navigation.",
+    "Utilisez l’élément conçu pour cet usage.",
+    "Prenez un élément bouton pour un bouton et un élément de navigation pour la navigation.",
   ],
   "aria-allowed-attr":
     "Retirez les réglages qui n’ont pas leur place sur ce type d’élément, ou changez-le pour un élément qui les accepte.",
@@ -1140,7 +1140,7 @@ export const UNDECIDED_FR: Record<string, { what: string; ask: string }> = {
     ask: "Demandez à votre équipe de développement de marquer le bandeau comme dialogue, de lui donner un nom comme « Réglages des cookies » et d’y placer le focus clavier à son ouverture.",
   },
   "consent-trap-unnamed": {
-    what: "La touche Tab reste dans le bandeau cookies, mais le bandeau ne dit jamais ce qu’il est. Une personne avec un lecteur d’écran est retenue dans quelque chose sans nom.",
+    what: "La touche Tab reste dans le bandeau cookies, mais le bandeau ne dit jamais ce qu’il est. Une personne avec un lecteur d’écran y est retenue sans savoir ce que c’est.",
     ask: "Demandez à votre équipe de développement de marquer le bandeau comme dialogue et de lui donner un nom, comme « Réglages des cookies ».",
   },
   "interaction-motion-actuation": {

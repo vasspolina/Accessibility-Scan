@@ -23,7 +23,7 @@ export function BlockedNotice({ message, onSignIn }: { message: string; onSignIn
     <section className="a11y-blocked">
       <p id="a11y-blocked-lead" className="a11y-blocked-lead">{message}</p>
       <p className="a11y-blocked-body">
-        {t("The site guards itself on purpose, and we won't try to slip past that. Three ways in:")}
+        {t("The site blocks automated visitors on purpose, and we don't work around that. You have three options:")}
       </p>
       <ul className="a11y-blocked-list">
         <li>

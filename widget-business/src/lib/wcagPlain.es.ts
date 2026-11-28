@@ -28,7 +28,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "La página se recarga sola, o salta a otra página, tras un tiempo fijo de espera. Nada ofrece una forma de detenerlo." : "{n} instrucciones del código recargan la página, o saltan a otra, tras un tiempo fijo de espera. Ninguna se puede detener.".replace("{n}", String(n))),
     plain: "La página se recarga sola",
     impact:
-      "Quien siga leyendo, o esté a mitad del formulario, vuelve al principio sin aviso. Leer despacio no es un defecto, y esto lo castiga.",
+      "Quien siga leyendo, o esté a mitad del formulario, vuelve al principio sin aviso. Es peor para quien lee despacio.",
   },
   "aria-allowed-role": {
     plain: "Un rol que el elemento no puede tener",
@@ -61,7 +61,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     found: (n) =>
       `${n} ${n === 1 ? "elemento está etiquetado como pieza" : "elementos están etiquetados como piezas"} de un control mayor: una pestaña, una opción de menú, una opción de lista, una fila. ${n === 1 ? "No está" : "Ninguno está"} dentro del control al que ${n === 1 ? "pertenece" : "pertenecen"}.`,
     impact:
-      "Una pestaña fuera de su barra de pestañas no es pestaña de nada. El lector de pantalla no puede decir cuál es ni de cuántas. Las flechas del teclado que sirven para moverse por estos controles no tienen por dónde moverse.",
+      "Una pestaña fuera de su barra de pestañas no pertenece a ningún grupo. El lector de pantalla no puede decir cuál es ni de cuántas. Las flechas del teclado que sirven para moverse por estos controles no tienen por dónde moverse.",
   },
   "landmark-unique": {
     plain: "Dos zonas de la página con el mismo nombre",
@@ -121,12 +121,12 @@ export const PLAIN_ES: Record<string, PlainRule> = {
   },
   "color-contrast": {
     research:
-      "El texto con poco contraste es el fallo más común en la revisión anual de WebAIM de un millón de páginas de inicio. Mucha más gente ve con menos nitidez de lo que suponen los monitores de un equipo de diseño.",
+      "El texto con poco contraste es el fallo más común en la revisión anual de WebAIM de un millón de páginas de inicio. Mucha gente ve con menos nitidez que el equipo de diseño que eligió los colores.",
     plain: "Texto demasiado claro para leerlo",
     found: (n) =>
       `${n} ${n === 1 ? "texto de esta página está" : "textos de esta página están"} demasiado cerca en color del fondo que ${n === 1 ? "tiene" : "tienen"} detrás.`,
     impact:
-      "Cuesta leerlo con luz fuerte, en una pantalla barata, en una habitación oscura o con la vista imperfecta. Su mensaje no llega.",
+      "Cuesta leerlo con luz fuerte, en una pantalla barata, en una habitación oscura o con la vista imperfecta. La gente no puede leer lo que dice.",
   },
   "image-alt": {
     research:
@@ -155,7 +155,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
       "Los enlaces vacíos están entre los fallos más comunes de la revisión anual que WebAIM hace de un millón de páginas de inicio.",
     plain: "Enlaces sin texto legible",
     found: (n) =>
-      `${n} ${n === 1 ? "enlace no tiene" : "enlaces no tienen"} texto legible dentro: ni palabras, ni nombre, nada que anunciar. ${n === 1 ? "Casi siempre es un icono, una flecha o una imagen usada como enlace." : "Casi siempre son iconos, flechas o imágenes usadas como enlace."} La imagen carga con el significado y el código no carga con nada.`,
+      `${n} ${n === 1 ? "enlace no tiene" : "enlaces no tienen"} texto legible dentro: ni palabras, ni nombre, nada que anunciar. ${n === 1 ? "Casi siempre es un icono, una flecha o una imagen usada como enlace." : "Casi siempre son iconos, flechas o imágenes usadas como enlace."} La imagen muestra el destino, pero el código no lo dice.`,
     impact:
       "Quien usa un lector de pantalla suele sacar una lista con todos los enlaces y elegir de ahí. Un enlace sin texto aparece ahí como la palabra suelta «enlace». Varios así convierten la lista en «enlace, enlace, enlace».",
   },
@@ -176,7 +176,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
       "Los botones sin etiqueta están cerca de lo más alto de la revisión anual que WebAIM hace de un millón de páginas de inicio, año tras año. Suelen ser controles de solo icono, evidentes para quien los diseñó.",
     plain: "Los botones no tienen etiqueta",
     found: (n) =>
-      `${n} ${n === 1 ? "botón no tiene" : "botones no tienen"} etiqueta de ningún tipo: ni palabras dentro ni nombre en el código. Casi siempre se trata de botones de icono, donde el símbolo carga con el significado y el código no carga con nada.`,
+      `${n} ${n === 1 ? "botón no tiene" : "botones no tienen"} etiqueta de ningún tipo: ni palabras dentro ni nombre en el código. Casi siempre se trata de botones de icono: el símbolo muestra lo que hacen, pero el código no lo dice.`,
     impact: "Quien usa un lector de pantalla no sabe qué hace antes de pulsarlo. Es un motivo habitual de abandono.",
   },
   label: {
@@ -202,7 +202,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
   },
   "html-has-lang": {
     research:
-      "El idioma del documento sin declarar es uno de los pocos fallos que WebAIM encuentra en la mayor parte de la web. Sigue siendo común porque el fallo es silencioso: la página se ve bien, y solo quien la oye con la voz equivocada se topa con él.",
+      "El idioma del documento sin declarar es uno de los pocos fallos que WebAIM encuentra en la mayor parte de la web. Sigue siendo común porque la página se ve bien. Solo quien la oye con la voz equivocada lo nota.",
     plain: "La página no declara su idioma",
     found: () => `La página no declara en qué idioma está escrita.`,
     impact: "La gente oye su contenido con el acento equivocado, y cuesta seguirlo.",
@@ -216,7 +216,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     plain: "Los encabezados saltan niveles",
     found: (n) =>
       `Los niveles de encabezado dan saltos en vez de avanzar uno a uno. En ${n} ${n === 1 ? "sitio" : "sitios"} se salta un nivel: un h2 seguido directamente de un h4, o parecido.`,
-    impact: "La mayoría de quienes usan un lector de pantalla se mueve por los encabezados. Pierden el hilo.",
+    impact: "La mayoría de quienes usan un lector de pantalla se mueve por los encabezados. Con niveles saltados, no ven cómo está organizada la página.",
   },
   "page-has-heading-one": {
     plain: "No hay encabezado principal",
@@ -227,7 +227,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
   "empty-heading": {
     plain: "Un encabezado vacío",
     found: (n) =>
-      `${n} ${n === 1 ? "encabezado está vacío" : "encabezados están vacíos"}: la etiqueta está, las palabras no.`,
+      `${n} ${n === 1 ? "encabezado está vacío" : "encabezados están vacíos"}: la etiqueta de encabezado no contiene palabras.`,
     impact: "Quien se mueve por los encabezados aterriza en una entrada que no dice nada.",
   },
   "link-in-text-block": {
@@ -296,20 +296,20 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     found: (n) =>
       `${n} ${n === 1 ? "control contiene otro control" : "controles contienen cada uno otro control"}. Lo que parece una sola cosa que pulsar son dos, una envuelta en la otra.`,
     impact:
-      "Los lectores de pantalla anuncian el de fuera y esconden lo de dentro, así que el control interior queda fuera de alcance. Cuál de los dos se activa al pulsar o al teclear es una incógnita.",
+      "Los lectores de pantalla anuncian el de fuera y esconden lo de dentro, así que el control interior queda fuera de alcance. Al pulsar o al teclear puede activarse cualquiera de los dos.",
   },
   "presentation-role-conflict": {
     plain: "Un control activo marcado como decoración",
     found: (n) =>
       `${n} ${n === 1 ? "elemento está marcado" : "elementos están marcados"} para que se ignore y aun así se ${n === 1 ? "alcanza y se usa" : "alcanzan y se usan"}.`,
     impact:
-      "El código dice que se ignore y el elemento dice que se use. Los lectores de pantalla resuelven eso de formas distintas, así que hay quien nunca lo encuentra.",
+      "El código lo marca como decoración, pero funciona como control. Los lectores de pantalla resuelven eso de formas distintas, así que hay quien nunca lo encuentra.",
   },
   region: {
     plain: "Zonas de la página sin nombre en el código",
     found: (n) =>
       `${n} ${n === 1 ? "bloque de contenido no tiene" : "bloques de contenido no tienen"} cabecera, navegación, contenido principal ni pie alrededor.`,
-    impact: "Quien usa un lector de pantalla no puede adelantar. Lo oye todo, cada vez.",
+    impact: "Quien usa un lector de pantalla no puede adelantar. Tiene que escuchar toda la página en cada visita.",
   },
   "landmark-one-main": {
     plain: "Nada marca el contenido principal",
@@ -321,7 +321,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     plain: "El orden de tabulación da saltos",
     found: (n) =>
       `${n} ${n === 1 ? "elemento usa" : "elementos usan"} un tabindex positivo. Eso ${n === 1 ? "lo empuja" : "los empuja"} al principio del orden de tabulación, ${n === 1 ? "esté donde esté" : "estén donde estén"} en la página.`,
-    impact: "Quien no puede usar el ratón acaba dando tumbos por la página.",
+    impact: "Quien no puede usar el ratón recorre la página en desorden.",
   },
   "scrollable-region-focusable": {
     plain: "Zona desplazable fuera del alcance del teclado",
@@ -342,19 +342,19 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "Al recorrer la página con el tabulador, hay controles que no cambian a la vista. Ni contorno ni resalte muestran dónde se está." : "{n} controles no cambian a la vista cuando el tabulador llega a ellos. Ni contorno ni resalte muestran dónde se está.".replace("{n}", String(n))),
     plain: "Nada muestra dónde está el teclado",
     impact:
-      "Mucha gente no toca nunca un ratón. Sin un resalte visible navegan a ciegas, y acaban rindiéndose.",
+      "Mucha gente no toca nunca un ratón. Sin un resalte visible no saben dónde están, y acaban rindiéndose.",
   },
   "readability-dense-prose": {
     found: (n) => (n === 1 ? "El texto de esta página exige más o menos nivel universitario. Se mide por la longitud de frases y palabras." : "{n} textos de esta página exigen más o menos nivel universitario. Se mide por la longitud de frases y palabras.".replace("{n}", String(n))),
     plain: "El texto exige nivel universitario",
     impact:
-      "Es el cambio de mayor alcance de este informe. Ayuda a las personas con discapacidad cognitiva y a quien lee en un segundo idioma. GOV.UK escribe para una edad lectora de unos nueve años, y no es un sitio sencillo.",
+      "Es el cambio de mayor alcance de este informe. Ayuda a las personas con discapacidad cognitiva y a quien lee en un segundo idioma. GOV.UK escribe para una edad lectora de unos nueve años.",
   },
   "typo-leading-for-measure": {
     found: (n) => (n === 1 ? "Hay texto en esta página con poco interlineado para la longitud de sus líneas y su tamaño de letra." : "{n} bloques de texto tienen poco interlineado para la longitud de sus líneas y su tamaño de letra.".replace("{n}", String(n))),
     plain: "Líneas demasiado juntas",
     impact:
-      "El ojo no se desliza por la línea, salta. El salto más difícil es volver al principio de la siguiente. Cuanto más larga la línea, más fácil es caer en la equivocada.",
+      "El ojo avanza a saltos por la línea. El salto más difícil es volver al principio de la siguiente. Cuanto más larga la línea, más fácil es caer en la equivocada.",
   },
   "reading-order-mismatch": {
     found: (n) => (n === 1 ? "En una fila de controles uno junto a otro, el tabulador no sigue el orden de la pantalla. El diseño los reordena, el código no." : "En {n} filas de controles uno junto a otro, el tabulador no sigue el orden de la pantalla. El diseño los reordena, el código no.".replace("{n}", String(n))),
@@ -367,7 +367,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "En al menos un control, la marca del foco es solo una sombra o un cambio de color. Por eso desaparece en el modo de alto contraste de Windows." : "En {n} controles, la marca del foco es solo una sombra o un cambio de color. Por eso desaparece en el modo de alto contraste de Windows.".replace("{n}", String(n))),
     plain: "La marca del foco desaparece en Alto contraste",
     impact:
-      "El modo de alto contraste quita las sombras y los colores con los que se dibuja la mayoría de los resaltes de foco. Quien más necesita ver dónde está no ve nada. La página parece perfecta hasta que se activa ese modo.",
+      "El modo de alto contraste quita las sombras y los colores con los que se dibuja la mayoría de los resaltes de foco. Quien depende de ese modo no ve dónde está el teclado. El fallo solo aparece con ese modo activado.",
   },
   "forced-colors-icon-lost": {
     found: (n) => (n === 1 ? "Un control sin texto es solo una imagen de fondo. En el modo de alto contraste de Windows la imagen desaparece y queda una caja vacía." : "{n} controles sin texto son solo una imagen de fondo. En el modo de alto contraste de Windows la imagen desaparece y quedan cajas vacías.".replace("{n}", String(n))),
@@ -379,7 +379,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "En al menos un control, el contorno que marca el foco del teclado es demasiado tenue. Su contraste con el fondo no llega a 3:1, el mínimo que piden las WCAG." : "En {n} controles, el contorno que marca el foco del teclado es demasiado tenue. Su contraste con el fondo no llega a 3:1, el mínimo que piden las WCAG.".replace("{n}", String(n))),
     plain: "La marca del teclado apenas se ve",
     impact:
-      "El tabulador mueve un cursor invisible, y el contorno es lo único que muestra hasta dónde ha llegado. Si es demasiado tenue, quien usa el teclado no sabe qué está a punto de activar. Se cuela en las pruebas porque contorno sí que hay.",
+      "El tabulador mueve un cursor invisible, y el contorno es lo único que muestra hasta dónde ha llegado. Si es demasiado tenue, quien usa el teclado no sabe qué está a punto de activar. Las pruebas suelen pasarlo por alto, porque el contorno existe.",
   },
   "keyboard-focus-order": {
     plain: "El orden de tabulación salta hacia atrás",
@@ -390,7 +390,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "En un punto, el foco se queda atascado al pulsar el tabulador. Se queda en un elemento o va y viene entre dos, y no llega al resto de la página." : "En {n} puntos, el foco se queda atascado al pulsar el tabulador. Se queda en un elemento o va y viene entre dos, y no llega al resto de la página.".replace("{n}", String(n))),
     plain: "El foco del teclado se queda atrapado",
     impact:
-      "Quien llega hasta aquí con el teclado no puede seguir. Uno de los peores fallos que puede tener un sitio.",
+      "Quien llega hasta aquí con el teclado no puede seguir. Todo lo que viene después queda fuera de su alcance.",
   },
 
   // Las comprobaciones de nombres para lectores de pantalla. Cada una es una
@@ -400,7 +400,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "Al menos una imagen lleva su nombre de archivo como descripción." : "{n} imágenes llevan su nombre de archivo como descripción.".replace("{n}", String(n))),
     plain: "Imágenes descritas con su nombre de archivo",
     impact:
-      "El lector de pantalla lee el nombre del archivo en voz alta, con cifras y signos incluidos. Quien escucha oye ruido donde debería estar el sentido de la imagen.",
+      "El lector de pantalla lee el nombre del archivo en voz alta, con cifras y signos incluidos. Quien escucha oye el nombre del archivo y no sabe nada de la imagen.",
   },
   "sr-vague-link-name": {
     found: (n) => (n === 1 ? "Al menos un enlace se anuncia solo con un símbolo como «→» o con una dirección web a secas. Un símbolo no dice adónde lleva, y una dirección se oye como una ristra de letras y signos." : "{n} enlaces se anuncian solo con un símbolo como «→» o con una dirección web a secas. Un símbolo no dice adónde lleva, y una dirección se oye como una ristra de letras y signos.".replace("{n}", String(n))),
@@ -418,7 +418,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "Al menos un botón solo tiene un nombre genérico como «Más» o «Ir». Ese nombre no dice qué hace." : "{n} botones solo tienen nombres genéricos como «Más» o «Ir». Esos nombres no dicen qué hacen.".replace("{n}", String(n))),
     plain: "Nombres de botón que no dicen nada",
     impact:
-      "Quien puede ver encuentra la × en la esquina y lo entiende. Quien escucha oye «por, botón», sin una esquina en la que apoyarse.",
+      "Quien puede ver encuentra la × en la esquina y entiende lo que hace. Quien escucha oye solo «por, botón».",
   },
   "form-field-placeholder-label": {
     found: (n) => (n === 1 ? "Al menos un campo del formulario solo tiene como etiqueta su texto de ejemplo. No hay otra etiqueta ni al lado ni en el código." : "{n} campos del formulario solo tienen como etiqueta su texto de ejemplo. No hay otra etiqueta ni al lado ni en el código.".replace("{n}", String(n))),
@@ -430,13 +430,13 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "Al menos un campo de datos personales, como el nombre o el correo, no indica al navegador qué pide. Navegadores y gestores de contraseñas tienen que adivinarlo." : "{n} campos de datos personales, como el nombre o el correo, no indican al navegador qué piden. Navegadores y gestores de contraseñas tienen que adivinarlo.".replace("{n}", String(n))),
     plain: "Los campos impiden el autorrelleno",
     impact:
-      "Todo el mundo vuelve a escribir a mano su nombre, su correo, su dirección y su teléfono. Lento para cualquiera, y una barrera real para algunos.",
+      "Todo el mundo vuelve a escribir a mano su nombre, su correo, su dirección y su teléfono. Es lento para todos, y algunas personas no pueden hacerlo.",
   },
   "component-input-type": {
     found: (n) => (n === 1 ? "Al menos un campo que parece pedir un correo o un teléfono no está definido como tal en el código." : "{n} campos que parecen pedir un correo o un teléfono no están definidos como tales en el código.".replace("{n}", String(n))),
     plain: "Campos de correo definidos como texto simple",
     impact:
-      "En el móvil, la gente recibe el teclado genérico en vez de uno con «@» o con teclas numéricas. Más toques y más errores.",
+      "En el móvil, la gente recibe el teclado genérico en vez de uno con «@» o con teclas numéricas. Hacen falta más toques y se cometen más errores.",
   },
   "component-required-cue": {
     found: (n) => (n === 1 ? "Al menos un campo obligatorio solo está marcado como tal en el código. Su etiqueta no dice «obligatorio» ni lleva asterisco." : "{n} campos obligatorios solo están marcados como tales en el código. Sus etiquetas no dicen «obligatorio» ni llevan asterisco.".replace("{n}", String(n))),
@@ -471,23 +471,23 @@ export const PLAIN_ES: Record<string, PlainRule> = {
   "mobile-target-spacing": {
     plain: "Zonas de pulsación demasiado juntas",
     found: (n) =>
-      `${n} ${n === 1 ? "par de controles está" : "pares de controles están"} a menos de 8 px en ancho de móvil. Cada uno es bastante grande por separado; juntos no dejan margen para fallar.`,
+      `${n} ${n === 1 ? "par de controles está" : "pares de controles están"} a menos de 8 px en ancho de móvil. Cada uno es bastante grande por separado, pero hay muy poco espacio entre ellos.`,
     impact:
-      "Un pulgar no es un cursor. Un dedo que apunta a un control y cae en el vecino pulsa o compra lo que no era. Quien tiene temblores o dedos más grandes se lo encuentra primero.",
+      "Un pulgar es menos preciso que el puntero del ratón. Un dedo que apunta a un control y cae en el vecino pulsa o compra lo que no era. Quien tiene temblores o dedos más grandes se lo encuentra primero.",
   },
   "consent-blocks-reader": {
     plain: "El aviso de cookies bloquea los lectores de pantalla",
     found: () =>
       `La capa de consentimiento marca como oculta para los lectores de pantalla toda la página que queda detrás, y el foco del teclado nunca llega a la propia capa.`,
     impact:
-      "Quien usa un lector de pantalla oye silencio donde debería estar la página. No puede leerla, y tampoco encuentra el aviso para quitarlo.",
+      "Quien usa un lector de pantalla no oye nada de la página. No puede leerla, y tampoco encuentra el aviso para quitarlo.",
   },
   "mobile-sticky-coverage": {
     plain: "Las barras fijas ahogan la pantalla del móvil",
     found: () =>
       `Las cabeceras, avisos o barras de herramientas fijas ocupan más de un tercio de la pantalla en ancho de móvil.`,
     impact:
-      "Cada píxel fijo es un píxel menos para leer la página. Lo que reciba el foco del teclado puede acabar escondido tras las barras. Las WCAG 2.2 ya lo exigen exactamente así; la ley todavía no remite a ellas.",
+      "Las barras fijas tapan parte de la página que se está leyendo. Lo que reciba el foco del teclado puede acabar escondido tras las barras. Las WCAG 2.2 ya lo exigen exactamente así; la ley todavía no remite a ellas.",
   },
   "mobile-horizontal-scroll": {
     found: (n) => (n === 1 ? "En ancho de móvil, un elemento sobresale del borde de la pantalla. Toda la página se desplaza de lado." : "En ancho de móvil, {n} elementos sobresalen del borde de la pantalla. Toda la página se desplaza de lado.".replace("{n}", String(n))),
@@ -499,7 +499,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "En ancho de móvil, una zona de pulsación mide menos de 24 px de ancho o de alto. Otra está justo a su lado. Un toque que falla por poco cae fácilmente en la vecina." : "En ancho de móvil, {n} zonas de pulsación miden menos de 24 px de ancho o de alto. Cada una tiene otra justo al lado. Un toque que falla por poco cae fácilmente en la vecina.".replace("{n}", String(n))),
     plain: "Zonas de pulsación demasiado pequeñas",
     impact:
-      "Pulsaciones que fallan, y frustración. Peor con dedos grandes, temblores o pulso inseguro. Le cuesta ventas.",
+      "La gente falla el control y tiene que pulsar otra vez. Es peor con dedos grandes, temblores o pulso inseguro. Le cuesta ventas.",
   },
 
   "text-spacing-clipped": {
@@ -543,7 +543,7 @@ export const PLAIN_ES: Record<string, PlainRule> = {
     found: (n) => (n === 1 ? "Un botón para rechazar está redactado en primera persona. Así, rechazar puede sonar a confesión." : "{n} botones para rechazar están redactados en primera persona. Así, rechazar puede sonar a confesión.".replace("{n}", String(n))),
     plain: "El «no, gracias» redactado para avergonzar",
     impact:
-      "«No, gracias, no quiero ahorrar dinero» se recuerda por los motivos equivocados. Se lee como manipulación.",
+      "«No, gracias, no quiero ahorrar dinero» se lee como manipulación.",
   },
   "dark-fake-scarcity": {
     found: (n) => (n === 1 ? "Un aviso de esta página anuncia pocas existencias o mucha demanda. Quien lo lee no puede comprobar si es cierto." : "{n} avisos de esta página anuncian pocas existencias o mucha demanda. Quien los lee no puede comprobar si son ciertos.".replace("{n}", String(n))),
@@ -943,8 +943,8 @@ export const FIXES_ES: Record<string, string | string[]> = {
   "typo-thin-weight": "Componga el texto de lectura en un grosor normal.",
 
   "aria-allowed-role": [
-    "Use un elemento que sea de verdad lo que dice ser.",
-    "Un botón para un botón, un bloque de navegación para la navegación.",
+    "Use el elemento hecho para esa función.",
+    "Use un elemento de botón para un botón y un elemento de navegación para la navegación.",
   ],
   "aria-allowed-attr": "Quite los ajustes que no corresponden a este tipo de elemento, o cámbielo por uno al que sí correspondan.",
   "aria-required-children": [
@@ -1121,7 +1121,7 @@ export const UNDECIDED_ES: Record<string, { what: string; ask: string }> = {
     ask: "Pida a su equipo de desarrollo que marque el banner como diálogo, le dé un nombre como «Ajustes de cookies» y lleve el foco del teclado a él cuando se abra.",
   },
   "consent-trap-unnamed": {
-    what: "La tecla Tab se queda dentro del banner de cookies, pero el banner nunca dice qué es. Quien usa un lector de pantalla queda atrapado en algo sin nombre.",
+    what: "La tecla Tab se queda dentro del banner de cookies, pero el banner nunca dice qué es. Quien usa un lector de pantalla queda dentro sin saber qué es.",
     ask: "Pida a su equipo de desarrollo que marque el banner como diálogo y le dé un nombre, como «Ajustes de cookies».",
   },
   "interaction-motion-actuation": {
